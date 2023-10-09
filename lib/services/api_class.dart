@@ -48,6 +48,7 @@ class Apiclass {
       );
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
+
         return data;
       }else{
         return {'status': false, "Message": "Exception Occurred"};
@@ -536,15 +537,13 @@ class Apiclass {
     if (res.statusCode == 200) {
       var data = json.decode(res.body);
       if (data['status']) {
-        print(data);
+
         return data;
       } else {
-        print(data);
         return data;
       }
     }
     else {
-      print(res);
       return {'status': false, "Message": "Something Went Wrong"};
     }
 

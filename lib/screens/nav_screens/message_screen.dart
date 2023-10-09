@@ -251,13 +251,17 @@ class MessageListScreen extends State<MessageScreen> {
       String token = login.basicAuthToken;
       dynamic country = await httpService.getMessageAll(token);
       if (country["status"]) {
-        Messagelist message = Messagelist.fromJson(country);
-        setState(() {
-          listInbox = message.data.inboxlist;
-          tempList = message.data.inboxlist;
-          isLoading = false;
-          role = role!;
-        });
+        try{
+          Messagelist message = Messagelist.fromJson(country);
+          setState(() {
+            listInbox = message.data.inboxlist;
+            tempList = message.data.inboxlist;
+            isLoading = false;
+            role = role!;
+          });
+        }catch(exception){
+          Fluttertoast.showToast(msg: "$exception");
+        }
       } else {
         setState(() {
           isLoading = false;

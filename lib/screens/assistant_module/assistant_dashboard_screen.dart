@@ -8,8 +8,6 @@ import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../utils/app_images.dart';
 import '../../utils/text_style.dart';
 import '../../widgets/custom_loader.dart';

@@ -37,7 +37,7 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("Parent");
+    print("Address is : ${widget.parentDatum.sPaddress}");
   }
   @override
   Widget build(BuildContext context) {

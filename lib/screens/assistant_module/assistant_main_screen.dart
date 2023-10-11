@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_communication_report_message_list_screen.dart';
@@ -90,7 +91,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
       drawer: Drawer(
         child: Column(
           children: [
-        Container(
+            Container(
         decoration: const BoxDecoration(
         color: AppColors.primary,
             borderRadius: BorderRadius.only(
@@ -98,11 +99,12 @@ class AssistantScreenChild extends State<AssistantScreen>{
               bottomLeft: Radius.circular(30),
             )),
         padding: const EdgeInsets.all(15),
-        height: 100,
         width: 310,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(
                   height: 65,
@@ -113,36 +115,38 @@ class AssistantScreenChild extends State<AssistantScreen>{
                     child: Icon(Icons.person,color: AppColors.primary,size: 50,),
                   ),
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "hello".tr,
-                            style: const TextStyle(
-                                color: AppColors.white,
-                                fontSize: 16,
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.w300),
-                          ),
-                          Text(
-                            username,
-                            style: const TextStyle(
-                                color: AppColors.white,
-                                fontSize: 20,
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.w600),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                const Spacer(),
+                Expanded(child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "hello".tr,
+                              style: const TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Outfit',
+                                  fontWeight: FontWeight.w300),
+                            ),
+                            Text(
+                              username,
+                              softWrap: true,
+                              style: const TextStyle(
+                                  color: AppColors.white,
+                                  fontFamily: 'Outfit',
+                                  fontWeight: FontWeight.w600),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )),
                 Image.asset("Assets/white_logo_atenea.png",width: 50,height: 50)
               ],
             )

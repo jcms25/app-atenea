@@ -447,13 +447,14 @@ class _LoginScreenState extends State<LoginScreen> {
         sessionManagement.createSessionParent(parentData);
       }
       else{
-        try{
-          Assistant assistant= Assistant.fromJson(login);
-          SessionManagement sessionManagement = SessionManagement();
-          sessionManagement.saveAssistant(assistant);
-        }catch(exception){
-          Fluttertoast.showToast(msg: "$exception");
-        }
+        Assistant assistant= Assistant.fromJson(login);
+        SessionManagement sessionManagement = SessionManagement();
+        sessionManagement.saveAssistant(assistant);
+        // try{
+        //
+        // }catch(exception){
+        //   Fluttertoast.showToast(msg: "$exception");
+        // }
       }
       if(isRememberMe){
         await shre.setString('username', username);

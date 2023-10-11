@@ -37,7 +37,7 @@ class LabelValueLayout extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            "404, Kala Sagar Mall, Opp Sai Temple, Sattdhar Cross Road, Ghatlodia",
+            value,
             style: txtValueStyle,
           ),
         )

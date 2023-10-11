@@ -15,7 +15,7 @@ class subjectscreen extends StatefulWidget {
   var cid;
   var wpid;
 
-  subjectscreen(this.cid, this.wpid);
+  subjectscreen(this.cid, this.wpid, {super.key});
 
   @override
   State<subjectscreen> createState() => Subjects();
@@ -161,7 +161,7 @@ class Subjects extends State<subjectscreen> {
                                       ),
                                       const SizedBox(width: 10,),
                                       Expanded(child: Text(
-                                        tempList[index].subName,
+                                        tempList[index].subName ?? "-",
                                         style: const TextStyle(
                                             fontFamily: "Outfit",
                                             fontWeight: FontWeight.w400,
@@ -198,12 +198,11 @@ class Subjects extends State<subjectscreen> {
   }
 
   void callAPI() async {
-    print("CALL subject API");
     Apiclass httpService = Apiclass();
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role = await sessionManagment.getRole("Role");
-    if (Role == 0) {
-      Studentlogin login = await sessionManagment.getModel('Student');
+    SessionManagement sessionManagement = SessionManagement();
+    int? role = await sessionManagement.getRole("Role");
+    if (role == 0) {
+      Studentlogin login = await sessionManagement.getModel('Student');
       String? id = login.userdata.classId;
       String sid = login.userdata.wpUsrId!;
       String token = login.basicAuthToken;
@@ -223,7 +222,7 @@ class Subjects extends State<subjectscreen> {
         });
       }
     } else {
-      Parentlogin parent = await sessionManagment.getModelParent('Parent');
+      Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
           await httpService.getSubject(ptoken, widget.wpid, widget.cid);
@@ -252,7 +251,7 @@ class Subjects extends State<subjectscreen> {
 
     List<Subjectlist> searchData = [];
     for (var userDetail in list) {
-      if (userDetail.subName.isCaseInsensitiveContains(text)) {
+      if (userDetail.subName?.isCaseInsensitiveContains(text) ?? false) {
         searchData.add(userDetail);
       }
     }

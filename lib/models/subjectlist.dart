@@ -47,17 +47,17 @@ class Subjectlist {
     required this.group
   });
 
-  String classId;
-  String id;
-  String subCode;
-  String subName;
-  String subTeachId;
-  String bookName;
+  String? classId;
+  String? id;
+  String? subCode;
+  String? subName;
+  String? subTeachId;
+  String? bookName;
   dynamic subDesc;
   dynamic maxMark;
   dynamic passMark;
-  String faculty;
-  String group;
+  String? faculty;
+  String? group;
 
   factory Subjectlist.fromJson(Map<String, dynamic> json) => Subjectlist(
     classId: json["class_id"],

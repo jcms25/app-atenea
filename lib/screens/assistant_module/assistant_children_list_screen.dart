@@ -222,14 +222,15 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
   }
 
   void getStudentListOfClass() async{
-    Apiclass apiclass = Apiclass();
+    Apiclass apiClass = Apiclass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
-    dynamic tempChildList = await apiclass.getAsSlotChildList(token,widget.classId);
+    dynamic tempChildList = await apiClass.getAsSlotChildList(token,widget.classId);
     if(tempChildList['status']){
         ChildListDetailModel childListDetailModel = ChildListDetailModel.fromJson(tempChildList);
-      setState(() {
+        childListDetailModel.data.sort((a,b) => a.studentName.compareTo(b.studentName));
+        setState(() {
         childList = childListDetailModel.data;
         isLoading = false;
       });

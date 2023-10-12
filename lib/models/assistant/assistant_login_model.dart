@@ -41,8 +41,8 @@ class Userdata {
   int id;
   Caps caps;
   String capKey;
-  List<String> roles;
-  Allcaps allcaps;
+  String roles;
+  Allcaps allCaps;
   dynamic filter;
 
   Userdata({
@@ -51,7 +51,7 @@ class Userdata {
     required this.caps,
     required this.capKey,
     required this.roles,
-    required this.allcaps,
+    required this.allCaps,
     this.filter,
   });
 
@@ -60,8 +60,8 @@ class Userdata {
     id: json["ID"],
     caps: Caps.fromJson(json["caps"]),
     capKey: json["cap_key"],
-    roles: List<String>.from(json["roles"].map((x) => x)),
-    allcaps: Allcaps.fromJson(json["allcaps"]),
+    roles: json["roles"],
+    allCaps: Allcaps.fromJson(json["allcaps"]),
     filter: json["filter"],
   );
 
@@ -70,8 +70,8 @@ class Userdata {
     "ID": id,
     "caps": caps.toJson(),
     "cap_key": capKey,
-    "roles": List<dynamic>.from(roles.map((x) => x)),
-    "allcaps": allcaps.toJson(),
+    "roles": roles,
+    "allcaps": allCaps.toJson(),
     "filter": filter,
   };
 }

@@ -29,7 +29,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
   String classCount = "";
   String commonMessageCount ="";
   String studentReportCount = "";
-  String username = "FirKevin Leonard";
+  String username = "-";
 
   @override
   void initState() {

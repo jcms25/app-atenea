@@ -556,7 +556,7 @@ class Apiclass {
     try {
       Response res = await get(
           Uri.parse(
-              '${liveBaseUrl}dashboard/'),
+              '${liveBaseUrl}dashboard'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",

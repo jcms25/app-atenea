@@ -1002,9 +1002,6 @@ class Dash extends State<DashboardScreen> {
       dynamic dashBoardData = await httpService.getDashboard(token);
       if (dashBoardData["status"]) {
         Dashboard data = Dashboard.fromJson(dashBoardData);
-        print(data.eventList.exams);
-        print(data.eventList.events);
-        print(data.eventList.holiday);
         setState(() {
           // //token will be set
           // _basicAuthenticationtoken = token;
@@ -1038,9 +1035,6 @@ class Dash extends State<DashboardScreen> {
       dynamic dashBoardData = await httpService.getDashboard(ptoken);
       if (dashBoardData["status"]) {
         Dashboard data = Dashboard.fromJson(dashBoardData);
-        print(data.eventList.exams);
-        print(data.eventList.events);
-        print(data.eventList.holiday);
         setState(() {
           // //token will be set here
           // _basicAuthenticationtoken = ptoken;

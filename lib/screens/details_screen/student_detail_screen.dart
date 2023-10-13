@@ -27,25 +27,26 @@ class studentsdetails extends StatefulWidget {
 }
 
 class StudentDetail extends State<studentsdetails> {
-  Studentdetaillist? list;
+  Studentdetaillist? studentDetails;
   List<ParentsDatum> listparent = [];
-  String Name = "";
-  String bloodgrop = "";
+  String name = "";
+  String bloodGroup = "";
   String dob = "";
   String address = "";
   String city = "";
-  String pincode = "";
+  String pinCode = "";
   String Country = "";
-  String Doj = "";
+  String datOfJoining = "";
   String cid = "";
-  String rollno = "";
-  String imagepath = "";
-  String pname = "";
+  String rollNo = "";
+  String imagePath = "";
+  String pName = "";
   String email = "";
   String phone = "";
   String gender = "";
   String profession = "";
   bool isLoading = true;
+  bool isAddressVisible = false;
 
   @override
   void initState() {
@@ -138,7 +139,7 @@ class StudentDetail extends State<studentsdetails> {
                                                     child:Center(
                                                       child:  AutoSizeText(
                                                         maxLines:5,
-                                                        Name,
+                                                        name,
                                                         style: CustomStyle.login,
 
                                                       ),
@@ -201,44 +202,52 @@ class StudentDetail extends State<studentsdetails> {
                                                             color: AppColors.secondary),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                        const EdgeInsets.only(
-                                                            top: 20),
-                                                        child: Text(
-                                                          "streetaddress".tr,style: CustomStyle.txtvalue,
-
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                          padding:
-                                                          const EdgeInsets.only(
-                                                              top: 10),
-                                                          child: Container(
-                                                              width: 350,
-                                                              height: 100,
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      12),
-                                                                  color: AppColors
-                                                                      .secondary
-                                                                      .withOpacity(
-                                                                      0.06)),
-                                                              child: Padding(
+                                                      Visibility(
+                                                        visible: isAddressVisible,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children : [
+                                                              Padding(
                                                                 padding:
-                                                                const EdgeInsets
-                                                                    .all(
-                                                                    15),
+                                                                const EdgeInsets.only(
+                                                                    top: 20),
                                                                 child: Text(
-                                                                  address,
-                                                                  textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                  "streetaddress".tr,style: CustomStyle.txtvalue,
 
                                                                 ),
-                                                              ))),
+                                                              ),
+                                                              Padding(
+                                                                  padding:
+                                                                  const EdgeInsets.only(
+                                                                      top: 10),
+                                                                  child: Container(
+                                                                      width: 350,
+                                                                      height: 100,
+                                                                      decoration: BoxDecoration(
+                                                                          borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              12),
+                                                                          color: AppColors
+                                                                              .secondary
+                                                                              .withOpacity(
+                                                                              0.06)),
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            15),
+                                                                        child: Text(
+                                                                          address,
+                                                                          textAlign:
+                                                                          TextAlign
+                                                                              .left,
+                                                                          style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+
+                                                                        ),
+                                                                      )))
+                                                            ]
+                                                        ),
+                                                      ),
                                                       Padding(
                                                         padding:
                                                         const EdgeInsets.only(
@@ -299,7 +308,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                           child: Padding(
                                                                             padding: const EdgeInsets.all(15),
                                                                             child: Text(
-                                                                              pincode,
+                                                                              pinCode,
                                                                               textAlign: TextAlign.left,
                                                                               style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
 
@@ -386,7 +395,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                     .all(
                                                                     15),
                                                                 child: Text(
-                                                                  Doj,
+                                                                  datOfJoining,
                                                                   textAlign:
                                                                   TextAlign
                                                                       .left,
@@ -457,7 +466,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                           child: Padding(
                                                                             padding: const EdgeInsets.all(15),
                                                                             child: Text(
-                                                                              rollno,
+                                                                              rollNo,
                                                                               textAlign: TextAlign.left,
                                                                               style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
 
@@ -652,7 +661,7 @@ class StudentDetail extends State<studentsdetails> {
                                 ),
                               ],
                             ),
-                            child: imagepath.isEmpty ? Center(child:  SvgPicture.asset(AppImages.people,width: 100,height: 100,color: AppColors.primary,),) : CircleAvatar(
+                            child: imagePath.isEmpty ? Center(child:  SvgPicture.asset(AppImages.people,width: 100,height: 100,color: AppColors.primary,),) : CircleAvatar(
                               radius: 16.0,
                               // child: ClipRRect(
                               //   child: Image.network(
@@ -665,7 +674,7 @@ class StudentDetail extends State<studentsdetails> {
                               //   ),
                               //   borderRadius: BorderRadius.circular(180.0),
                               // ),
-                              backgroundImage: NetworkImage(imagepath),
+                              backgroundImage: NetworkImage(imagePath),
                               backgroundColor: AppColors.primary,
                             ),
                           ),
@@ -703,20 +712,21 @@ class StudentDetail extends State<studentsdetails> {
           Studentdetaillist student=Studentdetaillist.fromJson(country);
 
           setState(() {
-            list = student;
-            listparent=list!.studentDetails.parentData;
-            Name=list!.studentDetails.sFname ?? "";
-            bloodgrop=list!.studentDetails.sBloodgrp ?? "";
-            dob= list!.studentDetails.sDob == null ? "-" : DateFormat("dd/MM/yyyy").format(list!.studentDetails.sDob!);
-            address=list!.studentDetails.sAddress ?? "";
-            city=list!.studentDetails.sCity ?? "";
-            pincode=list!.studentDetails.sZipcode ?? "";
-            Country=list!.studentDetails.sCountry ?? "";
-            cid=list!.studentDetails.className ?? "";
-            rollno=list!.studentDetails.sRollno ?? "";
+            studentDetails = student;
+            listparent=studentDetails!.studentDetails.parentData;
+            name=studentDetails!.studentDetails.sFname ?? "";
+            bloodGroup=studentDetails!.studentDetails.sBloodgrp ?? "";
+            dob= studentDetails!.studentDetails.sDob == null ? "-" : DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDob!);
+            address=studentDetails!.studentDetails.sAddress ?? "";
+            city=studentDetails!.studentDetails.sCity ?? "";
+            pinCode=studentDetails!.studentDetails.sZipcode ?? "";
+            Country=studentDetails!.studentDetails.sCountry ?? "";
+            cid=studentDetails!.studentDetails.className ?? "";
+            rollNo=studentDetails!.studentDetails.sRollno ?? "";
+            isAddressVisible = login.userdata.wpUsrId == widget.sid ? true : false;
             // Doj= DateFormat("dd/MM/yyyy").format(list!.studentDetails.sDoj!);
-            Doj = list!.studentDetails.sDoj == null ? "-" : DateFormat("dd/MM/yyyy").format(list!.studentDetails.sDoj!);
-            imagepath=list!.studentDetails.stuImage ?? "";
+            datOfJoining = studentDetails!.studentDetails.sDoj == null ? "-" : DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDoj!);
+            imagePath=studentDetails!.studentDetails.stuImage ?? "";
             isLoading=false;
 
           });
@@ -740,19 +750,25 @@ class StudentDetail extends State<studentsdetails> {
       if(country['status']){
         Studentdetaillist student=Studentdetaillist.fromJson(country);
         setState(() {
-          list = student;
-          listparent=list!.studentDetails.parentData;
-          Name=list!.studentDetails.sFname ?? "";
-          bloodgrop=list!.studentDetails.sBloodgrp ?? "";
-          dob= list!.studentDetails.sDob == null ?"-":DateFormat("dd/MM/yyyy").format(list!.studentDetails.sDob!);
-          address=list!.studentDetails.sAddress ?? "";
-          city=list!.studentDetails.sCity ?? "";
-          pincode=list!.studentDetails.sZipcode ?? "";
-          Country=list!.studentDetails.sCountry ?? "";
-          cid=list!.studentDetails.className ?? "";
-          rollno=list!.studentDetails.sRollno ?? "";
-          Doj= list!.studentDetails.sDoj == null ? "-" : DateFormat("dd/MM/yyyy").format(list!.studentDetails.sDoj!);
-          imagepath=list!.studentDetails.stuImage ?? "";
+          studentDetails = student;
+          listparent=studentDetails!.studentDetails.parentData;
+          name=studentDetails!.studentDetails.sFname ?? "";
+          bloodGroup=studentDetails!.studentDetails.sBloodgrp ?? "";
+          dob= studentDetails!.studentDetails.sDob == null ?"-":DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDob!);
+          address=studentDetails!.studentDetails.sAddress ?? "";
+          city=studentDetails!.studentDetails.sCity ?? "";
+          pinCode=studentDetails!.studentDetails.sZipcode ?? "";
+          Country=studentDetails!.studentDetails.sCountry ?? "";
+          cid=studentDetails!.studentDetails.className ?? "";
+          rollNo=studentDetails!.studentDetails.sRollno ?? "";
+          datOfJoining= studentDetails!.studentDetails.sDoj == null ? "-" : DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDoj!);
+          imagePath=studentDetails!.studentDetails.stuImage ?? "";
+          for (var element in parent.userdata.studentData!) {
+            if(element.wpUsrId == widget.sid){
+              isAddressVisible = true;
+              break;
+            }
+          }
           isLoading=false;
 
         });

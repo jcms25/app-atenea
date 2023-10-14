@@ -20,19 +20,19 @@ class ClassesScreen extends StatefulWidget {
 
 class Classes extends State<ClassesScreen> {
   List<ParentDatum> list =  [];
-  List<StudentDatum> list_student=[];
+  List<StudentDatum> studentList=[];
   TextEditingController search =TextEditingController();
   String classname="";
-  String classid="";
-  String studentname="";
-  String wpid="";
-  var role = 2 ;
+  String classId="";
+  String studentName="";
+  String wpId="";
+  var userRole = -1 ;
   bool isLoading=true;
 
   @override
   void initState() {
     super.initState();
-   setdata();
+   setData();
   }
 
   @override
@@ -47,7 +47,6 @@ class Classes extends State<ClassesScreen> {
               padding: const EdgeInsets.all(10),
               child: GestureDetector(
                 onTap: (){
-                  print("object");
                   Scaffold.of(context).openDrawer();
                 },
                 child: SvgPicture.asset(
@@ -76,13 +75,13 @@ class Classes extends State<ClassesScreen> {
         ),
         body: Stack(
           children: [
-            role==2?
-            Container():
-            role==0?
+            userRole==2?
+            const SizedBox():
+            userRole==0?
             //student login
             GestureDetector(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> ClassMenuScreen(Model(wpUserid: wpid, classId: classid, className: classname, role: role))));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ClassMenuScreen(Model(wpUserid: wpId, classId: classId, className: classname, role: userRole))));
               },
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -102,6 +101,7 @@ class Classes extends State<ClassesScreen> {
                               Container(
                                 height:70,
                                 width: 70,
+                                padding: const EdgeInsets.all(5),
                                 decoration: const BoxDecoration(
                                     color: AppColors.primary,
                                     borderRadius: BorderRadius.all(Radius.circular(5))
@@ -115,7 +115,7 @@ class Classes extends State<ClassesScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(studentname,
+                                  Text(studentName,
                                       style: CustomStyle.txtvalue3
                                   )
                                 ],
@@ -136,62 +136,63 @@ class Classes extends State<ClassesScreen> {
                mainAxisAlignment: MainAxisAlignment.start,
                crossAxisAlignment: CrossAxisAlignment.start,
                children: [
-                 Expanded(child: ListView.builder(
-                     physics: const BouncingScrollPhysics(),
-                     itemCount:role==2?5:role==1?list_student.length:list.length,
-                     itemBuilder: (context,position){
-                   return  GestureDetector(
-                     onTap: (){
-                       Navigator.push(context, MaterialPageRoute(builder: (context)=> ClassMenuScreen(Model(wpUserid: list_student[position].wpUsrId!, classId: list_student[position].classId!, className: list_student[position].className! , showAssistant: list_student[position].showAssistant! == "0" ? null : "1", role: role))));
-                     },
-                     child: Container(
-                       width: MediaQuery.of(context).size.width,
-                       margin: const EdgeInsets.only(top: 10),
-                       child: Column(
-                         mainAxisAlignment: MainAxisAlignment.start,
-                         children: [
-                           Container(
-                             margin: const EdgeInsets.all(15),
-                             decoration: BoxDecoration(
-                                 color: AppColors.secondary.withOpacity(0.06),
-                                 borderRadius: const BorderRadius.all(Radius.circular(5))
-                             ),
-                             padding: const EdgeInsets.all(15),
-                             child: (
-                                 Row(
-                                   children: [
-                                     Container(
-                                       height:70,
-                                       width: 70,
-                                       decoration: const BoxDecoration(
-                                           color: AppColors.primary,
-                                           borderRadius: BorderRadius.all(Radius.circular(5))
-                                       ),
-                                       child: Center(
-                                         child: Text((role==2?"Name":role==1?list_student[position].className:list[position].pFname)!,style: CustomStyle.txtvalue1.copyWith(color: AppColors.white),
+                 const SizedBox(height: 20,),
+                 Expanded(
+                     child: ScrollConfiguration(
+                       behavior: const ScrollBehavior().copyWith(overscroll: false),
+                       child: ListView.separated(
+                         itemCount:userRole==-1?0:userRole==1?studentList.length:list.length,
+                         itemBuilder: (context,position){
+                           return  GestureDetector(
+                             onTap: (){
+                               Navigator.push(context, MaterialPageRoute(builder: (context)=> ClassMenuScreen(Model(wpUserid: studentList[position].wpUsrId!, classId: studentList[position].classId!, className: studentList[position].className! , showAssistant: studentList[position].showAssistant! == "0" ? null : "1", role: userRole))));
+                             },
+                             child: Container(
+                               margin: const EdgeInsets.symmetric(horizontal: 10),
+                               decoration: BoxDecoration(
+                                   color: AppColors.secondary.withOpacity(0.06),
+                                   borderRadius: const BorderRadius.all(Radius.circular(5))
+                               ),
+                               padding: const EdgeInsets.all(15),
+                               child: (
+                                   Row(
+                                     children: [
+                                       Container(
+                                         height: 90,
+                                         width: 90,
+                                         padding: const EdgeInsets.all(10),
+                                         decoration: const BoxDecoration(
+                                             color: AppColors.primary,
+                                             borderRadius: BorderRadius.all(Radius.circular(5))
+                                         ),
+                                         child: Center(
+                                           child: Text((userRole==-1?"Name":userRole==1?studentList[position].className:list[position].pFname)!,
+                                             style: CustomStyle.txtvalue1.copyWith(color: AppColors.white),
+                                             textAlign: TextAlign.center,
+                                           ),
                                          ),
                                        ),
-                                     ),
-                                     const SizedBox(width: 10,),
-                                     Column(
-                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                       mainAxisAlignment: MainAxisAlignment.center,
-                                       children: [
-                                         Text((role==2?"Name":role==1?list_student[position].sFname:list[position].pFname)!,
-                                             style: CustomStyle.txtvalue3
-                                         )
-                                       ],
-                                     ),
+                                       const SizedBox(width: 10,),
+                                       Column(
+                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                         mainAxisAlignment: MainAxisAlignment.center,
+                                         children: [
+                                           Text((userRole==-1?"Name":userRole==1?studentList[position].sFname:list[position].pFname)!,
+                                               style: CustomStyle.txtvalue3
+                                           )
+                                         ],
+                                       ),
 
-                                   ],
-                                 )
+                                     ],
+                                   )
+                               ),
                              ),
-                           )
-                         ],
-                       ),
-                     ),
-                   );
-                 }))
+                           );
+                         }, separatorBuilder: (BuildContext context, int index) {
+                         return const SizedBox(height: 10,);
+                       },),
+                     )
+                 )
                ],
              ),
            )
@@ -211,27 +212,29 @@ class Classes extends State<ClassesScreen> {
     );
   }
 
-  void setdata() async {
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role = await sessionManagment.getRole("Role");
-    if(Role==0){
-      Studentlogin login= await sessionManagment.getModel('Student');
+  void setData() async {
+    SessionManagement sessionManagement = SessionManagement();
+    int? role = await sessionManagement.getRole("Role");
+    print("Hello");
+    if(role==0){
+      Studentlogin login= await sessionManagement.getModel('Student');
       setState(() {
-        role=0;
+        userRole=0;
         list = login.userdata.parentData!;
-        studentname=login.userdata.sFname!;
-        classid=login.userdata.classId!;
+        studentName=login.userdata.sFname!;
+        classId=login.userdata.classId!;
         classname=login.userdata.className!;
-        wpid=login.userdata.wpUsrId!;
+        wpId=login.userdata.wpUsrId!;
         isLoading=false;
       });
 
     }
     else {
-      Parentlogin Parent= await sessionManagment.getModelParent('Parent');
+      Parentlogin parent= await sessionManagement.getModelParent('Parent');
+      print(parent.userdata.studentData!);
       setState(() {
-        role=1;
-        list_student = Parent.userdata.studentData! ;
+        userRole=1;
+        studentList = parent.userdata.studentData! ;
         isLoading=false;
       });
     }

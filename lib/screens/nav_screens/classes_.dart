@@ -158,9 +158,11 @@ class Classes extends State<ClassesScreen> {
                                    Row(
                                      children: [
                                        Container(
-                                         height: 90,
-                                         width: 90,
-                                         padding: const EdgeInsets.all(10),
+                                         width: 70,
+                                         constraints: const BoxConstraints(
+                                            minHeight: 70,
+                                         ),
+                                         padding: const EdgeInsets.all(5),
                                          decoration: const BoxDecoration(
                                              color: AppColors.primary,
                                              borderRadius: BorderRadius.all(Radius.circular(5))

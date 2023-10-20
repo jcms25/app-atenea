@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/timetablelist.dart';
@@ -53,7 +51,7 @@ class TimeTable extends State<TimeTableScreen> {
             backgroundColor: AppColors.primary,
             title: Text(
               "timetable".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -62,7 +60,7 @@ class TimeTable extends State<TimeTableScreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -99,7 +97,7 @@ class TimeTable extends State<TimeTableScreen> {
                                     prefixIcon: IconButton(
                                       icon: const Icon(
                                         Icons.search,
-                                        color: AppColors.searchicon,
+                                        color: AppColors.searchIcon,
                                       ),
                                       onPressed: () {},
                                     ),
@@ -111,7 +109,7 @@ class TimeTable extends State<TimeTableScreen> {
                                         color: AppColors.secondary.withOpacity(0.5)),
                                     border: InputBorder.none),
                                 cursorColor: AppColors.primary,
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 onChanged: onSearchTextChanged,
@@ -254,7 +252,7 @@ class TimeTable extends State<TimeTableScreen> {
   }
 
   void getSessionList() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {

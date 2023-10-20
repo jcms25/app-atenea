@@ -17,7 +17,6 @@ class ChildScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return ChildScreenState();
   }
 }
@@ -28,7 +27,6 @@ class ChildScreenState extends State<ChildScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       isLoading = true;
@@ -38,7 +36,6 @@ class ChildScreenState extends State<ChildScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -63,7 +60,7 @@ class ChildScreenState extends State<ChildScreen> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Center(
-              child: Text("noData".tr,style: CustomStyle.txtvalue,),
+              child: Text("noData".tr,style: CustomStyle.textValue,),
             ),
           ) : ListView.builder(
               itemCount: classList.length,
@@ -154,7 +151,7 @@ class ChildScreenState extends State<ChildScreen> {
   }
 
   void getClassLisData() async{
-    Apiclass apiclass = Apiclass();
+    ApiClass apiclass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;

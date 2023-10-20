@@ -1,6 +1,5 @@
 import 'package:colegia_atenea/services/session_mangement.dart';
 import 'package:colegia_atenea/widgets/custom_loader.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -11,17 +10,17 @@ import '../../models/Student/Studentlogin.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_images.dart';
 import '../../utils/text_style.dart';
-import 'navigation_screen.dart';
 
 class ParentStudentInfo extends StatefulWidget {
+  const ParentStudentInfo({super.key});
+
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return ParentStudentInfoChild();
+    return _ParentStudentInfoChild();
   }
 }
 
-class ParentStudentInfoChild extends State<ParentStudentInfo> {
+class _ParentStudentInfoChild extends State<ParentStudentInfo> {
   String titleOfScreen = "";
   int roleOfUser = 2; //default 2. 1 for parent and 0 for student.
   //2 means we didn't get data from store data.
@@ -33,7 +32,6 @@ class ParentStudentInfoChild extends State<ParentStudentInfo> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       isLoading = true;
@@ -43,7 +41,6 @@ class ParentStudentInfoChild extends State<ParentStudentInfo> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -57,10 +54,10 @@ class ParentStudentInfoChild extends State<ParentStudentInfo> {
                 Scaffold.of(context).openDrawer();
               },
               child: SvgPicture.asset(
-                AppImages.humburg,
+                AppImages.humBurg,
               ),
             )),
-        title: Text(titleOfScreen, style: CustomStyle.appbartitle),
+        title: Text(titleOfScreen, style: CustomStyle.appBarTitle),
         // actions: <Widget>[
         //   Padding(
         //     padding: const EdgeInsets.only(right: 20.0),
@@ -78,7 +75,7 @@ class ParentStudentInfoChild extends State<ParentStudentInfo> {
       body: Stack(
         children: [
           roleOfUser == 2 ? Center(
-            child: Text("No Data Available",style: CustomStyle.txtvalue,),
+            child: Text("No Data Available",style: CustomStyle.textValue,),
           ) : Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -115,7 +112,7 @@ class ParentStudentInfoChild extends State<ParentStudentInfo> {
                           roleOfUser == 1
                               ? studentData[index].sFname!
                               : parentData[index].pFname!,
-                          style: CustomStyle.appbartitle.copyWith(
+                          style: CustomStyle.appBarTitle.copyWith(
                             color: AppColors.secondary,
                             fontWeight: FontWeight.w600,
                           ),
@@ -174,10 +171,10 @@ class ParentStudentInfoChild extends State<ParentStudentInfo> {
 }
 
 class CustomRow extends StatelessWidget {
-  String Label;
-  String Value;
+  final String label;
+  final String value;
 
-  CustomRow(this.Label, this.Value, {super.key});
+  const CustomRow(this.label, this.value, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -192,13 +189,13 @@ class CustomRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              Label,
+              label,
               style: CustomStyle.hello
                   .copyWith(color: AppColors.secondary.withOpacity(0.6)),
             ),
             const Spacer(),
             Text(
-              Value,
+              value,
               style: CustomStyle.hello.copyWith(color: AppColors.secondary),
             ),
           ],

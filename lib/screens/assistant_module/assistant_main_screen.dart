@@ -1,8 +1,5 @@
-
-
 import 'dart:convert';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_communication_report_message_list_screen.dart';
@@ -37,7 +34,6 @@ class AssistantScreen extends StatefulWidget{
 class AssistantScreenChild extends State<AssistantScreen>{
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
-  bool _currentSwitchState = false;
   String currentLanguage = "English";
   String username = "";
   bool isLoading = false;
@@ -155,7 +151,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
       ),
             const SizedBox(height: 10,),
             ListTile(
-              leading: SvgPicture.asset(AppImages.as_dashboard_active,),
+              leading: SvgPicture.asset(AppImages.asDashBoardActive,),
               onTap: (){
                 if(_currentIndex == 0){
                   Navigator.pop(context);
@@ -170,7 +166,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
             ),
             ListTile(
               leading: SvgPicture.asset(
-                AppImages.as_classes_active
+                AppImages.asClassesActive
             ),
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildScreen()));
@@ -179,7 +175,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
             ),
             ListTile(
               leading: SvgPicture.asset(
-                  AppImages.as_message_active
+                  AppImages.asMessageActive
               ),
               onTap: (){
                 if(_currentIndex == 2){
@@ -232,7 +228,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
                   child: Directionality(
                     textDirection: TextDirection.rtl,
                     child: ElevatedButton.icon(
-                      icon: SvgPicture.asset(AppImages.loginarrow),
+                      icon: SvgPicture.asset(AppImages.loginArrow),
                       style: ButtonStyle(
                           shadowColor:
                           MaterialStateProperty.all(AppColors.primary),
@@ -276,26 +272,26 @@ class AssistantScreenChild extends State<AssistantScreen>{
             currentIndex: _currentIndex,
             items: [
               BottomNavigationBarItem(
-                icon: SvgPicture.asset(AppImages.as_dashboard,),
+                icon: SvgPicture.asset(AppImages.asDashboard,),
                 label: 'Dashboard',
-                activeIcon: SvgPicture.asset(AppImages.as_dashboard_active)
+                activeIcon: SvgPicture.asset(AppImages.asDashBoardActive)
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                    AppImages.as_classes,
+                    AppImages.asClasses,
                     color: AppColors.secondary,
                 ),
                 label: 'classes',
                 activeIcon: SvgPicture.asset(
-                    AppImages.as_classes_active
+                    AppImages.asClassesActive
                 ),
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppImages.as_message
+                  AppImages.asMessage
                 ),label: 'communication',
                 activeIcon: SvgPicture.asset(
-                    AppImages.as_message_active
+                    AppImages.asMessageActive
                 ),
               ),
               const BottomNavigationBarItem(
@@ -315,11 +311,11 @@ class AssistantScreenChild extends State<AssistantScreen>{
     ));
   }
 
-  void changeSwitchState(bool data) {
-    setState(() {
-      _currentSwitchState = data;
-    });
-  }
+  // void changeSwitchState(bool data) {
+  //   setState(() {
+  //     _currentSwitchState = data;
+  //   });
+  // }
 
 
 
@@ -327,7 +323,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
 
     showDialog(context: context, builder: (context){
       return AlertDialog(
-        content: Text('sure'.tr,style: CustomStyle.txtvalue,),
+        content: Text('sure'.tr,style: CustomStyle.textValue,),
         actions: [
           ElevatedButton(
               style: ElevatedButton.styleFrom(

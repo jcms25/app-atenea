@@ -13,22 +13,22 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-class studentscreen extends StatefulWidget {
-  var cid;
-  var wpid;
+class StudentScreen extends StatefulWidget {
+  final String cid;
+  final String wpId;
 
-  studentscreen(this.cid, this.wpid);
+  const StudentScreen(this.cid, this.wpId, {super.key});
 
   @override
-  State<studentscreen> createState() => Students();
+  State<StudentScreen> createState() => _StudentScreenChild();
 }
 
-class Students extends State<studentscreen> {
-  List<Studentlist> list_student = [];
+class _StudentScreenChild extends State<StudentScreen> {
+  List<Studentlist> listOfStudent = [];
   List<Studentlist> tempSearchList = [];
   TextEditingController search = TextEditingController();
   bool isLoading = true;
-  String imagepath =
+  String imagePath =
       "http://colegioatenea.embedinfosoft.com/wp-content/plugins/scl-rest-api/img/default_avtar.jpg";
 
   String exception = "";
@@ -60,7 +60,7 @@ class Students extends State<studentscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -93,7 +93,7 @@ class Students extends State<studentscreen> {
                         prefixIcon: IconButton(
                           icon: const Icon(
                             Icons.search,
-                            color: AppColors.searchicon,
+                            color: AppColors.searchIcon,
                           ),
                           onPressed: () {},
                         ),
@@ -128,9 +128,9 @@ class Students extends State<studentscreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => studentsdetails(
+                                  builder: (context) => StudentDetails(
                                       student.wpUsrId,
-                                      widget.wpid)));
+                                      widget.wpId)));
                         },
                         child: Container(
                           margin: const EdgeInsets.only(
@@ -164,7 +164,7 @@ class Students extends State<studentscreen> {
                                       children: [
                                         Text(
                                           student.sFname ?? "",
-                                          style: CustomStyle.calaender
+                                          style: CustomStyle.calendarTextStyle
                                               .copyWith(
                                               color: AppColors
                                                   .secondary),
@@ -194,7 +194,7 @@ class Students extends State<studentscreen> {
                                         Row(
                                           children: [
                                             SvgPicture.asset(
-                                              AppImages.Person,
+                                              AppImages.person,
                                               height: 16,
                                               color:
                                               AppColors.primary,
@@ -224,7 +224,7 @@ class Students extends State<studentscreen> {
                         ),
                       );
                     })
-                    : Center(child: Text('noStudentFound'.tr,style: CustomStyle.txtvalue,),)),
+                    : Center(child: Text('noStudentFound'.tr,style: CustomStyle.textValue,),)),
               ],
             ),
             Visibility(
@@ -242,23 +242,22 @@ class Students extends State<studentscreen> {
   }
 
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String? token = login.basicAuthToken;
-      String cid = login.userdata.classId!;
       dynamic response = await httpService.getStudent(token, widget.cid);
       if (response['status']) {
         try{
           StudentList student = StudentList.fromJson(response);
           setState(() {
-            list_student = student.studentlist;
-            tempSearchList = list_student;
+            listOfStudent = student.studentlist;
+            tempSearchList = listOfStudent;
             isLoading = false;
           });
-        }catch(excep,stacktrace){
+        }catch(exception,stacktrace){
           setState(() {
             isLoading = false;
           });
@@ -275,8 +274,8 @@ class Students extends State<studentscreen> {
       if (response['status']) {
         StudentList student = StudentList.fromJson(response);
         setState(() {
-          list_student = student.studentlist;
-          tempSearchList = list_student;
+          listOfStudent = student.studentlist;
+          tempSearchList = listOfStudent;
           isLoading = false;
         });
       }else{
@@ -291,13 +290,13 @@ class Students extends State<studentscreen> {
   onSearchTextChanged(String text) async {
     if (text.isEmpty) {
       setState(() {
-        tempSearchList = list_student;
+        tempSearchList = listOfStudent;
       });
       return;
     }
 
     List<Studentlist> searchData = [];
-    for (var userDetail in list_student) {
+    for (var userDetail in listOfStudent) {
       if (userDetail.sFname!.isCaseInsensitiveContains(text) ||
           userDetail.sRollno!.isCaseInsensitiveContains(text) ||
           userDetail.sLname!.isCaseInsensitiveContains(text)) {

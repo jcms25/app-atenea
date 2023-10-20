@@ -12,17 +12,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class teacherscreen extends StatefulWidget {
-  var cid;
-  var wpid;
+class TeacherScreen extends StatefulWidget {
+  final String cid;
+  final String wpId;
 
-  teacherscreen(this.cid, this.wpid);
+  const TeacherScreen(this.cid, this.wpId, {super.key});
 
   @override
-  State<teacherscreen> createState() => Teacher();
+  State<TeacherScreen> createState() => _TeacherScreenChild();
 }
 
-class Teacher extends State<teacherscreen> {
+class _TeacherScreenChild extends State<TeacherScreen> {
   List<Teacherlist> list = [];
   List<Teacherlist> tempList = [];
   bool isLoading = true;
@@ -46,7 +46,7 @@ class Teacher extends State<teacherscreen> {
             backgroundColor: AppColors.primary,
             title: Text(
               "teachers".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -55,7 +55,7 @@ class Teacher extends State<teacherscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -93,7 +93,7 @@ class Teacher extends State<teacherscreen> {
                                         prefixIcon: IconButton(
                                           icon: const Icon(
                                             Icons.search,
-                                            color: AppColors.searchicon,
+                                            color: AppColors.searchIcon,
                                           ),
                                           onPressed: () {},
                                         ),
@@ -106,7 +106,7 @@ class Teacher extends State<teacherscreen> {
                                         contentPadding:
                                             const EdgeInsets.all(10),
                                         border: InputBorder.none),
-                                    style: CustomStyle.txtvalue,
+                                    style: CustomStyle.textValue,
                                     keyboardType: TextInputType.text,
                                     textInputAction: TextInputAction.next,
                                     onChanged: onSearchTextChanged,
@@ -135,8 +135,8 @@ class Teacher extends State<teacherscreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => teacherdetail(
-                                          tempList[index].wpUsrId,
+                                      builder: (context) => TeacherDetails(
+                                          tempList[index].wpUsrId ?? "",
                                           tempList[index]
                                               .subjectName!
                                               .join("\n"),
@@ -199,7 +199,7 @@ class Teacher extends State<teacherscreen> {
                                                 "${tempList[index]
                                                     .firstName!}\t${tempList[index].lastName}",
                                                 style: CustomStyle
-                                                    .calaender
+                                                    .calendarTextStyle
                                                     .copyWith(
                                                     color: AppColors
                                                         .secondary),
@@ -250,14 +250,14 @@ class Teacher extends State<teacherscreen> {
   }
 
   void getTeacherList() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
       dynamic country =
-          await httpService.getTeacher(token, widget.wpid, widget.cid);
+          await httpService.getTeacher(token, widget.wpId, widget.cid);
       if (country['status']) {
         TeacherlistModel teacher = TeacherlistModel.fromJson(country);
         setState(() {
@@ -275,7 +275,7 @@ class Teacher extends State<teacherscreen> {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
-          await httpService.getTeacher(ptoken, widget.wpid, widget.cid);
+          await httpService.getTeacher(ptoken, widget.wpId, widget.cid);
       if (country['status']) {
         TeacherlistModel teacher = TeacherlistModel.fromJson(country);
           setState(() {

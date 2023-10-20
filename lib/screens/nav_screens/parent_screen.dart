@@ -8,16 +8,21 @@ import 'package:colegia_atenea/widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
-class parentscreen extends StatefulWidget {
+class ParentScreen extends StatefulWidget {
+  const ParentScreen({super.key});
+
   @override
-  State<parentscreen> createState() => Parents();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _ParentScreenChild();
+  }
+
 }
 
-class Parents extends State<parentscreen> {
+class _ParentScreenChild extends State<ParentScreen> {
   List<ParentDatum> list = [];
-  List<StudentDatum> list_student = [];
+  List<StudentDatum> listOfStudent = [];
   var role = 2;
 
   bool isLoading = true;
@@ -30,6 +35,7 @@ class Parents extends State<parentscreen> {
     setdata();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -41,14 +47,13 @@ class Parents extends State<parentscreen> {
               padding: const EdgeInsets.all(10),
               child: GestureDetector(
                 onTap: () {
-                  print("object");
                   Scaffold.of(context).openDrawer();
                 },
                 child: SvgPicture.asset(
-                  AppImages.humburg,
+                  AppImages.humBurg,
                 ),
               )),
-          title: Text(title, style: CustomStyle.appbartitle),
+          title: Text(title, style: CustomStyle.appBarTitle),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
@@ -78,7 +83,7 @@ class Parents extends State<parentscreen> {
                             itemCount: role == 2
                                 ? 5
                                 : role == 1
-                                    ? list_student.length
+                                    ? listOfStudent.length
                                     : list.length,
                             itemBuilder: (context, position) {
 
@@ -106,7 +111,7 @@ class Parents extends State<parentscreen> {
                                           role == 2
                                               ? "http://colegioatenea.embedinfosoft.com/wp-content/plugins/scl-rest-api/img/default_avtar.jpg"
                                               : role == 1
-                                              ? list_student[position]
+                                              ? listOfStudent[position]
                                               .stuImage!
                                               : list[position]
                                               .parentImage!
@@ -120,9 +125,9 @@ class Parents extends State<parentscreen> {
                                       role == 2
                                           ? "Name"
                                           : role == 1
-                                              ? (list_student[position].sFname)!
+                                              ? (listOfStudent[position].sFname)!
                                               : list[position].pFname!,
-                                      style: CustomStyle.appbartitle.copyWith(
+                                      style: CustomStyle.appBarTitle.copyWith(
                                         color: AppColors.secondary,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -155,7 +160,7 @@ class Parents extends State<parentscreen> {
                                                 role == 2
                                                     ? "Name"
                                                     : role == 1
-                                                        ? (list_student[
+                                                        ? (listOfStudent[
                                                                 position]
                                                             .stuEmail)!
                                                         : list[position]
@@ -193,7 +198,7 @@ class Parents extends State<parentscreen> {
                                                 role == 2
                                                     ? "Name"
                                                     : role == 1
-                                                        ? (list_student[
+                                                        ? (listOfStudent[
                                                                 position]
                                                             .className)!
                                                         : list[position].pEdu!,
@@ -230,7 +235,7 @@ class Parents extends State<parentscreen> {
                                                 role == 2
                                                     ? "-"
                                                     : role == 1
-                                                        ? list_student[position].sDob!
+                                                        ? listOfStudent[position].sDob!
                                                         : list[position]
                                                             .pProfession!,
                                                 style: CustomStyle.hello
@@ -315,7 +320,7 @@ class Parents extends State<parentscreen> {
       Parentlogin Parent = await sessionManagment.getModelParent('Parent');
       setState(() {
         role = 1;
-        list_student = Parent.userdata.studentData!;
+        listOfStudent = Parent.userdata.studentData!;
         title = "student".tr;
         isLoading = false;
       });

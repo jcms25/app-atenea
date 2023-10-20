@@ -1,5 +1,3 @@
-// ignore_for_file: camel_case_types, non_constant_identifier_names, import_of_legacy_library_into_null_safe
-
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/screens/details_screen/circular_detail_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
@@ -22,7 +20,7 @@ class CircularScreen extends StatefulWidget {
 }
 
 class _Circular extends State<CircularScreen> {
-  List<Datum> list_circular = [];
+  List<Datum> listOfCircular = [];
   List<Datum> tempList = [];
   bool isLoading = true;
   String imagePath = "";
@@ -50,7 +48,7 @@ class _Circular extends State<CircularScreen> {
             backgroundColor: AppColors.primary,
             title: Text(
               "circular".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -59,7 +57,7 @@ class _Circular extends State<CircularScreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -93,7 +91,7 @@ class _Circular extends State<CircularScreen> {
                                     prefixIcon: IconButton(
                                       icon: const Icon(
                                         Icons.search,
-                                        color: AppColors.searchicon,
+                                        color: AppColors.searchIcon,
                                       ),
                                       onPressed: () {},
                                     ),
@@ -106,7 +104,7 @@ class _Circular extends State<CircularScreen> {
                                     ),
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                                 cursorColor: AppColors.primary,
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
@@ -185,7 +183,7 @@ class _Circular extends State<CircularScreen> {
 
   void getCircularList() async {
     //this will only accesssible through parent
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
 
     Parentlogin parent = await sessionManagement.getModelParent('Parent');
@@ -194,7 +192,7 @@ class _Circular extends State<CircularScreen> {
     if (response['status']) {
       Circular circularData = Circular.fromJson(response);
       setState(() {
-        list_circular = circularData.data;
+        listOfCircular = circularData.data;
         tempList = circularData.data;
         isLoading = false;
       });
@@ -208,12 +206,12 @@ class _Circular extends State<CircularScreen> {
   onSearchTextChanged(String text) async {
     if (text.isEmpty) {
       setState(() {
-        tempList = list_circular;
+        tempList = listOfCircular;
       });
       return;
     }
     List<Datum> searchData = [];
-    for (var userDetail in list_circular) {
+    for (var userDetail in listOfCircular) {
       if (userDetail.title.isCaseInsensitiveContains(text) || userDetail.date.isCaseInsensitiveContains(text)) {
         searchData.add(userDetail);
       }

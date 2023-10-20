@@ -12,31 +12,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-
-
-
-
 class TestDetails extends StatefulWidget {
-  var id;
-  var sid;
-  var professorname;
-  TestDetails(this.id,this.sid,this.professorname);
+  final String id;
+  final String sID;
+  final String professorName;
+  const TestDetails(this.id,this.sID,this.professorName, {super.key});
 
   @override
-  State<TestDetails> createState() => Detail();
+  State<TestDetails> createState() => _TestDetailsChild();
 }
 
-class Detail extends State<TestDetails> {
+class _TestDetailsChild extends State<TestDetails> {
   String subject="";
   String professor="";
-  String Date="";
+  String date="";
   String title="";
   String comments="";
-  String Hour="";
+  String hour="";
   String note="";
   Singleexam? list;
   bool isLoading=true;
-  List<Subdetails> subdetail=[];
+  List<Subdetails> subDetail=[];
 
 
   @override
@@ -55,7 +51,7 @@ class Detail extends State<TestDetails> {
             elevation: 0,
             backgroundColor: AppColors.primary,
             title:  Text("testdetail".tr,
-              style: CustomStyle.appbartitle,),
+              style: CustomStyle.appBarTitle,),
             leading: Container(
               margin: const EdgeInsets.all(10),
               child: GestureDetector(
@@ -63,7 +59,7 @@ class Detail extends State<TestDetails> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,color: AppColors.orange,
+                  AppImages.arrow,color: AppColors.orange,
                 ),
               ),
             )),
@@ -114,7 +110,7 @@ class Detail extends State<TestDetails> {
                                         Expanded(child:  Text("professor".tr,style: CustomStyle.txtvalue4,
                                           ),),
                                        Expanded(child:  Text(
-                                         widget.professorname,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600),
+                                         widget.professorName,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600),
                                        ))
                                       ],
                                     ),
@@ -138,7 +134,7 @@ class Detail extends State<TestDetails> {
                                         Expanded(child:  Text("date".tr,style: CustomStyle.txtvalue4,
                                         ),),
                                         Expanded(child: Text(
-                                          Date,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600),
+                                          date,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600),
                                         ))
                                       ],
                                     ),
@@ -153,7 +149,7 @@ class Detail extends State<TestDetails> {
                                         ),),
                                         const SizedBox(height: 10,),
                                         Expanded(child: Text(
-                                          Hour,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600),
+                                          hour,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600),
                                         ))
                                       ],
                                     ),
@@ -198,10 +194,10 @@ class Detail extends State<TestDetails> {
     );
   }
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
-    int? Role=await sessionManagement.getRole("Role");
-    if(Role==0){
+    int? role=await sessionManagement.getRole("Role");
+    if(role==0){
       Studentlogin login= await sessionManagement.getModel('Student');
       String token=login.basicAuthToken;
       dynamic country = await httpService.getSingleExam(token,widget.id);
@@ -209,7 +205,7 @@ class Detail extends State<TestDetails> {
         Singleexam exam= Singleexam.fromJson(country);
         String listsub="";
         for(var i in exam.data!.subdetails!){
-          if(i.id==widget.sid){
+          if(i.id==widget.sID){
             listsub=i.name!;
             break;
           }
@@ -217,11 +213,11 @@ class Detail extends State<TestDetails> {
 
         setState((){
           list=exam;
-          subdetail=exam.data!.subdetails!;
+          subDetail=exam.data!.subdetails!;
           subject=listsub;
           professor=list!.data!.cName!;
-          Date=list!.data!.eSDate!;
-          Hour=list!.data!.time!;
+          date=list!.data!.eSDate!;
+          hour=list!.data!.time!;
           title=list!.data!.eName!;
           comments=list!.data!.comments ?? "-";
           isLoading=false;
@@ -239,7 +235,7 @@ class Detail extends State<TestDetails> {
         Singleexam exam= Singleexam.fromJson(country);
         String listsub="";
         for(var i in exam.data!.subdetails!){
-          if(i.id==widget.sid){
+          if(i.id==widget.sID){
             listsub=i.name!;
             break;
           }
@@ -247,11 +243,11 @@ class Detail extends State<TestDetails> {
 
         setState((){
           list=exam;
-          subdetail=exam.data!.subdetails!;
+          subDetail=exam.data!.subdetails!;
           subject=listsub;
           professor=list!.data!.cName!;
-          Date=list!.data!.eSDate!;
-          Hour=list!.data!.time!;
+          date=list!.data!.eSDate!;
+          hour=list!.data!.time!;
           title=list!.data!.eName!;
           comments=list!.data!.comments ?? "-";
           isLoading=false;

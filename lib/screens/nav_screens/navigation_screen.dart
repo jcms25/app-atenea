@@ -32,7 +32,6 @@ import 'package:get/get.dart' hide Response;
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../assistant_module/assistant_communication_list_screen.dart';
 import '../assistant_module/assistant_communication_report_message_list_screen.dart';
 
 const String dashboard = "Page 1";
@@ -56,7 +55,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _MyHomePageState();
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -361,7 +363,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Directionality(
                       textDirection: TextDirection.rtl,
                       child: ElevatedButton.icon(
-                        icon: SvgPicture.asset(AppImages.loginarrow),
+                        icon: SvgPicture.asset(AppImages.loginArrow),
                         style: ButtonStyle(
                             shadowColor:
                                 MaterialStateProperty.all(AppColors.primary),
@@ -521,7 +523,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return AlertDialog(
             content: Text(
               'sure'.tr,
-              style: CustomStyle.txtvalue,
+              style: CustomStyle.textValue,
             ),
             actions: [
               ElevatedButton(
@@ -802,22 +804,22 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => teacherscreen(
-                    drawerMenuOption.classId, drawerMenuOption.studentWpId)));
+                builder: (context) => TeacherScreen(
+                    drawerMenuOption.classId ?? "", drawerMenuOption.studentWpId ?? "")));
         break;
       case 'Alumnos':
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => studentscreen(
-                    drawerMenuOption.classId, drawerMenuOption.studentWpId)));
+                builder: (context) => StudentScreen(
+                    drawerMenuOption.classId ?? "", drawerMenuOption.studentWpId ?? "")));
         break;
       case 'Asignaturas':
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => subjectscreen(
-                    drawerMenuOption.classId, drawerMenuOption.studentWpId)));
+                builder: (context) => SubjectScreen(
+                    drawerMenuOption.classId ?? "", drawerMenuOption.studentWpId ?? "")));
         break;
       case 'Exámenes/Trabajos':
         Navigator.push(
@@ -830,8 +832,8 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => gradescreen(
-                    drawerMenuOption.classId, drawerMenuOption.studentWpId)));
+                builder: (context) => GradeScreen(
+                    drawerMenuOption.classId ?? "", drawerMenuOption.studentWpId ?? "")));
         break;
       case 'Evaluaciones':
         Navigator.push(
@@ -844,14 +846,14 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => attendencescreen(
-                    drawerMenuOption.classId, drawerMenuOption.studentWpId)));
+                builder: (context) => AttendanceScreen(
+                    drawerMenuOption.classId ?? "", drawerMenuOption.studentWpId ?? "")));
         break;
       case 'Transporte':
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const transportationscreen()));
+                builder: (context) => const TransportationScreen()));
         break;
       case 'Informes':
         Navigator.push(

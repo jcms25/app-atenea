@@ -13,22 +13,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 
+class TeacherDetails extends StatefulWidget {
+  final String id;
+  final String subject;
+  final String inCharge;
+  const TeacherDetails(this.id,this.subject,this.inCharge, {super.key});
 
-
-
-class teacherdetail extends StatefulWidget {
-  var id;
-  String subject = "";
-  String incharge="";
-  teacherdetail(this.id,this.subject,this.incharge, {super.key});
   @override
-  State<teacherdetail> createState() => TeacherDetails();
+  State<TeacherDetails> createState() => _TeacherDetailsChild();
 }
 
-class TeacherDetails extends State<teacherdetail> {
-  String Name="";
+class _TeacherDetailsChild extends State<TeacherDetails> {
+  String name="";
   String lastName = "";
-  String familycarehours="";
+  String familyCareHours="";
   String email="";
   String image="";
   bool isLoading=true;
@@ -47,7 +45,7 @@ class TeacherDetails extends State<teacherdetail> {
             titleSpacing: 0,
             elevation: 0,
             backgroundColor: AppColors.primary,
-            title: Text("techerdetail".tr,style: CustomStyle.appbartitle,),
+            title: Text("techerdetail".tr,style: CustomStyle.appBarTitle,),
             leading: Container(
               margin: const EdgeInsets.all(10),
               child:
@@ -56,7 +54,7 @@ class TeacherDetails extends State<teacherdetail> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,color: AppColors.orange,
+                  AppImages.arrow,color: AppColors.orange,
                 ),
               ),
             )),
@@ -121,7 +119,7 @@ class TeacherDetails extends State<teacherdetail> {
                                                         children: [
                                                           AutoSizeText(
                                                             maxLines:5,
-                                                            Name,
+                                                            name,
                                                             style: CustomStyle.login,
                                                           ),
                                                           AutoSizeText(
@@ -142,7 +140,7 @@ class TeacherDetails extends State<teacherdetail> {
                                                     CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        "subjects".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                        "subjects".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                       ),
                                                       const SizedBox(height: 10,),
                                                       Container(
@@ -154,34 +152,14 @@ class TeacherDetails extends State<teacherdetail> {
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(15),
                                                             child: Text(
-                                                              widget.subject,style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary),
+                                                              widget.subject,style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
                                                               textAlign: TextAlign.left,
                                                             ),
                                                           )
                                                       ),
                                                       const SizedBox(height: 20,),
                                                       Text(
-                                                        "iotc".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
-                                                      ),
-                                                      const SizedBox(height: 10,),
-                                                      Container(
-                                                          width: MediaQuery.of(context).size.width,
-                                                          height: 60,
-                                                          decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(12),
-                                                              color: AppColors.secondary.withOpacity(0.06)
-                                                          ),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(15),
-                                                            child: Text(
-                                                              widget.incharge.isEmpty ? "-" : widget.incharge,style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary),
-                                                              textAlign: TextAlign.left,
-                                                            ),
-                                                          )
-                                                      ),
-                                                      const SizedBox(height: 20,),
-                                                      Text(
-                                                        "fch".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                        "iotc".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                       ),
                                                       const SizedBox(height: 10,),
                                                       Container(
@@ -194,15 +172,35 @@ class TeacherDetails extends State<teacherdetail> {
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(15),
                                                             child: Text(
-                                                              familycarehours,
+                                                              widget.inCharge.isEmpty ? "-" : widget.inCharge,style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
                                                               textAlign: TextAlign.left,
-                                                              style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary),
                                                             ),
                                                           )
                                                       ),
                                                       const SizedBox(height: 20,),
                                                       Text(
-                                                        "email".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                        "fch".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                      ),
+                                                      const SizedBox(height: 10,),
+                                                      Container(
+                                                          width: MediaQuery.of(context).size.width,
+                                                          height: 60,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(12),
+                                                              color: AppColors.secondary.withOpacity(0.06)
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(15),
+                                                            child: Text(
+                                                              familyCareHours,
+                                                              textAlign: TextAlign.left,
+                                                              style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
+                                                            ),
+                                                          )
+                                                      ),
+                                                      const SizedBox(height: 20,),
+                                                      Text(
+                                                        "email".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                       ),
                                                       const SizedBox(height: 10,),
                                                       Container(
@@ -217,7 +215,7 @@ class TeacherDetails extends State<teacherdetail> {
                                                             child: Text(
                                                               email,
                                                               textAlign: TextAlign.left,
-                                                              style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary),
+                                                              style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
                                                             ),
                                                           )
                                                       )
@@ -298,20 +296,20 @@ class TeacherDetails extends State<teacherdetail> {
     );
   }
   void callAPI() async {
-    Apiclass httpService = Apiclass();
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role=await sessionManagment.getRole("Role");
-    if(Role==0){
-      Studentlogin login= await sessionManagment.getModel('Student');
+    ApiClass httpService = ApiClass();
+    SessionManagement sessionManagement = SessionManagement();
+    int? role=await sessionManagement.getRole("Role");
+    if(role==0){
+      Studentlogin login= await sessionManagement.getModel('Student');
       String token=login.basicAuthToken;
       dynamic country = await httpService.getSingleTeacher(token,widget.id);
       if(country['status']){
         Singleteacher teacherDetails= Singleteacher.fromJson(country);
 
         setState((){
-          Name= teacherDetails.data![0].firstName!;
+          name= teacherDetails.data![0].firstName!;
           lastName = teacherDetails.data![0].lastName!;
-          familycarehours = teacherDetails.data![0].familyCareHour! ?? "-";
+          familyCareHours = teacherDetails.data![0].familyCareHour!;
           email=teacherDetails.data![0].userEmail!;
           image=teacherDetails.data![0].image!;
           isLoading=false;
@@ -324,15 +322,15 @@ class TeacherDetails extends State<teacherdetail> {
         });
       }
     }else{
-      Parentlogin parent= await sessionManagment.getModelParent('Parent');
+      Parentlogin parent= await sessionManagement.getModelParent('Parent');
       String ptoken=parent.basicAuthToken;
       dynamic country = await httpService.getSingleTeacher(ptoken,widget.id);
       if(country['status']){
         Singleteacher? teacherDetails= Singleteacher.fromJson(country);
         setState((){
-          Name= teacherDetails.data![0].firstName!;
+          name= teacherDetails.data![0].firstName!;
           lastName = teacherDetails.data![0].lastName!;
-          familycarehours = teacherDetails.data![0].familyCareHour! ?? "-";
+          familyCareHours = teacherDetails.data![0].familyCareHour!;
           email= teacherDetails.data![0].userEmail!;
           image= teacherDetails.data![0].image!;
           isLoading=false;

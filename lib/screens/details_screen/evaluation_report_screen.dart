@@ -2,22 +2,21 @@ import 'package:colegia_atenea/models/Evaluationreportmodel.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class evalutionreportscreen extends StatefulWidget {
-  List<Evaluationreport> evolutionReport = [];
-  String evaluation = "";
+class EvaluationReportScreen extends StatefulWidget {
+  final List<Evaluationreport> evolutionReport;
+  final String evaluation;
 
-  evalutionreportscreen(this.evolutionReport, this.evaluation);
+  const EvaluationReportScreen(this.evolutionReport, this.evaluation, {super.key});
 
   @override
-  State<evalutionreportscreen> createState() => EvalutoinReport();
+  State<EvaluationReportScreen> createState() => _EvaluationReportScreenChild();
 }
 
-class EvalutoinReport extends State<evalutionreportscreen> {
+class _EvaluationReportScreenChild extends State<EvaluationReportScreen> {
   @override
   void initState() {
     super.initState();
@@ -31,7 +30,7 @@ class EvalutoinReport extends State<evalutionreportscreen> {
             titleSpacing: 0,
             elevation: 0,
             backgroundColor: AppColors.primary,
-            title: Text("ER".tr, style: CustomStyle.appbartitle),
+            title: Text("ER".tr, style: CustomStyle.appBarTitle),
             leading: Container(
               margin: const EdgeInsets.all(10),
               child: GestureDetector(
@@ -39,7 +38,7 @@ class EvalutoinReport extends State<evalutionreportscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -59,7 +58,7 @@ class EvalutoinReport extends State<evalutionreportscreen> {
                     text: TextSpan(children: [
                       TextSpan(
                           text: "Observaciones de la ",
-                          style: CustomStyle.txtvalue.copyWith(fontSize: 20)),
+                          style: CustomStyle.textValue.copyWith(fontSize: 20)),
                       TextSpan(
                           text: widget.evaluation,
                           style: const TextStyle(
@@ -68,7 +67,7 @@ class EvalutoinReport extends State<evalutionreportscreen> {
                               fontSize: 20)),
                       TextSpan(
                           text: " Evaluacion",
-                          style: CustomStyle.txtvalue.copyWith(fontSize: 20)),
+                          style: CustomStyle.textValue.copyWith(fontSize: 20)),
                     ]))),
             widget.evolutionReport.isEmpty
                 ? Expanded(

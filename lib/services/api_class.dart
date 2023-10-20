@@ -5,14 +5,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 
 import '../models/assistant/assistant_sub_slot_model.dart';
-class Apiclass {
+class ApiClass {
   String embedBaseUrl = "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
-  String sendsms = "message";
+  String sendMessage = "message";
   String login = "login";
   String dashboard = "dashboard";
-  String allmessge = "parentSendMessage";
+  String allMessage = "parentSendMessage";
   String timetable = "timetable";
   String teacher = "teachers?";
   String student = "students";
@@ -20,14 +20,14 @@ class Apiclass {
   String exam = "exams";
   String marks = "stu-marks";
   String evaluation = "evaluation";
-  String attendence = "get_attendance";
+  String attendance = "get_attendance";
   String transportation = "transports";
   String circular = "circular";
-  String studentdetail = "student";
-  String singleteacher = "teacher";
-  String singlesubject = "subject";
-  String singleexam = "exam";
-  String classlist = "classlist";
+  String studentDetail = "student";
+  String singleTeacher = "teacher";
+  String singleSubject = "subject";
+  String singleExam = "exam";
+  String classList = "classlist";
   String eventsList = "events";
 
   Future<dynamic> loginCheck(
@@ -103,7 +103,7 @@ class Apiclass {
   Future<dynamic> getMessageAll(String token) async {
     try {
       Response res =
-          await get(Uri.parse("$liveBaseUrl$allmessge"), headers: <String, String>{
+          await get(Uri.parse("$liveBaseUrl$allMessage"), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
       });
@@ -292,7 +292,7 @@ class Apiclass {
     try {
       Response res = await get(
           Uri.parse(
-              "$liveBaseUrl$attendence?student_id=$studentId${'&class_id=$classId'}"),
+              "$liveBaseUrl$attendance?student_id=$studentId${'&class_id=$classId'}"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -433,7 +433,7 @@ class Apiclass {
 
   Future<dynamic> getStudentDetail(String token, String studentid) async {
     try {
-      Response res = await get(Uri.parse("$liveBaseUrl$studentdetail/$studentid"),
+      Response res = await get(Uri.parse("$liveBaseUrl$studentDetail/$studentid"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -455,7 +455,7 @@ class Apiclass {
 
   Future<dynamic> getSingleSubject(String token, String id) async {
     try {
-      Response res = await get(Uri.parse('$liveBaseUrl$singlesubject/$id'),
+      Response res = await get(Uri.parse('$liveBaseUrl$singleSubject/$id'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -478,7 +478,7 @@ class Apiclass {
 
   Future<dynamic> getSingleTeacher(String token, String id) async {
     try {
-      Response res = await get(Uri.parse('$liveBaseUrl$singleteacher/$id'),
+      Response res = await get(Uri.parse('$liveBaseUrl$singleTeacher/$id'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -500,7 +500,7 @@ class Apiclass {
 
   Future<dynamic> getSingleExam(String token, String id) async {
     try {
-      Response res = await get(Uri.parse('$liveBaseUrl$singleexam/$id'),
+      Response res = await get(Uri.parse('$liveBaseUrl$singleExam/$id'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -529,7 +529,7 @@ class Apiclass {
     // }
     Response res = await get(
         Uri.parse(
-            '$liveBaseUrl$allmessge?mid=$messageId'),
+            '$liveBaseUrl$allMessage?mid=$messageId'),
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",

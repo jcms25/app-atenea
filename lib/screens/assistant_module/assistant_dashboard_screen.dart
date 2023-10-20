@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_dashboard_model.dart';
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_classes_screen.dart';
@@ -101,11 +100,11 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               height: 100,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
-                  color: AppColors.dashback.withOpacity(0.06)
+                  color: AppColors.dashBack.withOpacity(0.06)
               ),
               child: Text(
                 "live".tr,
-                style: CustomStyle.txtvalue,
+                style: CustomStyle.textValue,
               ),
             ),
             const SizedBox(height: 10,),
@@ -117,7 +116,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                 height: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: AppColors.bluelight,
+                  color: AppColors.blueLight,
                 ),
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -150,7 +149,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                               bottom: 20,
                               left: 5),
                           child: SvgPicture.asset(
-                            AppImages.cardimg,
+                            AppImages.cardImg,
                           ),
                         )),
                     Padding(
@@ -165,7 +164,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                               'asClassTitle'.tr,
                               softWrap: true,
                               style: CustomStyle
-                                  .txtvalue
+                                  .textValue
                                   .copyWith(
                                   color: AppColors
                                       .blue),
@@ -173,7 +172,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                             Text(
                               classCount,
                               style: CustomStyle
-                                  .cardtext
+                                  .cardText
                                   .copyWith(
                                   color: AppColors
                                       .blue),
@@ -189,7 +188,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: AppColors.greenlight,
+                color: AppColors.greenLight,
               ),
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -222,7 +221,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                             bottom: 20,
                             left: 5),
                         child: SvgPicture.asset(
-                          AppImages.cardimg,
+                          AppImages.cardImg,
                         ),
                       )),
                   Padding(
@@ -237,7 +236,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                             "option1".tr,
                             softWrap: true,
                             style: CustomStyle
-                                .txtvalue
+                                .textValue
                                 .copyWith(
                                 color: AppColors
                                     .green),
@@ -245,7 +244,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                           Text(
                             commonMessageCount,
                             style: CustomStyle
-                                .cardtext
+                                .cardText
                                 .copyWith(
                                 color: AppColors
                                     .green),
@@ -293,7 +292,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                             bottom: 20,
                             left: 5),
                         child: SvgPicture.asset(
-                          AppImages.cardimg,
+                          AppImages.cardImg,
                         ),
                       )),
                   Padding(
@@ -307,7 +306,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                             "option2".tr,
                             softWrap: true,
                             style: CustomStyle
-                                .txtvalue
+                                .textValue
                                 .copyWith(
                                 color: AppColors
                                     .orange),
@@ -315,7 +314,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                           Text(
                             studentReportCount,
                             style: CustomStyle
-                                .cardtext
+                                .cardText
                                 .copyWith(
                                 color: AppColors
                                     .orange),
@@ -343,7 +342,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
     setState(() {
       isLoading = true;
     });
-    Apiclass apiclass = Apiclass();
+    ApiClass apiclass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     dynamic dashboardData = await apiclass.getAsDashboard(assistant.basicAuthToken);

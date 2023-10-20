@@ -23,7 +23,6 @@ class _AssistantMessageReceivedScreenState extends State<AssistantMessageReceive
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getReceiveMessageList();
   }
@@ -125,7 +124,7 @@ class _AssistantMessageReceivedScreenState extends State<AssistantMessageReceive
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     dynamic res = await apiClass.getCommonMessageList(token);
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);

@@ -15,9 +15,9 @@ import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
 
 class MessageDetail extends StatefulWidget {
-  String messageId;
+  final String messageId;
 
-  MessageDetail(this.messageId);
+  const MessageDetail(this.messageId, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -62,7 +62,7 @@ class MessageDetailChild extends State<MessageDetail> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
-        title: Text("mTitle".tr, style: CustomStyle.appbartitle),
+        title: Text("mTitle".tr, style: CustomStyle.appBarTitle),
       ),
       body: Stack(
         children: [
@@ -155,7 +155,7 @@ class MessageDetailChild extends State<MessageDetail> {
   }
 
   void getSingleMessageDetail(String messageId) async {
-    Apiclass apiclass = Apiclass();
+    ApiClass apiclass = ApiClass();
     SessionManagement sessionManagment = SessionManagement();
     int? Role = await sessionManagment.getRole("Role");
     if (Role == 0) {

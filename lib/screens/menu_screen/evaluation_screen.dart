@@ -67,7 +67,7 @@ class TableExample extends State<evaluationscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -534,7 +534,7 @@ class TableExample extends State<evaluationscreen> {
   }
 
   void getEvaluationList() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagment = SessionManagement();
     int? Role = await sessionManagment.getRole("Role");
     if (Role == 0) {
@@ -591,12 +591,11 @@ class TableExample extends State<evaluationscreen> {
               .add(Evaluationreport(Evaluationlist[i].subject, evaluationremark));
         }
           }
-    print(evolutionReport);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                evalutionreportscreen(evolutionReport, evaluationName)));
+                EvaluationReportScreen(evolutionReport, evaluationName)));
   }
 }
 

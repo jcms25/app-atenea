@@ -18,9 +18,9 @@ import 'package:intl/intl.dart';
 
 class TestScreen extends StatefulWidget {
   final String cid;
-  final String wpid;
+  final String wpId;
 
-  const TestScreen(this.cid, this.wpid, {super.key});
+  const TestScreen(this.cid, this.wpId, {super.key});
 
   @override
   State<TestScreen> createState() => Tests();
@@ -69,7 +69,7 @@ class Tests extends State<TestScreen> {
           backgroundColor: AppColors.primary,
           title: Text(
             "tests".tr,
-            style: CustomStyle.appbartitle,
+            style: CustomStyle.appBarTitle,
           ),
           leading: Container(
             margin: const EdgeInsets.all(10),
@@ -78,7 +78,7 @@ class Tests extends State<TestScreen> {
                 Navigator.pop(context);
               },
               child: SvgPicture.asset(
-                AppImages.Arrow,
+                AppImages.arrow,
                 color: AppColors.orange,
               ),
             ),
@@ -116,15 +116,15 @@ class Tests extends State<TestScreen> {
                                     prefixIcon: IconButton(
                                       icon: const Icon(
                                         Icons.search,
-                                        color: AppColors.searchicon,
+                                        color: AppColors.searchIcon,
                                       ),
                                       onPressed: () {},
                                     ),
                                     hintText: 'search',
-                                    hintStyle: CustomStyle.txthintvalue,
+                                    hintStyle: CustomStyle.textHintValue,
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 onChanged: onSearchTextChanged,
@@ -169,21 +169,21 @@ class Tests extends State<TestScreen> {
   }
 
   void getAllExamList() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String? token = login.basicAuthToken;
       dynamic response =
-          await httpService.getExamList(token, widget.wpid, widget.cid);
+          await httpService.getExamList(token, widget.wpId, widget.cid);
      setExamList(response);
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
 
       dynamic response =
-          await httpService.getExamList(ptoken, widget.wpid, widget.cid);
+          await httpService.getExamList(ptoken, widget.wpId, widget.cid);
       setExamList(response);
     }
   }
@@ -271,7 +271,7 @@ class Tests extends State<TestScreen> {
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(
                                   examItem.eName!,
-                                  style: CustomStyle.calaender,
+                                  style: CustomStyle.calendarTextStyle,
                                 ),
                               ),
                               const SizedBox(
@@ -279,7 +279,7 @@ class Tests extends State<TestScreen> {
                               ),
                               Text(
                                 examItem.subName!,
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                               ),
                               const SizedBox(
                                 height: 5,

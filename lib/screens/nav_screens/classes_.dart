@@ -50,13 +50,13 @@ class Classes extends State<ClassesScreen> {
                   Scaffold.of(context).openDrawer();
                 },
                 child: SvgPicture.asset(
-                  AppImages.humburg,
+                  AppImages.humBurg,
                 ),)
           ),
 
           title:  Text(
             "classes".tr,
-            style: CustomStyle.appbartitle,
+            style: CustomStyle.appBarTitle,
           ),
           // actions: <Widget>[
           //   Padding(
@@ -158,9 +158,11 @@ class Classes extends State<ClassesScreen> {
                                    Row(
                                      children: [
                                        Container(
-                                         height: 90,
-                                         width: 90,
-                                         padding: const EdgeInsets.all(10),
+                                         width: 70,
+                                         constraints: const BoxConstraints(
+                                            minHeight: 70,
+                                         ),
+                                         padding: const EdgeInsets.all(5),
                                          decoration: const BoxDecoration(
                                              color: AppColors.primary,
                                              borderRadius: BorderRadius.all(Radius.circular(5))
@@ -215,7 +217,6 @@ class Classes extends State<ClassesScreen> {
   void setData() async {
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
-    print("Hello");
     if(role==0){
       Studentlogin login= await sessionManagement.getModel('Student');
       setState(() {
@@ -231,7 +232,6 @@ class Classes extends State<ClassesScreen> {
     }
     else {
       Parentlogin parent= await sessionManagement.getModelParent('Parent');
-      print(parent.userdata.studentData!);
       setState(() {
         userRole=1;
         studentList = parent.userdata.studentData! ;

@@ -12,11 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-
-
-
-
-
 class subjectdetailscreen extends StatefulWidget {
   var subid;
   var group;
@@ -52,7 +47,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
             titleSpacing: 0,
             elevation: 0,
             backgroundColor: AppColors.primary,
-            title: Text("subjectdetail".tr,style: CustomStyle.appbartitle,),
+            title: Text("subjectdetail".tr,style: CustomStyle.appBarTitle,),
             leading: Container(
               margin: const EdgeInsets.all(10),
               child:
@@ -61,7 +56,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
 
@@ -146,7 +141,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Expanded(child: Text('groupName'.tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          Expanded(child: Text('groupName'.tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           )),
                                                           Expanded(child: Text(widget.group,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600)
                                                           ))
@@ -156,7 +151,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
                                                       CustomStyle.dottedLine,
                                                       Row(
                                                         children: [
-                                                          Expanded(child: Text("subjectcode".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          Expanded(child: Text("subjectcode".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           )),
                                                           Expanded(child: Text(subcode,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600)
                                                           ))
@@ -166,7 +161,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
                                                       CustomStyle.dottedLine,
                                                       Row(
                                                         children: [
-                                                          Expanded(child: Text("faculty".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          Expanded(child: Text("faculty".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           )),
                                                           Expanded(child: Text(faculty,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600)
                                                           ))
@@ -177,7 +172,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
                                                       Row(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Expanded(child: Text("nameofthebook".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          Expanded(child: Text("nameofthebook".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           )),
                                                           Expanded(child: Text(nameofbook,style: CustomStyle.txtvalue4.copyWith(fontWeight: FontWeight.w600)
                                                           ))
@@ -256,7 +251,7 @@ class SubjectsDetail extends State<subjectdetailscreen> {
   }
 
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagment = SessionManagement();
     int? Role = await sessionManagment.getRole("Role");
     if (Role == 0) {

@@ -11,17 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class subjectscreen extends StatefulWidget {
-  var cid;
-  var wpid;
+class SubjectScreen extends StatefulWidget {
+  final String cid;
+  final String wpId;
 
-  subjectscreen(this.cid, this.wpid, {super.key});
+  const SubjectScreen(this.cid, this.wpId, {super.key});
 
   @override
-  State<subjectscreen> createState() => Subjects();
+  State<SubjectScreen> createState() => _SubjectScreenChild();
 }
 
-class Subjects extends State<subjectscreen> {
+class _SubjectScreenChild extends State<SubjectScreen> {
   List<Subjectlist> list = [];
   List<Subjectlist> tempList = [];
   TextEditingController search = TextEditingController();
@@ -55,7 +55,7 @@ class Subjects extends State<subjectscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -92,7 +92,7 @@ class Subjects extends State<subjectscreen> {
                                       prefixIcon: IconButton(
                                         icon: const Icon(
                                           Icons.search,
-                                          color: AppColors.searchicon,
+                                          color: AppColors.searchIcon,
                                         ),
                                         onPressed: () {},
                                       ),
@@ -157,7 +157,7 @@ class Subjects extends State<subjectscreen> {
                                           color: AppColors.primary,
                                           borderRadius: BorderRadius.circular(5),
                                         ),
-                                        child: SvgPicture.asset(AppImages.white_book_icon,fit: BoxFit.fill,),
+                                        child: SvgPicture.asset(AppImages.whiteBookIcon,fit: BoxFit.fill,),
                                       ),
                                       const SizedBox(width: 10,),
                                       Expanded(child: Text(
@@ -198,17 +198,17 @@ class Subjects extends State<subjectscreen> {
   }
 
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
-      String? id = login.userdata.classId;
-      String sid = login.userdata.wpUsrId!;
+      // String? id = login.userdata.classId;
+      // String sid = login.userdata.wpUsrId!;
       String token = login.basicAuthToken;
 
       dynamic country =
-          await httpService.getSubject(token, widget.wpid, widget.cid);
+          await httpService.getSubject(token, widget.wpId, widget.cid);
       if (country['status']) {
         SubjectList subject = SubjectList.fromJson(country);
         setState(() {
@@ -225,7 +225,7 @@ class Subjects extends State<subjectscreen> {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
-          await httpService.getSubject(ptoken, widget.wpid, widget.cid);
+          await httpService.getSubject(ptoken, widget.wpId, widget.cid);
       if (country['status']) {
         SubjectList subject = SubjectList.fromJson(country);
         setState(() {

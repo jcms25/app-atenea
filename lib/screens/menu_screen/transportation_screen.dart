@@ -12,20 +12,18 @@ import '../../models/transportationlist.dart';
 import '../../widgets/custom_loader.dart';
 
 
-
-
-
-
-
-class transportationscreen extends StatefulWidget {
-  const transportationscreen({Key? key}) : super(key: key);
+class TransportationScreen extends StatefulWidget {
+  const TransportationScreen({Key? key}) : super(key: key);
 
   @override
-  Transport createState() => Transport();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _TransportScreenChild();
+  }
 }
 
-class Transport extends State<transportationscreen> {
-  List<Datum> list_transfer = [];
+class _TransportScreenChild extends State<TransportationScreen> {
+  List<Datum> listOfTransfer = [];
   List<Datum> tempList =[];
   TextEditingController search = TextEditingController();
   bool isLoading=false;
@@ -61,7 +59,7 @@ class Transport extends State<transportationscreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -98,7 +96,7 @@ class Transport extends State<transportationscreen> {
                                 icon: const Icon(
                                   Icons.search,
                                   color: AppColors
-                                      .searchicon,
+                                      .searchIcon,
                                 ), onPressed: () {  },
 
                               ),
@@ -209,7 +207,7 @@ class Transport extends State<transportationscreen> {
   }
 
   void getTransportList() async {
-    Apiclass httpService=Apiclass();
+    ApiClass httpService=ApiClass();
     SessionManagement sessionManagment = SessionManagement();
     int? role= await sessionManagment.getRole("Role");
     if(role==0){
@@ -219,7 +217,7 @@ class Transport extends State<transportationscreen> {
       if(response['status']) {
         Transportation transportData = Transportation.fromJson(response);
         setState(() {
-          list_transfer = transportData.data;
+          listOfTransfer = transportData.data;
           tempList = transportData.data;
           isLoading=false;
         });
@@ -235,7 +233,7 @@ class Transport extends State<transportationscreen> {
       if(response['status']) {
         Transportation transportData = Transportation.fromJson(response);
         setState(() {
-          list_transfer = transportData.data;
+          listOfTransfer = transportData.data;
           tempList = transportData.data;
           isLoading=false;
         });
@@ -250,13 +248,13 @@ class Transport extends State<transportationscreen> {
   onSearchTextChanged(String text) async {
     if (text.isEmpty) {
       setState(() {
-        tempList = list_transfer;
+        tempList = listOfTransfer;
       });
       return;
     }
 
     List<Datum> searchData = [];
-    list_transfer.forEach((userDetail) {
+    listOfTransfer.forEach((userDetail) {
       if (userDetail.driverName.isCaseInsensitiveContains(text) || userDetail.busNo.isCaseInsensitiveContains(text)) {
         searchData.add(userDetail);
       }

@@ -400,7 +400,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
       {required int isCommonMessageOrStudentReport,
       String? dateForMessage,
       String? studentId}) async {
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     String token = "";
     int? role = await sessionManagement.getRole('');
@@ -525,15 +525,14 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
 }
 
 class CustomTableRow extends StatelessWidget {
-  String _Label;
-  String _Value;
-  Color _backColor;
+  final String _label;
+  final String _value;
+  final Color _backColor;
 
-  CustomTableRow(this._Label, this._Value, this._backColor, {super.key});
+  const CustomTableRow(this._label, this._value, this._backColor, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Row(
       children: [
         Expanded(
@@ -547,7 +546,7 @@ class CustomTableRow extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: AutoSizeText(
-                    _Label,
+                    _label,
                     maxLines: 3,
                     style: CustomStyle.textStyleBold.copyWith(
                         color: _backColor == AppColors.primary
@@ -568,7 +567,7 @@ class CustomTableRow extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: AutoSizeText(
-                    _Value,
+                    _value,
                     maxLines: 3,
                     style: CustomStyle.textStyleBold.copyWith(
                         color: _backColor == AppColors.primary

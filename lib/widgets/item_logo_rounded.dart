@@ -18,12 +18,12 @@ class ItemLogoRounded extends StatelessWidget {
               color: AppColors.white,
               borderRadius: BorderRadius.circular(80),
               border: Border.all(color: AppColors.primary,width: 3,style: BorderStyle.solid),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: AppColors.shadowColor,
                   spreadRadius: 0,
                   blurRadius: 25,
-                  offset: const Offset(0, 0), // changes position of shadow
+                  offset: Offset(0, 0), // changes position of shadow
                 ),
               ]),
           child: Padding(
@@ -68,10 +68,10 @@ class _ItemWhiteOpacityCircleState extends State<ItemWhiteOpacityCircle> with Ti
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 1200)).then((value) => _controller.forward());
+    Future.delayed(const Duration(milliseconds: 1200)).then((value) => _controller.forward());
     _controller.addListener(() async{
       if (_controller.isCompleted) {
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(const Duration(milliseconds: 200));
         _controller2.forward();
       }
     });
@@ -126,14 +126,13 @@ class _ItemWhiteOpacityCircleState extends State<ItemWhiteOpacityCircle> with Ti
 }
 
 class ProfileImage extends StatelessWidget{
-  ProfileImage({Key? key,required this.isFileSelected,required this.imagePath}) : super(key: key);
+  const ProfileImage({Key? key,required this.isFileSelected,required this.imagePath}) : super(key: key);
 
-  bool isFileSelected;
-  String imagePath = "";
+  final bool isFileSelected;
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {
-    print("selected file = ${isFileSelected}  ${imagePath}");
     return Container(
         width: 160,
         height: 160,
@@ -141,12 +140,12 @@ class ProfileImage extends StatelessWidget{
             color: AppColors.white,
             borderRadius: BorderRadius.circular(80),
             border: Border.all(color: AppColors.primary,width: 3,style: BorderStyle.solid),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: AppColors.shadowColor,
                 spreadRadius: 0,
                 blurRadius: 25,
-                offset: const Offset(0, 0), // changes position of shadow
+                offset: Offset(0, 0), // changes position of shadow
               ),
             ]),
         child: ClipRRect(
@@ -155,7 +154,7 @@ class ProfileImage extends StatelessWidget{
             File(imagePath),
             fit: BoxFit.cover,
           ) : (imagePath == "" ? Image.asset(
-            AppImages.cardimg,
+            AppImages.cardImg,
             fit: BoxFit.cover,
           ) : Image.network(
             imagePath,fit: BoxFit.cover,
@@ -163,6 +162,5 @@ class ProfileImage extends StatelessWidget{
         ),
     );
   }
-
 }
 

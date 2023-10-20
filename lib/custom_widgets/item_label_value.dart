@@ -3,13 +3,13 @@ import 'package:get/get.dart';
 import '../utils/app_colors.dart';
 
 class LabelValueLayout extends StatelessWidget {
-  String label, value;
-  TextStyle txtLabelStyle = TextStyle(
+  final String label, value;
+  final TextStyle txtLabelStyle = TextStyle(
       color: AppColors.secondary.withOpacity(0.75),
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w400,
       fontSize: 18);
-  TextStyle txtValueStyle = const TextStyle(
+  final TextStyle txtValueStyle = const TextStyle(
       color: AppColors.secondary,
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w500,

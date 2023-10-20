@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
-import '../../services/session_mangement.dart';
+import '../../services/session_management.dart';
 
 class ChildScreen extends StatefulWidget {
   const ChildScreen({super.key});

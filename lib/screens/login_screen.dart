@@ -7,7 +7,7 @@ import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/screens/nav_screens/navigation_screen.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_main_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';

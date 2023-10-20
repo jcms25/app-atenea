@@ -1,4 +1,4 @@
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

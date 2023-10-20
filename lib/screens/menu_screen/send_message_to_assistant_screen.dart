@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import '../../models/assistant_list_model.dart';
 import '../../services/api_class.dart';
-import '../../services/session_mangement.dart';
+import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_loader.dart';
 

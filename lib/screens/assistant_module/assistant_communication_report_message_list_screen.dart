@@ -6,7 +6,7 @@ import '../../models/Parent/Parentlogin.dart';
 import '../../models/assistant/assistant_login_model.dart';
 import '../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../services/api_class.dart';
-import '../../services/session_mangement.dart';
+import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
 import '../../widgets/custom_loader.dart';

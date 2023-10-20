@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../models/assistant/assistant_login_model.dart';
 import '../../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../../services/api_class.dart';
-import '../../../services/session_mangement.dart';
+import '../../../services/session_management.dart';
 import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_loader.dart';
 import 'assistant_received_message_detail_screen.dart';

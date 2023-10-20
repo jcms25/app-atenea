@@ -9,7 +9,6 @@ import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,8 +26,14 @@ class EventScreen extends StatelessWidget {
 }
 
 class HomeCalendarPage extends StatefulWidget {
+  const HomeCalendarPage({super.key});
+
   @override
-  _HomeCalendarPageState createState() => _HomeCalendarPageState();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _HomeCalendarPageState();
+  }
+
 }
 
 class _HomeCalendarPageState extends State<HomeCalendarPage> {
@@ -64,7 +69,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
             backgroundColor: AppColors.primary,
             title: Text(
               "events".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -73,7 +78,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
                   Scaffold.of(context).openDrawer();
                 },
                 child: SvgPicture.asset(
-                  AppImages.humburg,
+                  AppImages.humBurg,
                   color: AppColors.orange,
                 ),
               ),
@@ -90,7 +95,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
                     children: [
                       Text(
                         "eventsCalendar".tr,
-                        style: CustomStyle.calaender,
+                        style: CustomStyle.calendarTextStyle,
                       ),
                       const SizedBox(height: 20,),
                       Container(
@@ -255,88 +260,88 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
     return  events;
   }
 
-  Widget _bottomSheet(List<ListElement>? selectedEvent) {
-    return selectedEvent != null
-        ? ListView.separated(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(
-        vertical: 10,
-      ),
-      shrinkWrap: true,
-      itemBuilder: (context, position) {
-        return Container(
-          decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(30)),
-          margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
-          height: 110,
-          child: Row(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          selectedEvent[position].title,
-                          style: const TextStyle(
-                            fontFamily: 'Outfit',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            selectedEvent[position].startDate.toString(),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Outfit',
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Text(
-                              selectedEvent[position].endDate.toString(),
-                              style: const TextStyle(
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: AppColors.primary,
-                              ),
-                            ))
-                      ],
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        );
-      },
-      separatorBuilder: (context, position) {
-        return const SizedBox(
-          height: 15,
-        );
-      },
-      itemCount: selectedEvent.isEmpty
-          ? selectedEvent.isEmpty
-          ? 0
-          : selectedEvent.length
-          : 10,
-    )
-        : Container(
-        margin: const EdgeInsets.all(20), child: const Text("No Events"));
-  }
+  // Widget _bottomSheet(List<ListElement>? selectedEvent) {
+  //   return selectedEvent != null
+  //       ? ListView.separated(
+  //     physics: const BouncingScrollPhysics(),
+  //     padding: const EdgeInsets.symmetric(
+  //       vertical: 10,
+  //     ),
+  //     shrinkWrap: true,
+  //     itemBuilder: (context, position) {
+  //       return Container(
+  //         decoration: BoxDecoration(
+  //             color: AppColors.primary.withOpacity(0.05),
+  //             borderRadius: BorderRadius.circular(30)),
+  //         margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+  //         height: 110,
+  //         child: Row(
+  //           children: [
+  //             Column(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(14),
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.start,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         selectedEvent[position].title,
+  //                         style: const TextStyle(
+  //                           fontFamily: 'Outfit',
+  //                           fontSize: 20,
+  //                           fontWeight: FontWeight.w700,
+  //                           color: AppColors.primary,
+  //                         ),
+  //                       ),
+  //                       Padding(
+  //                         padding: const EdgeInsets.only(top: 10),
+  //                         child: Text(
+  //                           selectedEvent[position].startDate.toString(),
+  //                           style: const TextStyle(
+  //                             fontSize: 18,
+  //                             fontWeight: FontWeight.w600,
+  //                             fontFamily: 'Outfit',
+  //                             color: AppColors.primary,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       Padding(
+  //                           padding: const EdgeInsets.only(top: 5),
+  //                           child: Text(
+  //                             selectedEvent[position].endDate.toString(),
+  //                             style: const TextStyle(
+  //                               fontFamily: 'Outfit',
+  //                               fontWeight: FontWeight.w400,
+  //                               fontSize: 14,
+  //                               color: AppColors.primary,
+  //                             ),
+  //                           ))
+  //                     ],
+  //                   ),
+  //                 )
+  //               ],
+  //             )
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //     separatorBuilder: (context, position) {
+  //       return const SizedBox(
+  //         height: 15,
+  //       );
+  //     },
+  //     itemCount: selectedEvent.isEmpty
+  //         ? selectedEvent.isEmpty
+  //         ? 0
+  //         : selectedEvent.length
+  //         : 10,
+  //   )
+  //       : Container(
+  //       margin: const EdgeInsets.all(20), child: const Text("No Events"));
+  // }
 
 
   Color hexToColor(String code) {
@@ -344,7 +349,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
   }
 
   void getEvents() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {

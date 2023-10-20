@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/Student/Studentlogin.dart';
@@ -16,26 +15,26 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 
-class studentsdetails extends StatefulWidget {
-  var sid;
-  String pvalu;
+class StudentDetails extends StatefulWidget {
+  final String sid;
+  final String pValue;
 
-  studentsdetails( this.sid,this.pvalu, {super.key});
+  const StudentDetails( this.sid,this.pValue, {super.key});
 
   @override
-  State<studentsdetails> createState() => StudentDetail();
+  State<StudentDetails> createState() => _StudentDetailsChild();
 }
 
-class StudentDetail extends State<studentsdetails> {
+class _StudentDetailsChild extends State<StudentDetails> {
   Studentdetaillist? studentDetails;
-  List<ParentsDatum> listparent = [];
+  List<ParentsDatum> listOfParent = [];
   String name = "";
   String bloodGroup = "";
   String dob = "";
   String address = "";
   String city = "";
   String pinCode = "";
-  String Country = "";
+  String countryName = "";
   String datOfJoining = "";
   String cid = "";
   String rollNo = "";
@@ -62,7 +61,7 @@ class StudentDetail extends State<studentsdetails> {
             titleSpacing: 0,
             elevation: 0,
             backgroundColor: AppColors.primary,
-            title: Text("studentdetail".tr,style: CustomStyle.appbartitle,),
+            title: Text("studentdetail".tr,style: CustomStyle.appBarTitle,),
             leading: Container(
               margin: const EdgeInsets.all(10),
               child: GestureDetector(
@@ -70,7 +69,7 @@ class StudentDetail extends State<studentsdetails> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -161,7 +160,7 @@ class StudentDetail extends State<studentsdetails> {
                                                         const EdgeInsets.only(
                                                             top: 15),
                                                         child: Text(
-                                                          "dob".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          "dob".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                         ),
                                                       ),
                                                       Padding(
@@ -189,7 +188,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                   textAlign:
                                                                   TextAlign
                                                                       .left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary),
+                                                                  style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
                                                                 ),
                                                               ))),
                                                       Padding(
@@ -197,7 +196,7 @@ class StudentDetail extends State<studentsdetails> {
                                                         const EdgeInsets.only(
                                                             top: 20),
                                                         child: Text(
-                                                          "address".tr,style: CustomStyle.txtvalue.copyWith(
+                                                          "address".tr,style: CustomStyle.textValue.copyWith(
                                                             fontWeight: FontWeight.w600,
                                                             color: AppColors.secondary),
                                                         ),
@@ -212,7 +211,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                 const EdgeInsets.only(
                                                                     top: 20),
                                                                 child: Text(
-                                                                  "streetaddress".tr,style: CustomStyle.txtvalue,
+                                                                  "streetaddress".tr,style: CustomStyle.textValue,
 
                                                                 ),
                                                               ),
@@ -241,7 +240,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                           textAlign:
                                                                           TextAlign
                                                                               .left,
-                                                                          style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                          style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
 
                                                                         ),
                                                                       )))
@@ -260,7 +259,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                   Expanded(
                                                                       child:
                                                                       Text(
-                                                                        "city".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                                        "city".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                                       )),
                                                                   const SizedBox(
                                                                     width: 30,
@@ -268,7 +267,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                   Expanded(
                                                                       child:
                                                                       Text(
-                                                                        "pincode".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                                        "pincode".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                                       ))
                                                                 ],
                                                               ),
@@ -294,7 +293,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                             child: Text(
                                                                               city,
                                                                               textAlign: TextAlign.left,
-                                                                              style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                              style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
 
                                                                             ),
                                                                           ))),
@@ -310,7 +309,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                             child: Text(
                                                                               pinCode,
                                                                               textAlign: TextAlign.left,
-                                                                              style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                              style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
 
                                                                             ),
                                                                           ))),
@@ -325,7 +324,7 @@ class StudentDetail extends State<studentsdetails> {
                                                         const EdgeInsets.only(
                                                             top: 15),
                                                         child: Text(
-                                                          "country".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          "country".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
 
                                                         ),
                                                       ),
@@ -350,11 +349,11 @@ class StudentDetail extends State<studentsdetails> {
                                                                     .all(
                                                                     15),
                                                                 child: Text(
-                                                                  Country,
+                                                                  countryName,
                                                                   textAlign:
                                                                   TextAlign
                                                                       .left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                  style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
                                                                 ),
                                                               ))),
                                                       Padding(
@@ -362,7 +361,7 @@ class StudentDetail extends State<studentsdetails> {
                                                           const EdgeInsets.only(
                                                               top: 20),
                                                           child: Text(
-                                                            "schooldetail".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary,fontWeight: FontWeight.w600),
+                                                            "schooldetail".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary,fontWeight: FontWeight.w600),
 
                                                           )),
                                                       Padding(
@@ -370,7 +369,7 @@ class StudentDetail extends State<studentsdetails> {
                                                         const EdgeInsets.only(
                                                             top: 15),
                                                         child: Text(
-                                                          "doj".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                          "doj".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
 
                                                         ),
                                                       ),
@@ -399,7 +398,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                   textAlign:
                                                                   TextAlign
                                                                       .left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                  style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
 
                                                                 ),
                                                               ))),
@@ -415,7 +414,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                   Expanded(
                                                                       child:
                                                                       Text(
-                                                                        "class".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                                        "class".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
 
                                                                       )),
                                                                   const SizedBox(
@@ -424,7 +423,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                   Expanded(
                                                                       child:
                                                                       Text(
-                                                                        "rollno".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                                        "rollno".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
 
                                                                       ))
                                                                 ],
@@ -451,7 +450,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                             child: Text(
                                                                               cid,
                                                                               textAlign: TextAlign.left,
-                                                                              style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                              style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
 
 
                                                                             ),
@@ -468,7 +467,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                             child: Text(
                                                                               rollNo,
                                                                               textAlign: TextAlign.left,
-                                                                              style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                              style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
 
                                                                             ),
                                                                           ))),
@@ -488,14 +487,14 @@ class StudentDetail extends State<studentsdetails> {
                                       ),
                                     ),
                                     Visibility(
-                                        visible: widget.sid==widget.pvalu,
+                                        visible: widget.sid==widget.pValue,
                                         child: Container(
                                           margin: const EdgeInsets.all(0),
                                           child: ListView.builder(
                                               physics:
                                               const NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
-                                              itemCount: listparent.length,
+                                              itemCount: listOfParent.length,
                                               itemBuilder:
                                                   (context, position) {
                                                 return Container(
@@ -508,11 +507,11 @@ class StudentDetail extends State<studentsdetails> {
                                                         children: [
                                                           const SizedBox(height: 15,),
                                                           Text(
-                                                            listparent[position].pGender=="Male"?"parentsdetail".tr:"parentsdetail2".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary,fontWeight: FontWeight.w600),
+                                                            listOfParent[position].pGender=="Male"?"parentsdetail".tr:"parentsdetail2".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary,fontWeight: FontWeight.w600),
                                                           ),
                                                           const SizedBox(height: 10,),
                                                           Text(
-                                                            listparent[position].pGender=="Male"?"pname".tr:"pname2".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                            listOfParent[position].pGender=="Male"?"pname".tr:"pname2".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           ),
                                                           const SizedBox(height: 10,),
                                                           Container(
@@ -531,15 +530,15 @@ class StudentDetail extends State<studentsdetails> {
                                                                 const EdgeInsets.all(15),
                                                                 child:
                                                                 Text(
-                                                                  "${listparent[position].pFname}\t${listparent[position].pLname}",
+                                                                  "${listOfParent[position].pFname}\t${listOfParent[position].pLname}",
                                                                   textAlign:
                                                                   TextAlign.left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                  style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
                                                                 ),
                                                               )),
                                                           const SizedBox(height: 15,),
                                                           Text(
-                                                            listparent[position].pGender=="Male"?"pemail".tr:"pemail".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                            listOfParent[position].pGender=="Male"?"pemail".tr:"pemail".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           ),
                                                           const SizedBox(height: 10,),
                                                           Container(
@@ -558,15 +557,15 @@ class StudentDetail extends State<studentsdetails> {
                                                                 const EdgeInsets.all(15),
                                                                 child:
                                                                 Text(
-                                                                  listparent[position].parentEmail ?? "-",
+                                                                  listOfParent[position].parentEmail ?? "-",
                                                                   textAlign:
                                                                   TextAlign.left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                  style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
                                                                 ),
                                                               )),
                                                           const SizedBox(height: 15,),
                                                           Text(
-                                                            "mobile".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                            "mobile".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                           ),
                                                           const SizedBox(height: 10,),
                                                           Container(
@@ -585,10 +584,10 @@ class StudentDetail extends State<studentsdetails> {
                                                                 const EdgeInsets.all(15),
                                                                 child:
                                                                 Text(
-                                                                  listparent[position].pPhone ?? "-",
+                                                                  listOfParent[position].pPhone ?? "-",
                                                                   textAlign:
                                                                   TextAlign.left,
-                                                                  style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                  style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
                                                                 ),
                                                               )),
                                                           const SizedBox(height: 15,),
@@ -600,7 +599,7 @@ class StudentDetail extends State<studentsdetails> {
                                                                     Expanded(
                                                                         child:
                                                                         Text(
-                                                                          listparent[position].pGender=="Male"?"parentpro".tr:"parentpro".tr,style: CustomStyle.txtvalue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                                          listOfParent[position].pGender=="Male"?"parentpro".tr:"parentpro".tr,style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
                                                                         ))
                                                                   ],
                                                                 ),
@@ -620,9 +619,9 @@ class StudentDetail extends State<studentsdetails> {
                                                                             child:  Padding(
                                                                               padding: const EdgeInsets.all(15),
                                                                               child: Text(
-                                                                                listparent[position].pProfession ?? "-",
+                                                                                listOfParent[position].pProfession ?? "-",
                                                                                 textAlign: TextAlign.left,
-                                                                                style: CustomStyle.txthintvalue.copyWith(color: AppColors.secondary,),
+                                                                                style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary,),
                                                                               ),
                                                                             ))),
                                                                   ],
@@ -700,7 +699,7 @@ class StudentDetail extends State<studentsdetails> {
   }
 
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role= await sessionManagement.getRole("Role");
     if(role==0){
@@ -713,14 +712,14 @@ class StudentDetail extends State<studentsdetails> {
 
           setState(() {
             studentDetails = student;
-            listparent=studentDetails!.studentDetails.parentData;
+            listOfParent=studentDetails!.studentDetails.parentData;
             name=studentDetails!.studentDetails.sFname ?? "";
             bloodGroup=studentDetails!.studentDetails.sBloodgrp ?? "";
             dob= studentDetails!.studentDetails.sDob == null ? "-" : DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDob!);
             address=studentDetails!.studentDetails.sAddress ?? "";
             city=studentDetails!.studentDetails.sCity ?? "";
             pinCode=studentDetails!.studentDetails.sZipcode ?? "";
-            Country=studentDetails!.studentDetails.sCountry ?? "";
+            countryName=studentDetails!.studentDetails.sCountry ?? "";
             cid=studentDetails!.studentDetails.className ?? "";
             rollNo=studentDetails!.studentDetails.sRollno ?? "";
             isAddressVisible = login.userdata.wpUsrId == widget.sid ? true : false;
@@ -751,14 +750,14 @@ class StudentDetail extends State<studentsdetails> {
         Studentdetaillist student=Studentdetaillist.fromJson(country);
         setState(() {
           studentDetails = student;
-          listparent=studentDetails!.studentDetails.parentData;
+          listOfParent=studentDetails!.studentDetails.parentData;
           name=studentDetails!.studentDetails.sFname ?? "";
           bloodGroup=studentDetails!.studentDetails.sBloodgrp ?? "";
           dob= studentDetails!.studentDetails.sDob == null ?"-":DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDob!);
           address=studentDetails!.studentDetails.sAddress ?? "";
           city=studentDetails!.studentDetails.sCity ?? "";
           pinCode=studentDetails!.studentDetails.sZipcode ?? "";
-          Country=studentDetails!.studentDetails.sCountry ?? "";
+          countryName=studentDetails!.studentDetails.sCountry ?? "";
           cid=studentDetails!.studentDetails.className ?? "";
           rollNo=studentDetails!.studentDetails.sRollno ?? "";
           datOfJoining= studentDetails!.studentDetails.sDoj == null ? "-" : DateFormat("dd/MM/yyyy").format(studentDetails!.studentDetails.sDoj!);

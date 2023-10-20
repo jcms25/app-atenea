@@ -2,7 +2,6 @@ import 'package:colegia_atenea/models/assistant/assistant_slotlist_model.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_children_list_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/widgets/custom_loader.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
@@ -10,9 +9,9 @@ import '../../services/api_class.dart';
 import '../../services/session_mangement.dart';
 
 class SlotList extends StatefulWidget{
-  String classId;
+  final String classId;
 
-  SlotList(this.classId, {super.key});
+  const SlotList(this.classId, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +22,7 @@ class SlotList extends StatefulWidget{
 }
 
 class SlotListChild extends State<SlotList> {
-  List<SlotDatum> TimeSlot = [];
+  List<SlotDatum> timeSlot = [];
   bool isLoading = false;
 
   @override
@@ -47,7 +46,7 @@ class SlotListChild extends State<SlotList> {
       body : Stack(
         children: [
           ListView.builder(
-              itemCount: TimeSlot.length,
+              itemCount: timeSlot.length,
               itemBuilder: (context,index){
                 return GestureDetector(
                   onTap: (){
@@ -70,7 +69,7 @@ class SlotListChild extends State<SlotList> {
                             ),
                           ),),
                         const SizedBox(width: 10,),
-                        Text("${TimeSlot[index].startTime}-${TimeSlot[index].endTime}",style: const TextStyle(
+                        Text("${timeSlot[index].startTime}-${timeSlot[index].endTime}",style: const TextStyle(
                             fontFamily: "Outfit",
                             fontWeight: FontWeight.w600,
                             fontSize: 20,
@@ -94,16 +93,15 @@ class SlotListChild extends State<SlotList> {
     );
   }
   void getAsSlotList() async{
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
     dynamic tempClassList = await apiClass.getAsSlot(token);
     if(tempClassList['status']){
-      print(tempClassList);
       SlotListModel slotListModel = SlotListModel.fromJson(tempClassList);
       setState(() {
-        TimeSlot = slotListModel.data;
+        timeSlot = slotListModel.data;
         isLoading = false;
       });
     }else{

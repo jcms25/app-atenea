@@ -1,8 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison
-
-import 'dart:io';
-
-import 'package:colegia_atenea/models/Failed.dart';
 import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/get_teacher_list_send_message_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
@@ -17,14 +12,16 @@ import 'package:get/get.dart';
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 
 class MessageSendScreen extends StatefulWidget {
+  const MessageSendScreen({super.key});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return MessageSendScreenChild();
+    return _MessageSendScreenChild();
   }
 }
 
-class MessageSendScreenChild extends State<MessageSendScreen> {
+class _MessageSendScreenChild extends State<MessageSendScreen> {
   final TextEditingController _messageController = TextEditingController();
   final TextEditingController _affairController = TextEditingController();
   String fileName = 'chooseTitle'.tr;
@@ -274,7 +271,7 @@ class MessageSendScreenChild extends State<MessageSendScreen> {
   }
 
   void sendMessage({required String token,String? senderId,String? receivedId,String? subject,String? message,String? attachment}) async{
-    Apiclass apiclass = Apiclass();
+    ApiClass apiclass = ApiClass();
     dynamic response = await apiclass.sendMessageToTeacher(token,attachment ?? "",senderId!,selectTeacher.wpUsrId,subject!,message!);
     if(response['status']){
       Fluttertoast.showToast(msg: 'parentSendMessage'.tr);
@@ -331,13 +328,13 @@ class MessageSendScreenChild extends State<MessageSendScreen> {
 
   //get teacher list
   void getTeacherList() async{
-    Apiclass apiclass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if(role == 0){
-      Studentlogin studentlogin = await sessionManagement.getModel('Student');
-      String token = studentlogin.basicAuthToken;
-      dynamic response = await apiclass.getTeacherListForSendMessage(token);
+      Studentlogin studentLogin = await sessionManagement.getModel('Student');
+      String token = studentLogin.basicAuthToken;
+      dynamic response = await apiClass.getTeacherListForSendMessage(token);
       List<TeacherData> tempTeacherList = [];
       tempTeacherList.add(TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---"));
       if(response['status']){
@@ -351,17 +348,15 @@ class MessageSendScreenChild extends State<MessageSendScreen> {
           isLoading = false;
         });
       }else{
-        Failed failed = Failed.fromJson(response);
         setState(() {
           isLoading = false;
         });
       }
     }
     else{
-      Parentlogin parentlogin = await sessionManagement.getModelParent('Parent');
-      String token = parentlogin.basicAuthToken;
-      dynamic response = await apiclass.getTeacherListForSendMessage(token);
-      print(response);
+      Parentlogin parentLogin = await sessionManagement.getModelParent('Parent');
+      String token = parentLogin.basicAuthToken;
+      dynamic response = await apiClass.getTeacherListForSendMessage(token);
       List<TeacherData> tempTeacherList = [];
       tempTeacherList.add(TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---"));
       if(response['status']){
@@ -375,7 +370,6 @@ class MessageSendScreenChild extends State<MessageSendScreen> {
           isLoading = false;
         });
       }else{
-        Failed failed = Failed.fromJson(response);
         setState(() {
           isLoading = false;
         });
@@ -384,7 +378,7 @@ class MessageSendScreenChild extends State<MessageSendScreen> {
 
   }
 
-  Map<String, dynamic> FormBodyData(String senderId, String recieverId, String subject, String message) {
+  Map<String, dynamic> formBodyData(String senderId, String recieverId, String subject, String message) {
     Map<String,dynamic> tempMap = {};
     tempMap["sender_id"] = senderId;
     // for(int i=0;i<recieverList.length;i++){

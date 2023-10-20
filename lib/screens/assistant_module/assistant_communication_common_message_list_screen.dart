@@ -34,7 +34,6 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCommonMessageList();
   }
@@ -61,7 +60,7 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
                         }),
                     Text(
                       'receiveOption'.tr,
-                      style: CustomStyle.txtvalue,
+                      style: CustomStyle.textValue,
                     ),
                     Radio(
                         value: MessageType.send,
@@ -74,7 +73,7 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
                         }),
                     Text(
                       'Enviadas'.tr,
-                      style: CustomStyle.txtvalue,
+                      style: CustomStyle.textValue,
                     ),
                   ],
                 ),
@@ -130,7 +129,7 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     dynamic res = await apiClass.getCommonMessageList(token);
     if (res['status']) {
       MessageListModel commonListModel = MessageListModel.fromJson(res);
@@ -154,7 +153,6 @@ class CommonMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return listOfItem.isEmpty ? const EmptyListWidget() : ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(overscroll: false),
         child: ListView.separated(

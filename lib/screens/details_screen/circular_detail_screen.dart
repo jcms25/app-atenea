@@ -1,8 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
-import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/singlecircular.dart';
-import 'package:colegia_atenea/screens/nav_screens/navigation_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/session_mangement.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
@@ -27,10 +24,10 @@ class CircularDetail extends StatefulWidget {
 class CircularData extends State<CircularDetail> {
   Singlecircular? list;
 
-  String Name = "";
-  String imagepath = "";
-  String Description = "";
-  String Date = "";
+  String name = "";
+  String imagePath = "";
+  String description = "";
+  String date = "";
   bool isLoading = true;
 
   @override
@@ -49,7 +46,7 @@ class CircularData extends State<CircularDetail> {
             backgroundColor: AppColors.primary,
             title: Text(
               "circulardetail".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -58,7 +55,7 @@ class CircularData extends State<CircularDetail> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -103,11 +100,11 @@ class CircularData extends State<CircularDetail> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(Name,style: CustomStyle.txtvalue3.copyWith(fontSize: 24),),
+                                  Text(name,style: CustomStyle.txtvalue3.copyWith(fontSize: 24),),
                                   const SizedBox(height: 10,),
-                                  Text(Date,style: CustomStyle.txtvalue,),
+                                  Text(date,style: CustomStyle.textValue,),
                                   const SizedBox(height: 30,),
-                                  imagepath.isEmpty ? SizedBox(
+                                  imagePath.isEmpty ? SizedBox(
                                     height: 200,
                                     width: MediaQuery.of(context).size.width,) :
                                   SizedBox(
@@ -119,10 +116,10 @@ class CircularData extends State<CircularDetail> {
                                   //   //   fit: BoxFit.fill
                                   //   // )
                                   // ),
-                                    child: AspectRatio(aspectRatio: 16/9, child: Image.network(imagepath,fit: BoxFit.contain,),),
+                                    child: AspectRatio(aspectRatio: 16/9, child: Image.network(imagePath,fit: BoxFit.contain,),),
                                   ),
                                   const SizedBox(height: 20,),
-                                  HtmlWidget(Description,onTapUrl: (url) async{
+                                  HtmlWidget(description,onTapUrl: (url) async{
                                     bool launchedOrNot =  await _launchURL(url);
                                     return launchedOrNot;
                                   },)
@@ -153,7 +150,7 @@ class CircularData extends State<CircularDetail> {
   }
 
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagment = SessionManagement();
 
     Parentlogin parent = await sessionManagment.getModelParent('Parent');
@@ -166,10 +163,10 @@ class CircularData extends State<CircularDetail> {
       Singlecircular circular = Singlecircular.fromJson(singleCircularDetails);
       setState(() {
         list = circular;
-        Name = list!.data!.title!;
-        list!.data!.image == null ? imagepath == "" : imagepath = list!.data!.image!;
-        Description = list!.data!.description!;
-        Date = list!.data!.date!;
+        name = list!.data!.title!;
+        list!.data!.image == null ? imagePath == "" : imagePath = list!.data!.image!;
+        description = list!.data!.description!;
+        date = list!.data!.date!;
         isLoading = false;
       });
     }else{

@@ -3,12 +3,12 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 
 class CustomStyle {
-  static TextStyle appbartitle = const TextStyle(
+  static TextStyle appBarTitle = const TextStyle(
       color: AppColors.white,
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w500,
       fontSize: 20);
-  static TextStyle calaender = const TextStyle(
+  static TextStyle calendarTextStyle = const TextStyle(
       color: AppColors.secondary,
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w600,
@@ -25,7 +25,7 @@ class CustomStyle {
     fontWeight: FontWeight.w300,
     fontSize: 16,
   );
-  static TextStyle cardtext =const TextStyle(
+  static TextStyle cardText =const TextStyle(
     fontFamily: 'Outfit',
     fontWeight: FontWeight.w700,
     fontSize: 24,
@@ -37,7 +37,7 @@ class CustomStyle {
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w600,
       fontSize: 32);
-  static TextStyle optimze = const TextStyle(
+  static TextStyle optimize = const TextStyle(
       color: AppColors.secondary,
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w400,
@@ -54,12 +54,12 @@ class CustomStyle {
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w300,
       fontSize: 24);
-  static TextStyle txtvalue = const TextStyle(
+  static TextStyle textValue = const TextStyle(
       color: AppColors.secondary,
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w400,
       fontSize: 18);
-  static TextStyle txthintvalue = TextStyle(
+  static TextStyle textHintValue = TextStyle(
       color: AppColors.secondary.withOpacity(0.4),
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w500,

@@ -45,7 +45,6 @@ class _AssistantMessageReceivedDetailScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getDetailOfMessage();
   }
@@ -244,7 +243,7 @@ class _AssistantMessageReceivedDetailScreenState
     setState(() {
       isLoading = true;
     });
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;

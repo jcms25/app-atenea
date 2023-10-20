@@ -79,12 +79,12 @@ class Dash extends State<DashboardScreen> {
                 Scaffold.of(context).openDrawer();
               },
               child: SvgPicture.asset(
-                AppImages.humburg,
+                AppImages.humBurg,
               ),
             )),
         title: Text(
           "desk".tr,
-          style: CustomStyle.appbartitle,
+          style: CustomStyle.appBarTitle,
         ),
         // actions: <Widget>[
         //   Padding(
@@ -197,11 +197,11 @@ class Dash extends State<DashboardScreen> {
                                   borderRadius: const BorderRadius.only(
                                       bottomRight: Radius.circular(15),
                                       bottomLeft: Radius.circular(15)),
-                                  color: AppColors.dashback.withOpacity(0.06)),
+                                  color: AppColors.dashBack.withOpacity(0.06)),
                               child: Center(
                                 child: Text(
                                   "live".tr,
-                                  style: CustomStyle.txtvalue,
+                                  style: CustomStyle.textValue,
                                 ),
                               )),
                           const SizedBox(
@@ -215,7 +215,7 @@ class Dash extends State<DashboardScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: AppColors.bluelight,
+                                      color: AppColors.blueLight,
                                     ),
                                     child: Row(
                                       children: [
@@ -252,7 +252,7 @@ class Dash extends State<DashboardScreen> {
                                                           bottom: 20,
                                                           left: 5),
                                                   child: SvgPicture.asset(
-                                                    AppImages.cardimg,
+                                                    AppImages.cardImg,
                                                   ),
                                                 ))
                                           ],
@@ -273,7 +273,7 @@ class Dash extends State<DashboardScreen> {
                                                     Text(
                                                       "student".tr,
                                                       style: CustomStyle
-                                                          .txtvalue
+                                                          .textValue
                                                           .copyWith(
                                                               color: AppColors
                                                                   .blue),
@@ -281,7 +281,7 @@ class Dash extends State<DashboardScreen> {
                                                     Text(
                                                       studentCount,
                                                       style: CustomStyle
-                                                          .cardtext
+                                                          .cardText
                                                           .copyWith(
                                                               color: AppColors
                                                                   .blue),
@@ -301,7 +301,7 @@ class Dash extends State<DashboardScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: AppColors.greenlight,
+                                      color: AppColors.greenLight,
                                     ),
                                     child: Row(
                                       children: [
@@ -338,7 +338,7 @@ class Dash extends State<DashboardScreen> {
                                                           bottom: 20,
                                                           left: 5),
                                                   child: SvgPicture.asset(
-                                                      AppImages.cardimg2),
+                                                      AppImages.cardImg2),
                                                 ))
                                           ],
                                         ),
@@ -358,7 +358,7 @@ class Dash extends State<DashboardScreen> {
                                                     Text(
                                                       "parents".tr,
                                                       style: CustomStyle
-                                                          .txtvalue
+                                                          .textValue
                                                           .copyWith(
                                                               color: AppColors
                                                                   .green),
@@ -366,7 +366,7 @@ class Dash extends State<DashboardScreen> {
                                                     Text(
                                                       parentCount,
                                                       style: CustomStyle
-                                                          .cardtext
+                                                          .cardText
                                                           .copyWith(
                                                               color: AppColors
                                                                   .green),
@@ -390,7 +390,7 @@ class Dash extends State<DashboardScreen> {
                               children: [
                                 Text(
                                   "activitiescalender".tr,
-                                  style: CustomStyle.calaender,
+                                  style: CustomStyle.calendarTextStyle,
                                 ),
                                 const SizedBox(
                                   height: 15,
@@ -702,7 +702,7 @@ class Dash extends State<DashboardScreen> {
                                       Expanded(
                                         child: Text(
                                           "exam".tr,
-                                          style: CustomStyle.calaender,
+                                          style: CustomStyle.calendarTextStyle,
                                         ),
                                       ),
                                       GestureDetector(
@@ -852,7 +852,7 @@ class Dash extends State<DashboardScreen> {
                                                             AppColors.primary)),
                                             const SizedBox(width: 2),
                                             SvgPicture.asset(
-                                              AppImages.loginarrow,
+                                              AppImages.loginArrow,
                                               color: AppColors.primary,
                                             ),
                                           ],
@@ -914,7 +914,7 @@ class Dash extends State<DashboardScreen> {
                                                                 index]
                                                             .className,
                                                         style: CustomStyle
-                                                            .calaender
+                                                            .calendarTextStyle
                                                             .copyWith(
                                                                 color: AppColors
                                                                     .white,
@@ -993,7 +993,7 @@ class Dash extends State<DashboardScreen> {
   }
 
   void getDashBoardData() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {
@@ -1151,7 +1151,7 @@ class Dash extends State<DashboardScreen> {
                   return Container(
                     decoration: BoxDecoration(
                         color: listToShow == 0
-                            ? AppColors.holidaycon.withOpacity(0.05)
+                            ? AppColors.holidayIcon.withOpacity(0.05)
                             : listToShow == 1
                                 ? AppColors.red.withOpacity(0.05)
                                 : AppColors.green.withOpacity(0.05),
@@ -1173,7 +1173,7 @@ class Dash extends State<DashboardScreen> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,
                                   color: listToShow == 0
-                                      ? AppColors.holidaycon
+                                      ? AppColors.holidayIcon
                                       : listToShow == 1
                                           ? AppColors.red
                                           : AppColors.green,
@@ -1189,7 +1189,7 @@ class Dash extends State<DashboardScreen> {
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'Outfit',
                                     color: listToShow == 0
-                                        ? AppColors.holidaycon
+                                        ? AppColors.holidayIcon
                                         : listToShow == 1
                                             ? AppColors.red
                                             : AppColors.green,
@@ -1206,7 +1206,7 @@ class Dash extends State<DashboardScreen> {
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14,
                                       color: listToShow == 0
-                                          ? AppColors.holidaycon
+                                          ? AppColors.holidayIcon
                                           : listToShow == 1
                                               ? AppColors.red
                                               : AppColors.green,

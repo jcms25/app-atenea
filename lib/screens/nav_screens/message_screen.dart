@@ -48,7 +48,7 @@ class MessageListScreen extends State<MessageScreen> {
         backgroundColor: AppColors.primary,
         title: Text(
           "message".tr,
-          style: CustomStyle.appbartitle,
+          style: CustomStyle.appBarTitle,
         ),
         leading: widget.studentOrParent == "0"
             ? Container(
@@ -58,7 +58,7 @@ class MessageListScreen extends State<MessageScreen> {
                     Scaffold.of(context).openDrawer();
                   },
                   child: SvgPicture.asset(
-                    AppImages.humburg,
+                    AppImages.humBurg,
                     color: AppColors.orange,
                   ),
                 ),
@@ -101,7 +101,7 @@ class MessageListScreen extends State<MessageScreen> {
                                   prefixIcon: IconButton(
                                     icon: const Icon(
                                       Icons.search,
-                                      color: AppColors.searchicon,
+                                      color: AppColors.searchIcon,
                                     ),
                                     onPressed: () {},
                                   ),
@@ -114,7 +114,7 @@ class MessageListScreen extends State<MessageScreen> {
                                           AppColors.secondary.withOpacity(0.5)),
                                   contentPadding: const EdgeInsets.all(10),
                                   border: InputBorder.none),
-                              style: CustomStyle.txtvalue,
+                              style: CustomStyle.textValue,
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
                               cursorColor: AppColors.primary,
@@ -243,7 +243,7 @@ class MessageListScreen extends State<MessageScreen> {
   }
 
   void getMessageList() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {

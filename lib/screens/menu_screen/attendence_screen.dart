@@ -15,25 +15,25 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class attendencescreen extends StatefulWidget {
-  var cid;
-  var wpid;
+class AttendanceScreen extends StatefulWidget {
+  final String cid;
+  final String wpId;
 
-  attendencescreen(this.cid, this.wpid, {super.key});
+  const AttendanceScreen(this.cid, this.wpId, {super.key});
 
   @override
-  State<attendencescreen> createState() => Attendence();
+  State<AttendanceScreen> createState() => _AttendanceScreenChild();
 }
 
-class Attendence extends State<attendencescreen> {
+class _AttendanceScreenChild extends State<AttendanceScreen> {
   String Name = "-";
   String Class = "-";
-  String lpnumber = "-";
-  String Clsstart = "-";
-  String Clsend = "-";
-  String Absentday = "-";
-  String Presetday = "-";
-  String totalabsentday = "-";
+  String lpNumber = "-";
+  String startClass = "-";
+  String endClass = "-";
+  String absentDay = "-";
+  String presentDay = "-";
+  String totalAbsentDay = "-";
   String image = "-";
   Attendencelist? list;
   bool isLoading = true;
@@ -53,7 +53,7 @@ class Attendence extends State<attendencescreen> {
             backgroundColor: AppColors.primary,
             title: Text(
               "studatte".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -62,7 +62,7 @@ class Attendence extends State<attendencescreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -154,7 +154,7 @@ class Attendence extends State<attendencescreen> {
                                                               child: Text(
                                                                 "class".tr,
                                                                 style: CustomStyle
-                                                                    .txtvalue
+                                                                    .textValue
                                                                     .copyWith(
                                                                     color: AppColors
                                                                         .secondary
@@ -168,7 +168,7 @@ class Attendence extends State<attendencescreen> {
                                                               child: Text(
                                                                 "lpn".tr,
                                                                 style: CustomStyle
-                                                                    .txtvalue
+                                                                    .textValue
                                                                     .copyWith(
                                                                     color: AppColors
                                                                         .secondary
@@ -201,7 +201,7 @@ class Attendence extends State<attendencescreen> {
                                                                     child: Text(
                                                                       Class,
                                                                       style: CustomStyle
-                                                                          .txtvalue
+                                                                          .textValue
                                                                           .copyWith(
                                                                           color: AppColors.secondary),
                                                                       textAlign:
@@ -229,9 +229,9 @@ class Attendence extends State<attendencescreen> {
                                                                     const EdgeInsets.all(
                                                                         15),
                                                                     child: Text(
-                                                                      lpnumber,
+                                                                      lpNumber,
                                                                       style: CustomStyle
-                                                                          .txtvalue
+                                                                          .textValue
                                                                           .copyWith(
                                                                           color: AppColors.secondary),
                                                                       textAlign:
@@ -250,7 +250,7 @@ class Attendence extends State<attendencescreen> {
                                                               child: Text(
                                                                 "cs".tr,
                                                                 style: CustomStyle
-                                                                    .txtvalue
+                                                                    .textValue
                                                                     .copyWith(
                                                                     color: AppColors
                                                                         .secondary
@@ -264,7 +264,7 @@ class Attendence extends State<attendencescreen> {
                                                               child: Text(
                                                                 "ce".tr,
                                                                 style: CustomStyle
-                                                                    .txtvalue
+                                                                    .textValue
                                                                     .copyWith(
                                                                     color: AppColors
                                                                         .secondary
@@ -295,9 +295,9 @@ class Attendence extends State<attendencescreen> {
                                                                     const EdgeInsets.all(
                                                                         15),
                                                                     child: Text(
-                                                                      Clsstart,
+                                                                      startClass,
                                                                       style: CustomStyle
-                                                                          .txtvalue
+                                                                          .textValue
                                                                           .copyWith(
                                                                           color: AppColors.secondary),
                                                                       textAlign:
@@ -325,9 +325,9 @@ class Attendence extends State<attendencescreen> {
                                                                     const EdgeInsets.all(
                                                                         15),
                                                                     child: Text(
-                                                                      Clsend,
+                                                                      endClass,
                                                                       style: CustomStyle
-                                                                          .txtvalue
+                                                                          .textValue
                                                                           .copyWith(
                                                                           color: AppColors.secondary),
                                                                       textAlign:
@@ -346,7 +346,7 @@ class Attendence extends State<attendencescreen> {
                                                               child: Text(
                                                                 "noad".tr,
                                                                 style: CustomStyle
-                                                                    .txtvalue
+                                                                    .textValue
                                                                     .copyWith(
                                                                     color: AppColors
                                                                         .secondary
@@ -360,7 +360,7 @@ class Attendence extends State<attendencescreen> {
                                                               child: Text(
                                                                 "nopd".tr,
                                                                 style: CustomStyle
-                                                                    .txtvalue
+                                                                    .textValue
                                                                     .copyWith(
                                                                     color: AppColors
                                                                         .secondary
@@ -391,9 +391,9 @@ class Attendence extends State<attendencescreen> {
                                                                     const EdgeInsets.all(
                                                                         15),
                                                                     child: Text(
-                                                                      Absentday,
+                                                                      absentDay,
                                                                       style: CustomStyle
-                                                                          .txtvalue
+                                                                          .textValue
                                                                           .copyWith(
                                                                           color: AppColors.secondary),
                                                                       textAlign:
@@ -421,9 +421,9 @@ class Attendence extends State<attendencescreen> {
                                                                     const EdgeInsets.all(
                                                                         15),
                                                                     child: Text(
-                                                                      Presetday,
+                                                                      presentDay,
                                                                       style: CustomStyle
-                                                                          .txtvalue
+                                                                          .textValue
                                                                           .copyWith(
                                                                           color: AppColors.secondary),
                                                                       textAlign:
@@ -439,7 +439,7 @@ class Attendence extends State<attendencescreen> {
                                                       Text(
                                                         "noattday".tr,
                                                         style: CustomStyle
-                                                            .txtvalue
+                                                            .textValue
                                                             .copyWith(
                                                             color: AppColors
                                                                 .secondary
@@ -467,9 +467,9 @@ class Attendence extends State<attendencescreen> {
                                                             const EdgeInsets
                                                                 .all(15),
                                                             child: Text(
-                                                              totalabsentday,
+                                                              totalAbsentDay,
                                                               style: CustomStyle
-                                                                  .txtvalue
+                                                                  .textValue
                                                                   .copyWith(
                                                                   color: AppColors
                                                                       .secondary),
@@ -543,26 +543,26 @@ class Attendence extends State<attendencescreen> {
   }
 
   void getAttendanceData() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagment = SessionManagement();
     int? Role = await sessionManagment.getRole("Role");
     if (Role == 0) {
       Studentlogin login = await sessionManagment.getModel('Student');
       String token = login.basicAuthToken;
       dynamic country =
-          await httpService.getAttendance(token, widget.wpid, widget.cid);
+          await httpService.getAttendance(token, widget.wpId, widget.cid);
       if (country['status']) {
         Attendencelist attendance = Attendencelist.fromJson(country);
         setState(() {
           list = attendance;
           Name = list!.data.fullName;
           Class = list!.data.className;
-          lpnumber = list!.data.rollNo;
-          Clsstart = list!.data.classStart;
-          Clsend = list!.data.classEnd;
-          Absentday = list!.data.absentDays;
-          Presetday = list!.data.presentDay;
-          totalabsentday = list!.data.workingDays;
+          lpNumber = list!.data.rollNo;
+          startClass = list!.data.classStart;
+          endClass = list!.data.classEnd;
+          absentDay = list!.data.absentDays;
+          presentDay = list!.data.presentDay;
+          totalAbsentDay = list!.data.workingDays;
           image = list!.data.image;
           isLoading = false;
         });
@@ -575,19 +575,19 @@ class Attendence extends State<attendencescreen> {
       Parentlogin parent = await sessionManagment.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
-          await httpService.getAttendance(ptoken, widget.wpid, widget.cid);
+          await httpService.getAttendance(ptoken, widget.wpId, widget.cid);
       if (country['status']) {
         Attendencelist attendance = Attendencelist.fromJson(country);
         setState(() {
           list = attendance;
           Name = list!.data.fullName;
           Class = list!.data.className;
-          lpnumber = list!.data.rollNo;
-          Clsstart = list!.data.classStart;
-          Clsend = list!.data.classEnd;
-          Absentday = list!.data.absentDays;
-          Presetday = list!.data.presentDay;
-          totalabsentday = list!.data.workingDays;
+          lpNumber = list!.data.rollNo;
+          startClass = list!.data.classStart;
+          endClass = list!.data.classEnd;
+          absentDay = list!.data.absentDays;
+          presentDay = list!.data.presentDay;
+          totalAbsentDay = list!.data.workingDays;
           image = list!.data.image;
           isLoading = false;
         });

@@ -1,7 +1,6 @@
 import 'package:colegia_atenea/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../services/share_preferences.dart';
 
@@ -11,7 +10,10 @@ class LifeCycleManager extends StatefulWidget {
   final Widget child;
 
   @override
-  _LifeCycleManagerState createState() => _LifeCycleManagerState();
+  State<StatefulWidget> createState() {
+    return _LifeCycleManagerState();
+  }
+
 }
 
 class _LifeCycleManagerState extends State<LifeCycleManager> with WidgetsBindingObserver {

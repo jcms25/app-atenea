@@ -183,7 +183,7 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
   }
 
   void getStudentReportList(String token,int assistantOrParent) async{
-      Apiclass apiClass = Apiclass();
+      ApiClass apiClass = ApiClass();
       dynamic res = await apiClass.getStudentReportMessageList(token);
       if(res['status']){
         MessageListModel reportListModel = MessageListModel.fromJson(res);
@@ -200,7 +200,7 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
   }
 
   void getCommonMessageList(String token,int parentOrAssistant) async{
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     dynamic res = await apiClass.getCommonMessageList(token);
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);
@@ -223,7 +223,7 @@ class EmptyListWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("${'noStudentFound'.tr}.",style: CustomStyle.txtvalue,),
+      child: Text("${'noStudentFound'.tr}.",style: CustomStyle.textValue,),
     );
   }
 

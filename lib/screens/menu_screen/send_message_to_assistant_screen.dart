@@ -253,7 +253,7 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
     setState(() {
       isLoading = true;
     });
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Parentlogin parentLogin = await sessionManagement.getModelParent('');
     dynamic response = await apiClass.sendMessageToAssistant(token: parentLogin.basicAuthToken, senderId: parentLogin.userdata.parentWpUsrId!, receiverId: "${selectedAssistant.id}", studentId: widget.studentId, subject: _affairController.text, message: _messageController.text, attachment: fileName == 'chooseTitle'.tr ? "" : fileName);
@@ -275,7 +275,7 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
     setState(() {
       isLoading = true;
     });
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Parentlogin parentLogin = await sessionManagement.getModelParent('');
     dynamic response = await apiClass.getAssistantList(parentLogin.basicAuthToken);

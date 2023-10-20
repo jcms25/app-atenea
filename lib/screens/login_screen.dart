@@ -13,7 +13,6 @@ import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/widgets/custom_loader.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -144,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Padding(padding: const EdgeInsets.only(left: 10),child:
                               Text(
                                 "user".tr,
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                               ),),
                               Container(
                                 height: 60,
@@ -163,13 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     enableInteractiveSelection: false,
                                     decoration:  InputDecoration(
                                         hintText:  "user".tr,
-                                        hintStyle: CustomStyle.txthintvalue,
+                                        hintStyle: CustomStyle.textHintValue,
                                         errorText: _validate ? 'Value Can\'t Be Empty' : null,
                                         contentPadding:
                                         const EdgeInsets.all(
                                             20),
                                         border: InputBorder.none),
-                                    style: CustomStyle.txtvalue,
+                                    style: CustomStyle.textValue,
                                     textInputAction:
                                     TextInputAction.done,
                                   ),
@@ -177,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               Padding(padding: const EdgeInsets.only(left: 10),child:  Text(
                                 "password".tr,
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                               ),),
                               Container(
                                 height: 60,
@@ -212,13 +211,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                           },
                                         ),
                                         hintText: '*******',
-                                        hintStyle: CustomStyle.txthintvalue,
+                                        hintStyle: CustomStyle.textHintValue,
                                         errorText: _validate1 ? 'Value Can\'t Be Empty' : null,
                                         contentPadding:
                                         const EdgeInsets.all(
                                             20),
                                         border: InputBorder.none),
-                                    style: CustomStyle.txtvalue,
+                                    style: CustomStyle.textValue,
                                     obscureText: _isObscure,
                                     keyboardType: TextInputType
                                         .visiblePassword,
@@ -388,7 +387,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: AppColors.primary,
+                      backgroundColor: AppColors.primary,
                       shadowColor: AppColors.primary.withOpacity(0.4),
                       elevation: 25,
                       shape: const RoundedRectangleBorder(
@@ -428,7 +427,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void checkLogin(String username, String password,String role,bool isRememberMe) async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SharedPreferences shre=await SharedPreferences.getInstance();
     //get the device FCM token for push notifications.
     String? fcmToken= await FirebaseMessaging.instance.getToken();

@@ -100,7 +100,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
   }
 
   void getList(String token,int role) async{
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     dynamic res = await apiClass.getStudentReportMessageList(token);
     if(res['status']){
       MessageListModel reportListModel = MessageListModel.fromJson(res);

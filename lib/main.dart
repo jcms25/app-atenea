@@ -218,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Text(
                           "optimize".tr,
                           textAlign: TextAlign.center,
-                          style: CustomStyle.optimze,
+                          style: CustomStyle.optimize,
                         ),
                         const SizedBox(
                           height: 30,

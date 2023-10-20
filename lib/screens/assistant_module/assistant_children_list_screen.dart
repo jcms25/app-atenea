@@ -24,7 +24,6 @@ class AssistantChildrenScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return AssistantChildrenScreenState();
   }
 }
@@ -38,7 +37,6 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       isLoading = true;
@@ -48,7 +46,6 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -139,7 +136,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                               return Row(
                                 children: [
                                   SvgPicture.asset(
-                                    AppImages.as_people_primary,
+                                    AppImages.asPeoplePrimary,
                                     width: 14,
                                     height: 14,
                                   ),
@@ -222,7 +219,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
   }
 
   void getStudentListOfClass() async{
-    Apiclass apiClass = Apiclass();
+    ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;

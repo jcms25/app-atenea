@@ -1,9 +1,7 @@
 import 'package:colegia_atenea/services/share_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../main.dart';
-import '../utils/app_images.dart';
 
 @pragma('vm:entry-point')
 Future<void> backgroundHandler(RemoteMessage message) async{

@@ -13,14 +13,12 @@ class ChildDetail extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return ChildDetailScreen();
   }
 }
 
 class ChildDetailScreen extends State<ChildDetail> {
-  // ignore: prefer_final_fields
-  bool _isLoading = false;
+
   TextStyle txtLabelStyle = TextStyle(
       color: AppColors.secondary.withOpacity(0.75),
       fontFamily: 'Outfit',
@@ -36,13 +34,11 @@ class ChildDetailScreen extends State<ChildDetail> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

@@ -6,9 +6,9 @@ import '../../custom_widgets/item_label_value.dart';
 import '../../utils/app_colors.dart';
 
 class AssistantParentDetails extends StatefulWidget{
-  ParentDatum parentDatum;
+  final ParentDatum parentDatum;
 
-  AssistantParentDetails(this.parentDatum, {super.key});
+  const AssistantParentDetails(this.parentDatum, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -19,7 +19,7 @@ class AssistantParentDetails extends StatefulWidget{
 }
 
 class AssistantParentDetailsChild extends State<AssistantParentDetails> {
-  bool _isLoading = false;
+  // bool _isLoading = false;
   TextStyle txtLabelStyle = TextStyle(
       color: AppColors.secondary.withOpacity(0.75),
       fontFamily: 'Outfit',
@@ -37,7 +37,6 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("Address is : ${widget.parentDatum.sPaddress}");
   }
   @override
   Widget build(BuildContext context) {

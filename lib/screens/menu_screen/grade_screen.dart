@@ -1,4 +1,3 @@
-import 'package:colegia_atenea/models/Failed.dart';
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/services/api_class.dart';
@@ -10,21 +9,20 @@ import 'package:colegia_atenea/widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../models/student_marklist_format.dart';
 
-class gradescreen extends StatefulWidget {
-  var cid;
-  var wpid;
+class GradeScreen extends StatefulWidget {
+  final String cid;
+  final String wpId;
 
-  gradescreen(this.cid, this.wpid);
+  const GradeScreen(this.cid, this.wpId, {super.key});
 
   @override
-  State<gradescreen> createState() => Grade();
+  State<GradeScreen> createState() => _GradeScreenChild();
 }
 
-class Grade extends State<gradescreen> {
+class _GradeScreenChild extends State<GradeScreen> {
   TextEditingController search = TextEditingController();
   bool isLoading = true;
   List<Markslist> listMarks = [];
@@ -46,7 +44,7 @@ class Grade extends State<gradescreen> {
             backgroundColor: AppColors.primary,
             title: Text(
               "grades".tr,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
             leading: Container(
               margin: const EdgeInsets.all(10),
@@ -55,7 +53,7 @@ class Grade extends State<gradescreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               ),
@@ -91,7 +89,7 @@ class Grade extends State<gradescreen> {
                                     prefixIcon: IconButton(
                                       icon: const Icon(
                                         Icons.search,
-                                        color: AppColors.searchicon,
+                                        color: AppColors.searchIcon,
                                       ),
                                       onPressed: () {},
                                     ),
@@ -104,7 +102,7 @@ class Grade extends State<gradescreen> {
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
                                 cursorColor: AppColors.primary,
-                                style: CustomStyle.txtvalue,
+                                style: CustomStyle.textValue,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 onChanged: onSearchTextChanged,
@@ -327,14 +325,14 @@ class Grade extends State<gradescreen> {
   }
 
   void callAPI() async {
-    Apiclass httpService = Apiclass();
+    ApiClass httpService = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     int? role = await sessionManagement.getRole("Role");
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Login');
       String? token = login.basicAuthToken;
       dynamic response =
-          await httpService.getMarks(token, widget.wpid, widget.cid);
+          await httpService.getMarks(token, widget.wpId, widget.cid);
       if (response['status']) {
         MarkList studentMarks = MarkList.fromJson(response);
         setState(() {
@@ -351,7 +349,7 @@ class Grade extends State<gradescreen> {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic response =
-          await httpService.getMarks(ptoken, widget.wpid, widget.cid);
+          await httpService.getMarks(ptoken, widget.wpId, widget.cid);
       if (response['status']) {
         MarkList studentMarks = MarkList.fromJson(response);
         setState(() {

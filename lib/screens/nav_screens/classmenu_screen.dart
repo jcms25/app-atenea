@@ -1,6 +1,4 @@
 import 'package:colegia_atenea/models/Model.dart';
-import 'package:colegia_atenea/screens/assistant_module/assistant_communication_list_screen.dart';
-import 'package:colegia_atenea/screens/menu_screen/attendence_screen.dart';
 import 'package:colegia_atenea/screens/menu_screen/evaluation_screen.dart';
 import 'package:colegia_atenea/screens/menu_screen/grade_screen.dart';
 import 'package:colegia_atenea/screens/menu_screen/sujects_screen.dart';
@@ -49,7 +47,7 @@ class ClassMenu extends State<ClassMenuScreen> {
             padding: const EdgeInsets.only(top: 10, bottom: 10),
             child: Text(
               widget.model.className,
-              style: CustomStyle.appbartitle,
+              style: CustomStyle.appBarTitle,
             ),
           ),
           leading: Padding(
@@ -59,7 +57,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.Arrow,
+                  AppImages.arrow,
                   color: AppColors.orange,
                 ),
               )),
@@ -118,7 +116,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => teacherscreen(
+                                          builder: (context) => TeacherScreen(
                                               widget.model.classId,
                                               widget.model.wpUserid)));
                                 },
@@ -140,7 +138,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => studentscreen(
+                                          builder: (context) => StudentScreen(
                                               widget.model.classId,
                                               widget.model.wpUserid)));
                                 },
@@ -162,7 +160,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => subjectscreen(
+                                          builder: (context) => SubjectScreen(
                                               widget.model.classId,
                                               widget.model.wpUserid)));
                                 },
@@ -206,7 +204,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => gradescreen(
+                                          builder: (context) => GradeScreen(
                                               widget.model.classId,
                                               widget.model.wpUserid)));
                                 },
@@ -277,7 +275,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const transportationscreen()));
+                                              const TransportationScreen()));
                                 },
                                 title: Text(
                                   "trans".tr,

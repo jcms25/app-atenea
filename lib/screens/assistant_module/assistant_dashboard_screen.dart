@@ -2,7 +2,7 @@ import 'package:colegia_atenea/models/assistant/assistant_dashboard_model.dart';
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_classes_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

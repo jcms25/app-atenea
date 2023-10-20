@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
 import '../../services/api_class.dart';
-import '../../services/session_mangement.dart';
+import '../../services/session_management.dart';
 
 class SlotList extends StatefulWidget{
   final String classId;

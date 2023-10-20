@@ -4,7 +4,7 @@ import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_communication_report_message_list_screen.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_dashboard_screen.dart';
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

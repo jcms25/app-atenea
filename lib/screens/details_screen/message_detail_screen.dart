@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../services/session_mangement.dart';
+import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
 

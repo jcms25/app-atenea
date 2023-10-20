@@ -2,7 +2,7 @@ import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/events_list.dart';
 import 'package:colegia_atenea/services/api_class.dart';
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
@@ -21,7 +21,7 @@ class EventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeCalendarPage();
+    return const HomeCalendarPage();
   }
 }
 

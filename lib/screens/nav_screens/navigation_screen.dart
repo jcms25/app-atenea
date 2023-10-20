@@ -19,7 +19,7 @@ import 'package:colegia_atenea/screens/login_screen.dart';
 import 'package:colegia_atenea/screens/menu_screen/student_screen.dart';
 import 'package:colegia_atenea/screens/menu_screen/test_screen.dart';
 import 'package:colegia_atenea/screens/menu_screen/transportation_screen.dart';
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
@@ -68,11 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
   String classid = "";
   String name = "";
   String cid = "";
-  String wpid = "";
+  String wpId = "";
 
   late int _currentIndex;
-  var OnClicked;
-  var OnClickedDrawer;
+  var onClicked;
+  var onClickedDrawer;
   var userName = "";
   var imagePath = "";
   String userRole = "";
@@ -489,7 +489,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Fname = student.userdata.sFname!;
         Imagepath = student.userdata.stuImage!;
         cid = student.userdata.classId!;
-        wpid = student.userdata.wpUsrId!;
+        wpId = student.userdata.wpUsrId!;
         userRole = "$role";
       });
     } else {
@@ -498,7 +498,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Fname = (parent.userdata.pFname)!;
         Imagepath = (parent.userdata.parentImage)!;
         cid = (parent.userdata.studentData![0].classId)!;
-        wpid = (parent.userdata.studentData![0].wpUsrId)!;
+        wpId = (parent.userdata.studentData![0].wpUsrId)!;
         userRole = "$role";
       });
     }

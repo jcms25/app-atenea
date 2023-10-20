@@ -4,7 +4,7 @@ import 'package:colegia_atenea/screens/nav_screens/navigation_screen.dart';
 import 'package:colegia_atenea/screens/assistant_module/assistant_main_screen.dart';
 import 'package:colegia_atenea/screens/login_screen.dart';
 import 'package:colegia_atenea/services/notification_service.dart';
-import 'package:colegia_atenea/services/session_mangement.dart';
+import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/services/share_preferences.dart';
 import 'package:colegia_atenea/services/world_languages.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
@@ -46,8 +46,7 @@ void main() async {
   );
   // bool? initialize = await notificationsPlugin.initialize(initializationSettings);
   await notificationsPlugin.initialize(initializationSettings);
-  String? token= await FirebaseMessaging.instance.getToken();
-  print(token);
+  // String? token= await FirebaseMessaging.instance.getToken();
   FirebaseMessaging.onMessage.listen((event) {
       NotificationService.showNotification(event);
       if(event.notification!.body!.split("|").first == "0") {

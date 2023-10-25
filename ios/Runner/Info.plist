@@ -50,7 +50,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo uses to send message to another user of the app</string>
+	<key>NSMicrophoneDescription</key>
+	<string>It will access camera to record videos which use microphone and useful to send to attachment to another user of this app</string>
 </dict>
 </plist>

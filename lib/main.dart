@@ -46,7 +46,7 @@ void main() async {
   );
   // bool? initialize = await notificationsPlugin.initialize(initializationSettings);
   await notificationsPlugin.initialize(initializationSettings);
-  // String? token= await FirebaseMessaging.instance.getToken();
+  // FirebaseMessaging.instance.getToken().then((value) => print(value));
   FirebaseMessaging.onMessage.listen((event) {
       NotificationService.showNotification(event);
       if(event.notification!.body!.split("|").first == "0") {

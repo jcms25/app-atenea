@@ -65,4 +65,9 @@ class SessionManagement {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove('Assistant');
   }
+
+  Future<String> getCookieUserName() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString('cookieUserName') ?? "";
+  }
 }

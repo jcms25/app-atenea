@@ -8,6 +8,7 @@ import '../models/assistant/assistant_sub_slot_model.dart';
 class ApiClass {
   String embedBaseUrl = "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
+  // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String sendMessage = "message";
   String login = "login";
@@ -48,10 +49,9 @@ class ApiClass {
       );
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
-
         return data;
       }else{
-        return {'status': false, "Message": "Exception Occurred"};
+        return {'status': false, "Message": response.body};
       }
     } catch (exception) {
       return {"status": false, "Message": "Error. $exception"};
@@ -60,13 +60,15 @@ class ApiClass {
 
   }
 
-  Future<dynamic> getDashboard(String token) async {
+  Future<dynamic> getDashboard(String token,String username) async {
     try {
       Response res =
       await get(Uri.parse('$liveBaseUrl$dashboard'), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
+        'Cookie' : "PHPSESSID=2372396e63c6b57b6c331baa70f9c1ae; wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701508427%7CoM7yufb6CuCwagTOvMzVLCzqYH9im8OmWpSsIUPJtIo%7C8394b777481b6358f76c05d7de7adb5c776133ed97d73fa79f6108c65b5e3f90"
       });
+      print(res.body);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
@@ -77,7 +79,6 @@ class ApiClass {
     }catch(_){
       return {'status' : false, "Message" : "something went wrong"};
     }
-
   }
 
   Future<dynamic> getEvent(String token) async {
@@ -98,12 +99,13 @@ class ApiClass {
     } catch (exception) {
       return {"status": false, "Message": "$exception"};
     }
+
   }
 
   Future<dynamic> getMessageAll(String token) async {
     try {
       Response res =
-          await get(Uri.parse("$liveBaseUrl$allMessage"), headers: <String, String>{
+      await get(Uri.parse("$liveBaseUrl$allMessage"), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
       });
@@ -357,6 +359,7 @@ class ApiClass {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
           });
+
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;

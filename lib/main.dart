@@ -1,8 +1,8 @@
 
 import 'dart:async';
-import 'package:colegia_atenea/screens/nav_screens/navigation_screen.dart';
-import 'package:colegia_atenea/screens/assistant_module/assistant_main_screen.dart';
-import 'package:colegia_atenea/screens/login_screen.dart';
+import 'package:colegia_atenea/views/nav_screens/navigation_screen.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_main_screen.dart';
+import 'package:colegia_atenea/views/login_screen.dart';
 import 'package:colegia_atenea/services/notification_service.dart';
 import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/services/share_preferences.dart';

@@ -232,7 +232,6 @@ class WorldLanguage extends Translations {
           'parentSendMessage' : 'Communication sent successfully',
           'assistantToParent' : 'Report sent successfully',
         },
-
         'es_ES': {
           'hello': 'Hola',
           'desk': 'Escritorio',

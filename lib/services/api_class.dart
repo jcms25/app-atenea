@@ -10,6 +10,9 @@ class ApiClass {
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
+
+  String cookie = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
+
   String sendMessage = "message";
   String login = "login";
   String dashboard = "dashboard";
@@ -66,9 +69,8 @@ class ApiClass {
       await get(Uri.parse('$liveBaseUrl$dashboard'), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
-        'Cookie' : "PHPSESSID=2372396e63c6b57b6c331baa70f9c1ae; wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701508427%7CoM7yufb6CuCwagTOvMzVLCzqYH9im8OmWpSsIUPJtIo%7C8394b777481b6358f76c05d7de7adb5c776133ed97d73fa79f6108c65b5e3f90"
+        'Cookie' : cookie
       });
-      print(res.body);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
@@ -88,6 +90,7 @@ class ApiClass {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Basic $token',
+          'Cookie' : cookie
         },
       );
       if (response.statusCode == 200) {
@@ -108,6 +111,7 @@ class ApiClass {
       await get(Uri.parse("$liveBaseUrl$allMessage"), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
+        'Cookie' : cookie
       });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -126,6 +130,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -151,6 +156,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -173,6 +179,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -200,6 +207,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -225,6 +233,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -250,6 +259,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -273,6 +283,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -298,6 +309,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -320,6 +332,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -338,6 +351,7 @@ class ApiClass {
           await get(Uri.parse("$liveBaseUrl$circular"), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
+            'Cookie' : cookie
       });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -358,6 +372,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
 
       if (res.statusCode == 200) {
@@ -380,7 +395,8 @@ class ApiClass {
           'POST',Uri.parse('${liveBaseUrl}parentSendMessage')
       );
       request.headers.addAll({
-        "Authorization": "Basic $token"
+        "Authorization": "Basic $token",
+        'Cookie' : cookie
       });
 
       if(attachment.isEmpty){
@@ -418,6 +434,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -440,6 +457,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -462,6 +480,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
 
       if (res.statusCode == 200) {
@@ -485,6 +504,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -507,6 +527,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -536,6 +557,7 @@ class ApiClass {
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",
+          'Cookie' : cookie
         });
     if (res.statusCode == 200) {
       var data = json.decode(res.body);
@@ -563,6 +585,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -583,6 +606,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -603,6 +627,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -623,6 +648,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -644,6 +670,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -665,6 +692,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -686,7 +714,8 @@ class ApiClass {
       );
 
       request.headers.addAll({
-        "Authorization": "Basic $token"
+        "Authorization": "Basic $token",
+        'Cookie' : cookie
       });
       request.fields["sender_id"] = senderId;
       request.fields["slot_id"] = "1";
@@ -731,6 +760,7 @@ class ApiClass {
             headers: <String, String>{
               'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
               'Authorization': "Basic $token",
+              'Cookie' : cookie
             },
             body: body
         );
@@ -750,7 +780,8 @@ class ApiClass {
     try{
       final MultipartRequest request = MultipartRequest('POST',Uri.parse("${liveBaseUrl}sendCommonMessage"));
       request.headers.addAll({
-        "Authorization": "Basic $token"
+        "Authorization": "Basic $token",
+        'Cookie' : cookie
       });
 
       request.files.add(await MultipartFile.fromPath('attachment',attachment));
@@ -791,6 +822,7 @@ class ApiClass {
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",
+          'Cookie' : cookie
         },
         );
       if (response.statusCode == 200) {
@@ -813,6 +845,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -833,6 +866,7 @@ class ApiClass {
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",
+          'Cookie' : cookie
         },
       );
       if(response.statusCode == 200){
@@ -854,6 +888,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           },
           body: <String,dynamic>{
             'date' :  date,
@@ -879,7 +914,8 @@ class ApiClass {
     try {
       final MultipartRequest request = MultipartRequest('POST',Uri.parse("${liveBaseUrl}sendPtoAMessage"));
       request.headers.addAll({
-        "Authorization": "Basic $token"
+        "Authorization": "Basic $token",
+        'Cookie' : cookie
       });
 
       if(attachment.isEmpty){
@@ -917,6 +953,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
+            'Cookie' : cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);

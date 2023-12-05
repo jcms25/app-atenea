@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:intl/intl.dart';
 
 Parentlogin parentloginFromJson(String str) => Parentlogin.fromJson(json.decode(str));
 
@@ -57,6 +56,7 @@ class Userdata {
     required this.parentEmail,
     required this.studentData,
     required  this.userRole,
+    required this.cookie,
   });
 
   String? parentWpUsrId;
@@ -76,6 +76,7 @@ class Userdata {
   String? parentEmail;
   List<StudentDatum>? studentData;
   String? userRole;
+  String? cookie;
 
   factory Userdata.fromJson(Map<String, dynamic> json) => Userdata(
     parentWpUsrId: json["parent_wp_usr_id"],
@@ -95,6 +96,7 @@ class Userdata {
     parentEmail: json["parent_email"],
     studentData: List<StudentDatum>.from(json["studentData"].map((x) => StudentDatum.fromJson(x))),
     userRole: json["user_role"],
+    cookie: json["cookies"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -115,6 +117,7 @@ class Userdata {
     "parent_email": parentEmail,
     "studentData": studentData == null ? [] : List<dynamic>.from(studentData!.map((x) => x.toJson())),
     "user_role": userRole,
+    "cookies" : cookie
   };
 }
 

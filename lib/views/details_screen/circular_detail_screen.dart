@@ -151,13 +151,14 @@ class CircularData extends State<CircularDetail> {
 
   void callAPI() async {
     ApiClass httpService = ApiClass();
-    SessionManagement sessionManagment = SessionManagement();
+    SessionManagement sessionManagement = SessionManagement();
 
-    Parentlogin parent = await sessionManagment.getModelParent('Parent');
+    Parentlogin parent = await sessionManagement.getModelParent('Parent');
     String ptoken = parent.basicAuthToken;
     dynamic singleCircularDetails = await httpService.getSingleCircular(
       ptoken,
       widget.cid,
+      parent.userdata.cookie ?? ""
     );
     if (singleCircularDetails['status']) {
       Singlecircular circular = Singlecircular.fromJson(singleCircularDetails);

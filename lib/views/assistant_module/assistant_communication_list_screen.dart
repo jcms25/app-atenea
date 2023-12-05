@@ -135,7 +135,7 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          NewCommunication(isCommonMessageOrStudentReport: 0)));
+                          const NewCommunication(isCommonMessageOrStudentReport: 0)));
             },
             backgroundColor: AppColors.primary,
             elevation: 0,
@@ -156,11 +156,11 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
       if(role == 2){
         Assistant assistant = await sessionManagement.getAssistantDetail();
         String token = assistant.basicAuthToken;
-        getCommonMessageList(token,role!);
+        getCommonMessageList(token,role!,assistant.userdata.data.cookie ?? "");
       }else{
         Parentlogin parentLogin = await sessionManagement.getModelParent('');
         String token = parentLogin.basicAuthToken;
-        getCommonMessageList(token,role!);
+        getCommonMessageList(token,role!,parentLogin.userdata.cookie ?? "");
       }
 
     }else{
@@ -172,19 +172,19 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
       if(role == 2){
         Assistant assistant = await sessionManagement.getAssistantDetail();
         String token = assistant.basicAuthToken;
-        getStudentReportList(token,role!);
+        getStudentReportList(token,role!,assistant.userdata.data.cookie ?? "");
       }
       else{
         Parentlogin parentLogin = await sessionManagement.getModelParent('');
         String token = parentLogin.basicAuthToken;
-        getStudentReportList(token,role!);
+        getStudentReportList(token,role!,parentLogin.userdata.cookie ?? "");
       }
     }
   }
 
-  void getStudentReportList(String token,int assistantOrParent) async{
+  void getStudentReportList(String token,int assistantOrParent,String cookie) async{
       ApiClass apiClass = ApiClass();
-      dynamic res = await apiClass.getStudentReportMessageList(token);
+      dynamic res = await apiClass.getStudentReportMessageList(token,cookie);
       if(res['status']){
         MessageListModel reportListModel = MessageListModel.fromJson(res);
         setState(() {
@@ -199,9 +199,9 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
 
   }
 
-  void getCommonMessageList(String token,int parentOrAssistant) async{
+  void getCommonMessageList(String token,int parentOrAssistant,String cookie) async{
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getCommonMessageList(token);
+    dynamic res = await apiClass.getCommonMessageList(token,cookie);
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {

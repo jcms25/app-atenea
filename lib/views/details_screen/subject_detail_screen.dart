@@ -252,15 +252,14 @@ class SubjectsDetail extends State<subjectdetailscreen> {
 
   void callAPI() async {
     ApiClass httpService = ApiClass();
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role = await sessionManagment.getRole("Role");
-    if (Role == 0) {
-      Studentlogin login = await sessionManagment.getModel('Student');
+    SessionManagement sessionManagement = SessionManagement();
+    int? role = await sessionManagement.getRole("Role");
+    if (role == 0) {
+      Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
-      dynamic country = await httpService.getSingleSubject(token, widget.subid);
+      dynamic country = await httpService.getSingleSubject(token, widget.subid,login.userdata.cookie ?? "");
       if (country['status']) {
         Singlesubject subject = Singlesubject.fromJson(country);
-        print(subject.data[0].firstName);
         setState(() {
           list = subject;
           subname = list!.data[0].subName;
@@ -271,17 +270,15 @@ class SubjectsDetail extends State<subjectdetailscreen> {
           isLoading = false;
         });
       } else {
-        print("Hello");
         setState(() {
           isLoading = false;
         });
       }
     } else {
-      Parentlogin parent = await sessionManagment.getModelParent('Parent');
+      Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country = await httpService.getSingleSubject(
-          ptoken, widget.subid);
-      print(country);
+          ptoken, widget.subid,parent.userdata.cookie ?? "");
       if (country['status']) {
         Singlesubject subject = Singlesubject.fromJson(country);
         setState(() {
@@ -294,7 +291,6 @@ class SubjectsDetail extends State<subjectdetailscreen> {
           isLoading = false;
         });
       } else {
-        print("Hello");
         setState(() {
           isLoading = false;
         });

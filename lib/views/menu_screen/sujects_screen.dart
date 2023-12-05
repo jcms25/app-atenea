@@ -208,7 +208,7 @@ class _SubjectScreenChild extends State<SubjectScreen> {
       String token = login.basicAuthToken;
 
       dynamic country =
-          await httpService.getSubject(token, widget.wpId, widget.cid);
+          await httpService.getSubject(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
       if (country['status']) {
         SubjectList subject = SubjectList.fromJson(country);
         setState(() {
@@ -225,7 +225,7 @@ class _SubjectScreenChild extends State<SubjectScreen> {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
-          await httpService.getSubject(ptoken, widget.wpId, widget.cid);
+          await httpService.getSubject(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
       if (country['status']) {
         SubjectList subject = SubjectList.fromJson(country);
         setState(() {

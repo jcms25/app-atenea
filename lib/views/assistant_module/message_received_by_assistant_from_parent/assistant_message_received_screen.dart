@@ -125,7 +125,7 @@ class _AssistantMessageReceivedScreenState extends State<AssistantMessageReceive
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getCommonMessageList(token);
+    dynamic res = await apiClass.getCommonMessageList(token,assistant.userdata.data.cookie ?? "");
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {

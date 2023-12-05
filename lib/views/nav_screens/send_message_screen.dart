@@ -254,25 +254,25 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
       String token = studentLogin.basicAuthToken;
       String senderId = studentLogin.userdata.wpUsrId!;
       if(isFileSelectedOrNot == 0){
-        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message);
+        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message, cookie: studentLogin.userdata.cookie ?? "");
       }else{
-        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!);
+        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!, cookie: studentLogin.userdata.cookie ?? "");
       }
    }else{
       Parentlogin parentLogin = await sessionManagement.getModelParent('Parent');
       String token = parentLogin.basicAuthToken;
       String senderId = parentLogin.userdata.parentWpUsrId!;
       if(isFileSelectedOrNot == 0){
-        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message);
+        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message, cookie: parentLogin.userdata.cookie ?? "");
       }else{
-        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!);
+        sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!, cookie: parentLogin.userdata.cookie ?? "");
       }
     }
   }
 
-  void sendMessage({required String token,String? senderId,String? receivedId,String? subject,String? message,String? attachment}) async{
-    ApiClass apiclass = ApiClass();
-    dynamic response = await apiclass.sendMessageToTeacher(token,attachment ?? "",senderId!,selectTeacher.wpUsrId,subject!,message!);
+  void sendMessage({required String token,required String cookie,String? senderId,String? receivedId,String? subject,String? message,String? attachment}) async{
+    ApiClass apiClass = ApiClass();
+    dynamic response = await apiClass.sendMessageToTeacher(token,attachment ?? "",senderId!,selectTeacher.wpUsrId,subject!,message!,cookie);
     if(response['status']){
       Fluttertoast.showToast(msg: 'parentSendMessage'.tr);
       setState(() {
@@ -334,7 +334,7 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
     if(role == 0){
       Studentlogin studentLogin = await sessionManagement.getModel('Student');
       String token = studentLogin.basicAuthToken;
-      dynamic response = await apiClass.getTeacherListForSendMessage(token);
+      dynamic response = await apiClass.getTeacherListForSendMessage(token,studentLogin.userdata.cookie ?? "");
       List<TeacherData> tempTeacherList = [];
       tempTeacherList.add(TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---"));
       if(response['status']){
@@ -356,7 +356,7 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
     else{
       Parentlogin parentLogin = await sessionManagement.getModelParent('Parent');
       String token = parentLogin.basicAuthToken;
-      dynamic response = await apiClass.getTeacherListForSendMessage(token);
+      dynamic response = await apiClass.getTeacherListForSendMessage(token,parentLogin.userdata.cookie ?? "");
       List<TeacherData> tempTeacherList = [];
       tempTeacherList.add(TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---"));
       if(response['status']){

@@ -155,15 +155,15 @@ class MessageDetailChild extends State<MessageDetail> {
   }
 
   void getSingleMessageDetail(String messageId) async {
-    ApiClass apiclass = ApiClass();
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role = await sessionManagment.getRole("Role");
-    if (Role == 0) {
-      Studentlogin login = await sessionManagment.getModel('Student');
+    ApiClass apiClass = ApiClass();
+    SessionManagement sessionManagement = SessionManagement();
+    int? role = await sessionManagement.getRole("Role");
+    if (role == 0) {
+      Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
       try{
         dynamic response =
-        await apiclass.getSingleMessageDetail(token, messageId);
+        await apiClass.getSingleMessageDetail(token, messageId,login.userdata.cookie ?? "");
         if(response['status']){
           SingleMessageDetailModel singleMessageDetailModel = SingleMessageDetailModel.fromJson(response);
           setState(() {
@@ -192,10 +192,10 @@ class MessageDetailChild extends State<MessageDetail> {
       }
 
     } else {
-      Parentlogin parentlogin = await sessionManagment.getModelParent('Parent');
-      String token = parentlogin.basicAuthToken;
+      Parentlogin parentLogin = await sessionManagement.getModelParent('Parent');
+      String token = parentLogin.basicAuthToken;
       dynamic response =
-          await apiclass.getSingleMessageDetail(token, messageId);
+          await apiClass.getSingleMessageDetail(token, messageId,parentLogin.userdata.cookie ?? "");
       if(response['status']){
         SingleMessageDetailModel singleMessageDetailModel = SingleMessageDetailModel.fromJson(response);
         setState(() {

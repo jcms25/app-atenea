@@ -208,12 +208,12 @@ class _TransportScreenChild extends State<TransportationScreen> {
 
   void getTransportList() async {
     ApiClass httpService=ApiClass();
-    SessionManagement sessionManagment = SessionManagement();
-    int? role= await sessionManagment.getRole("Role");
+    SessionManagement sessionManagement = SessionManagement();
+    int? role= await sessionManagement.getRole("Role");
     if(role==0){
-      Studentlogin login = await sessionManagment.getModel('Student');
+      Studentlogin login = await sessionManagement.getModel('Student');
       String token  = login.basicAuthToken;
-      dynamic response=await httpService.getTransfer(token);
+      dynamic response=await httpService.getTransfer(token,login.userdata.cookie ?? "");
       if(response['status']) {
         Transportation transportData = Transportation.fromJson(response);
         setState(() {
@@ -227,9 +227,9 @@ class _TransportScreenChild extends State<TransportationScreen> {
         });
       }
     }else{
-      Parentlogin parent = await sessionManagment.getModelParent('Parent');
+      Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String token  = parent.basicAuthToken;
-      dynamic response=await httpService.getTransfer(token);
+      dynamic response=await httpService.getTransfer(token,parent.userdata.cookie ?? "");
       if(response['status']) {
         Transportation transportData = Transportation.fromJson(response);
         setState(() {

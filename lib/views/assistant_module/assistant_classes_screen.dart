@@ -155,7 +155,7 @@ class ChildScreenState extends State<ChildScreen> {
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
-    dynamic tempClassList = await apiclass.getAsClassList(token);
+    dynamic tempClassList = await apiclass.getAsClassList(token,assistant.userdata.data.cookie ?? "");
     if(tempClassList['status']){
       ClassListModel classListModel = ClassListModel.fromJson(tempClassList);
       setState(() {

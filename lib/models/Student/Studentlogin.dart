@@ -60,6 +60,7 @@ class Userdatas {
     required this.parentData,
     required this.userRole,
     required this.className,
+    required this.cookie
   });
 
   String? sid;
@@ -84,6 +85,7 @@ class Userdatas {
   List<ParentDatum>? parentData;
   String? userRole;
   String? className;
+  String? cookie;
 
   factory Userdatas.fromJson(Map<String, dynamic> json) => Userdatas(
     sid: json["sid"],
@@ -108,6 +110,7 @@ class Userdatas {
     parentData: List<ParentDatum>.from(json["parentData"].map((x) => ParentDatum.fromJson(x))),
     userRole: json["user_role"],
     className: json["class_name"],
+    cookie: json["cookies"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -133,6 +136,7 @@ class Userdatas {
     "parentData": List<dynamic>.from(parentData!.map((x) => x.toJson())),
     "user_role": userRole,
     "class_name": className,
+    "cookies" : cookie
   };
 }
 

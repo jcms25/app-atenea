@@ -188,7 +188,7 @@ class _Circular extends State<CircularScreen> {
 
     Parentlogin parent = await sessionManagement.getModelParent('Parent');
     String ptoken = parent.basicAuthToken;
-    dynamic response = await httpService.getCircular(ptoken);
+    dynamic response = await httpService.getCircular(ptoken,parent.userdata.cookie ?? "");
     if (response['status']) {
       Circular circularData = Circular.fromJson(response);
       setState(() {

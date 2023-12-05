@@ -248,7 +248,7 @@ class _StudentScreenChild extends State<StudentScreen> {
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String? token = login.basicAuthToken;
-      dynamic response = await httpService.getStudent(token, widget.cid);
+      dynamic response = await httpService.getStudent(token, widget.cid,login.userdata.cookie ?? "");
       if (response['status']) {
         try{
           StudentList student = StudentList.fromJson(response);
@@ -257,7 +257,7 @@ class _StudentScreenChild extends State<StudentScreen> {
             tempSearchList = listOfStudent;
             isLoading = false;
           });
-        }catch(exception,stacktrace){
+        }catch(exception){
           setState(() {
             isLoading = false;
           });
@@ -270,7 +270,7 @@ class _StudentScreenChild extends State<StudentScreen> {
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
-      dynamic response = await httpService.getStudent(ptoken, widget.cid);
+      dynamic response = await httpService.getStudent(ptoken, widget.cid,parent.userdata.cookie ?? "");
       if (response['status']) {
         StudentList student = StudentList.fromJson(response);
         setState(() {

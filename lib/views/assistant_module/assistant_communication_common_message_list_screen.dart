@@ -110,7 +110,7 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => NewCommunication(
+                  builder: (context) => const NewCommunication(
                         isCommonMessageOrStudentReport: 0,
                       )));
         },
@@ -130,7 +130,7 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getCommonMessageList(token);
+    dynamic res = await apiClass.getCommonMessageList(token,assistant.userdata.data.cookie ?? "");
     if (res['status']) {
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {

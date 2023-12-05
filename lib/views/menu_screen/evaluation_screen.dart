@@ -535,18 +535,17 @@ class TableExample extends State<evaluationscreen> {
 
   void getEvaluationList() async {
     ApiClass httpService = ApiClass();
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role = await sessionManagment.getRole("Role");
-    if (Role == 0) {
-      Studentlogin login = await sessionManagment.getModel('Student');
+    SessionManagement sessionManagement = SessionManagement();
+    int? role = await sessionManagement.getRole("Role");
+    if (role == 0) {
+      Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
       dynamic country =
-          await httpService.getEvaluation(token, widget.wpid, widget.cid);
+          await httpService.getEvaluation(token, widget.wpid, widget.cid,login.userdata.cookie ?? "");
       if (country['status']) {
-        print(country['status']);
-        Evaluation evalution = Evaluation.fromJson(country);
+        Evaluation evaluation = Evaluation.fromJson(country);
         setState(() {
-          Evaluationlist = evalution.data;
+          Evaluationlist = evaluation.data;
           isLoading = false;
         });
       } else {
@@ -555,14 +554,14 @@ class TableExample extends State<evaluationscreen> {
         });
       }
     } else {
-      Parentlogin parent = await sessionManagment.getModelParent('Parent');
+      Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
-      dynamic? country =
-          await httpService.getEvaluation(ptoken, widget.wpid, widget.cid);
+      dynamic country =
+          await httpService.getEvaluation(ptoken, widget.wpid, widget.cid,parent.userdata.cookie ?? "");
       if (country['status']) {
-        Evaluation evalution = Evaluation.fromJson(country);
+        Evaluation evaluation = Evaluation.fromJson(country);
         setState(() {
-          Evaluationlist = evalution.data;
+          Evaluationlist = evaluation.data;
           isLoading = false;
         });
       } else {
@@ -575,20 +574,19 @@ class TableExample extends State<evaluationscreen> {
 
   void onclick(int evaluation, String evaluationName) {
     List<Evaluationreport> evolutionReport = [];
-    print(evaluation);
     for (int i = 0; i < Evaluationlist.length; i++) {
-      String evaluationremark = evaluation == 1
+      String evaluationRemark = evaluation == 1
           ? Evaluationlist[i].observation.observation1
           : evaluation == 2
               ? Evaluationlist[i].observation.observation2
               : evaluation == 3
                   ? Evaluationlist[i].observation.observation3
                   : Evaluationlist[i].observation.observation4;
-        if(evaluationremark.isEmpty){
+        if(evaluationRemark.isEmpty){
           continue;
         }else{
           evolutionReport
-              .add(Evaluationreport(Evaluationlist[i].subject, evaluationremark));
+              .add(Evaluationreport(Evaluationlist[i].subject, evaluationRemark));
         }
           }
     Navigator.push(
@@ -603,7 +601,7 @@ showAlertDialog(BuildContext context) {
   // Create button
   Widget okButton = ElevatedButton(
     style: ElevatedButton.styleFrom(
-        primary: AppColors.primary,
+        backgroundColor: AppColors.primary,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)))),
     child: Text(

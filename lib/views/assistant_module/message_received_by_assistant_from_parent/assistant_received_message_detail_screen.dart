@@ -248,7 +248,7 @@ class _AssistantMessageReceivedDetailScreenState
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
     dynamic res = await apiClass.getMessageDetails(
-        isCommonOrStudentReport: 0, token: token, messageId: widget.id);
+        isCommonOrStudentReport: 0, token: token, messageId: widget.id, cookie: assistant.userdata.data.cookie ?? "");
     if (res['status']) {
       MessageDetailModel commonMessageModel = MessageDetailModel.fromJson(res);
       setState(() {

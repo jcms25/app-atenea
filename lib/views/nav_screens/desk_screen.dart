@@ -999,8 +999,7 @@ class Dash extends State<DashboardScreen> {
     if (role == 0) {
       Studentlogin studentModel = await sessionManagement.getModel('Student');
       String token = studentModel.basicAuthToken;
-      String userName = await sessionManagement.getCookieUserName();
-      dynamic dashBoardData = await httpService.getDashboard(token,userName);
+      dynamic dashBoardData = await httpService.getDashboard(token: token, cookieExample: studentModel.userdata.cookie ?? "", );
       if (dashBoardData["status"]) {
         Dashboard data = Dashboard.fromJson(dashBoardData);
         setState(() {
@@ -1033,8 +1032,7 @@ class Dash extends State<DashboardScreen> {
       Parentlogin parentModel =
           await sessionManagement.getModelParent('Parent');
       String ptoken = parentModel.basicAuthToken;
-      String userName = await sessionManagement.getCookieUserName();
-      dynamic dashBoardData = await httpService.getDashboard(ptoken,userName);
+      dynamic dashBoardData = await httpService.getDashboard(token: ptoken, cookieExample: parentModel.userdata.cookie ?? "");
       if (dashBoardData["status"]) {
         Dashboard data = Dashboard.fromJson(dashBoardData);
         setState(() {
@@ -1057,10 +1055,10 @@ class Dash extends State<DashboardScreen> {
         });
       } else {
         Failed failed = Failed.fromJson(dashBoardData);
+
         setState(() {
           isLoading = false;
         });
-        showSnackBar(failed);
       }
     }
 

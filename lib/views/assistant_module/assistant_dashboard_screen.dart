@@ -345,7 +345,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
     ApiClass apiclass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
-    dynamic dashboardData = await apiclass.getAsDashboard(assistant.basicAuthToken);
+    dynamic dashboardData = await apiclass.getAsDashboard(assistant.basicAuthToken,assistant.userdata.data.cookie ?? "");
     if(dashboardData['status']){
       AssistantDashboardModel assistantDashboard = AssistantDashboardModel.fromJson(dashboardData);
       String tempClassCount = assistantDashboard.count.classCount;

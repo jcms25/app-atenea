@@ -146,6 +146,7 @@ class Data {
   String userRole;
   String className;
   String classId;
+  String? cookie;
 
   Data({
     required this.id,
@@ -161,6 +162,7 @@ class Data {
     required this.userRole,
     required this.className,
     required this.classId,
+    required this.cookie
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -177,6 +179,7 @@ class Data {
     userRole: json["user_role"],
     className: json["class_name"],
     classId: json["class_id"],
+    cookie: json["cookies"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -193,5 +196,6 @@ class Data {
     "user_role": userRole,
     "class_name": className,
     "class_id": classId,
+    "cookies" : cookie
   };
 }

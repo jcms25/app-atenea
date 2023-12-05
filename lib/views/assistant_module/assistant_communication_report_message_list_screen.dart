@@ -90,18 +90,18 @@ class _ReportListScreenState extends State<ReportListScreen> {
     if(role == 2){
       Assistant assistant = await sessionManagement.getAssistantDetail();
       String token = assistant.basicAuthToken;
-      getList(token,2);
+      getList(token,2,assistant.userdata.data.cookie ?? "");
     }
     else{
       Parentlogin parentLogin = await sessionManagement.getModelParent('');
       String token = parentLogin.basicAuthToken;
-      getList(token,1);
+      getList(token,1 , parentLogin.userdata.cookie ?? "");
     }
   }
 
-  void getList(String token,int role) async{
+  void getList(String token,int role,String cookie) async{
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getStudentReportMessageList(token);
+    dynamic res = await apiClass.getStudentReportMessageList(token,cookie);
     if(res['status']){
       MessageListModel reportListModel = MessageListModel.fromJson(res);
       setState(() {

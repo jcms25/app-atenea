@@ -355,7 +355,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
-      dynamic response = await httpService.getEvent(token);
+      dynamic response = await httpService.getEvent(token,login.userdata.cookie ?? "");
       if (response['status']) {
          Events events = Events.fromJson(response);
          setEvents(events.data);
@@ -368,7 +368,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String token = parent.basicAuthToken;
-      dynamic response = await httpService.getEvent(token);
+      dynamic response = await httpService.getEvent(token,parent.userdata.cookie ?? "");
       if (response['status']) {
         Events events = Events.fromJson(response);
         setEvents(events.data);

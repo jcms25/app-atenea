@@ -256,7 +256,7 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
     ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Parentlogin parentLogin = await sessionManagement.getModelParent('');
-    dynamic response = await apiClass.sendMessageToAssistant(token: parentLogin.basicAuthToken, senderId: parentLogin.userdata.parentWpUsrId!, receiverId: "${selectedAssistant.id}", studentId: widget.studentId, subject: _affairController.text, message: _messageController.text, attachment: fileName == 'chooseTitle'.tr ? "" : fileName);
+    dynamic response = await apiClass.sendMessageToAssistant(token: parentLogin.basicAuthToken, senderId: parentLogin.userdata.parentWpUsrId!, receiverId: "${selectedAssistant.id}", studentId: widget.studentId, subject: _affairController.text, message: _messageController.text, attachment: fileName == 'chooseTitle'.tr ? "" : fileName, cookie: parentLogin.userdata.cookie ?? "");
     if(response['status']){
       setState(() {
         isLoading = false;
@@ -278,7 +278,7 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
     ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     Parentlogin parentLogin = await sessionManagement.getModelParent('');
-    dynamic response = await apiClass.getAssistantList(parentLogin.basicAuthToken);
+    dynamic response = await apiClass.getAssistantList(parentLogin.basicAuthToken,parentLogin.userdata.cookie ?? "");
     List<AssistantData> tempAssistantList = [];
     tempAssistantList.add(AssistantData(id: 404, firstName: "-- ${'selectAssistant'.tr}", lastName: ""));
     if(response['status']){

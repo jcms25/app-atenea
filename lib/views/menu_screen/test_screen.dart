@@ -174,14 +174,14 @@ class Tests extends State<TestScreen> {
       Studentlogin login = await sessionManagement.getModel('Student');
       String? token = login.basicAuthToken;
       dynamic response =
-          await httpService.getExamList(token, widget.wpId, widget.cid);
+          await httpService.getExamList(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
      setExamList(response);
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
 
       dynamic response =
-          await httpService.getExamList(ptoken, widget.wpId, widget.cid);
+          await httpService.getExamList(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
       setExamList(response);
     }
   }

@@ -257,7 +257,7 @@ class _TeacherScreenChild extends State<TeacherScreen> {
       Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
       dynamic country =
-          await httpService.getTeacher(token, widget.wpId, widget.cid);
+          await httpService.getTeacher(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
       if (country['status']) {
         TeacherlistModel teacher = TeacherlistModel.fromJson(country);
         setState(() {
@@ -275,7 +275,7 @@ class _TeacherScreenChild extends State<TeacherScreen> {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
-          await httpService.getTeacher(ptoken, widget.wpId, widget.cid);
+          await httpService.getTeacher(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
       if (country['status']) {
         TeacherlistModel teacher = TeacherlistModel.fromJson(country);
           setState(() {

@@ -200,13 +200,13 @@ class _TestDetailsChild extends State<TestDetails> {
     if(role==0){
       Studentlogin login= await sessionManagement.getModel('Student');
       String token=login.basicAuthToken;
-      dynamic country = await httpService.getSingleExam(token,widget.id);
+      dynamic country = await httpService.getSingleExam(token,widget.id,login.userdata.cookie ?? "");
       if(country['status']){
         Singleexam exam= Singleexam.fromJson(country);
-        String listsub="";
+        String listSub="";
         for(var i in exam.data!.subdetails!){
           if(i.id==widget.sID){
-            listsub=i.name!;
+            listSub=i.name!;
             break;
           }
         }
@@ -214,7 +214,7 @@ class _TestDetailsChild extends State<TestDetails> {
         setState((){
           list=exam;
           subDetail=exam.data!.subdetails!;
-          subject=listsub;
+          subject=listSub;
           professor=list!.data!.cName!;
           date=list!.data!.eSDate!;
           hour=list!.data!.time!;
@@ -230,13 +230,13 @@ class _TestDetailsChild extends State<TestDetails> {
     }else{
       Parentlogin parent= await sessionManagement.getModelParent('Parent');
       String ptoken=parent.basicAuthToken;
-      dynamic country = await httpService.getSingleExam(ptoken,widget.id);
+      dynamic country = await httpService.getSingleExam(ptoken,widget.id,parent.userdata.cookie ?? "");
       if(country['status']){
         Singleexam exam= Singleexam.fromJson(country);
-        String listsub="";
+        String listSub="";
         for(var i in exam.data!.subdetails!){
           if(i.id==widget.sID){
-            listsub=i.name!;
+            listSub=i.name!;
             break;
           }
         }
@@ -244,7 +244,7 @@ class _TestDetailsChild extends State<TestDetails> {
         setState((){
           list=exam;
           subDetail=exam.data!.subdetails!;
-          subject=listsub;
+          subject=listSub;
           professor=list!.data!.cName!;
           date=list!.data!.eSDate!;
           hour=list!.data!.time!;

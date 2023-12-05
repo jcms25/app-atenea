@@ -1,21 +1,24 @@
 import 'dart:convert';
 import 'package:colegia_atenea/models/Failed.dart';
+import 'package:colegia_atenea/services/share_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart' hide Response,MultipartFile;
 import 'package:http/http.dart';
 
 import '../models/assistant/assistant_sub_slot_model.dart';
+import '../views/login_screen.dart';
 class ApiClass {
   String embedBaseUrl = "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
 
-  String cookie = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
+  // String cookie = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
 
   String sendMessage = "message";
   String login = "login";
-  String dashboard = "dashboard";
+  String dashboard = "dashboard/";
   String allMessage = "parentSendMessage";
   String timetable = "timetable";
   String teacher = "teachers?";
@@ -63,27 +66,30 @@ class ApiClass {
 
   }
 
-  Future<dynamic> getDashboard(String token,String username) async {
+  Future<dynamic> getDashboard({required String token,required String cookieExample}) async {
     try {
       Response res =
       await get(Uri.parse('$liveBaseUrl$dashboard'), headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': "Basic $token",
-        'Cookie' : cookie
+        'Cookie' : cookieExample
       });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "something went wrong"};
       }
-    }catch(_){
-      return {'status' : false, "Message" : "something went wrong"};
+    }catch(exception){
+      return {'status' : false, "Message" : "$exception"};
     }
   }
 
-  Future<dynamic> getEvent(String token) async {
+  Future<dynamic> getEvent(String token,String cookie) async {
     try {
       final Response response = await get(
         Uri.parse('$liveBaseUrl$eventsList'),
@@ -105,7 +111,7 @@ class ApiClass {
 
   }
 
-  Future<dynamic> getMessageAll(String token) async {
+  Future<dynamic> getMessageAll(String token,String cookie) async {
     try {
       Response res =
       await get(Uri.parse("$liveBaseUrl$allMessage"), headers: <String, String>{
@@ -124,7 +130,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getTimeTable(String token, String classId) async {
+  Future<dynamic> getTimeTable(String token, String classId,String cookie) async {
     try {
       Response res = await get(Uri.parse("$liveBaseUrl$timetable/$classId"),
           headers: <String, String>{
@@ -148,7 +154,7 @@ class ApiClass {
   }
 
   Future<dynamic> getTeacher(
-      String token, String studentId, String classId) async {
+      String token, String studentId, String classId,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -173,7 +179,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getStudent(String token, String classid) async {
+  Future<dynamic> getStudent(String token, String classid,String cookie) async {
     try {
       Response res = await get(Uri.parse("$liveBaseUrl$student?class_id=$classid"),
           headers: <String, String>{
@@ -199,7 +205,7 @@ class ApiClass {
   }
 
   Future<dynamic> getSubject(
-      String token, String studentId, String classId) async {
+      String token, String studentId, String classId,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -225,7 +231,7 @@ class ApiClass {
   }
 
   Future<dynamic> getExamList(
-      String token, String studentId, String classId) async {
+      String token, String studentId, String classId,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -251,7 +257,7 @@ class ApiClass {
   }
 
   Future<dynamic> getMarks(
-      String token, String studentId, String classId) async {
+      String token, String studentId, String classId,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -276,7 +282,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getEvaluation(String token, String wpid, String cid) async {
+  Future<dynamic> getEvaluation(String token, String wpid, String cid,String cookie) async {
     try {
       Response res = await get(
           Uri.parse("$liveBaseUrl$evaluation?student_id=$wpid${'&class_id=$cid'}"),
@@ -301,7 +307,7 @@ class ApiClass {
   }
 
   Future<dynamic> getAttendance(
-      String token, String studentId, String classId) async {
+      String token, String studentId, String classId,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -326,7 +332,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic>? getTransfer(String token) async {
+  Future<dynamic>? getTransfer(String token,String cookie) async {
     try {
       Response res = await get(Uri.parse('$liveBaseUrl$transportation'),
           headers: <String, String>{
@@ -345,7 +351,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getCircular(String token) async {
+  Future<dynamic> getCircular(String token,String cookie) async {
     try {
       Response res =
           await get(Uri.parse("$liveBaseUrl$circular"), headers: <String, String>{
@@ -364,7 +370,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getTeacherListForSendMessage(String token) async {
+  Future<dynamic> getTeacherListForSendMessage(String token,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -388,7 +394,7 @@ class ApiClass {
 
   }
 
-  Future<dynamic> sendMessageToTeacher(String token,String attachment,String senderId,String recieverId,String subject,String message) async{
+  Future<dynamic> sendMessageToTeacher(String token,String attachment,String senderId,String recieverId,String subject,String message,String cookie) async{
 
     try{
       final MultipartRequest request = MultipartRequest(
@@ -428,6 +434,7 @@ class ApiClass {
   Future<dynamic> getSingleCircular(
     String token,
     String circularid,
+    String cookie
   ) async {
     try {
       Response res = await get(Uri.parse("$liveBaseUrl$circular?id=$circularid"),
@@ -451,7 +458,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getStudentDetail(String token, String studentid) async {
+  Future<dynamic> getStudentDetail(String token, String studentid,String cookie) async {
     try {
       Response res = await get(Uri.parse("$liveBaseUrl$studentDetail/$studentid"),
           headers: <String, String>{
@@ -474,7 +481,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getSingleSubject(String token, String id) async {
+  Future<dynamic> getSingleSubject(String token, String id,String cookie) async {
     try {
       Response res = await get(Uri.parse('$liveBaseUrl$singleSubject/$id'),
           headers: <String, String>{
@@ -498,7 +505,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getSingleTeacher(String token, String id) async {
+  Future<dynamic> getSingleTeacher(String token, String id,String cookie) async {
     try {
       Response res = await get(Uri.parse('$liveBaseUrl$singleTeacher/$id'),
           headers: <String, String>{
@@ -521,7 +528,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getSingleExam(String token, String id) async {
+  Future<dynamic> getSingleExam(String token, String id,String cookie) async {
     try {
       Response res = await get(Uri.parse('$liveBaseUrl$singleExam/$id'),
           headers: <String, String>{
@@ -544,40 +551,39 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getSingleMessageDetail(String token, String messageId) async{
-    // try {
-    //
-    // } catch (exception) {
-    //   print(exception);
-    //   return {"status": false, "Message": "$exception"};
-    // }
-    Response res = await get(
-        Uri.parse(
-            '$liveBaseUrl$allMessage?mid=$messageId'),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': "Basic $token",
-          'Cookie' : cookie
-        });
-    if (res.statusCode == 200) {
-      var data = json.decode(res.body);
-      if (data['status']) {
+  Future<dynamic> getSingleMessageDetail(String token, String messageId,String cookie) async{
+    try {
+      Response res = await get(
+          Uri.parse(
+              '$liveBaseUrl$allMessage?mid=$messageId'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie' : cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        if (data['status']) {
 
-        return data;
-      } else {
-        return data;
+          return data;
+        } else {
+          return data;
+        }
       }
+      else {
+        return {'status': false, "Message": "Something Went Wrong"};
+      }
+    } catch (exception) {
+      return {"status": false, "Message": "$exception"};
     }
-    else {
-      return {'status': false, "Message": "Something Went Wrong"};
-    }
+
 
   }
 
   //assistant related api's
 
   //assistant dashboard data get api
-  Future<dynamic> getAsDashboard(String token) async {
+  Future<dynamic> getAsDashboard(String token,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -598,7 +604,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getAsClassList(String token) async {
+  Future<dynamic> getAsClassList(String token,String cookie) async {
     try{
       Response res = await get(
           Uri.parse(
@@ -619,7 +625,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getAsSlot(String token) async {
+  Future<dynamic> getAsSlot(String token,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -640,7 +646,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getAsSlotChildList(String token, String id) async {
+  Future<dynamic> getAsSlotChildList(String token, String id,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -662,7 +668,7 @@ class ApiClass {
   }
 
   Future<dynamic> getStudentListForCommonMessage(
-      String token, String classId) async {
+      String token, String classId,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -684,7 +690,7 @@ class ApiClass {
   }
 
   //get sub slot list
-  Future<dynamic> getSubSlotList(String token, String classId,int day) async {
+  Future<dynamic> getSubSlotList(String token, String classId,int day,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -707,7 +713,7 @@ class ApiClass {
   }
 
   //send student report message.
-  Future<dynamic> sendStudentReport({required String token,required String senderId,required String studentId,required List<bool> slotValue,required List<TextEditingController>? controller,required List<SubSlotData> subSlotData,required String subject,required String message,required String day,required String attachment}) async{
+  Future<dynamic> sendStudentReport({required String token,required String cookie,required String senderId,required String studentId,required List<bool> slotValue,required List<TextEditingController>? controller,required List<SubSlotData> subSlotData,required String subject,required String message,required String day,required String attachment}) async{
     try{
       final MultipartRequest request = MultipartRequest(
           'POST',Uri.parse('${liveBaseUrl}communication')
@@ -753,7 +759,7 @@ class ApiClass {
 
   //sent Common Message.
   //all parent or to selected parent without attachment.
-  Future<dynamic> sendCommonMessageWithOutAttachment(Map<String,dynamic> body,String token) async{
+  Future<dynamic> sendCommonMessageWithOutAttachment(Map<String,dynamic> body,String token,String cookie) async{
       try{
         final Response response = await post(
             Uri.parse("${liveBaseUrl}sendCommonMessage"),
@@ -776,7 +782,7 @@ class ApiClass {
   }
 
   //all parent or to selected parent with attachment.
-  Future<dynamic> sendCommonMessageWithAttachment({required String token,required String senderId,required String subject,required String message,required String attachment,int? toAllOrParent,List<String>? receiverId,String? classId}) async{
+  Future<dynamic> sendCommonMessageWithAttachment({required String token,required String cookie,required String senderId,required String subject,required String message,required String attachment,int? toAllOrParent,List<String>? receiverId,String? classId}) async{
     try{
       final MultipartRequest request = MultipartRequest('POST',Uri.parse("${liveBaseUrl}sendCommonMessage"));
       request.headers.addAll({
@@ -816,7 +822,7 @@ class ApiClass {
 
 
   //get student report message list.
-  Future<dynamic> getStudentReportMessageList(String token) async{
+  Future<dynamic> getStudentReportMessageList(String token,String cookie) async{
     try{
       final Response response = await get(Uri.parse("${liveBaseUrl}report_communicationList"),
         headers: <String, String>{
@@ -837,7 +843,7 @@ class ApiClass {
   }
 
   //get common message list.
-  Future<dynamic> getCommonMessageList(String token) async {
+  Future<dynamic> getCommonMessageList(String token,String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -860,7 +866,7 @@ class ApiClass {
   }
 
   //get Message Details.
-  Future<dynamic> getMessageDetails({required int isCommonOrStudentReport,required String token,required String messageId}) async{
+  Future<dynamic> getMessageDetails({required int isCommonOrStudentReport,required String token,required String cookie,required String messageId}) async{
     try{
       final Response response = await get(Uri.parse("${liveBaseUrl}single_communication/$messageId"),
         headers: <String, String>{
@@ -882,7 +888,7 @@ class ApiClass {
   }
 
   //get message details using date and studentId.
-  Future<dynamic> getMessageDetailsUsingDate({required String token,required String date,required String studentId}) async{
+  Future<dynamic> getMessageDetailsUsingDate({required String token,required String cookie,required String date,required String studentId}) async{
     try{
       final Response response = await post(Uri.parse("${liveBaseUrl}single_reportByDate"),
           headers: <String, String>{
@@ -909,7 +915,7 @@ class ApiClass {
 
 
   //send Message to Assistant
-  Future<dynamic> sendMessageToAssistant({required String token,required String senderId,required String receiverId,required String studentId,required String subject,required String message,required String attachment}) async{
+  Future<dynamic> sendMessageToAssistant({required String token,required String cookie,required String senderId,required String receiverId,required String studentId,required String subject,required String message,required String attachment}) async{
 
     try {
       final MultipartRequest request = MultipartRequest('POST',Uri.parse("${liveBaseUrl}sendPtoAMessage"));
@@ -945,7 +951,7 @@ class ApiClass {
 
   }
 
-  Future<dynamic> getAssistantList(String token) async{
+  Future<dynamic> getAssistantList(String token,String cookie) async{
     try{
       Response res = await get(
           Uri.parse(
@@ -966,4 +972,13 @@ class ApiClass {
     }
 
   }
+}
+
+
+void sessionExpired() async{
+
+  await SharedPref.initialization();
+  await SharedPref.pref.setBool(SharedPref.isLogin, false);
+  Fluttertoast.showToast(msg: 'sessionExpired'.tr);
+  Get.to(() => const LoginScreen());
 }

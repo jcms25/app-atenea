@@ -265,7 +265,7 @@ class _GradeScreenChild extends State<GradeScreen> {
                                     ),
                                     Visibility(
                                         // visible: RegExp(r'[1-9] | 10 | [a-zA-Z]*').hasMatch(tempList[position].remarks!),
-                                        visible: tempList[position].remarks != null || tempList[position].remarks!.isNotEmpty ? true : false,
+                                        visible: tempList[position].remarks != null && tempList[position].remarks!.isNotEmpty,
                                         child: Column(
                                           children: [
                                             Row(
@@ -333,7 +333,7 @@ class _GradeScreenChild extends State<GradeScreen> {
       Studentlogin login = await sessionManagement.getModel('Login');
       String? token = login.basicAuthToken;
       dynamic response =
-          await httpService.getMarks(token, widget.wpId, widget.cid);
+          await httpService.getMarks(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
       if (response['status']) {
         MarkList studentMarks = MarkList.fromJson(response);
         setState(() {
@@ -350,7 +350,7 @@ class _GradeScreenChild extends State<GradeScreen> {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic response =
-          await httpService.getMarks(ptoken, widget.wpId, widget.cid);
+          await httpService.getMarks(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
       if (response['status']) {
         MarkList studentMarks = MarkList.fromJson(response);
         setState(() {

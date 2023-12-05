@@ -302,7 +302,7 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
     if(role==0){
       Studentlogin login= await sessionManagement.getModel('Student');
       String token=login.basicAuthToken;
-      dynamic country = await httpService.getSingleTeacher(token,widget.id);
+      dynamic country = await httpService.getSingleTeacher(token,widget.id,login.userdata.cookie ?? "");
       if(country['status']){
         Singleteacher teacherDetails= Singleteacher.fromJson(country);
 
@@ -324,7 +324,7 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
     }else{
       Parentlogin parent= await sessionManagement.getModelParent('Parent');
       String ptoken=parent.basicAuthToken;
-      dynamic country = await httpService.getSingleTeacher(ptoken,widget.id);
+      dynamic country = await httpService.getSingleTeacher(ptoken,widget.id,parent.userdata.cookie ?? "");
       if(country['status']){
         Singleteacher? teacherDetails= Singleteacher.fromJson(country);
         setState((){

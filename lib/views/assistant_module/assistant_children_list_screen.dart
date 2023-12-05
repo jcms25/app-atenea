@@ -223,7 +223,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
     SessionManagement sessionManagement = SessionManagement();
     Assistant assistant = await sessionManagement.getAssistantDetail();
     String token = assistant.basicAuthToken;
-    dynamic tempChildList = await apiClass.getAsSlotChildList(token,widget.classId);
+    dynamic tempChildList = await apiClass.getAsSlotChildList(token,widget.classId,assistant.userdata.data.cookie ?? "");
     if(tempChildList['status']){
         ChildListDetailModel childListDetailModel = ChildListDetailModel.fromJson(tempChildList);
         childListDetailModel.data.sort((a,b) => a.studentName.compareTo(b.studentName));

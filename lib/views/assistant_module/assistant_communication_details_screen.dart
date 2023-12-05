@@ -369,7 +369,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => NewCommunication(
+                    builder: (context) => const NewCommunication(
                           isCommonMessageOrStudentReport: 0,
                         )));
           },
@@ -403,13 +403,16 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
     ApiClass apiClass = ApiClass();
     SessionManagement sessionManagement = SessionManagement();
     String token = "";
+    String cookie = "";
     int? role = await sessionManagement.getRole('');
     if (role == 2) {
       Assistant assistant = await sessionManagement.getAssistantDetail();
       token = assistant.basicAuthToken;
+      cookie = assistant.userdata.data.cookie ?? "";
     } else {
       Parentlogin parentLogin = await sessionManagement.getModelParent('');
       token = parentLogin.basicAuthToken;
+      cookie = parentLogin.userdata.cookie ?? "";
     }
     if (isCommonMessageOrStudentReport == 0) {
       //this will  get details of common message.
@@ -419,7 +422,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
       dynamic res = await apiClass.getMessageDetails(
           isCommonOrStudentReport: 0,
           token: token,
-          messageId: widget.messageId!);
+          messageId: widget.messageId!, cookie: cookie);
       if (res['status']) {
         MessageDetailModel commonMessageModel =
             MessageDetailModel.fromJson(res);
@@ -449,7 +452,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
         dynamic res = await apiClass.getMessageDetails(
             isCommonOrStudentReport: 1,
             token: token,
-            messageId: widget.messageId!);
+            messageId: widget.messageId!, cookie: cookie);
         if (res['status']) {
           if (isCommonMessageOrStudentReport == 1) {
             MessageDetailModel studentReportDetailModel =
@@ -480,7 +483,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
           receiverName = "";
         });
         dynamic res = await apiClass.getMessageDetailsUsingDate(
-            token: token, date: dateForMessage!, studentId: studentId!);
+            token: token, date: dateForMessage!, studentId: studentId!, cookie: cookie);
         if (res['status']) {
           MessageDetailModel studentReportDetailModel =
           MessageDetailModel.fromJson(res);

@@ -550,7 +550,7 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
       Studentlogin login = await sessionManagment.getModel('Student');
       String token = login.basicAuthToken;
       dynamic country =
-          await httpService.getAttendance(token, widget.wpId, widget.cid);
+          await httpService.getAttendance(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
       if (country['status']) {
         Attendencelist attendance = Attendencelist.fromJson(country);
         setState(() {
@@ -575,7 +575,7 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
       Parentlogin parent = await sessionManagment.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
       dynamic country =
-          await httpService.getAttendance(ptoken, widget.wpId, widget.cid);
+          await httpService.getAttendance(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
       if (country['status']) {
         Attendencelist attendance = Attendencelist.fromJson(country);
         setState(() {

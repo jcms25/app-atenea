@@ -227,6 +227,7 @@ class WorldLanguage extends Translations {
 
 
           'logOut' : 'successfully logout',
+           'sessionExpired' : 'Session Expired,Please Login Again.',
 
           //send message successfully
           'parentSendMessage' : 'Communication sent successfully',
@@ -450,6 +451,8 @@ class WorldLanguage extends Translations {
           'sure' : 'Confirmar cierre de sesión?',
           'positiveButton' : 'Si',
           'negativeButton' : 'No',
+
+          'sessionExpired' : 'La sesión expiró, inicie sesión nuevamente.',
 
           //send message successfully
            'parentSendMessage' : 'Comunicación enviada correctamente',

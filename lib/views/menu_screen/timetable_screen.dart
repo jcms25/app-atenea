@@ -258,7 +258,7 @@ class TimeTable extends State<TimeTableScreen> {
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String? token = login.basicAuthToken;
-      dynamic response = await httpService.getTimeTable(token, widget.cid!);
+      dynamic response = await httpService.getTimeTable(token, widget.cid!,login.userdata.cookie ?? "");
       if (response['status']) {
         Timetablelist time = Timetablelist.fromJson(response);
         int day = getDay();
@@ -276,7 +276,7 @@ class TimeTable extends State<TimeTableScreen> {
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String token = parent.basicAuthToken;
-      dynamic response = await httpService.getTimeTable(token, widget.cid!);
+      dynamic response = await httpService.getTimeTable(token, widget.cid!,parent.userdata.cookie ?? "");
       if (response['status']) {
         Timetablelist time = Timetablelist.fromJson(response);
         int day = getDay();

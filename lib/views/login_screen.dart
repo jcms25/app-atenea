@@ -442,9 +442,7 @@ class _LoginScreenState extends State<LoginScreen> {
       else if(role=="prent".tr) {
         Parentlogin parent=Parentlogin.fromJson(login);
         SessionManagement sessionManagement= SessionManagement();
-        Parentlogin parentData=parent;
-        sessionManagement.createSessionParent(parentData);
-        await shre.setString("cookieUserName", username);
+        sessionManagement.createSessionParent(parent);
       }
       else{
         Assistant assistant= Assistant.fromJson(login);

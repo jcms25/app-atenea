@@ -249,7 +249,7 @@ class MessageListScreen extends State<MessageScreen> {
     if (role == 0) {
       Studentlogin login = await sessionManagement.getModel('Student');
       String token = login.basicAuthToken;
-      dynamic country = await httpService.getMessageAll(token);
+      dynamic country = await httpService.getMessageAll(token,login.userdata.cookie ?? "");
       if (country["status"]) {
         try{
           Messagelist message = Messagelist.fromJson(country);
@@ -270,7 +270,7 @@ class MessageListScreen extends State<MessageScreen> {
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       String ptoken = parent.basicAuthToken;
-      dynamic allMessage = await httpService.getMessageAll(ptoken);
+      dynamic allMessage = await httpService.getMessageAll(ptoken,parent.userdata.cookie ?? "");
       if (allMessage['status']) {
         try{
           Messagelist message = Messagelist.fromJson(allMessage);

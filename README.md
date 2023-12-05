@@ -17,8 +17,8 @@ samples, guidance on mobile development, and a full API reference.
 
 Android version :
 
-   version code : 2
-   version name : 1.1
+   version code : 3
+   version name : 1.2
  
 iOS : 
 

@@ -102,6 +102,9 @@ class ApiClass {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Exception occurred"};
       }
@@ -122,6 +125,9 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Exception occurred"};
       }
@@ -145,6 +151,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -171,6 +180,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -194,6 +206,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -222,6 +237,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -248,6 +266,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -274,7 +295,10 @@ class ApiClass {
         } else {
           return data;
         }
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -298,7 +322,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -324,7 +351,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -343,7 +373,10 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -362,6 +395,9 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -384,6 +420,9 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -421,6 +460,9 @@ class ApiClass {
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else{
         return {'status': false, "Message": "Something Went Wrong"};
@@ -450,6 +492,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -473,7 +518,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -497,7 +545,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -520,7 +571,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -543,6 +597,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -569,6 +626,9 @@ class ApiClass {
         } else {
           return data;
         }
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -596,6 +656,9 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
@@ -617,7 +680,10 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     }catch(_){
@@ -638,7 +704,10 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -659,7 +728,10 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -681,7 +753,10 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -703,6 +778,9 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -748,6 +826,9 @@ class ApiClass {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -773,6 +854,9 @@ class ApiClass {
         if(response.statusCode == 200){
           var res = json.decode(response.body);
           return res;
+        }else if(response.statusCode == 401){
+          sessionExpired();
+          return {'status' : false,'Message' : 'Session Expired.'};
         }else{
           return {"status": false, "Message": "please try again"};
         }
@@ -811,6 +895,9 @@ class ApiClass {
         var data = json.decode(response.body);
 
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -834,7 +921,10 @@ class ApiClass {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
-      } else {
+      } else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     }catch(_){
@@ -856,6 +946,9 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
+      }else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -878,6 +971,9 @@ class ApiClass {
       if(response.statusCode == 200){
         var data = json.decode(response.body);
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }else{
         return {"status": false, "Message": "please try again"};
       }
@@ -904,6 +1000,9 @@ class ApiClass {
       if(response.statusCode == 200){
         var data = json.decode(response.body);
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else{
         return {"status": false, "Message": "please try again"};
@@ -941,6 +1040,9 @@ class ApiClass {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
+      }else if(response.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
       }
       else {
         return {'status': false, "Message": "Something Went Wrong"};
@@ -964,7 +1066,10 @@ class ApiClass {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else {
+      } else if(res.statusCode == 401){
+        sessionExpired();
+        return {'status' : false,'Message' : 'Session Expired.'};
+      }else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     }catch(_){

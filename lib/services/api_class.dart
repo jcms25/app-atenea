@@ -14,7 +14,7 @@ class ApiClass {
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
 
-  // String cookie = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
+  String cookieExample = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
 
   String sendMessage = "message";
   String login = "login";
@@ -96,7 +96,7 @@ class ApiClass {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Basic $token',
-          'Cookie' : cookie
+          'Cookie' : cookieExample
         },
       );
       if (response.statusCode == 200) {

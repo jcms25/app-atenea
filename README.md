@@ -22,4 +22,4 @@ Android version :
  
 iOS : 
 
-   version code : 1.1
+   version code : 1.2

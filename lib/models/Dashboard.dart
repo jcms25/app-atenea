@@ -28,7 +28,7 @@ class Dashboard {
     message: json["Message"],
     count: Count.fromJson(json["count"]),
     examlist: json["examlist"] == null ? [] : List<Examlist>.from(json["examlist"].map((x) => Examlist.fromJson(x))),
-    eventList: EventList.fromJson(json["event_list"]),
+    eventList:  EventList.fromJson(json["event_list"]),
   );
 
   Map<String, dynamic> toJson() => {

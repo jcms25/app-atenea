@@ -14,7 +14,7 @@ class ApiClass {
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
 
-  String cookieExample = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
+  // String cookieExample = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
 
   String sendMessage = "message";
   String login = "login";
@@ -87,6 +87,8 @@ class ApiClass {
     }catch(exception){
       return {'status' : false, "Message" : "$exception"};
     }
+
+
   }
 
   Future<dynamic> getEvent(String token,String cookie) async {
@@ -96,7 +98,7 @@ class ApiClass {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Basic $token',
-          'Cookie' : cookieExample
+          'Cookie' : cookie
         },
       );
       if (response.statusCode == 200) {
@@ -1085,5 +1087,5 @@ void sessionExpired() async{
   await SharedPref.initialization();
   await SharedPref.pref.setBool(SharedPref.isLogin, false);
   Fluttertoast.showToast(msg: 'sessionExpired'.tr);
-  Get.to(() => const LoginScreen());
+  Get.offAll(const LoginScreen());
 }

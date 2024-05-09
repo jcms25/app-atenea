@@ -10,7 +10,6 @@ import 'package:colegia_atenea/services/world_languages.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_strings.dart';
-import 'package:colegia_atenea/utils/lifecycle_manager.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/widgets/item_logo_rounded.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -64,17 +63,17 @@ void main() async {
     sound: true,
   );
   runApp(
-      LifeCycleManager(key: null,
-          child: GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: const MyHomePage(),
-            translations: WorldLanguage(), //Language class from world_languages.dart
-            locale: const Locale('es', 'ES'), // translations will be displayed in that locale
-            fallbackLocale: const Locale('es', 'ES'), // specify the fallback locale in case an invalid locale is selected.
-            theme: ThemeData(
-              primarySwatch: createMaterialColor(AppColors.primary),
-            ),
-          ))
+      GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: const MyHomePage(),
+        translations: WorldLanguage(), //Language class from world_languages.dart
+        locale: const Locale('es', 'ES'), // translations will be displayed in that locale
+        fallbackLocale: const Locale('es', 'ES'), // specify the fallback locale in case an invalid locale is selected.
+        theme: ThemeData(
+          primarySwatch: createMaterialColor(AppColors.primary),
+          useMaterial3: false
+        ),
+      )
   );
 }
 

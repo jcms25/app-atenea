@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:io';
 import 'package:colegia_atenea/views/nav_screens/navigation_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_main_screen.dart';
 import 'package:colegia_atenea/views/login_screen.dart';
@@ -45,9 +46,11 @@ void main() async {
   );
   // bool? initialize = await notificationsPlugin.initialize(initializationSettings);
   await notificationsPlugin.initialize(initializationSettings);
-  // FirebaseMessaging.instance.getToken().then((value) => print(value));
+  FirebaseMessaging.instance.getToken().then((value) => print(value));
   FirebaseMessaging.onMessage.listen((event) {
-      NotificationService.showNotification(event);
+      if(Platform.isAndroid){
+        NotificationService.showNotification(event);
+      }
       if(event.notification!.body!.split("|").first == "0") {
         setLoginFalse();
       }

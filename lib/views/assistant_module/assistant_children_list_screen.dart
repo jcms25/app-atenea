@@ -183,7 +183,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                           const SizedBox(height: 10,),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> CommunicationDetail(isCommonMessageOrStudentReport: 2,studentId: childList[index].wpUsrId, isButtonView: false,fromParent: false,)));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> CommunicationDetail(isCommonMessageOrStudentReport: 2,studentId: childList[index].wpUsrId, isButtonView: false,fromParent: false,childNameSelectedFromPreviousScreen: childList[index].studentName,)));
                             },
                             child: const Icon(Icons.chat,color: AppColors.primary,),
                           ),

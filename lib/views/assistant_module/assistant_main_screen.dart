@@ -230,11 +230,9 @@ class AssistantScreenChild extends State<AssistantScreen>{
                     child: ElevatedButton.icon(
                       icon: SvgPicture.asset(AppImages.loginArrow),
                       style: ButtonStyle(
-                          shadowColor:
-                          MaterialStateProperty.all(AppColors.primary),
-                          backgroundColor:
-                          MaterialStateProperty.all(AppColors.primary),
-                          shape: MaterialStateProperty.all(
+                          shadowColor: WidgetStateProperty.all(AppColors.primary),
+                          backgroundColor: WidgetStateProperty.all(AppColors.primary),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -279,7 +277,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                     AppImages.asClasses,
-                    color: AppColors.secondary,
+                  colorFilter: const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),
                 ),
                 label: 'classes',
                 activeIcon: SvgPicture.asset(

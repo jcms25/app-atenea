@@ -57,12 +57,8 @@ class SubjectsDetail extends State<subjectdetailscreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
                 ),
-
-
-
-
               ),
             )),
         body: Stack(

@@ -50,6 +50,11 @@ class MessageDetailData {
   String? receiverName;
   String? senderName;
   List<ReportData> reportData;
+  String? breakFast;
+  String? snack;
+  String? food;
+  String? cleanliness;
+  String? sleep;
 
   MessageDetailData({
     required this.id,
@@ -68,7 +73,12 @@ class MessageDetailData {
     required this.studentId,
     required this.reportData,
     required this.receiverName,
-    this.senderName
+    this.senderName,
+    this.breakFast,
+    this.snack,
+    this.food,
+    this.cleanliness,
+    this.sleep
   });
 
   factory MessageDetailData.fromJson(Map<String, dynamic> json) => MessageDetailData(
@@ -88,7 +98,12 @@ class MessageDetailData {
     studentId: json["student_id"],
     receiverName: json["reciever_name"],
     reportData: List<ReportData>.from(json["reportData"].map((x) => ReportData.fromJson(x))),
-    senderName: json["sender_name"]
+    senderName: json["sender_name"],
+    breakFast: json['breakfast'],
+    snack: json['snack'],
+    food: json['food'],
+    cleanliness: json['cleanliness'],
+    sleep: json['sleep']
   );
 
   Map<String, dynamic> toJson() => {
@@ -108,7 +123,12 @@ class MessageDetailData {
     "student_id": studentId,
     "reciever_name" : receiverName,
     "reportData": List<dynamic>.from(reportData.map((x) => x.toJson())),
-    "sender_name" : senderName
+    "sender_name" : senderName,
+    "breakfast" : breakFast,
+    "snack" : snack,
+    "food" : food,
+    "cleanliness" : cleanliness,
+    "sleep" : sleep
   };
 }
 

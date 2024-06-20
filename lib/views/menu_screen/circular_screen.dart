@@ -58,7 +58,7 @@ class _Circular extends State<CircularScreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
                 ),
               ),
             )),

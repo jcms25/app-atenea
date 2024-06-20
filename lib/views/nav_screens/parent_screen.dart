@@ -14,7 +14,6 @@ class ParentScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _ParentScreenChild();
   }
 
@@ -32,7 +31,7 @@ class _ParentScreenChild extends State<ParentScreen> {
   void initState() {
     super.initState();
     isLoading = true;
-    setdata();
+    setData();
   }
 
   @override
@@ -305,11 +304,11 @@ class _ParentScreenChild extends State<ParentScreen> {
         ));
   }
 
-  void setdata() async {
-    SessionManagement sessionManagment = SessionManagement();
-    int? Role = await sessionManagment.getRole("Role");
-    if (Role == 0) {
-      Studentlogin login = await sessionManagment.getModel('Student');
+  void setData() async {
+    SessionManagement sessionManagement = SessionManagement();
+    int? role = await sessionManagement.getRole("Role");
+    if (role == 0) {
+      Studentlogin login = await sessionManagement.getModel('Student');
       setState(() {
         role = 0;
         list = login.userdata.parentData!;
@@ -317,10 +316,10 @@ class _ParentScreenChild extends State<ParentScreen> {
         isLoading = false;
       });
     } else {
-      Parentlogin Parent = await sessionManagment.getModelParent('Parent');
+      Parentlogin parent = await sessionManagement.getModelParent('Parent');
       setState(() {
         role = 1;
-        listOfStudent = Parent.userdata.studentData!;
+        listOfStudent = parent.userdata.studentData!;
         title = "student".tr;
         isLoading = false;
       });

@@ -11,15 +11,15 @@ class Singleteacher {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['Message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['Message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -129,37 +129,37 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['tid'] = this.tid;
-    data['wp_usr_id'] = this.wpUsrId;
-    data['first_name'] = this.firstName;
-    data['middle_name'] = this.middleName;
-    data['last_name'] = this.lastName;
-    data['zipcode'] = this.zipcode;
-    data['country'] = this.country;
-    data['city'] = this.city;
-    data['address'] = this.address;
-    data['empcode'] = this.empcode;
-    data['dob'] = this.dob;
-    data['doj'] = this.doj;
-    data['dol'] = this.dol;
-    data['phone'] = this.phone;
-    data['qualification'] = this.qualification;
-    data['gender'] = this.gender;
-    data['bloodgrp'] = this.bloodgrp;
-    data['position'] = this.position;
-    data['whours'] = this.whours;
-    data['family_care_hour'] = this.familyCareHour;
-    data['ID'] = this.iD;
-    data['user_login'] = this.userLogin;
-    data['user_pass'] = this.userPass;
-    data['user_nicename'] = this.userNicename;
-    data['user_email'] = this.userEmail;
-    data['user_url'] = this.userUrl;
-    data['user_registered'] = this.userRegistered;
-    data['user_activation_key'] = this.userActivationKey;
-    data['user_status'] = this.userStatus;
-    data['display_name'] = this.displayName;
-    data['image'] = this.image;
+    data['tid'] = tid;
+    data['wp_usr_id'] = wpUsrId;
+    data['first_name'] = firstName;
+    data['middle_name'] = middleName;
+    data['last_name'] = lastName;
+    data['zipcode'] = zipcode;
+    data['country'] = country;
+    data['city'] = city;
+    data['address'] = address;
+    data['empcode'] = empcode;
+    data['dob'] = dob;
+    data['doj'] = doj;
+    data['dol'] = dol;
+    data['phone'] = phone;
+    data['qualification'] = qualification;
+    data['gender'] = gender;
+    data['bloodgrp'] = bloodgrp;
+    data['position'] = position;
+    data['whours'] = whours;
+    data['family_care_hour'] = familyCareHour;
+    data['ID'] = iD;
+    data['user_login'] = userLogin;
+    data['user_pass'] = userPass;
+    data['user_nicename'] = userNicename;
+    data['user_email'] = userEmail;
+    data['user_url'] = userUrl;
+    data['user_registered'] = userRegistered;
+    data['user_activation_key'] = userActivationKey;
+    data['user_status'] = userStatus;
+    data['display_name'] = displayName;
+    data['image'] = image;
     return data;
   }
 }

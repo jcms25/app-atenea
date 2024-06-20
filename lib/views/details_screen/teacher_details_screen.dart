@@ -54,7 +54,8 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.arrow,color: AppColors.orange,
+                  AppImages.arrow,
+                    colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
                 ),
               ),
             )),
@@ -255,7 +256,10 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
                                 ),
                               ],
                             ),
-                            child: image.isEmpty ?Center(child:  SvgPicture.asset(AppImages.people,width: 100,height: 100,color: AppColors.primary,),) : CircleAvatar(
+                            child: image.isEmpty ?Center(child:  SvgPicture.asset(AppImages.people,width: 100,height: 100,
+
+                                colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
+                                ),) : CircleAvatar(
                               radius: 16.0,
                               backgroundColor: AppColors.primary,
                               backgroundImage: NetworkImage(image),

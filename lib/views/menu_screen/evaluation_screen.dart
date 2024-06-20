@@ -68,7 +68,7 @@ class TableExample extends State<evaluationscreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
                 ),
               ),
             )),
@@ -407,7 +407,7 @@ class TableExample extends State<evaluationscreen> {
                                   },
                                   child: SvgPicture.asset(
                                     AppImages.view,
-                                    color: AppColors.white,
+                                    colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                                   ),
                                 ))),
                       ),
@@ -440,7 +440,7 @@ class TableExample extends State<evaluationscreen> {
                                   },
                                   child: SvgPicture.asset(
                                     AppImages.view,
-                                    color: AppColors.white,
+                                    colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                                   ),
                                 ))),
                       ),
@@ -473,7 +473,7 @@ class TableExample extends State<evaluationscreen> {
                                   },
                                   child: SvgPicture.asset(
                                     AppImages.view,
-                                    color: AppColors.white,
+                                    colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                                   ),
                                 ))),
                       ),
@@ -510,7 +510,7 @@ class TableExample extends State<evaluationscreen> {
                                   },
                                   child: SvgPicture.asset(
                                     AppImages.view,
-                                    color: AppColors.white,
+                                    colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                                   ),
                                 ))),
                       ),

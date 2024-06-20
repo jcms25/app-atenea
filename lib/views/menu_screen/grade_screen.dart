@@ -54,7 +54,7 @@ class _GradeScreenChild extends State<GradeScreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn)
                 ),
               ),
             )),

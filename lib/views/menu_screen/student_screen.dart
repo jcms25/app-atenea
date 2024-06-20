@@ -61,7 +61,7 @@ class _StudentScreenChild extends State<StudentScreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                 ),
               ),
             )),
@@ -174,8 +174,7 @@ class _StudentScreenChild extends State<StudentScreen> {
                                           children: [
                                             SvgPicture.asset(
                                               AppImages.people,
-                                              color:
-                                              AppColors.primary,
+                                              colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                                             ),
                                             const SizedBox(
                                               width: 10,
@@ -196,8 +195,7 @@ class _StudentScreenChild extends State<StudentScreen> {
                                             SvgPicture.asset(
                                               AppImages.person,
                                               height: 16,
-                                              color:
-                                              AppColors.primary,
+                                              colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
                                             ),
                                             const SizedBox(
                                               width: 10,

@@ -62,8 +62,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String Fname = "";
-  String Mname = "";
+  String fName = "";
+  String mName = "";
   String Imagepath = "";
   String classid = "";
   String name = "";
@@ -278,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         fontWeight: FontWeight.w300),
                                   ),
                                   Text(
-                                    Fname,
+                                    fName,
                                     style: const TextStyle(
                                         color: AppColors.white,
                                         fontSize: 20,
@@ -365,11 +365,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: ElevatedButton.icon(
                         icon: SvgPicture.asset(AppImages.loginArrow),
                         style: ButtonStyle(
-                            shadowColor:
-                                MaterialStateProperty.all(AppColors.primary),
-                            backgroundColor:
-                                MaterialStateProperty.all(AppColors.primary),
-                            shape: MaterialStateProperty.all(
+                            shadowColor: WidgetStateProperty.all(AppColors.primary),
+                            backgroundColor: WidgetStateProperty.all(AppColors.primary),
+                            shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -399,22 +397,24 @@ class _MyHomePageState extends State<MyHomePage> {
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.dashboard,
-        color: Colors.grey,
+        colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn)
       ),
       label: '',
       activeIcon:
-          SvgPicture.asset(AppImages.dashboard, color: AppColors.primary),
+          SvgPicture.asset(AppImages.dashboard,
+              colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)
+          ),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.people,
-        color: Colors.grey,
+        colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
         height: 24,
         width: 18,
       ),
       label: 'people',
       activeIcon: SvgPicture.asset(AppImages.people,
-          height: 24, width: 18, color: AppColors.primary),
+          height: 24, width: 18,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
@@ -422,14 +422,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       label: 'people',
       activeIcon:
-          SvgPicture.asset(AppImages.calender, color: AppColors.primary),
+          SvgPicture.asset(AppImages.calender,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.event,
       ),
       label: 'people',
-      activeIcon: SvgPicture.asset(AppImages.event, color: AppColors.primary),
+      activeIcon: SvgPicture.asset(AppImages.event,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
   ];
 
@@ -437,30 +437,30 @@ class _MyHomePageState extends State<MyHomePage> {
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.dashboard,
-        color: Colors.grey,
+        colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn)
       ),
       label: '',
       activeIcon:
-          SvgPicture.asset(AppImages.dashboard, color: AppColors.primary),
+          SvgPicture.asset(AppImages.dashboard,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.message,
-        color: Colors.grey,
+        colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn)
       ),
       label: 'video',
-      activeIcon: SvgPicture.asset(AppImages.message, color: AppColors.primary),
+      activeIcon: SvgPicture.asset(AppImages.message,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.people,
-        color: Colors.grey,
+        colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
         height: 24,
         width: 18,
       ),
       label: 'people',
       activeIcon: SvgPicture.asset(AppImages.people,
-          height: 24, width: 18, color: AppColors.primary),
+          height: 24, width: 18,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
@@ -468,14 +468,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       label: 'people',
       activeIcon:
-          SvgPicture.asset(AppImages.calender, color: AppColors.primary),
+          SvgPicture.asset(AppImages.calender,
+              colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),),
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         AppImages.event,
       ),
       label: 'people',
-      activeIcon: SvgPicture.asset(AppImages.event, color: AppColors.primary),
+      activeIcon: SvgPicture.asset(AppImages.event,  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
     ),
   ];
 
@@ -486,7 +487,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (role == 0) {
       Studentlogin student = await sessionManagement.getModel('Student');
       setState(() {
-        Fname = student.userdata.sFname!;
+        fName = student.userdata.sFname!;
         Imagepath = student.userdata.stuImage!;
         cid = student.userdata.classId!;
         wpId = student.userdata.wpUsrId!;
@@ -495,7 +496,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       Parentlogin parent = await sessionManagement.getModelParent('Parent');
       setState(() {
-        Fname = (parent.userdata.pFname)!;
+        fName = (parent.userdata.pFname)!;
         Imagepath = (parent.userdata.parentImage)!;
         cid = (parent.userdata.studentData![0].classId)!;
         wpId = (parent.userdata.studentData![0].wpUsrId)!;
@@ -642,7 +643,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ? const SizedBox.shrink()
             : SvgPicture.asset(
                 drawerMenuOption.icon!,
-                color: AppColors.secondary,
+          colorFilter: const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),
                 width: 25,
                 height: 25,
               ),
@@ -667,7 +668,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 drawerMenuOption.icon!,
                 width: 25,
                 height: 25,
-                color: AppColors.secondary,
+          colorFilter: const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),
               ),
         collapsedIconColor: AppColors.secondary,
         iconColor: AppColors.secondary,
@@ -884,7 +885,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 studentOrParent: "0",
               )
             : _currentIndex == 2
-                ? ParentStudentInfo()
+                ? const ParentStudentInfo()
                 : _currentIndex == 3
                     ? const ClassesScreen()
                     : const EventScreen();

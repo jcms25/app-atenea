@@ -59,7 +59,7 @@ class MessageListScreen extends State<MessageScreen> {
                   },
                   child: SvgPicture.asset(
                     AppImages.humBurg,
-                    color: AppColors.orange,
+                    colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn)
                   ),
                 ),
               )

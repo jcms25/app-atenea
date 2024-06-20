@@ -31,6 +31,8 @@ class CommunicationDetail extends StatefulWidget {
   final String? studentId;
   final String? messageDate;
   final String? receiverName;
+  final String? childNameSelectedFromPreviousScreen;
+
 
   const CommunicationDetail(
       {super.key,
@@ -40,7 +42,8 @@ class CommunicationDetail extends StatefulWidget {
       this.messageId,
       this.studentId,
       this.messageDate,
-      this.receiverName,});
+      this.receiverName,
+      this.childNameSelectedFromPreviousScreen});
 
   @override
   State<StatefulWidget> createState() {
@@ -81,6 +84,8 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
   String? attachments = "";
   bool isLoading = false;
   late String titleName;
+
+  MessageDetailModel? messageDetailModel;
 
   @override
   void initState() {
@@ -208,6 +213,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                 Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "${'asPadre'.tr} :",
@@ -216,17 +222,35 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                       AutoSizeText(
                                         receiverName,
                                         style: textStyleBold,
-                                        textAlign: TextAlign.right,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
+                                        textAlign: TextAlign.end,
                                       ),
                                     ],
                                   ),
                                 ),
                                 CustomStyle.dottedLine
                               ],
-                            ))
+                            )),
+                            Visibility(
+                                visible: widget.childNameSelectedFromPreviousScreen != null,
+                                child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Petite :",
+                                    style: textStyleRegularWithOpacity_50,
+                                  ),
+                                  Expanded(child: AutoSizeText(
+                                    widget.childNameSelectedFromPreviousScreen ?? "-",
+                                    style: textStyleBold,
+                                    textAlign: TextAlign.right,
+                                  )),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                ],
+                              ),
+                            )),
                           ],
                         ),
                       ),
@@ -235,9 +259,10 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                       ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
-                          : studentReport.isEmpty
-                              ? const SizedBox.shrink()
-                              : Text('asRpt'.tr),
+                              : Text('asRpt'.tr,style: const TextStyle(fontSize: 20),),
+                      widget.isCommonMessageOrStudentReport == 0
+                          ? const SizedBox.shrink()
+                          : const SizedBox(height: 10,),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
                           : studentReport.isEmpty
@@ -245,6 +270,31 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                               : const SizedBox(
                                   height: 10,
                                 ),
+                      widget.isCommonMessageOrStudentReport == 0
+                          ? const SizedBox.shrink()
+                          : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                            CustomSummaryRow(label: "Desayuno", value: messageDetailModel?.data.breakFast),
+                            const SizedBox(height: 5,),
+                          CustomSummaryRow(label: "Merienda", value: messageDetailModel?.data.snack),
+                          const SizedBox(height: 5,),
+                          CustomSummaryRow(label: "Comida", value: messageDetailModel?.data.food),
+                          const SizedBox(height: 5,),
+                          CustomSummaryRow(label: "Aseo", value: messageDetailModel?.data.cleanliness),
+                          const SizedBox(height: 5,),
+                          CustomSummaryRow(label: "Sueño", value: messageDetailModel?.data.sleep),
+                          const SizedBox(height: 5,),
+                        ],
+                      ),
+                      widget.isCommonMessageOrStudentReport == 0
+                          ? const SizedBox.shrink()
+                          : studentReport.isEmpty
+                          ? const SizedBox.shrink()
+                          : const SizedBox(
+                        height: 10,
+                      ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
                           : studentReport.isEmpty
@@ -427,6 +477,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
         MessageDetailModel commonMessageModel =
             MessageDetailModel.fromJson(res);
         setState(() {
+          messageDetailModel = commonMessageModel;
           messageDate =  commonMessageModel.data.mDate == null ? "" :
               DateFormat("dd-MM-yy").format(commonMessageModel.data.mDate!);
           subject = commonMessageModel.data.subject ?? "";
@@ -458,6 +509,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
             MessageDetailModel studentReportDetailModel =
                 MessageDetailModel.fromJson(res);
             setState(() {
+              messageDetailModel = studentReportDetailModel;
               studentReport = studentReportDetailModel.data.reportData;
               message = studentReportDetailModel.data.msg ?? "";
               messageDate = studentReportDetailModel.data.mDate == null ? "" :
@@ -488,6 +540,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
           MessageDetailModel studentReportDetailModel =
           MessageDetailModel.fromJson(res);
           setState(() {
+            messageDetailModel = studentReportDetailModel;
             studentReport = studentReportDetailModel.data.reportData;
             message = studentReportDetailModel.data.msg ?? "";
             messageDate = studentReportDetailModel.data.mDate == null ? "" :
@@ -579,6 +632,39 @@ class CustomTableRow extends StatelessWidget {
                         fontSize: 18),
                   ),
                 ))),
+      ],
+    );
+  }
+}
+
+
+
+class CustomSummaryRow extends StatelessWidget {
+  final String label;
+  final String? value;
+  const CustomSummaryRow({super.key, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label,style: const TextStyle(
+            fontFamily: "Outfit",
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black
+          ),
+        ),
+        const Expanded(child: SizedBox()),
+        const Text("\t\t:",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w400),),
+        const Expanded(child: SizedBox()),
+        Text(value?.isEmpty ?? false ? "-" : value ?? "-" ,style: const TextStyle(
+            fontFamily: "Outfit",
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            color: Colors.black
+        ),)
       ],
     );
   }

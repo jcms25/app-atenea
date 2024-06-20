@@ -60,7 +60,7 @@ class _TransportScreenChild extends State<TransportationScreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
                 ),
               ),
             )),
@@ -254,11 +254,11 @@ class _TransportScreenChild extends State<TransportationScreen> {
     }
 
     List<Datum> searchData = [];
-    listOfTransfer.forEach((userDetail) {
+    for (var userDetail in listOfTransfer) {
       if (userDetail.driverName.isCaseInsensitiveContains(text) || userDetail.busNo.isCaseInsensitiveContains(text)) {
         searchData.add(userDetail);
       }
-    });
+    }
 
     setState(() {
       tempList = searchData;

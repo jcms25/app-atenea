@@ -79,7 +79,7 @@ class _HomeCalendarPageState extends State<HomeCalendarPage> {
                 },
                 child: SvgPicture.asset(
                   AppImages.humBurg,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn)
                 ),
               ),
             )),

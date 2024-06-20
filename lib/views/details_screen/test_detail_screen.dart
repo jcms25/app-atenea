@@ -59,7 +59,8 @@ class _TestDetailsChild extends State<TestDetails> {
                   Navigator.pop(context);
                 },
                 child: SvgPicture.asset(
-                  AppImages.arrow,color: AppColors.orange,
+                  AppImages.arrow,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
                 ),
               ),
             )),

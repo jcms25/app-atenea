@@ -19,38 +19,10 @@ class AppColors {
  static const Color darkPurple = Color(0xFF883FFF);
 
 
-
  static const  List<Color> rainbowColors = [
     Color(0xFF69293A),
-
   ];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  Color cbuttons =  Color(0xFF1520A6);
+  Color cButtons =  const Color(0xFF1520A6);
 
 }

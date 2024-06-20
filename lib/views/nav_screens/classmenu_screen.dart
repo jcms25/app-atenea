@@ -58,7 +58,7 @@ class ClassMenu extends State<ClassMenuScreen> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn)
                 ),
               )),
         ),
@@ -106,7 +106,9 @@ class ClassMenu extends State<ClassMenuScreen> {
                                   'menu1'.tr,
                                   style: CustomStyle.txtvalue4,
                                 ),
-                                leading: SvgPicture.asset(AppImages.message,color: AppColors.secondary,),
+                                leading: SvgPicture.asset(AppImages.message,
+                                    colorFilter: const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn)
+                                ),
                                 trailing: const Icon(
                                   Icons.arrow_forward,
                                   color: AppColors.secondary,
@@ -307,7 +309,8 @@ class ClassMenu extends State<ClassMenuScreen> {
                     'menu1'.tr,
                     style: CustomStyle.txtvalue4,
                   ),
-                  leading: SvgPicture.asset(AppImages.message,color: AppColors.secondary,),
+                  leading: SvgPicture.asset(AppImages.message,
+                    colorFilter: const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),),
                   trailing: const Icon(
                     Icons.arrow_forward,
                     color: AppColors.secondary,

@@ -853,7 +853,7 @@ class Dash extends State<DashboardScreen> {
                                             const SizedBox(width: 2),
                                             SvgPicture.asset(
                                               AppImages.loginArrow,
-                                              color: AppColors.primary,
+                                              colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)
                                             ),
                                           ],
                                         ),
@@ -1054,8 +1054,6 @@ class Dash extends State<DashboardScreen> {
           isLoading = false;
         });
       } else {
-        Failed failed = Failed.fromJson(dashBoardData);
-
         setState(() {
           isLoading = false;
         });

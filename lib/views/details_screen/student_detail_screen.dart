@@ -70,8 +70,7 @@ class _StudentDetailsChild extends State<StudentDetails> {
                 },
                 child: SvgPicture.asset(
                   AppImages.arrow,
-                  color: AppColors.orange,
-                ),
+                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),),
               ),
             )),
         body: Stack(
@@ -660,7 +659,10 @@ class _StudentDetailsChild extends State<StudentDetails> {
                                 ),
                               ],
                             ),
-                            child: imagePath.isEmpty ? Center(child:  SvgPicture.asset(AppImages.people,width: 100,height: 100,color: AppColors.primary,),) : CircleAvatar(
+                            child: imagePath.isEmpty ? Center(child:  SvgPicture.asset(AppImages.people,width: 100,height: 100,
+
+                                colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
+                            ),) : CircleAvatar(
                               radius: 16.0,
                               // child: ClipRRect(
                               //   child: Image.network(

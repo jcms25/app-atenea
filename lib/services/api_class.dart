@@ -1,16 +1,21 @@
 import 'dart:convert';
+
 import 'package:colegia_atenea/models/Failed.dart';
 import 'package:colegia_atenea/services/share_preferences.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart' hide Response,MultipartFile;
+import 'package:get/get.dart' hide Response, MultipartFile;
 import 'package:http/http.dart';
 
 import '../models/assistant/assistant_sub_slot_model.dart';
 import '../views/login_screen.dart';
+
 class ApiClass {
-  String embedBaseUrl = "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
+  String embedBaseUrl =
+      "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
+
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
 
@@ -37,8 +42,8 @@ class ApiClass {
   String classList = "classlist";
   String eventsList = "events";
 
-  Future<dynamic> loginCheck(
-      String username, String password, String role,String deviceFCMToken,String deviceType) async {
+  Future<dynamic> loginCheck(String username, String password, String role,
+      String deviceFCMToken, String deviceType) async {
     try {
       final Response response = await post(
         Uri.parse('$liveBaseUrl$login'),
@@ -49,87 +54,82 @@ class ApiClass {
           'username': username,
           'password': password,
           'reg_select_role': role,
-          'device_uuid':deviceFCMToken,
-          'device_type':deviceType
+          'device_uuid': deviceFCMToken,
+          'device_type': deviceType
         },
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         return data;
-      }else{
+      } else {
         return {'status': false, "Message": response.body};
       }
     } catch (exception) {
       return {"status": false, "Message": "Error. $exception"};
     }
-
-
   }
 
-  Future<dynamic> getDashboard({required String token,required String cookieExample}) async {
+  Future<dynamic> getDashboard(
+      {required String token, required String cookieExample}) async {
     try {
-      Response res =
-      await get(Uri.parse('$liveBaseUrl$dashboard'), headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': "Basic $token",
-        'Cookie' : cookieExample
-      });
+      Response res = await get(Uri.parse('$liveBaseUrl$dashboard'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookieExample
+          });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "something went wrong"};
       }
-    }catch(exception){
-      return {'status' : false, "Message" : "$exception"};
+    } catch (exception) {
+      return {'status': false, "Message": "$exception"};
     }
-
-
   }
 
-  Future<dynamic> getEvent(String token,String cookie) async {
+  Future<dynamic> getEvent(String token, String cookie) async {
     try {
       final Response response = await get(
         Uri.parse('$liveBaseUrl$eventsList'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Basic $token',
-          'Cookie' : cookie
+          'Cookie': cookie
         },
       );
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Exception occurred"};
       }
     } catch (exception) {
       return {"status": false, "Message": "$exception"};
     }
-
   }
 
-  Future<dynamic> getMessageAll(String token,String cookie) async {
+  Future<dynamic> getMessageAll(String token, String cookie) async {
     try {
-      Response res =
-      await get(Uri.parse("$liveBaseUrl$allMessage"), headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': "Basic $token",
-        'Cookie' : cookie
-      });
+      Response res = await get(Uri.parse("$liveBaseUrl$allMessage"),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookie
+          });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Exception occurred"};
       }
@@ -138,13 +138,14 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getTimeTable(String token, String classId,String cookie) async {
+  Future<dynamic> getTimeTable(
+      String token, String classId, String cookie) async {
     try {
       Response res = await get(Uri.parse("$liveBaseUrl$timetable/$classId"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -153,9 +154,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -165,7 +166,7 @@ class ApiClass {
   }
 
   Future<dynamic> getTeacher(
-      String token, String studentId, String classId,String cookie) async {
+      String token, String studentId, String classId, String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -173,7 +174,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -182,9 +183,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -193,13 +194,15 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getStudent(String token, String classid,String cookie) async {
+  Future<dynamic> getStudent(
+      String token, String classid, String cookie) async {
     try {
-      Response res = await get(Uri.parse("$liveBaseUrl$student?class_id=$classid"),
+      Response res = await get(
+          Uri.parse("$liveBaseUrl$student?class_id=$classid"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -208,21 +211,19 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
       return {"status": false, "Message": "Exceptions occurred"};
     }
-
-
   }
 
   Future<dynamic> getSubject(
-      String token, String studentId, String classId,String cookie) async {
+      String token, String studentId, String classId, String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -230,7 +231,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -239,9 +240,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -251,7 +252,7 @@ class ApiClass {
   }
 
   Future<dynamic> getExamList(
-      String token, String studentId, String classId,String cookie) async {
+      String token, String studentId, String classId, String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -259,7 +260,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -268,9 +269,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -280,7 +281,7 @@ class ApiClass {
   }
 
   Future<dynamic> getMarks(
-      String token, String studentId, String classId,String cookie) async {
+      String token, String studentId, String classId, String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -288,7 +289,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -297,10 +298,10 @@ class ApiClass {
         } else {
           return data;
         }
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -308,14 +309,16 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getEvaluation(String token, String wpid, String cid,String cookie) async {
+  Future<dynamic> getEvaluation(
+      String token, String wpid, String cid, String cookie) async {
     try {
       Response res = await get(
-          Uri.parse("$liveBaseUrl$evaluation?student_id=$wpid${'&class_id=$cid'}"),
+          Uri.parse(
+              "$liveBaseUrl$evaluation?student_id=$wpid${'&class_id=$cid'}"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -324,10 +327,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -336,7 +339,7 @@ class ApiClass {
   }
 
   Future<dynamic> getAttendance(
-      String token, String studentId, String classId,String cookie) async {
+      String token, String studentId, String classId, String cookie) async {
     try {
       Response res = await get(
           Uri.parse(
@@ -344,7 +347,7 @@ class ApiClass {
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -353,53 +356,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
-        return {"status": false, "Message": "Some thing went wrong"};
-      }
-    } catch (_) {
-      return {"status": false, "Message": "Exceptions occurred"};
-    }
-  }
-
-  Future<dynamic>? getTransfer(String token,String cookie) async {
-    try {
-      Response res = await get(Uri.parse('$liveBaseUrl$transportation'),
-          headers: <String, String>{
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie' : cookie
-          });
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        return data;
-      } else if(res.statusCode == 401){
-        sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
-        return {"status": false, "Message": "Some thing went wrong"};
-      }
-    } catch (_) {
-      return {"status": false, "Message": "Exceptions occurred"};
-    }
-  }
-
-  Future<dynamic> getCircular(String token,String cookie) async {
-    try {
-      Response res =
-          await get(Uri.parse("$liveBaseUrl$circular"), headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': "Basic $token",
-            'Cookie' : cookie
-      });
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        return data;
-      }else if(res.statusCode == 401){
-        sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -408,49 +367,93 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getTeacherListForSendMessage(String token,String cookie) async {
+  Future<dynamic>? getTransfer(String token, String cookie) async {
     try {
-      Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}teacherList'),
+      Response res = await get(Uri.parse('$liveBaseUrl$transportation'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        return data;
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Some thing went wrong"};
+      }
+    } catch (_) {
+      return {"status": false, "Message": "Exceptions occurred"};
+    }
+  }
+
+  Future<dynamic> getCircular(String token, String cookie) async {
+    try {
+      Response res = await get(Uri.parse("$liveBaseUrl$circular"),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        return data;
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Some thing went wrong"};
+      }
+    } catch (_) {
+      return {"status": false, "Message": "Exceptions occurred"};
+    }
+  }
+
+  Future<dynamic> getTeacherListForSendMessage(
+      String token, String cookie) async {
+    try {
+      Response res = await get(Uri.parse('${liveBaseUrl}teacherList'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookie
           });
 
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
       return {"status": false, "Message": "please try again"};
     }
-
   }
 
-  Future<dynamic> sendMessageToTeacher(String token,String attachment,String senderId,String recieverId,String subject,String message,String cookie) async{
-
-    try{
+  Future<dynamic> sendMessageToTeacher(
+      String token,
+      String attachment,
+      String senderId,
+      String recieverId,
+      String subject,
+      String message,
+      String cookie) async {
+    try {
       final MultipartRequest request = MultipartRequest(
-          'POST',Uri.parse('${liveBaseUrl}parentSendMessage')
-      );
-      request.headers.addAll({
-        "Authorization": "Basic $token",
-        'Cookie' : cookie
-      });
+          'POST', Uri.parse('${liveBaseUrl}parentSendMessage'));
+      request.headers
+          .addAll({"Authorization": "Basic $token", 'Cookie': cookie});
 
-      if(attachment.isEmpty){
+      if (attachment.isEmpty) {
         request.fields['attachment'] = attachment;
-      }
-      else{
-        request.files.add(await MultipartFile.fromPath('attachment',attachment));
+      } else {
+        request.files
+            .add(await MultipartFile.fromPath('attachment', attachment));
       }
       request.fields['sender_id'] = senderId;
       request.fields['reciever_id[0]'] = recieverId;
@@ -459,33 +462,29 @@ class ApiClass {
 
       StreamedResponse streamResponse = await request.send();
       var response = await Response.fromStream(streamResponse);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else{
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
-
-    }catch(_){
+    } catch (_) {
       return {'status': false, "Message": "Something Went Wrong"};
     }
   }
 
   Future<dynamic> getSingleCircular(
-    String token,
-    String circularid,
-    String cookie
-  ) async {
+      String token, String circularid, String cookie) async {
     try {
-      Response res = await get(Uri.parse("$liveBaseUrl$circular?id=$circularid"),
+      Response res = await get(
+          Uri.parse("$liveBaseUrl$circular?id=$circularid"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -494,9 +493,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -505,13 +504,15 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getStudentDetail(String token, String studentid,String cookie) async {
+  Future<dynamic> getStudentDetail(
+      String token, String studentid, String cookie) async {
     try {
-      Response res = await get(Uri.parse("$liveBaseUrl$studentDetail/$studentid"),
+      Response res = await get(
+          Uri.parse("$liveBaseUrl$studentDetail/$studentid"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
@@ -520,10 +521,10 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
     } catch (_) {
@@ -531,13 +532,14 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getSingleSubject(String token, String id,String cookie) async {
+  Future<dynamic> getSingleSubject(
+      String token, String id, String cookie) async {
     try {
       Response res = await get(Uri.parse('$liveBaseUrl$singleSubject/$id'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
 
       if (res.statusCode == 200) {
@@ -547,61 +549,9 @@ class ApiClass {
         } else {
           return Failed.fromJson(data);
         }
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
-        return {"status": false, "Message": "Some thing went wrong"};
-      }
-    } catch (_) {
-      return {"status": false, "Message": "Exceptions occurred"};
-    }
-  }
-
-  Future<dynamic> getSingleTeacher(String token, String id,String cookie) async {
-    try {
-      Response res = await get(Uri.parse('$liveBaseUrl$singleTeacher/$id'),
-          headers: <String, String>{
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie' : cookie
-          });
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        if (data['status']) {
-          return data;
-        } else {
-          return Failed.fromJson(data);
-        }
-      } else if(res.statusCode == 401){
-        sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
-        return {"status": false, "Message": "Some thing went wrong"};
-      }
-    } catch (_) {
-      return {"status": false, "Message": "Exceptions occurred"};
-    }
-  }
-
-  Future<dynamic> getSingleExam(String token, String id,String cookie) async {
-    try {
-      Response res = await get(Uri.parse('$liveBaseUrl$singleExam/$id'),
-          headers: <String, String>{
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie' : cookie
-          });
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        if (data['status']) {
-          return data;
-        } else {
-          return Failed.fromJson(data);
-        }
-      }else if(res.statusCode == 401){
-        sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }
@@ -610,57 +560,104 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getSingleMessageDetail(String token, String messageId,String cookie) async{
+  Future<dynamic> getSingleTeacher(
+      String token, String id, String cookie) async {
     try {
-      Response res = await get(
-          Uri.parse(
-              '$liveBaseUrl$allMessage?mid=$messageId'),
+      Response res = await get(Uri.parse('$liveBaseUrl$singleTeacher/$id'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         if (data['status']) {
+          return data;
+        } else {
+          return Failed.fromJson(data);
+        }
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Some thing went wrong"};
+      }
+    } catch (_) {
+      return {"status": false, "Message": "Exceptions occurred"};
+    }
+  }
 
+  Future<dynamic> getSingleExam(String token, String id, String cookie) async {
+    try {
+      Response res = await get(Uri.parse('$liveBaseUrl$singleExam/$id'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        if (data['status']) {
+          return data;
+        } else {
+          return Failed.fromJson(data);
+        }
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Some thing went wrong"};
+      }
+    } catch (_) {
+      return {"status": false, "Message": "Exceptions occurred"};
+    }
+  }
+
+  Future<dynamic> getSingleMessageDetail(
+      String token, String messageId, String cookie) async {
+    try {
+      Response res = await get(
+          Uri.parse('$liveBaseUrl$allMessage?mid=$messageId'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        if (data['status']) {
           return data;
         } else {
           return data;
         }
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (exception) {
       return {"status": false, "Message": "$exception"};
     }
-
-
   }
 
   //assistant related api's
 
   //assistant dashboard data get api
-  Future<dynamic> getAsDashboard(String token,String cookie) async {
+  Future<dynamic> getAsDashboard(String token, String cookie) async {
     try {
-      Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}dashboard'),
+      Response res = await get(Uri.parse('${liveBaseUrl}dashboard'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
+        return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
@@ -669,47 +666,43 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getAsClassList(String token,String cookie) async {
-    try{
-      Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}classlist'),
+  Future<dynamic> getAsClassList(String token, String cookie) async {
+    try {
+      Response res = await get(Uri.parse('${liveBaseUrl}classlist'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
-    }catch(_){
+    } catch (_) {
       return {'status': false, "Message": "Something Went Wrong"};
     }
   }
 
-  Future<dynamic> getAsSlot(String token,String cookie) async {
+  Future<dynamic> getAsSlot(String token, String cookie) async {
     try {
-      Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}slotList/'),
+      Response res = await get(Uri.parse('${liveBaseUrl}slotList/'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -717,23 +710,23 @@ class ApiClass {
     }
   }
 
-  Future<dynamic> getAsSlotChildList(String token, String id,String cookie) async {
+  Future<dynamic> getAsSlotChildList(
+      String token, String id, String cookie) async {
     try {
       Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}class-studentList?class_id=$id'),
+          Uri.parse('${liveBaseUrl}class-studentList?class_id=$id'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -742,23 +735,22 @@ class ApiClass {
   }
 
   Future<dynamic> getStudentListForCommonMessage(
-      String token, String classId,String cookie) async {
+      String token, String classId, String cookie) async {
     try {
       Response res = await get(
-          Uri.parse(
-              "${liveBaseUrl}studentList?class_id=$classId"),
+          Uri.parse("${liveBaseUrl}studentList?class_id=$classId"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -767,24 +759,23 @@ class ApiClass {
   }
 
   //get sub slot list
-  Future<dynamic> getSubSlotList(String token, String classId,int day,String cookie) async {
+  Future<dynamic> getSubSlotList(
+      String token, String classId, int day, String cookie) async {
     try {
       Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}subslotList/?class_id=$classId&day=$day'),
+          Uri.parse('${liveBaseUrl}subslotList/?class_id=$classId&day=$day'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -793,29 +784,60 @@ class ApiClass {
   }
 
   //send student report message.
-  Future<dynamic> sendStudentReport({required String token,required String cookie,required String senderId,required String studentId,required List<bool> slotValue,required List<TextEditingController>? controller,required List<SubSlotData> subSlotData,required String subject,required String message,required String day,required String attachment}) async{
-    try{
-      final MultipartRequest request = MultipartRequest(
-          'POST',Uri.parse('${liveBaseUrl}communication')
-      );
+  Future<dynamic> sendStudentReport(
+      {required String token,
+      required String cookie,
+      required String senderId,
+      required String studentId,
+      required List<bool> slotValue,
+      required List<TextEditingController>? controller,
+      required List<SubSlotData> subSlotData,
+      required String subject,
+      required String message,
+      required String day,
+      required String attachment,
+      required SelectOptionFromCategory1? desayuno,
+      required SelectOptionFromCategory1? merienda,
+      required SelectOptionFromCategory1? comida,
+      required List<SelectOptionFromCategory3> aseo,
+      required SelectOptionFromCategory2? sueno}) async {
+    try {
+      final MultipartRequest request =
+          MultipartRequest('POST', Uri.parse('${liveBaseUrl}communication'));
 
-      request.headers.addAll({
-        "Authorization": "Basic $token",
-        'Cookie' : cookie
-      });
+      request.headers
+          .addAll({"Authorization": "Basic $token", 'Cookie': cookie});
       request.fields["sender_id"] = senderId;
       request.fields["slot_id"] = "1";
       request.fields["student_id"] = studentId;
       request.fields["subject"] = subject;
       request.fields["msg"] = message;
       request.fields["day"] = day;
-      if(attachment.isEmpty){
+
+      request.fields['breakfast'] = getSelectedFieldName(desayuno);
+      request.fields['snack'] = getSelectedFieldName(merienda);
+      request.fields['food'] = getSelectedFieldName(comida);
+      request.fields['sleep'] = sueno == null
+          ? ""
+          : sueno == SelectOptionFromCategory2.si
+              ? "Si"
+              : "No";
+
+      request.fields['cleanliness'] = aseo
+          .map((element) {
+            return element == SelectOptionFromCategory3.pipi ? "Pipi" : "Caca";
+          })
+          .toList()
+          .join(",");
+
+      if (attachment.isEmpty) {
         request.fields["attachment"] = "";
-      }else{
-        request.files.add(await MultipartFile.fromPath('attachment',attachment));
+      } else {
+        request.files
+            .add(await MultipartFile.fromPath('attachment', attachment));
       }
-      for(int i=0;i<subSlotData.length;i++){
-        if(slotValue[i]){
+      for (int i = 0; i < subSlotData.length; i++) {
+        if (slotValue[i]) {
           request.fields["time_id[$i]"] = subSlotData[i].timeId;
           request.fields["subject_id[$i]"] = subSlotData[i].subjectId;
           request.fields["text[$i]"] = controller![i].text;
@@ -828,63 +850,71 @@ class ApiClass {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
-    }catch(_){
-      return {"status" : false, "Message": "please try again"};
+    } catch (_) {
+      return {"status": false, "Message": "please try again"};
     }
   }
 
   //sent Common Message.
   //all parent or to selected parent without attachment.
-  Future<dynamic> sendCommonMessageWithOutAttachment(Map<String,dynamic> body,String token,String cookie) async{
-      try{
-        final Response response = await post(
-            Uri.parse("${liveBaseUrl}sendCommonMessage"),
-            headers: <String, String>{
-              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-              'Authorization': "Basic $token",
-              'Cookie' : cookie
-            },
-            body: body
-        );
-        if(response.statusCode == 200){
-          var res = json.decode(response.body);
-          return res;
-        }else if(response.statusCode == 401){
-          sessionExpired();
-          return {'status' : false,'Message' : 'Session Expired.'};
-        }else{
-          return {"status": false, "Message": "please try again"};
-        }
-      }catch(exception){
+  Future<dynamic> sendCommonMessageWithOutAttachment(
+      Map<String, dynamic> body, String token, String cookie) async {
+    try {
+      final Response response =
+          await post(Uri.parse("${liveBaseUrl}sendCommonMessage"),
+              headers: <String, String>{
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': cookie
+              },
+              body: body);
+      if (response.statusCode == 200) {
+        var res = json.decode(response.body);
+        return res;
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {"status": false, "Message": "please try again"};
       }
+    } catch (exception) {
+      return {"status": false, "Message": "please try again"};
+    }
   }
 
   //all parent or to selected parent with attachment.
-  Future<dynamic> sendCommonMessageWithAttachment({required String token,required String cookie,required String senderId,required String subject,required String message,required String attachment,int? toAllOrParent,List<String>? receiverId,String? classId}) async{
-    try{
-      final MultipartRequest request = MultipartRequest('POST',Uri.parse("${liveBaseUrl}sendCommonMessage"));
-      request.headers.addAll({
-        "Authorization": "Basic $token",
-        'Cookie' : cookie
-      });
+  Future<dynamic> sendCommonMessageWithAttachment(
+      {required String token,
+      required String cookie,
+      required String senderId,
+      required String subject,
+      required String message,
+      required String attachment,
+      int? toAllOrParent,
+      List<String>? receiverId,
+      String? classId}) async {
+    try {
+      final MultipartRequest request = MultipartRequest(
+          'POST', Uri.parse("${liveBaseUrl}sendCommonMessage"));
+      request.headers
+          .addAll({"Authorization": "Basic $token", 'Cookie': cookie});
 
-      request.files.add(await MultipartFile.fromPath('attachment',attachment));
+      request.files.add(await MultipartFile.fromPath('attachment', attachment));
       request.fields['sender_id'] = senderId;
       //to parent of all student
-      if(toAllOrParent == 0){
+      if (toAllOrParent == 0) {
         request.fields['classid'] = classId!;
       }
       //to parent of selected student.
-      else{
-        for(int i=0;i<receiverId!.length;i++){
+      else {
+        for (int i = 0; i < receiverId!.length; i++) {
           request.fields['reciever_id[$i]'] = receiverId[i];
         }
       }
@@ -897,62 +927,65 @@ class ApiClass {
         var data = json.decode(response.body);
 
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
-    }catch(exception){
+    } catch (exception) {
       return {'status': false, "Message": "Something Went Wrong"};
     }
   }
 
-
   //get student report message list.
-  Future<dynamic> getStudentReportMessageList(String token,String cookie) async{
-    try{
-      final Response response = await get(Uri.parse("${liveBaseUrl}report_communicationList"),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': "Basic $token",
-          'Cookie' : cookie
-        },
-        );
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        return data;
-      } else if(response.statusCode == 401){
-        sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
-        return {'status': false, "Message": "Something Went Wrong"};
-      }
-    }catch(_){
+  Future<dynamic> getStudentReportMessageList(
+      String token, String cookie) async {
+    // try {
+    //
+    // } catch (_) {
+    //   return {'status': false, "Message": "Something Went Wrong"};
+    // }
+    final Response response = await get(
+      Uri.parse("${liveBaseUrl}report_communicationList"),
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': "Basic $token",
+        'Cookie': cookie
+      },
+    );
+
+    print("This is callled.");
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      print("This API called.");
+      var data = json.decode(response.body);
+      return data;
+    } else if (response.statusCode == 401) {
+      sessionExpired();
+      return {'status': false, 'Message': 'Session Expired.'};
+    } else {
       return {'status': false, "Message": "Something Went Wrong"};
     }
   }
 
   //get common message list.
-  Future<dynamic> getCommonMessageList(String token,String cookie) async {
+  Future<dynamic> getCommonMessageList(String token, String cookie) async {
     try {
       Response res = await get(
-          Uri.parse(
-              "${liveBaseUrl}common_communicationList"),
+          Uri.parse("${liveBaseUrl}common_communicationList"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      }else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (_) {
@@ -961,74 +994,88 @@ class ApiClass {
   }
 
   //get Message Details.
-  Future<dynamic> getMessageDetails({required int isCommonOrStudentReport,required String token,required String cookie,required String messageId}) async{
-    try{
-      final Response response = await get(Uri.parse("${liveBaseUrl}single_communication/$messageId"),
+  Future<dynamic> getMessageDetails(
+      {required int isCommonOrStudentReport,
+      required String token,
+      required String cookie,
+      required String messageId}) async {
+    try {
+      final Response response = await get(
+        Uri.parse("${liveBaseUrl}single_communication/$messageId"),
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",
-          'Cookie' : cookie
+          'Cookie': cookie
         },
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else{
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {"status": false, "Message": "please try again"};
       }
-    }catch(exception){
+    } catch (exception) {
       Fluttertoast.showToast(msg: "$exception");
       return {"status": false, "Message": "please try again"};
     }
   }
 
   //get message details using date and studentId.
-  Future<dynamic> getMessageDetailsUsingDate({required String token,required String cookie,required String date,required String studentId}) async{
-    try{
-      final Response response = await post(Uri.parse("${liveBaseUrl}single_reportByDate"),
+  Future<dynamic> getMessageDetailsUsingDate(
+      {required String token,
+      required String cookie,
+      required String date,
+      required String studentId}) async {
+    try {
+      final Response response = await post(
+          Uri.parse("${liveBaseUrl}single_reportByDate"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           },
-          body: <String,dynamic>{
-            'date' :  date,
-            'student_id' : studentId
-          }
-      );
-      if(response.statusCode == 200){
+          body: <String, dynamic>{
+            'date': date,
+            'student_id': studentId
+          });
+      if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else{
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {"status": false, "Message": "please try again"};
       }
-    }catch(_){
+    } catch (_) {
       return {"status": false, "Message": "please try again"};
     }
   }
 
-
   //send Message to Assistant
-  Future<dynamic> sendMessageToAssistant({required String token,required String cookie,required String senderId,required String receiverId,required String studentId,required String subject,required String message,required String attachment}) async{
-
+  Future<dynamic> sendMessageToAssistant(
+      {required String token,
+      required String cookie,
+      required String senderId,
+      required String receiverId,
+      required String studentId,
+      required String subject,
+      required String message,
+      required String attachment}) async {
     try {
-      final MultipartRequest request = MultipartRequest('POST',Uri.parse("${liveBaseUrl}sendPtoAMessage"));
-      request.headers.addAll({
-        "Authorization": "Basic $token",
-        'Cookie' : cookie
-      });
+      final MultipartRequest request =
+          MultipartRequest('POST', Uri.parse("${liveBaseUrl}sendPtoAMessage"));
+      request.headers
+          .addAll({"Authorization": "Basic $token", 'Cookie': cookie});
 
-      if(attachment.isEmpty){
+      if (attachment.isEmpty) {
         request.fields["attachment"] = attachment;
-      }else{
-        request.files.add(await MultipartFile.fromPath('attachment',attachment));
+      } else {
+        request.files
+            .add(await MultipartFile.fromPath('attachment', attachment));
       }
 
       request.fields["subject"] = subject;
@@ -1042,48 +1089,54 @@ class ApiClass {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
-      }else if(response.statusCode == 401){
+      } else if (response.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }
-      else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
     } catch (exception) {
       return {"status": false, "Message": "please try again. $exception"};
     }
-
   }
 
-  Future<dynamic> getAssistantList(String token,String cookie) async{
-    try{
-      Response res = await get(
-          Uri.parse(
-              '${liveBaseUrl}assistanList'),
+  Future<dynamic> getAssistantList(String token, String cookie) async {
+    try {
+      Response res = await get(Uri.parse('${liveBaseUrl}assistanList'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
-            'Cookie' : cookie
+            'Cookie': cookie
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
-      } else if(res.statusCode == 401){
+      } else if (res.statusCode == 401) {
         sessionExpired();
-        return {'status' : false,'Message' : 'Session Expired.'};
-      }else {
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
         return {'status': false, "Message": "Something Went Wrong"};
       }
-    }catch(_){
+    } catch (_) {
       return {'status': false, "Message": "Something Went Wrong"};
     }
+  }
 
+  String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
+    if (selectedCategory == null) {
+      return "";
+    }
+    return selectedCategory == SelectOptionFromCategory1.todo
+        ? "Todo"
+        : selectedCategory == SelectOptionFromCategory1.bastante
+            ? "Bastante"
+            : selectedCategory == SelectOptionFromCategory1.poco
+                ? "Poco"
+                : "Nada";
   }
 }
 
-
-void sessionExpired() async{
-
+void sessionExpired() async {
   await SharedPref.initialization();
   await SharedPref.pref.setBool(SharedPref.isLogin, false);
   Fluttertoast.showToast(msg: 'sessionExpired'.tr);

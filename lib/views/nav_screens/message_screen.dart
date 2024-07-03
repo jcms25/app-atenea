@@ -1,7 +1,7 @@
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/messgelist.dart';
-import 'package:colegia_atenea/views/assistant_module/assistant_communication_details_screen.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_details_screen.dart';
 import 'package:colegia_atenea/views/details_screen/message_detail_screen.dart';
 import 'package:colegia_atenea/views/nav_screens/send_message_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';

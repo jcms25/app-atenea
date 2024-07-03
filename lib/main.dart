@@ -46,7 +46,7 @@ void main() async {
   );
   // bool? initialize = await notificationsPlugin.initialize(initializationSettings);
   await notificationsPlugin.initialize(initializationSettings);
-  // FirebaseMessaging.instance.getToken().then((value) => print(value));
+  FirebaseMessaging.instance.getToken().then((value) => print(value));
   FirebaseMessaging.onMessage.listen((event) {
       if(Platform.isAndroid){
         NotificationService.showNotification(event);

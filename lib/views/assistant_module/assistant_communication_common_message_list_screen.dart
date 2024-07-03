@@ -9,7 +9,7 @@ import '../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../services/api_class.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_loader.dart';
-import 'assistant_communication_details_screen.dart';
+import 'assistant_communication_report_details_screen.dart';
 import 'assistant_communication_list_screen.dart';
 import 'assistant_new_communication_screen.dart';
 import 'message_received_by_assistant_from_parent/assistant_received_message_detail_screen.dart';

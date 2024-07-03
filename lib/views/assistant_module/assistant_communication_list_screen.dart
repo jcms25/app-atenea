@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../utils/text_style.dart';
-import 'assistant_communication_details_screen.dart';
+import 'assistant_communication_report_details_screen.dart';
 
 enum SelectOption { common, single }
 //common for Common Message

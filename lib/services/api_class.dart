@@ -941,37 +941,35 @@ class ApiClass {
   //get student report message list.
   Future<dynamic> getStudentReportMessageList(
       String token, String cookie) async {
-    // try {
-    //
-    // } catch (_) {
-    //   return {'status': false, "Message": "Something Went Wrong"};
-    // }
-    final Response response = await get(
-      Uri.parse("${liveBaseUrl}report_communicationList"),
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': "Basic $token",
-        'Cookie': cookie
-      },
-    );
-
-    print("This is callled.");
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      print("This API called.");
-      var data = json.decode(response.body);
-      return data;
-    } else if (response.statusCode == 401) {
-      sessionExpired();
-      return {'status': false, 'Message': 'Session Expired.'};
-    } else {
+    try {
+      final Response response = await get(
+        Uri.parse("${liveBaseUrl}report_communicationList"),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': cookie
+        },
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        return data;
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, "Message": "Something Went Wrong"};
+      }
+    } catch (_) {
       return {'status': false, "Message": "Something Went Wrong"};
     }
+
   }
 
   //get common message list.
   Future<dynamic> getCommonMessageList(String token, String cookie) async {
     try {
+
       Response res = await get(
           Uri.parse("${liveBaseUrl}common_communicationList"),
           headers: <String, String>{
@@ -979,6 +977,7 @@ class ApiClass {
             'Authorization': "Basic $token",
             'Cookie': cookie
           });
+      print(res.statusCode);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
@@ -991,6 +990,7 @@ class ApiClass {
     } catch (_) {
       return {"status": false, "Message": "please try again"};
     }
+
   }
 
   //get Message Details.

@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_child_detail_temp_model.dart';
 import 'package:colegia_atenea/models/assistant/parent_model_assistant_model.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_children_details_screen.dart';
-import 'package:colegia_atenea/views/assistant_module/assistant_communication_details_screen.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_details_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_parents_details_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
@@ -183,7 +183,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                           const SizedBox(height: 10,),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> CommunicationDetail(isCommonMessageOrStudentReport: 2,studentId: childList[index].wpUsrId, isButtonView: false,fromParent: false,childNameSelectedFromPreviousScreen: childList[index].studentName,)));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> CommunicationDetail(isCommonMessageOrStudentReport: 2,studentId: childList[index].wpUsrId, isButtonView: false,fromParent: false)));
                             },
                             child: const Icon(Icons.chat,color: AppColors.primary,),
                           ),

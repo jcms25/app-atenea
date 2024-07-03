@@ -49,6 +49,7 @@ class MessageDetailData {
   String? studentId;
   String? receiverName;
   String? senderName;
+  String? studentName;
   List<ReportData> reportData;
   String? breakFast;
   String? snack;
@@ -73,6 +74,7 @@ class MessageDetailData {
     required this.studentId,
     required this.reportData,
     required this.receiverName,
+    required this.studentName,
     this.senderName,
     this.breakFast,
     this.snack,
@@ -97,6 +99,7 @@ class MessageDetailData {
     attachments: json["attachments"],
     studentId: json["student_id"],
     receiverName: json["reciever_name"],
+    studentName: json['student_name'],
     reportData: List<ReportData>.from(json["reportData"].map((x) => ReportData.fromJson(x))),
     senderName: json["sender_name"],
     breakFast: json['breakfast'],
@@ -122,6 +125,7 @@ class MessageDetailData {
     "attachments": attachments,
     "student_id": studentId,
     "reciever_name" : receiverName,
+    "student_name" : studentName,
     "reportData": List<dynamic>.from(reportData.map((x) => x.toJson())),
     "sender_name" : senderName,
     "breakfast" : breakFast,

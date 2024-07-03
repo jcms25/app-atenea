@@ -24,14 +24,13 @@ class CommunicationDetail extends StatefulWidget {
   final bool isButtonView;
   final bool fromParent;
 
-  //0 means user came here to see details of comman message.
+  //0 means user came here to see details of common message.
   //1 means user came here to see details of student report.
   //2 means user came here to see details of student report and user also can see previous report using date  picker.
   final String? messageId;
   final String? studentId;
   final String? messageDate;
   final String? receiverName;
-  final String? childNameSelectedFromPreviousScreen;
 
 
   const CommunicationDetail(
@@ -42,8 +41,7 @@ class CommunicationDetail extends StatefulWidget {
       this.messageId,
       this.studentId,
       this.messageDate,
-      this.receiverName,
-      this.childNameSelectedFromPreviousScreen});
+      this.receiverName});
 
   @override
   State<StatefulWidget> createState() {
@@ -82,6 +80,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
   String messageDate = "";
   String receiverName = "-";
   String? attachments = "";
+  String? childName = "";
   bool isLoading = false;
   late String titleName;
 
@@ -231,7 +230,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                               ],
                             )),
                             Visibility(
-                                visible: widget.childNameSelectedFromPreviousScreen != null,
+                                visible: childName != null,
                                 child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Row(
@@ -241,7 +240,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                     style: textStyleRegularWithOpacity_50,
                                   ),
                                   Expanded(child: AutoSizeText(
-                                    widget.childNameSelectedFromPreviousScreen ?? "-",
+                                    childName ?? "-",
                                     style: textStyleBold,
                                     textAlign: TextAlign.right,
                                   )),
@@ -517,6 +516,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                   .format(studentReportDetailModel.data.mDate!);
               subject = studentReportDetailModel.data.subject ?? "";
               attachments = studentReportDetailModel.data.attachments;
+              childName = studentReportDetailModel.data.studentName;
               receiverName = widget.receiverName ?? studentReportDetailModel.data.receiverName!;
               titleName = 'cmn_report'.tr;
               isLoading = false;
@@ -550,6 +550,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
             attachments = studentReportDetailModel.data.attachments;
             titleName = studentReportDetailModel.data.slotId == null ? 'cmn_det'.tr : 'cmn_report'.tr;
             receiverName = studentReportDetailModel.data.receiverName ?? studentReportDetailModel.data.receiverName!;
+            childName = studentReportDetailModel.data.studentName ?? "-";
             isLoading = false;
           }
           );
@@ -647,7 +648,6 @@ class CustomSummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,style: const TextStyle(
             fontFamily: "Outfit",
@@ -656,15 +656,13 @@ class CustomSummaryRow extends StatelessWidget {
             color: Colors.black
           ),
         ),
-        const Expanded(child: SizedBox()),
-        const Text("\t\t:",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w400),),
-        const Expanded(child: SizedBox()),
-        Text(value?.isEmpty ?? false ? "-" : value ?? "-" ,style: const TextStyle(
+        const Text(":\t\t",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w400),),
+        Expanded(child: Text(value?.isEmpty ?? false ? "-" : value ?? "-" ,style: const TextStyle(
             fontFamily: "Outfit",
             fontSize: 16,
             fontWeight: FontWeight.w400,
-            color: Colors.black
-        ),)
+            color: Colors.black,),
+        ))
       ],
     );
   }

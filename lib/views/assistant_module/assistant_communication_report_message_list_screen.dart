@@ -10,7 +10,7 @@ import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
 import '../../widgets/custom_loader.dart';
-import 'assistant_communication_details_screen.dart';
+import 'assistant_communication_report_details_screen.dart';
 import 'assistant_communication_list_screen.dart';
 
 class ReportListScreen extends StatefulWidget {

@@ -1,12 +1,11 @@
 // ignore_for_file: prefer_final_fields
 
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/assistant/assistant_student_report_detail_model.dart';
-import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:colegia_atenea/widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,7 +30,6 @@ class CommunicationDetail extends StatefulWidget {
   final String? studentId;
   final String? messageDate;
   final String? receiverName;
-
 
   const CommunicationDetail(
       {super.key,
@@ -89,7 +87,11 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
   @override
   void initState() {
     super.initState();
-    titleName = widget.isCommonMessageOrStudentReport == 0 ? 'cmn_det'.tr : widget.isCommonMessageOrStudentReport == 1 ?'cmn_report'.tr : "";
+    titleName = widget.isCommonMessageOrStudentReport == 0
+        ? 'cmn_det'.tr
+        : widget.isCommonMessageOrStudentReport == 1
+            ? 'cmn_report'.tr
+            : "";
     if (widget.isCommonMessageOrStudentReport == 0 ||
         widget.isCommonMessageOrStudentReport == 1) {
       getCommunicationDetail(
@@ -105,7 +107,6 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
@@ -138,7 +139,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width, 
+                        width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -192,7 +193,8 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                     "${'asSub'.tr} :",
                                     style: textStyleRegularWithOpacity_50,
                                   ),
-                                  Expanded(child: AutoSizeText(
+                                  Expanded(
+                                      child: AutoSizeText(
                                     subject,
                                     style: textStyleBold,
                                     textAlign: TextAlign.right,
@@ -208,48 +210,51 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                 visible: !widget.fromParent,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${'asPadre'.tr} :",
-                                        style: textStyleRegularWithOpacity_50,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "${'asPadre'.tr} :",
+                                            style:
+                                                textStyleRegularWithOpacity_50,
+                                          ),
+                                          AutoSizeText(
+                                            receiverName,
+                                            style: textStyleBold,
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ],
                                       ),
-                                      AutoSizeText(
-                                        receiverName,
-                                        style: textStyleBold,
-                                        textAlign: TextAlign.end,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                CustomStyle.dottedLine
-                              ],
-                            )),
+                                    ),
+                                    CustomStyle.dottedLine
+                                  ],
+                                )),
                             Visibility(
                                 visible: childName != null,
                                 child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Petite :",
-                                    style: textStyleRegularWithOpacity_50,
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Petite :",
+                                        style: textStyleRegularWithOpacity_50,
+                                      ),
+                                      Expanded(
+                                          child: AutoSizeText(
+                                        childName ?? "-",
+                                        style: textStyleBold,
+                                        textAlign: TextAlign.right,
+                                      )),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(child: AutoSizeText(
-                                    childName ?? "-",
-                                    style: textStyleBold,
-                                    textAlign: TextAlign.right,
-                                  )),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                ],
-                              ),
-                            )),
+                                )),
                           ],
                         ),
                       ),
@@ -258,10 +263,15 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                       ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
-                              : Text('asRpt'.tr,style: const TextStyle(fontSize: 20),),
+                          : Text(
+                              'asRpt'.tr,
+                              style: const TextStyle(fontSize: 20),
+                            ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
-                          : const SizedBox(height: 10,),
+                          : const SizedBox(
+                              height: 10,
+                            ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
                           : studentReport.isEmpty
@@ -271,29 +281,54 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                 ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
-                          : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                            CustomSummaryRow(label: "Desayuno", value: messageDetailModel?.data.breakFast),
-                            const SizedBox(height: 5,),
-                          CustomSummaryRow(label: "Merienda", value: messageDetailModel?.data.snack),
-                          const SizedBox(height: 5,),
-                          CustomSummaryRow(label: "Comida", value: messageDetailModel?.data.food),
-                          const SizedBox(height: 5,),
-                          CustomSummaryRow(label: "Aseo", value: messageDetailModel?.data.cleanliness),
-                          const SizedBox(height: 5,),
-                          CustomSummaryRow(label: "Sueño", value: messageDetailModel?.data.sleep),
-                          const SizedBox(height: 5,),
-                        ],
-                      ),
+                          : Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CustomSummaryRow(
+                                      label: "Desayuno",
+                                      value:
+                                          messageDetailModel?.data.breakFast),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomSummaryRow(
+                                      label: "Merienda",
+                                      value: messageDetailModel?.data.snack),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomSummaryRow(
+                                      label: "Comida",
+                                      value: messageDetailModel?.data.food),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomSummaryRow(
+                                      label: "Aseo",
+                                      value:
+                                          messageDetailModel?.data.cleanliness),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomSummaryRow(
+                                      label: "Sueño",
+                                      value: messageDetailModel?.data.sleep),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                ],
+                              ),
+                            ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
                           : studentReport.isEmpty
-                          ? const SizedBox.shrink()
-                          : const SizedBox(
-                        height: 10,
-                      ),
+                              ? const SizedBox.shrink()
+                              : const SizedBox(
+                                  height: 10,
+                                ),
                       widget.isCommonMessageOrStudentReport == 0
                           ? const SizedBox.shrink()
                           : studentReport.isEmpty
@@ -353,7 +388,9 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                         ),
                       ),
                       Visibility(
-                          visible: attachments == null ? false : attachments!.isNotEmpty,
+                          visible: attachments == null
+                              ? false
+                              : attachments!.isNotEmpty,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -369,7 +406,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                 height: 5,
                               ),
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   _launchAttachment(attachments!);
                                 },
                                 child: Container(
@@ -377,11 +414,14 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: AppColors.primary.withOpacity(0.05)),
+                                      color:
+                                          AppColors.primary.withOpacity(0.05)),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: AutoSizeText(
-                                      attachments == null ? "" : attachments!.split("/").last,
+                                      attachments == null
+                                          ? ""
+                                          : attachments!.split("/").last,
                                       style: const TextStyle(
                                           fontFamily: "Outfit",
                                           fontWeight: FontWeight.w400,
@@ -471,14 +511,16 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
       dynamic res = await apiClass.getMessageDetails(
           isCommonOrStudentReport: 0,
           token: token,
-          messageId: widget.messageId!, cookie: cookie);
+          messageId: widget.messageId!,
+          cookie: cookie);
       if (res['status']) {
         MessageDetailModel commonMessageModel =
             MessageDetailModel.fromJson(res);
         setState(() {
           messageDetailModel = commonMessageModel;
-          messageDate =  commonMessageModel.data.mDate == null ? "" :
-              DateFormat("dd-MM-yy").format(commonMessageModel.data.mDate!);
+          messageDate = commonMessageModel.data.mDate == null
+              ? ""
+              : DateFormat("dd-MM-yy").format(commonMessageModel.data.mDate!);
           subject = commonMessageModel.data.subject ?? "";
           message = commonMessageModel.data.msg ?? "";
           attachments = commonMessageModel.data.attachments;
@@ -491,8 +533,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
           isLoading = false;
         });
       }
-    }
-    else {
+    } else {
       //this will get details of student report message.
       if (isCommonMessageOrStudentReport == 1) {
         //means user came here to just see student report message detail from message list screen.
@@ -502,7 +543,8 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
         dynamic res = await apiClass.getMessageDetails(
             isCommonOrStudentReport: 1,
             token: token,
-            messageId: widget.messageId!, cookie: cookie);
+            messageId: widget.messageId!,
+            cookie: cookie);
         if (res['status']) {
           if (isCommonMessageOrStudentReport == 1) {
             MessageDetailModel studentReportDetailModel =
@@ -511,13 +553,15 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
               messageDetailModel = studentReportDetailModel;
               studentReport = studentReportDetailModel.data.reportData;
               message = studentReportDetailModel.data.msg ?? "";
-              messageDate = studentReportDetailModel.data.mDate == null ? "" :
-              DateFormat("dd-MM-yy")
-                  .format(studentReportDetailModel.data.mDate!);
+              messageDate = studentReportDetailModel.data.mDate == null
+                  ? ""
+                  : DateFormat("dd-MM-yy")
+                      .format(studentReportDetailModel.data.mDate!);
               subject = studentReportDetailModel.data.subject ?? "";
               attachments = studentReportDetailModel.data.attachments;
               childName = studentReportDetailModel.data.studentName;
-              receiverName = widget.receiverName ?? studentReportDetailModel.data.receiverName!;
+              receiverName = widget.receiverName ??
+                  studentReportDetailModel.data.receiverName!;
               titleName = 'cmn_report'.tr;
               isLoading = false;
             });
@@ -535,25 +579,31 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
           receiverName = "";
         });
         dynamic res = await apiClass.getMessageDetailsUsingDate(
-            token: token, date: dateForMessage!, studentId: studentId!, cookie: cookie);
+            token: token,
+            date: dateForMessage!,
+            studentId: studentId!,
+            cookie: cookie);
         if (res['status']) {
           MessageDetailModel studentReportDetailModel =
-          MessageDetailModel.fromJson(res);
+              MessageDetailModel.fromJson(res);
           setState(() {
             messageDetailModel = studentReportDetailModel;
             studentReport = studentReportDetailModel.data.reportData;
             message = studentReportDetailModel.data.msg ?? "";
-            messageDate = studentReportDetailModel.data.mDate == null ? "" :
-            DateFormat("dd-MM-yy")
-                .format(studentReportDetailModel.data.mDate!);
+            messageDate = studentReportDetailModel.data.mDate == null
+                ? ""
+                : DateFormat("dd-MM-yy")
+                    .format(studentReportDetailModel.data.mDate!);
             subject = studentReportDetailModel.data.subject ?? "";
             attachments = studentReportDetailModel.data.attachments;
-            titleName = studentReportDetailModel.data.slotId == null ? 'cmn_det'.tr : 'cmn_report'.tr;
-            receiverName = studentReportDetailModel.data.receiverName ?? studentReportDetailModel.data.receiverName!;
+            titleName = studentReportDetailModel.data.slotId == null
+                ? 'cmn_det'.tr
+                : 'cmn_report'.tr;
+            receiverName = studentReportDetailModel.data.receiverName ??
+                studentReportDetailModel.data.receiverName!;
             childName = studentReportDetailModel.data.studentName ?? "-";
             isLoading = false;
-          }
-          );
+          });
         } else {
           setState(() {
             studentReport = [];
@@ -570,15 +620,14 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
     }
   }
 
-  void _launchAttachment(String attachment) async{
+  void _launchAttachment(String attachment) async {
     var url = Uri.parse(attachment);
-    if(await canLaunchUrl(url)){
-      await launchUrl(url,mode: LaunchMode.externalApplication);
-    }else{
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
       Fluttertoast.showToast(msg: "canNot".tr);
     }
   }
-
 }
 
 class CustomTableRow extends StatelessWidget {
@@ -638,32 +687,44 @@ class CustomTableRow extends StatelessWidget {
   }
 }
 
-
-
 class CustomSummaryRow extends StatelessWidget {
   final String label;
   final String? value;
+
   const CustomSummaryRow({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Visibility(
+        visible: value == null || value!.isEmpty ? false : true,
+        child: Row(
       children: [
-        Text(label,style: const TextStyle(
-            fontFamily: "Outfit",
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black
-          ),
+        Text(
+          label,
+          style: const TextStyle(
+              fontFamily: "Outfit",
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black),
         ),
-        const Text(":\t\t",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w400),),
-        Expanded(child: Text(value?.isEmpty ?? false ? "-" : value ?? "-" ,style: const TextStyle(
-            fontFamily: "Outfit",
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            color: Colors.black,),
-        ))
+        const Text(
+          ":\t\t",
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w400),
+        ),
+        Expanded(
+            child: Text(
+              value?.isEmpty ?? false ? "-" : value ?? "-",
+              style: const TextStyle(
+                fontFamily: "Outfit",
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
+            ))
       ],
-    );
+    ));
   }
 }

@@ -234,7 +234,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                   ],
                                 )),
                             Visibility(
-                                visible: childName != null,
+                                visible: childName != null && widget.isCommonMessageOrStudentReport != 0,
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: Row(

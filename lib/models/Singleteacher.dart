@@ -128,7 +128,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['tid'] = tid;
     data['wp_usr_id'] = wpUsrId;
     data['first_name'] = firstName;

@@ -3,7 +3,7 @@ import 'package:colegia_atenea/models/assistant/assistant_child_detail_temp_mode
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../custom_widgets/item_label_value.dart';
+import '../../views/custom_widgets/item_label_value.dart';
 import '../../utils/app_colors.dart';
 
 class ChildDetail extends StatefulWidget {

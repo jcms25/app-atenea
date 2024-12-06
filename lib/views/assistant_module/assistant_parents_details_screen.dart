@@ -2,7 +2,8 @@ import 'package:colegia_atenea/models/assistant/assistant_child_list_detail_mode
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../custom_widgets/item_label_value.dart';
+import '../../utils/app_textstyle.dart';
+import '../../views/custom_widgets/item_label_value.dart';
 import '../../utils/app_colors.dart';
 
 class AssistantParentDetails extends StatefulWidget{
@@ -12,7 +13,6 @@ class AssistantParentDetails extends StatefulWidget{
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return AssistantParentDetailsChild();
   }
 
@@ -40,18 +40,13 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
   }
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.primary,
         title: Text(
           'asPareDet'.tr,
-          style: const TextStyle(
-            fontFamily: "Outfit",
-            fontSize: 19,
-            fontWeight: FontWeight.w500,
-          ),
+          style: AppTextStyle.getOutfit500(textSize: 19, textColor: AppColors.white),
         ),
       ),
       body: Stack(
@@ -97,11 +92,7 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
                         child: Text(
                           widget.parentDatum.parentName,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 32,
-                              color: AppColors.secondary),
+                          style: AppTextStyle.getOutfit600(textSize: 32, textColor: AppColors.secondary),
                         ),
                       ),
                       const SizedBox(
@@ -113,15 +104,6 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
                       const SizedBox(height: 10,),
                       LabelValueLayout(label: "emailAdd".tr, value: widget.parentDatum.pEmail),
                       const SizedBox(height: 10,),
-                      // LabelValueLayout(label: "workingHours".tr, value: "Class 11"),
-                      // const SizedBox(height: 10,),
-                      // Row(
-                      //   children: [
-                      //     Expanded(child: LabelValueLayout(value: "Small1",label: "Small",)),
-                      //     const SizedBox(width: 10,),
-                      //     Expanded(child: LabelValueLayout(value: "Infant 1-2 year",label: "Class",)),
-                      //   ],
-                      // ),
                     ],
                   ),
                 ),
@@ -149,17 +131,6 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
                   ),
                   child: CircleAvatar(
                     radius: 16.0,
-                    // child: ClipRRect(
-                    //   child: Image.network(
-                    //     imagepath.isEmpty
-                    //         ? "http://colegioatenea.embedinfosoft.com/wp-content/plugins/scl-rest-api/img/default_avtar.jpg"
-                    //         : imagepath,
-                    //     height: 180,
-                    //     width: 180,
-                    //     fit: BoxFit.fitHeight,
-                    //   ),
-                    //   borderRadius: BorderRadius.circular(180.0),
-                    // ),
                     backgroundImage: NetworkImage(widget.parentDatum.parentImage),
                     backgroundColor: AppColors.primary,
                     onBackgroundImageError: (e,s){},

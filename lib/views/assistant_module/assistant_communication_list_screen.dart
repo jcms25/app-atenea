@@ -1,10 +1,12 @@
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
+import 'package:colegia_atenea/models/login_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
-import 'package:colegia_atenea/widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -146,21 +148,25 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
   }
 
   void getMessageList(SelectOption singleOption) async{
-    SessionManagement sessionManagement = SessionManagement();
-    int? role = await sessionManagement.getRole('');
+    // SessionManagement sessionManagement = SessionManagement();
+    // int? role = await sessionManagement.getRole('');
+
+    String? role = AppSharedPreferences.getUserLoggedInRole();
+
     if(singleOption == SelectOption.common){
       setState(() {
         isLoading = true;
       });
 
-      if(role == 2){
-        Assistant assistant = await sessionManagement.getAssistantDetail();
-        String token = assistant.basicAuthToken;
-        getCommonMessageList(token,role!,assistant.userdata.data.cookie ?? "");
+      if(role == "assistant"){
+        Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+        String token = assistant?.basicAuthToken ?? "";
+        getCommonMessageList(token,role!,assistant?.userdata.data.cookie ?? "");
       }else{
-        Parentlogin parentLogin = await sessionManagement.getModelParent('');
-        String token = parentLogin.basicAuthToken;
-        getCommonMessageList(token,role!,parentLogin.userdata.cookie ?? "");
+        // Parentlogin parentLogin = await sessionManagement.getModelParent('');
+        LoginModel? loginModel = AppSharedPreferences.getUserData();
+        String token = loginModel?.basicAuthToken ?? "";
+        getCommonMessageList(token,role!,loginModel?.userdata?.cookies ?? "");
       }
 
     }else{
@@ -169,26 +175,26 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
       });
         //if selected radio is select then student report list we wil retrieve.
 
-      if(role == 2){
-        Assistant assistant = await sessionManagement.getAssistantDetail();
-        String token = assistant.basicAuthToken;
-        getStudentReportList(token,role!,assistant.userdata.data.cookie ?? "");
+      if(role == "assistant"){
+        Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+        String token = assistant?.basicAuthToken ?? "";
+        getStudentReportList(token,role ?? "",assistant?.userdata.data.cookie ?? "");
       }
       else{
-        Parentlogin parentLogin = await sessionManagement.getModelParent('');
-        String token = parentLogin.basicAuthToken;
-        getStudentReportList(token,role!,parentLogin.userdata.cookie ?? "");
+        LoginModel? loginModel = AppSharedPreferences.getUserData();
+        String token = loginModel?.basicAuthToken ?? "";
+        getStudentReportList(token,role!,loginModel?.userdata?.cookies ?? "");
       }
     }
   }
 
-  void getStudentReportList(String token,int assistantOrParent,String cookie) async{
+  void getStudentReportList(String token,String assistantOrParent,String cookie) async{
       ApiClass apiClass = ApiClass();
       dynamic res = await apiClass.getStudentReportMessageList(token,cookie);
       if(res['status']){
         MessageListModel reportListModel = MessageListModel.fromJson(res);
         setState(() {
-          listOfStudentReport = assistantOrParent == 2 ? reportListModel.sendList : reportListModel.receiveList ;
+          listOfStudentReport = assistantOrParent == "assistant" ? reportListModel.sendList : reportListModel.receiveList ;
           isLoading = false;
         });
       }else{
@@ -199,13 +205,13 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
 
   }
 
-  void getCommonMessageList(String token,int parentOrAssistant,String cookie) async{
+  void getCommonMessageList(String token,String parentOrAssistant,String cookie) async{
     ApiClass apiClass = ApiClass();
     dynamic res = await apiClass.getCommonMessageList(token,cookie);
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {
-        listOfCommonMessage = parentOrAssistant == 2 ? commonListModel.sendList : commonListModel.receiveList;
+        listOfCommonMessage = parentOrAssistant == "assistant" ? commonListModel.sendList : commonListModel.receiveList;
         isLoading = false;
       });
     }

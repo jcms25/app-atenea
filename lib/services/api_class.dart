@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:colegia_atenea/models/Failed.dart';
 import 'package:colegia_atenea/services/share_preferences.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,13 +10,17 @@ import 'package:get/get.dart' hide Response, MultipartFile;
 import 'package:http/http.dart';
 
 import '../models/assistant/assistant_sub_slot_model.dart';
-import '../views/login_screen.dart';
+import '../views/screens/login_screen.dart';
 
-class ApiClass {
-  String embedBaseUrl =
-      "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
+
+enum RequestType{post,get}
+
+
+class ApiClass{
+  // String embedBaseUrl =
+  //     "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
-
+  
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
 
@@ -24,6 +29,7 @@ class ApiClass {
   String sendMessage = "message";
   String login = "login";
   String dashboard = "dashboard/";
+  // String dashboard = "dashboard";
   String allMessage = "parentSendMessage";
   String timetable = "timetable";
   String teacher = "teachers?";
@@ -71,25 +77,27 @@ class ApiClass {
 
   Future<dynamic> getDashboard(
       {required String token, required String cookieExample}) async {
-    try {
-      Response res = await get(Uri.parse('$liveBaseUrl$dashboard'),
-          headers: <String, String>{
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': cookieExample
-          });
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        return data;
-      } else if (res.statusCode == 401) {
-        sessionExpired();
-        return {'status': false, 'Message': 'Session Expired.'};
-      } else {
-        return {'status': false, "Message": "something went wrong"};
-      }
-    } catch (exception) {
-      return {'status': false, "Message": "$exception"};
+    // try {
+    //
+    // } catch (exception) {
+    //   return {'status': false, "Message": "$exception"};
+    // }
+    Response res = await get(Uri.parse('$liveBaseUrl$dashboard'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': cookieExample
+        });
+    if (res.statusCode == 200) {
+      var data = json.decode(res.body);
+      return data;
+    } else if (res.statusCode == 401) {
+      sessionExpired();
+      return {'status': false, 'Message': 'Session Expired.'};
+    } else {
+      return {'status': false, "Message": "something went wrong"};
     }
+
   }
 
   Future<dynamic> getEvent(String token, String cookie) async {
@@ -142,6 +150,32 @@ class ApiClass {
       String token, String classId, String cookie) async {
     try {
       Response res = await get(Uri.parse("$liveBaseUrl$timetable/$classId"),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        if (data['status']) {
+          return data;
+        } else {
+          return Failed.fromJson(data);
+        }
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Some thing went wrong"};
+      }
+    } catch (_) {
+      return {"status": false, "Message": "Exceptions occurred"};
+    }
+  }
+
+  Future<dynamic> getTimeTableOfClass({required String classId,required String studentId,required String token,required String cookie}) async {
+    try {
+      Response res = await get(Uri.parse("$liveBaseUrl$timetable/$classId?cid=$classId&sid=$studentId"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -264,11 +298,12 @@ class ApiClass {
           });
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        if (data['status']) {
-          return data;
-        } else {
-          return Failed.fromJson(data);
-        }
+        // if (data['status']) {
+        //   return data;
+        // } else {
+        //   return Failed.fromJson(data);
+        // }
+        return data;
       } else if (res.statusCode == 401) {
         sessionExpired();
         return {'status': false, 'Message': 'Session Expired.'};
@@ -314,12 +349,13 @@ class ApiClass {
     try {
       Response res = await get(
           Uri.parse(
-              "$liveBaseUrl$evaluation?student_id=$wpid${'&class_id=$cid'}"),
+              "$liveBaseUrl$evaluation?student_id=$wpid&class_id=$cid"),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
             'Cookie': cookie
           });
+
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         if (data['status']) {
@@ -336,7 +372,16 @@ class ApiClass {
     } catch (_) {
       return {"status": false, "Message": "Exceptions occurred"};
     }
+
   }
+
+  Future<dynamic> getEvaluationDownload({required String wpId,required String cId}) async{
+  try{
+    await get(Uri.parse("$liveBaseUrl$evaluation?student_id=1427&class_id=24"));
+  }catch(e){
+    AppConstants.showCustomToast(status: false, message: "$e");
+  }
+}
 
   Future<dynamic> getAttendance(
       String token, String studentId, String classId, String cookie) async {
@@ -367,7 +412,7 @@ class ApiClass {
     }
   }
 
-  Future<dynamic>? getTransfer(String token, String cookie) async {
+  Future<dynamic> getTransfer({required String token,required String cookie}) async {
     try {
       Response res = await get(Uri.parse('$liveBaseUrl$transportation'),
           headers: <String, String>{
@@ -533,9 +578,9 @@ class ApiClass {
   }
 
   Future<dynamic> getSingleSubject(
-      String token, String id, String cookie) async {
+      String token, String subjectId, String cookie) async {
     try {
-      Response res = await get(Uri.parse('$liveBaseUrl$singleSubject/$id'),
+      Response res = await get(Uri.parse('$liveBaseUrl$singleSubject/5938'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
@@ -640,6 +685,35 @@ class ApiClass {
       return {"status": false, "Message": "$exception"};
     }
   }
+
+
+  Future<dynamic> getListOfChildCommunication({required String wpUserId}) async{
+    try {
+      Response res = await get(
+          Uri.parse('${liveBaseUrl}studentmessages?sid=$wpUserId'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            // 'Authorization': "Basic $token",
+            // 'Cookie': cookie
+          });
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        if (data['status']) {
+          return data;
+        } else {
+          return data;
+        }
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, "Message": "Something Went Wrong"};
+      }
+    } catch (exception) {
+      return {"status": false, "Message": "$exception"};
+    }
+  }
+
 
   //assistant related api's
 
@@ -950,7 +1024,6 @@ class ApiClass {
           'Cookie': cookie
         },
       );
-      print(response.statusCode);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return data;
@@ -963,13 +1036,11 @@ class ApiClass {
     } catch (_) {
       return {'status': false, "Message": "Something Went Wrong"};
     }
-
   }
 
   //get common message list.
   Future<dynamic> getCommonMessageList(String token, String cookie) async {
     try {
-
       Response res = await get(
           Uri.parse("${liveBaseUrl}common_communicationList"),
           headers: <String, String>{
@@ -977,7 +1048,6 @@ class ApiClass {
             'Authorization': "Basic $token",
             'Cookie': cookie
           });
-      print(res.statusCode);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         return data;
@@ -990,7 +1060,6 @@ class ApiClass {
     } catch (_) {
       return {"status": false, "Message": "please try again"};
     }
-
   }
 
   //get Message Details.
@@ -1134,11 +1203,12 @@ class ApiClass {
                 ? "Poco"
                 : "Nada";
   }
+
 }
 
 void sessionExpired() async {
   await SharedPref.initialization();
   await SharedPref.pref.setBool(SharedPref.isLogin, false);
   Fluttertoast.showToast(msg: 'sessionExpired'.tr);
-  Get.offAll(const LoginScreen());
+  Get.offAll(const LoginScreen1());
 }

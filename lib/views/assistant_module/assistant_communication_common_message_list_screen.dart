@@ -1,3 +1,4 @@
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import '../../models/assistant/assistant_login_model.dart';
 import '../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../services/api_class.dart';
 import '../../utils/app_colors.dart';
-import '../../widgets/custom_loader.dart';
+import '../custom_widgets/custom_loader.dart';
 import 'assistant_communication_report_details_screen.dart';
 import 'assistant_communication_list_screen.dart';
 import 'assistant_new_communication_screen.dart';
@@ -126,11 +127,11 @@ class _CommonMessageListScreenState extends State<CommonMessageListScreen> {
     setState(() {
       isLoading = true;
     });
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    String token = assistant.basicAuthToken;
+
+    Assistant? assistant =  AppSharedPreferences.getAssistantLoggedInData();
+    String token = assistant?.basicAuthToken ?? "";
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getCommonMessageList(token,assistant.userdata.data.cookie ?? "");
+    dynamic res = await apiClass.getCommonMessageList(token,assistant?.userdata.data.cookie ?? "");
     if (res['status']) {
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {

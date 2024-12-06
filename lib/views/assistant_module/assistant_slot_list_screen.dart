@@ -1,7 +1,9 @@
 import 'package:colegia_atenea/models/assistant/assistant_slotlist_model.dart';
+import 'package:colegia_atenea/models/login_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_children_list_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
-import 'package:colegia_atenea/widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
@@ -93,18 +95,19 @@ class SlotListChild extends State<SlotList> {
     );
   }
   void getAsSlotList() async{
-    ApiClass apiClass = ApiClass();
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    String token = assistant.basicAuthToken;
-    dynamic tempClassList = await apiClass.getAsSlot(token,assistant.userdata.data.cookie ?? "");
+    // ApiClass apiClass = ApiClass();
+    // Assistant assistant = await sessionManagement.getAssistantDetail();
+    // String token = assistant.basicAuthToken;
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    dynamic tempClassList = await ApiClass().getAsSlot(assistant?.basicAuthToken ?? "",assistant?.userdata.data.cookie ?? "");
     if(tempClassList['status']){
       SlotListModel slotListModel = SlotListModel.fromJson(tempClassList);
       setState(() {
         timeSlot = slotListModel.data;
         isLoading = false;
       });
-    }else{
+    }
+    else{
       setState(() {
         isLoading = false;
       });

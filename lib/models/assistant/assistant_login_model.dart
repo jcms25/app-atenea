@@ -12,7 +12,7 @@ class Assistant {
   bool status;
   String message;
   String basicAuthToken;
-  Userdata userdata;
+  AssistantUserdata userdata;
 
   Assistant({
     required this.status,
@@ -25,7 +25,7 @@ class Assistant {
     status: json["status"],
     message: json["Message"],
     basicAuthToken: json["basicAuthToken"],
-    userdata: Userdata.fromJson(json["userdata"]),
+    userdata: AssistantUserdata.fromJson(json["userdata"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -36,16 +36,16 @@ class Assistant {
   };
 }
 
-class Userdata {
+class AssistantUserdata {
   Data data;
   int id;
   Caps caps;
   String capKey;
   String roles;
-  Allcaps allCaps;
+  AllCaps allCaps;
   dynamic filter;
 
-  Userdata({
+  AssistantUserdata({
     required this.data,
     required this.id,
     required this.caps,
@@ -55,13 +55,13 @@ class Userdata {
     this.filter,
   });
 
-  factory Userdata.fromJson(Map<String, dynamic> json) => Userdata(
+  factory AssistantUserdata.fromJson(Map<String, dynamic> json) => AssistantUserdata(
     data: Data.fromJson(json["data"]),
     id: json["ID"],
     caps: Caps.fromJson(json["caps"]),
     capKey: json["cap_key"],
     roles: json["roles"],
-    allCaps: Allcaps.fromJson(json["allcaps"]),
+    allCaps: AllCaps.fromJson(json["allcaps"]),
     filter: json["filter"],
   );
 
@@ -76,7 +76,7 @@ class Userdata {
   };
 }
 
-class Allcaps {
+class AllCaps {
   bool? editPosts;
   bool? editPrivatePosts;
   bool? editPublishedPosts;
@@ -85,7 +85,7 @@ class Allcaps {
   bool? readPrivatePosts;
   bool? assistant;
 
-  Allcaps({
+  AllCaps({
     required this.editPosts,
     required this.editPrivatePosts,
     required this.editPublishedPosts,
@@ -95,7 +95,7 @@ class Allcaps {
     required this.assistant,
   });
 
-  factory Allcaps.fromJson(Map<String, dynamic> json) => Allcaps(
+  factory AllCaps.fromJson(Map<String, dynamic> json) => AllCaps(
     editPosts: json["edit_posts"],
     editPrivatePosts: json["edit_private_posts"],
     editPublishedPosts: json["edit_published_posts"],

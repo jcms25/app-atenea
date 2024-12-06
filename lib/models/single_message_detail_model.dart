@@ -33,20 +33,20 @@ class SingleMessageDetailModel {
 }
 
 class Data {
-  String mid;
-  String sId;
-  String rId;
-  String subject;
-  String msg;
-  String replayId;
-  String mainMId;
-  String delStat;
-  String sRead;
-  String rRead;
-  DateTime mDate;
-  String attachments;
-  String name;
-  String image;
+  String? mid;
+  String? sId;
+  String? rId;
+  String? subject;
+  String? msg;
+  String? replayId;
+  String? mainMId;
+  String? delStat;
+  String? sRead;
+  String? rRead;
+  String? mDate;
+  String? attachments;
+  String? name;
+  String? image;
   List<dynamic> subMessage;
 
   Data({
@@ -78,11 +78,11 @@ class Data {
     delStat: json["del_stat"],
     sRead: json["s_read"],
     rRead: json["r_read"],
-    mDate: DateTime.parse(json["m_date"]),
+    mDate: json["m_date"],
     attachments: json["attachments"],
     name: json["name"],
     image: json["image"],
-    subMessage: List<dynamic>.from(json["sub_message"].map((x) => x)),
+    subMessage:json["sub_message"] == null ? [] : List<dynamic>.from(json["sub_message"].map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
@@ -96,7 +96,7 @@ class Data {
     "del_stat": delStat,
     "s_read": sRead,
     "r_read": rRead,
-    "m_date": mDate.toIso8601String(),
+    "m_date": mDate,
     "attachments": attachments,
     "name": name,
     "image": image,

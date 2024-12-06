@@ -1,16 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_classlist_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_children_list_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
-import 'package:colegia_atenea/widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
-import '../../services/session_management.dart';
-
 class ChildScreen extends StatefulWidget {
   const ChildScreen({super.key});
 
@@ -151,11 +150,9 @@ class ChildScreenState extends State<ChildScreen> {
   }
 
   void getClassLisData() async{
-    ApiClass apiclass = ApiClass();
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    String token = assistant.basicAuthToken;
-    dynamic tempClassList = await apiclass.getAsClassList(token,assistant.userdata.data.cookie ?? "");
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = assistant?.basicAuthToken ?? "";
+    dynamic tempClassList = await ApiClass().getAsClassList(token,assistant?.userdata.data.cookie ?? "");
     if(tempClassList['status']){
       ClassListModel classListModel = ClassListModel.fromJson(tempClassList);
       setState(() {

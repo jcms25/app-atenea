@@ -3,10 +3,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/assistant/assistant_student_report_detail_model.dart';
+import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
-import 'package:colegia_atenea/widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -489,26 +491,27 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
       {required int isCommonMessageOrStudentReport,
       String? dateForMessage,
       String? studentId}) async {
-    ApiClass apiClass = ApiClass();
-    SessionManagement sessionManagement = SessionManagement();
+    // ApiClass apiClass = ApiClass();
+    // SessionManagement sessionManagement = SessionManagement();
     String token = "";
     String cookie = "";
-    int? role = await sessionManagement.getRole('');
-    if (role == 2) {
-      Assistant assistant = await sessionManagement.getAssistantDetail();
-      token = assistant.basicAuthToken;
-      cookie = assistant.userdata.data.cookie ?? "";
+    String? role = AppSharedPreferences.getUserLoggedInRole();
+    if (role == "assistant") {
+      Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+      token = assistant?.basicAuthToken ?? "";
+      cookie = assistant?.userdata.data.cookie ?? "";
     } else {
-      Parentlogin parentLogin = await sessionManagement.getModelParent('');
-      token = parentLogin.basicAuthToken;
-      cookie = parentLogin.userdata.cookie ?? "";
+      // Parentlogin parentLogin = await sessionManagement.getModelParent('');
+      LoginModel? loginModel = AppSharedPreferences.getUserData();
+      token = loginModel?.basicAuthToken ?? "";
+      cookie = loginModel?.userdata?.cookies ?? "";
     }
     if (isCommonMessageOrStudentReport == 0) {
       //this will  get details of common message.
       setState(() {
         isLoading = true;
       });
-      dynamic res = await apiClass.getMessageDetails(
+      dynamic res = await ApiClass().getMessageDetails(
           isCommonOrStudentReport: 0,
           token: token,
           messageId: widget.messageId!,
@@ -540,7 +543,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
         setState(() {
           isLoading = true;
         });
-        dynamic res = await apiClass.getMessageDetails(
+        dynamic res = await ApiClass().getMessageDetails(
             isCommonOrStudentReport: 1,
             token: token,
             messageId: widget.messageId!,
@@ -578,7 +581,7 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
           isLoading = true;
           receiverName = "";
         });
-        dynamic res = await apiClass.getMessageDetailsUsingDate(
+        dynamic res = await ApiClass().getMessageDetailsUsingDate(
             token: token,
             date: dateForMessage!,
             studentId: studentId!,

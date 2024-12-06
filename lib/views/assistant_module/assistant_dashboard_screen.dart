@@ -7,9 +7,10 @@ import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import '../../services/app_shared_preferences.dart';
 import '../../utils/app_images.dart';
 import '../../utils/text_style.dart';
-import '../../widgets/custom_loader.dart';
+import '../custom_widgets/custom_loader.dart';
 
 class AssistantDashboard extends StatefulWidget {
   final String username;
@@ -340,10 +341,11 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
     setState(() {
       isLoading = true;
     });
-    ApiClass apiclass = ApiClass();
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    dynamic dashboardData = await apiclass.getAsDashboard(assistant.basicAuthToken,assistant.userdata.data.cookie ?? "");
+    // ApiClass apiclass = ApiClass();
+    // SessionManagement sessionManagement = SessionManagement();
+    // Assistant assistant = await sessionManagement.getAssistantDetail();
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    dynamic dashboardData = await ApiClass().getAsDashboard(assistant?.basicAuthToken ?? "",assistant?.userdata.data.cookie ?? "");
     if(dashboardData['status']){
       AssistantDashboardModel assistantDashboard = AssistantDashboardModel.fromJson(dashboardData);
       String tempClassCount = assistantDashboard.count.classCount;
@@ -363,10 +365,11 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
   }
 
   void setUsername() async{
-    SessionManagement  sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    // SessionManagement  sessionManagement = SessionManagement();
+    // Assistant assistant = await sessionManagement.getAssistantDetail();
     setState(() {
-        username = assistant.userdata.data.displayName
+        username = assistant?.userdata.data.displayName ?? ""
         ;
     });
   }

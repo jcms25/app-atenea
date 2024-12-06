@@ -1,12 +1,12 @@
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/assistant/assistant_login_model.dart';
 import '../../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../../services/api_class.dart';
-import '../../../services/session_management.dart';
 import '../../../utils/app_colors.dart';
-import '../../../widgets/custom_loader.dart';
+import '../../custom_widgets/custom_loader.dart';
 import 'assistant_received_message_detail_screen.dart';
 
 class AssistantMessageReceivedScreen extends StatefulWidget {
@@ -121,11 +121,11 @@ class _AssistantMessageReceivedScreenState extends State<AssistantMessageReceive
     setState(() {
       isLoading = true;
     });
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    String token = assistant.basicAuthToken;
+
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = assistant?.basicAuthToken ?? "";
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getCommonMessageList(token,assistant.userdata.data.cookie ?? "");
+    dynamic res = await apiClass.getCommonMessageList(token,assistant?.userdata.data.cookie ?? "");
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {

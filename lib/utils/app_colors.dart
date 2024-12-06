@@ -18,11 +18,13 @@ class AppColors {
  static const Color red=Color(0xFFF44336);
  static const Color darkPurple = Color(0xFF883FFF);
 
+ static const Color transparent = Color(0x0fffffff);
 
  static const  List<Color> rainbowColors = [
     Color(0xFF69293A),
   ];
 
   Color cButtons =  const Color(0xFF1520A6);
+  static const Color greyColor = Color(0xff9E9E9E);
 
 }

@@ -1,3 +1,5 @@
+import 'package:colegia_atenea/models/login_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +11,7 @@ import '../../services/api_class.dart';
 import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
-import '../../widgets/custom_loader.dart';
+import '../custom_widgets/custom_loader.dart';
 import 'assistant_communication_report_details_screen.dart';
 import 'assistant_communication_list_screen.dart';
 
@@ -79,23 +81,28 @@ class _ReportListScreenState extends State<ReportListScreen> {
 
   void getStudentReportList() async{
 
-    SessionManagement sessionManagement = SessionManagement();
-    int? role = await sessionManagement.getRole('');
+    // SessionManagement sessionManagement = SessionManagement();
+    // int? role = await sessionManagement.getRole('');
+
+    String? role = AppSharedPreferences.getUserLoggedInRole();
+
 
     setState(() {
       isLoading = true;
     });
     //if selected radio is select then student report list we wil retrieve.
 
-    if(role == 2){
-      Assistant assistant = await sessionManagement.getAssistantDetail();
-      String token = assistant.basicAuthToken;
-      getList(token,2,assistant.userdata.data.cookie ?? "");
+    if(role == "assistant"){
+      Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+      String token = assistant?.basicAuthToken ?? "";
+      getList(token,2,assistant?.userdata.data.cookie ?? "");
     }
     else{
-      Parentlogin parentLogin = await sessionManagement.getModelParent('');
-      String token = parentLogin.basicAuthToken;
-      getList(token,1 , parentLogin.userdata.cookie ?? "");
+      // Parentlogin parentLogin = await sessionManagement.getModelParent('');
+
+      LoginModel? loginModel = AppSharedPreferences.getUserData();
+      String token = loginModel?.basicAuthToken ?? "";
+      getList(token,1 , loginModel?.userdata?.cookies ?? "");
     }
   }
 

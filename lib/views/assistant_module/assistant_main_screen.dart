@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
+import 'package:colegia_atenea/utils/app_routes.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_message_list_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_dashboard_screen.dart';
@@ -15,8 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/app_colors.dart';
 import '../../utils/app_images.dart';
-import '../../widgets/custom_loader.dart';
-import '../login_screen.dart';
+import '../custom_widgets/custom_loader.dart';
 import 'assistant_classes_screen.dart';
 
 class AssistantScreen extends StatefulWidget{
@@ -25,14 +27,13 @@ class AssistantScreen extends StatefulWidget{
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return AssistantScreenChild();
   }
 
 }
 
 class AssistantScreenChild extends State<AssistantScreen>{
-  final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
   String currentLanguage = "English";
   String username = "";
@@ -51,22 +52,20 @@ class AssistantScreenChild extends State<AssistantScreen>{
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setData();
   }
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return SafeArea(child: Scaffold(
-      key: _globalKey,
+      key: AppConstants.assistantKey,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.menu_rounded,size: 30,),
           onPressed: (){
-            _globalKey.currentState!.openDrawer();
+            AppConstants.assistantKey.currentState!.openDrawer();
           },
         ),
         title: _currentIndex == 0 ?  Text("desk".tr,style: const TextStyle(fontFamily: "Outfit",fontWeight: FontWeight.w500,fontSize: 20,color: Colors.white),) : _currentIndex == 2 ?  Text('option1'.tr,style: const TextStyle(fontFamily: "Outfit",fontWeight: FontWeight.w500,fontSize: 18 ,color: Colors.white),) : Text('reportOption'.tr,style: const TextStyle(fontFamily: "Outfit",fontWeight: FontWeight.w500,fontSize: 18 ,color: Colors.white),),
@@ -114,6 +113,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
                 Expanded(child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(10),
@@ -143,7 +143,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
                     ],
                   ),
                 )),
-                Image.asset("Assets/white_logo_atenea.png",width: 50,height: 50)
+                Image.asset(AppImages.whiteAppLogo,width: 50,height: 50)
               ],
             )
           ],
@@ -347,7 +347,7 @@ class AssistantScreenChild extends State<AssistantScreen>{
                   isLoading = true;
                 });
                 Navigator.pop(context);
-                _globalKey.currentState!.closeDrawer();
+                AppConstants.assistantKey.currentState!.closeDrawer();
                 getSenderId();
               }, child: Text('positiveButton'.tr,style: CustomStyle.txtvalue1.copyWith(color: AppColors.white),))
         ],
@@ -356,35 +356,34 @@ class AssistantScreenChild extends State<AssistantScreen>{
 
   }
   void logout() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    SessionManagement sessionManagement = SessionManagement();
-    sharedPreferences.setBool('Login', false);
-    sessionManagement.destroyAssistantSession();
+
+    AppSharedPreferences.loggedOutUser();
     goToLoginScreen();
   }
 
   void setData() async{
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
     setState(() {
-      username = assistant.userdata.data.displayName;
+      username = assistant?.userdata.data.displayName ?? "";
       _currentIndex = widget.currentIndex;
     });
   }
 
   void goToLoginScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
-    );
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const LoginScreen1(),
+    //   ),
+    // );
+    Get.offNamedUntil(AppRoutes.loginScreen, (routes) => false);
   }
 
   Future<void> getSenderId() async{
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    logOutApi(assistant.userdata.data.id);
+    // SessionManagement sessionManagement = SessionManagement();
+    // Assistant assistant = await sessionManagement.getAssistantDetail();
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    logOutApi(assistant?.userdata.data.id ?? "");
   }
 
   void logOutApi(String senderId) async{

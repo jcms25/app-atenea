@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ import '../../../services/api_class.dart';
 import '../../../services/session_management.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/text_style.dart';
-import '../../../widgets/custom_loader.dart';
+import '../../custom_widgets/custom_loader.dart';
 
 class AssistantMessageReceivedDetailScreen extends StatefulWidget {
   final String id;
@@ -243,12 +244,11 @@ class _AssistantMessageReceivedDetailScreenState
     setState(() {
       isLoading = true;
     });
-    ApiClass apiClass = ApiClass();
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    String token = assistant.basicAuthToken;
-    dynamic res = await apiClass.getMessageDetails(
-        isCommonOrStudentReport: 0, token: token, messageId: widget.id, cookie: assistant.userdata.data.cookie ?? "");
+
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = assistant?.basicAuthToken ?? "";
+    dynamic res = await ApiClass().getMessageDetails(
+        isCommonOrStudentReport: 0, token: token, messageId: widget.id, cookie: assistant?.userdata.data.cookie ?? "");
     if (res['status']) {
       MessageDetailModel commonMessageModel = MessageDetailModel.fromJson(res);
       setState(() {

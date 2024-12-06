@@ -1,13 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_child_detail_temp_model.dart';
 import 'package:colegia_atenea/models/assistant/parent_model_assistant_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_children_details_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_details_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_parents_details_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
-import 'package:colegia_atenea/widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -219,11 +220,9 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
   }
 
   void getStudentListOfClass() async{
-    ApiClass apiClass = ApiClass();
-    SessionManagement sessionManagement = SessionManagement();
-    Assistant assistant = await sessionManagement.getAssistantDetail();
-    String token = assistant.basicAuthToken;
-    dynamic tempChildList = await apiClass.getAsSlotChildList(token,widget.classId,assistant.userdata.data.cookie ?? "");
+    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = assistant?.basicAuthToken ?? "";
+    dynamic tempChildList = await ApiClass().getAsSlotChildList(token,widget.classId,assistant?.userdata.data.cookie ?? "");
     if(tempChildList['status']){
         ChildListDetailModel childListDetailModel = ChildListDetailModel.fromJson(tempChildList);
         childListDetailModel.data.sort((a,b) => a.studentName.compareTo(b.studentName));

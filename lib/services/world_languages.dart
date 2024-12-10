@@ -203,6 +203,9 @@ class WorldLanguage extends Translations {
           'drawerOption5' : 'Circulars',
           'drawerOption6' : 'Message',
           'drawerOption7' : 'Students',
+          'drawerOption8' : 'Classes',
+          'drawerOption9' : 'Teaching Management',
+          'drawerOption10' : 'Dining Room',
 
           //sub menu option
           'subMenuDrawer1' : 'Time Table',
@@ -214,6 +217,11 @@ class WorldLanguage extends Translations {
           'subMenuDrawer7' : 'Evaluation',
           'subMenuDrawer8' : 'Attendance',
           'subMenuDrawer9' : 'Tranportation',
+          'subMenuDrawer10' : 'Menu',
+          'subMenuDrawer11' : 'Manage Service',
+          'subMenuDrawer12' : 'My Schedule',
+          'subMenuDrawer13' : 'Follow-up',
+
 
           //Assistant Module Strings
           'as1' : 'Children\'s',
@@ -428,7 +436,9 @@ class WorldLanguage extends Translations {
           'drawerOption5' : 'Circulares',
           'drawerOption6' : 'Comunicaciones',
           'drawerOption7' : 'Alumnos',
-
+          'drawerOption8' : 'Clases',
+          'drawerOption9' : 'Gestión docente',
+          'drawerOption10' : 'Comedor',
 
           //sub menu option
           'subMenuDrawer1' : 'Horario',
@@ -440,6 +450,10 @@ class WorldLanguage extends Translations {
           'subMenuDrawer7' : 'Evaluaciones',
           'subMenuDrawer8' : 'Ausencias',
           'subMenuDrawer9' : 'Transporte',
+          'subMenuDrawer10' : 'Menu',
+          'subMenuDrawer11' : 'Gestionar Servicio',
+          'subMenuDrawer12' : 'Mi Horario',
+          'subMenuDrawer13' : 'Seguimiento',
 
           //
           'as1' : 'Niños',

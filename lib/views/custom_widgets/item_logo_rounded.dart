@@ -6,7 +6,7 @@ import '../../utils/app_images.dart';
 
 
 class ItemLogoRounded extends StatelessWidget {
-  const ItemLogoRounded({Key? key}) : super(key: key);
+  const ItemLogoRounded({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class ItemLogoRounded extends StatelessWidget {
 }
 
 class ItemWhiteOpacityCircle extends StatefulWidget {
-  const ItemWhiteOpacityCircle({Key? key}) : super(key: key);
+  const ItemWhiteOpacityCircle({super.key});
 
   @override
   State<StatefulWidget> createState() {

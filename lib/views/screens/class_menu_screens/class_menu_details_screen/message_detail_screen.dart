@@ -1,7 +1,4 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
-import 'package:colegia_atenea/models/Failed.dart';
-import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
-import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/models/single_message_detail_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
@@ -16,7 +13,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../services/session_management.dart';
 import '../../../../utils/app_colors.dart';
 
 class MessageDetail extends StatefulWidget {

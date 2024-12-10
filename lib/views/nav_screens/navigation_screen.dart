@@ -1,7 +1,7 @@
 // import 'dart:convert';
 //
 // import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
-// import 'package:colegia_atenea/models/Student/Studentlogin.dart';
+// import 'package:colegia_atenea/models/Student/student_login.dart';
 // import 'package:colegia_atenea/services/session_management.dart';
 // import 'package:colegia_atenea/utils/app_colors.dart';
 // import 'package:colegia_atenea/utils/app_images.dart';

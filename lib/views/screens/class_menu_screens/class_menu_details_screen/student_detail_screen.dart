@@ -1,11 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
-import 'package:colegia_atenea/models/Student/Studentlogin.dart';
 import 'package:colegia_atenea/models/Studentdetaillist.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
-import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';

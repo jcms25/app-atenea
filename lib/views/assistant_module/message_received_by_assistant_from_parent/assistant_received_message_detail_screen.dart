@@ -9,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../models/assistant/assistant_login_model.dart';
 import '../../../models/assistant/assistant_student_report_detail_model.dart';
 import '../../../services/api_class.dart';
-import '../../../services/session_management.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/text_style.dart';
 import '../../custom_widgets/custom_loader.dart';
@@ -17,8 +16,7 @@ import '../../custom_widgets/custom_loader.dart';
 class AssistantMessageReceivedDetailScreen extends StatefulWidget {
   final String id;
 
-  const AssistantMessageReceivedDetailScreen({Key? key, required this.id})
-      : super(key: key);
+  const AssistantMessageReceivedDetailScreen({super.key, required this.id});
 
   @override
   State<AssistantMessageReceivedDetailScreen> createState() =>

@@ -20,7 +20,7 @@ class EvaluationScreen extends StatefulWidget {
   final String wpId;
   final String studentName;
 
-  const EvaluationScreen({Key? key, required this.studentName,required this.cid,required this.wpId, }) : super(key: key);
+  const EvaluationScreen({super.key, required this.studentName,required this.cid,required this.wpId, });
 
   @override
   TableExample createState() => TableExample();

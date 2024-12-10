@@ -1,56 +1,39 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
-import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
-import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/teacher/parent_list_model.dart';
 import '../../../utils/app_images.dart';
-import '../send_message_screen.dart';
-import 'class_menu_details_screen/teacher_details_screen.dart';
+import '../../custom_widgets/custom_loader.dart';
 
-class TeacherListScreen extends StatefulWidget {
-
-  const TeacherListScreen({super.key,});
+class TeacherParentListScreen extends StatefulWidget {
+  const TeacherParentListScreen({super.key});
 
   @override
-  State<TeacherListScreen> createState() => _TeacherScreenChild();
+  State<TeacherParentListScreen> createState() =>
+      _TeacherParentListScreenState();
 }
 
-class _TeacherScreenChild extends State<TeacherListScreen> {
+class _TeacherParentListScreenState extends State<TeacherParentListScreen> {
+
+  Map<String,dynamic>? arguments;
   StudentParentTeacherController? studentParentTeacherController;
-  Map<String, dynamic>? arguments;
 
 
   @override
   void initState() {
     super.initState();
     arguments = Get.arguments;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      studentParentTeacherController =
-          Provider.of<StudentParentTeacherController>(context, listen: false);
-
-
-      if (arguments?['role'] == RoleType.teacher) {
-        studentParentTeacherController?.setCurrentSelectedClass(
-            teacherClass: studentParentTeacherController
-                ?.listOfClassAssignToTeacher[0]);
-        studentParentTeacherController?.getListOfTeachers(studentId: null,
-            classId: studentParentTeacherController?.currentSelectedClass
-                ?.cid ?? "",
-            roleType: arguments?['role']);
-      } else {
-        studentParentTeacherController?.getListOfTeachers(
-            studentId: arguments?['wpUserId'],
-            classId: arguments?['classId'],
-            roleType: arguments?['role']);
-      }
-
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp){
+      studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
+      studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+      studentParentTeacherController?.getListOfParents(classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "");
     });
   }
 
@@ -58,30 +41,25 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: true,
-        onPopInvokedWithResult: (ctx, result) {
-          studentParentTeacherController?.setListOfTeachers(listOfTeachers: []);
+        onPopInvokedWithResult: (res,ctx){
+          studentParentTeacherController?.setListOfParents(listOfParents: []);
         },
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: CustomAppBarWidget(
-                onLeadingIconClicked: () {
-                  studentParentTeacherController
-                      ?.setListOfTeachers(listOfTeachers: []);
-                  Get.back();
-                },
-                title: Text(
-                  arguments?['role'] != RoleType.teacher ? "${"teachers"
-                      .tr} de ${arguments?['className']}" : "teachers".tr,
-                  style: AppTextStyle.getOutfit500(
-                      textSize: 20, textColor: AppColors.white),
-                ),
-                actionIcons: [
-                  Visibility(
-                      visible: arguments?['role'] == RoleType.teacher,
-                      child: Expanded(child:TeacherClassListDropdown(fromWhichScreen: 3)))
-                ],
+      appBar: CustomAppBarWidget(
+          onLeadingIconClicked: (){
+            studentParentTeacherController?.setListOfParents(listOfParents: []);
+            Get.back();
+          },
+          title: Text(
+            'Padres',
+            style:
+            AppTextStyle.getOutfit600(textSize: 20, textColor: AppColors.white),
+          ),
+          actionIcons: [
+            Expanded(child: TeacherClassListDropdown(fromWhichScreen: 2))
+          ],
 
-            ),
+      ),
             body: Stack(
               children: [
                 SizedBox(
@@ -145,7 +123,7 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
                                             TextInputAction.next,
                                             onChanged:
                                             studentParentTeacherController
-                                                .searchInTeacherList,
+                                                .searchInParentList,
                                           );
                                         },
                                       ),
@@ -166,7 +144,7 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
                                       studentParentTeacherController,
                                       child) {
                                     return studentParentTeacherController
-                                        .listOfTeachers.isEmpty
+                                        .listOfParents.isEmpty
                                         ? Center(
                                       child: Text(
                                         'no hay resultados',
@@ -177,11 +155,11 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
                                     )
                                         : ListView.separated(
                                         itemBuilder: (context, index) {
-                                          TeacherItem teacherItem =
+                                          ParentItem parentItem =
                                           studentParentTeacherController
-                                              .tempListOfTeachers[index];
-                                          return TeacherItemWidget(
-                                            teacherItem: teacherItem, roleType: arguments?['role'],
+                                              .tempListOfParents[index];
+                                          return ParentItemWidget(
+                                            parentItem: parentItem,
                                           );
                                         },
                                         separatorBuilder: (context, index) {
@@ -191,7 +169,7 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
                                         },
                                         itemCount:
                                         studentParentTeacherController
-                                            .tempListOfTeachers.length);
+                                            .tempListOfParents.length);
                                   },
                                 ),
                               ),
@@ -205,15 +183,15 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
                           child: const LoadingLayout());
                     })
               ],
-            )));
+            )
+    ));
   }
 }
 
-class TeacherItemWidget extends StatelessWidget {
-  final TeacherItem teacherItem;
-  final RoleType roleType;
+class ParentItemWidget extends StatelessWidget {
+  final ParentItem parentItem;
 
-  const TeacherItemWidget({super.key, required this.teacherItem, required this.roleType});
+  const ParentItemWidget({super.key, required this.parentItem});
 
   @override
   Widget build(BuildContext context) {
@@ -228,50 +206,64 @@ class TeacherItemWidget extends StatelessWidget {
           Expanded(
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() =>
-                      TeacherDetails(
-                        id: teacherItem.wpUsrId ?? "",
-                        subject: teacherItem.subjectName?.join("\n") ?? "",
-                        inCharge: teacherItem.inCharge?.join("\n") ?? "",
-                      ));
+                  // Get.to(() =>
+                  //     TeacherDetails(
+                  //       id: teacherItem.wpUsrId ?? "",
+                  //       subject: teacherItem.subjectName?.join("\n") ?? "",
+                  //       inCharge: teacherItem.inCharge?.join("\n") ?? "",
+                  //     ));
                 },
                 child: Row(
-                  children: [
-                    CircleAvatar(
+               children: [
+                  CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(
-                        teacherItem.image!,
+                        // parentItem.image!,
+                        parentItem.parentImage ?? "",
                       ),
                       backgroundColor: AppColors.primary,
                     ),
                     const SizedBox(
                       width: 10,
                     ),
+                    const SizedBox(width: 10,),
                     Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                "${teacherItem.firstName!}\t${teacherItem
-                                    .lastName}",
-                                style: AppTextStyle.getOutfit600(
-                                    textSize: 20,
-                                    textColor: AppColors.secondary),
-                              ),
+                            Text(
+                              parentItem.fullName?.isEmpty ?? false ? "-" : "${parentItem.fullName}",
+                              style: AppTextStyle.getOutfit600(
+                                  textSize: 20,
+                                  textColor: AppColors.secondary),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 5, bottom: 10),
-                              child: Text(
-                                teacherItem.subjectName!.join("\n"),
-                                style: AppTextStyle.getOutfit400(
-                                    textSize: 16,
-                                    textColor: AppColors.secondary),
-                              ),
+                            const SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                SvgPicture.asset(AppImages.message,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),width: 15,height: 15,),
+                                const SizedBox(width: 5,),
+                                Expanded(child: Text(
+                                  "${parentItem.userEmail}",
+                                  style: AppTextStyle.getOutfit400(
+                                      textSize: 16,
+                                      textColor: AppColors.secondary),
+                                ))
+                              ],
                             ),
+                            const SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                SvgPicture.asset(AppImages.people,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),),
+                                const SizedBox(width: 5,),
+                                Expanded(child: Text(
+                                    "${parentItem.sFname ?? ""}\t${parentItem.sLname ?? ""}",
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 16,
+                                        textColor: AppColors.secondary)
+                                ))
+                              ],
+                            )
                           ],
                         )),
                   ],
@@ -280,24 +272,24 @@ class TeacherItemWidget extends StatelessWidget {
           const SizedBox(
             width: 10,
           ),
-          Visibility(
-              visible: roleType != RoleType.teacher,
-              child: GestureDetector(
-            onTap: () {
-              Get.to(() =>
-                  MessageSendScreen(
-                    teacherId: teacherItem.wpUsrId,
-                  ));
-            },
-            child: SvgPicture.asset(
-              AppImages.message,
-              colorFilter:
-              const ColorFilter.mode(AppColors.greyColor, BlendMode.srcIn),
-            ),
-          )),
-          const SizedBox(
-            width: 10,
-          )
+          // Visibility(
+          //     visible: roleType != RoleType.teacher,
+          //     child: GestureDetector(
+          //       onTap: () {
+          //         Get.to(() =>
+          //             MessageSendScreen(
+          //               teacherId: teacherItem.wpUsrId,
+          //             ));
+          //       },
+          //       child: SvgPicture.asset(
+          //         AppImages.message,
+          //         colorFilter:
+          //         const ColorFilter.mode(AppColors.greyColor, BlendMode.srcIn),
+          //       ),
+          //     )),
+          // const SizedBox(
+          //   width: 10,
+          // )
         ],
       ),
     );

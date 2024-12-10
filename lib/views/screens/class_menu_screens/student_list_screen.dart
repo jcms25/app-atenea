@@ -6,6 +6,7 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/class_menu_details_screen/student_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,39 +14,33 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class StudentListScreen extends StatefulWidget {
-  final String cid;
-  final String wpId;
-  final String className;
 
-  const StudentListScreen(
-      {super.key,
-      required this.cid,
-      required this.wpId,
-      required this.className});
+  const StudentListScreen({super.key});
 
   @override
   State<StudentListScreen> createState() => _StudentScreenChild();
 }
 
 class _StudentScreenChild extends State<StudentListScreen> {
-  List<StudentItem> listOfStudent = [];
-  List<StudentItem> tempSearchList = [];
-  TextEditingController search = TextEditingController();
 
   StudentParentTeacherController? studentParentTeacherController;
+  Map<String,dynamic>? arguments;
 
-  bool isLoading = true;
-  String imagePath =
-      "http://colegioatenea.embedinfosoft.com/wp-content/plugins/scl-rest-api/img/default_avtar.jpg";
-
-  String exception = "";
 
   @override
   void initState() {
     super.initState();
+    arguments = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
-      studentParentTeacherController?.getListOfStudents(classId: widget.cid);
+      if(arguments?['role'] == RoleType.teacher){
+        studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+        studentParentTeacherController?.getListOfStudents(
+            classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "",roleType: arguments?['role']);
+      }else{
+        studentParentTeacherController?.getListOfStudents(
+            classId: arguments?['role'] == RoleType.teacher ? studentParentTeacherController?.currentSelectedClass?.cid ?? "" : arguments?['classId'] ?? "",roleType: arguments?['role']);
+      }
     });
   }
 
@@ -59,7 +54,9 @@ class _StudentScreenChild extends State<StudentListScreen> {
         child: Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBarWidget(
-              title: Text("${"student".tr} de ${widget.className}",
+              title: Text(
+                  arguments?['role'] == RoleType.teacher ? "student".tr :
+                  "${"student".tr} de ${arguments?['className']}",
                   style: AppTextStyle.getOutfit500(
                       textSize: 20, textColor: AppColors.white)),
               onLeadingIconClicked: () {
@@ -67,6 +64,11 @@ class _StudentScreenChild extends State<StudentListScreen> {
                     ?.setListOfStudents(listOfStudents: []);
                 Get.back();
               },
+              actionIcons: [
+                Visibility(
+                    visible: arguments?['role'] == RoleType.teacher,
+                    child: Expanded(child: TeacherClassListDropdown(fromWhichScreen: 1)))
+              ],
             ),
             body: Stack(
               children: [
@@ -93,7 +95,6 @@ class _StudentScreenChild extends State<StudentListScreen> {
                             builder: (context, studentParentTeacherController,
                                 child) {
                               return TextField(
-                                controller: search,
                                 autofocus: false,
                                 decoration: InputDecoration(
                                     prefixIcon: IconButton(

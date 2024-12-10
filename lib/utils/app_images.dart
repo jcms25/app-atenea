@@ -30,6 +30,7 @@ class AppImages{
   static const String document="$rootPath/document.png";
   static const String female="$rootPath/female.svg";
   static const String teachingManagement = "$rootPath/teaching_management.svg";
+  static const String dinningIcon = "$rootPath/dinning_icon.svg";
 
 
   static const String whiteAppLogo = "$rootPath/white_logo_atenea.png";

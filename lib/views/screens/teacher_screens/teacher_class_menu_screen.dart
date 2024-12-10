@@ -1,4 +1,5 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
@@ -6,29 +7,9 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/app_colors.dart';
 
-class TeacherClassListScreen extends StatefulWidget {
-  const TeacherClassListScreen({super.key});
 
-  @override
-  State<TeacherClassListScreen> createState() => _TeacherClassListScreenState();
-}
-
-class _TeacherClassListScreenState extends State<TeacherClassListScreen> {
-  StudentParentTeacherController? studentParentTeacherController;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      studentParentTeacherController =
-          Provider.of<StudentParentTeacherController>(context, listen: false);
-      studentParentTeacherController?.getListOfClassesAssignToTeacher(
-          showLoader: studentParentTeacherController
-                  ?.listOfClassAssignToTeacher.isEmpty ??
-              true);
-    });
-  }
-
+class TeacherClassMenuScreen extends StatelessWidget {
+  const TeacherClassMenuScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -37,8 +18,7 @@ class _TeacherClassListScreenState extends State<TeacherClassListScreen> {
           builder: (context, studentParentTeacherController, child) {
             return Column(
               children: [
-                ...studentParentTeacherController
-                        .listOfClassAssignToTeacher.isEmpty
+                ...AppConstants.classSubMenuListTeacher.isEmpty
                     ? [
                         SizedBox(
                           child: Center(
@@ -49,11 +29,10 @@ class _TeacherClassListScreenState extends State<TeacherClassListScreen> {
                             ),
                           ),
                         )
-                      ]
-                    : studentParentTeacherController.listOfClassAssignToTeacher
+                      ] :
+                AppConstants.classSubMenuListTeacher
                         .map((e) {
                         return Container(
-                          width: MediaQuery.sizeOf(context).width,
                           margin: const EdgeInsets.all(10),
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
@@ -63,7 +42,7 @@ class _TeacherClassListScreenState extends State<TeacherClassListScreen> {
                             children: [
                               Expanded(
                                   child: Text(
-                                e.cName ?? "",
+                                e['name'] ?? "",
                                 style: AppTextStyle.getOutfit400(
                                     textSize: 18,
                                     textColor: AppColors.secondary),

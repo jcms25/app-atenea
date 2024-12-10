@@ -3,6 +3,7 @@ import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
+import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/class_menu_details_screen/subject_detail_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
@@ -13,31 +14,38 @@ import 'package:provider/provider.dart';
 import '../../../models/subject_list_model.dart';
 
 class SubjectListScreen extends StatefulWidget {
-  final String cid;
-  final String wpId;
-  final String studentName;
+
 
   const SubjectListScreen(
-      {super.key,
-      required this.cid,
-      required this.wpId,
-      required this.studentName});
+      {super.key,});
 
   @override
   State<SubjectListScreen> createState() => _SubjectListScreenChild();
 }
 
 class _SubjectListScreenChild extends State<SubjectListScreen> {
-  StudentParentTeacherController? appController;
+  StudentParentTeacherController? studentParentTeacherController;
+  Map<String,dynamic>? arguments;
+
 
   @override
   void initState() {
     super.initState();
+    arguments = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      appController = Provider.of<StudentParentTeacherController>(context, listen: false);
-      appController?.getListOfStudentSubjects(
-          classId: widget.cid, wpId: widget.wpId);
-    });
+      studentParentTeacherController = Provider.of<StudentParentTeacherController>(context, listen: false);
+
+        if(arguments?['role'] == RoleType.teacher){
+          studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+          studentParentTeacherController?.getListOfSubjects(
+              classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "", wpId: null, roleType: arguments?['role']);
+
+        }else{
+          studentParentTeacherController?.getListOfSubjects(
+              classId: arguments?['role'] == RoleType.teacher ? studentParentTeacherController?.currentSelectedClass?.cid ?? "" : arguments?['classId'] ?? "", wpId: arguments?['wpUserId'], roleType: arguments?['role']);
+
+        }
+       });
   }
 
   @override
@@ -45,21 +53,27 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
     return PopScope(
         canPop: true,
         onPopInvokedWithResult: (result, onPopInvoked) {
-          appController?.setListOfStudentSubject(listOfStudentSubject: []);
+          studentParentTeacherController?.setListOfSubject(listOfSubject: []);
         },
         child: SafeArea(child: Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBarWidget(
                 onLeadingIconClicked: () {
-                  appController
-                      ?.setListOfStudentSubject(listOfStudentSubject: []);
+                  studentParentTeacherController
+                      ?.setListOfSubject(listOfSubject: []);
                   Get.back();
                 },
                 title: Text(
-                  "${"subjects".tr} de ${widget.studentName}",
+                  arguments?['role'] == RoleType.teacher ? "subjects".tr : "${"subjects".tr} de ${arguments?['studentName']}",
                   style: AppTextStyle.getOutfit500(
                       textSize: 20, textColor: AppColors.white),
-                )),
+                ),
+                actionIcons: [
+                  Visibility(
+                      visible: arguments?['role'] == RoleType.teacher,
+                      child: Expanded(child: TeacherClassListDropdown(fromWhichScreen: 4)))
+                ],
+            ),
             body: Stack(
               children: [
                 Column(
@@ -124,11 +138,11 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
                                 .copyWith(overscroll: false),
                             child: Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 10),
+                              const EdgeInsets.symmetric(horizontal: 10).copyWith(top: 20),
                               child: Consumer<StudentParentTeacherController>(
                                 builder: (context, appController, child) {
                                   return appController
-                                      .tempListOfStudentSubject.isEmpty
+                                      .tempListOfSubject.isEmpty
                                       ? Center(
                                     child: Text(
                                       'noStudentFound'.tr,
@@ -140,7 +154,7 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
                                       : ListView.separated(
                                       itemBuilder: (context, index) {
                                         SubjectItem subject = appController
-                                            .tempListOfStudentSubject[
+                                            .tempListOfSubject[
                                         index];
                                         return SubjectItemWidget(
                                             subjectItem: subject);
@@ -151,7 +165,7 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
                                         );
                                       },
                                       itemCount: appController
-                                          .tempListOfStudentSubject.length);
+                                          .tempListOfSubject.length);
                                 },
                               ),
                             )),

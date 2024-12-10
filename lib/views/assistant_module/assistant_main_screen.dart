@@ -7,14 +7,12 @@ import 'package:colegia_atenea/utils/app_routes.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_message_list_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_dashboard_screen.dart';
-import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/app_colors.dart';
 import '../../utils/app_images.dart';

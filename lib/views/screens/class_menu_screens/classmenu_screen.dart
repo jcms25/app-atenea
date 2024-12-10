@@ -1,3 +1,4 @@
+import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
@@ -62,65 +63,81 @@ class ClassMenuScreen extends StatelessWidget {
                               menuName: "timetable".tr,
                               leadingIcon: Icons.calendar_month,
                               onPressed: () {
-                                Get.to(() => TimeTableScreen(
-                                      studentId: studentData != null
-                                          ? studentData?.wpUsrId ?? ""
-                                          : userdata?.wpUsrId ?? "",
-                                      cid: studentData != null
-                                          ? studentData?.classId ?? ""
-                                          : userdata?.classId ?? "",
-                                      studentName: studentData != null
-                                          ? studentData?.sFname ?? ""
-                                          : userdata?.sFname ?? "",
-                                      className: studentData != null
-                                          ? studentData?.className ?? ""
-                                          : userdata?.className ?? "",
-                                    ));
+                                Get.to(() => TimeTableScreen(),
+                                arguments: {
+                                  "role" : userdata != null ? RoleType.student : RoleType.parent,
+                                  "wpUserId" : studentData != null
+                                      ? studentData?.wpUsrId ?? ""
+                                      : userdata?.wpUsrId ?? "",
+                                  "classId" : studentData != null
+                                      ? studentData?.classId ?? ""
+                                      : userdata?.classId ?? "",
+                                  "className": studentData != null
+                                      ? studentData?.className ?? ""
+                                      : userdata?.className ?? "",
+                                 "studentName": studentData != null
+                                      ? studentData?.sFname ?? ""
+                                      : userdata?.sFname ?? ""
+                                }
+                                );
                               }),
                           ClassMenuWidget(
                               menuName: "teachers".tr,
                               leadingIcon: Icons.person_add_sharp,
                               onPressed: () {
-                                Get.to(() => TeacherListScreen(
-                                    cid: studentData != null
-                                        ? studentData?.classId ?? ""
-                                        : userdata?.classId ?? "",
-                                    wpId: studentData != null
-                                        ? studentData?.wpUsrId ?? ""
-                                        : userdata?.wpUsrId ?? "",
-                                    className: studentData != null
-                                        ? studentData?.className ?? ""
-                                        : userdata?.className ?? ""));
+                                Get.to(() => TeacherListScreen(),
+                                arguments: {
+                                  "role" : userdata != null ? RoleType.student : RoleType.parent,
+                                  "wpUserId" : studentData != null
+                                      ? studentData?.wpUsrId ?? ""
+                                      : userdata?.wpUsrId ?? "",
+                                  "classId" : studentData != null
+                                      ? studentData?.classId ?? ""
+                                      : userdata?.classId ?? "",
+                                  "className": studentData != null
+                                      ? studentData?.className ?? ""
+                                      : userdata?.className ?? ""
+                                }
+                                );
                               }),
                           ClassMenuWidget(
                               menuName: "student".tr,
                               leadingIcon: Icons.person,
                               onPressed: () {
-                                Get.to(() => StudentListScreen(
-                                    cid:studentData != null
-                                        ? studentData?.classId ?? ""
-                                        : userdata?.classId ?? "",
-                                    wpId:studentData != null
-                                        ? studentData?.wpUsrId ?? ""
-                                        : userdata?.wpUsrId ?? "",
-                                    className: studentData != null
-                                        ? studentData?.className ?? ""
-                                        : userdata?.className ?? ""));
+                                Get.to(() => StudentListScreen(),
+                                arguments: {
+                                  "role" : userdata != null ? RoleType.student : RoleType.parent,
+                                  "wpUserId" : studentData != null
+                                      ? studentData?.wpUsrId ?? ""
+                                      : userdata?.wpUsrId ?? "",
+                                  "classId" : studentData != null
+                                      ? studentData?.classId ?? ""
+                                      : userdata?.classId ?? "",
+                                  "className": studentData != null
+                                      ? studentData?.className ?? ""
+                                      : userdata?.className ?? "",}
+                                );
                               }),
                           ClassMenuWidget(
                               menuName: "subjects".tr,
                               leadingIcon: Icons.library_books,
                               onPressed: () {
-                                Get.to(() => SubjectListScreen(
-                                    cid: studentData != null
-                                        ? studentData?.classId ?? ""
-                                        : userdata?.classId ?? "",
-                                    wpId: studentData != null
-                                        ? studentData?.wpUsrId ?? ""
-                                        : userdata?.wpUsrId ?? "",
-                                    studentName: studentData != null
-                                        ? studentData?.sFname ?? ""
-                                        : userdata?.sFname ?? ""));
+                                Get.to(() => SubjectListScreen(),
+                                arguments: {
+                                  "role" : userdata != null ? RoleType.student : RoleType.parent,
+                                  "wpUserId" : studentData != null
+                                      ? studentData?.wpUsrId ?? ""
+                                      : userdata?.wpUsrId ?? "",
+                                  "classId" : studentData != null
+                                      ? studentData?.classId ?? ""
+                                      : userdata?.classId ?? "",
+                                  "className": studentData != null
+                                      ? studentData?.className ?? ""
+                                      : userdata?.className ?? "",
+                                  "studentName": studentData != null
+                                      ? studentData?.sFname ?? ""
+                                      : userdata?.sFname ?? ""
+                                });
                               }),
                           ClassMenuWidget(
                               menuName: "tests".tr,

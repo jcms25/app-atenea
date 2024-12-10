@@ -1,4 +1,3 @@
-import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
@@ -8,13 +7,12 @@ import 'package:get/get.dart';
 
 import '../../../models/assistant_list_model.dart';
 import '../../../services/api_class.dart';
-import '../../../services/session_management.dart';
 import '../../../utils/app_colors.dart';
 import '../../custom_widgets/custom_loader.dart';
 
 class SendMessageToAssistant extends StatefulWidget {
   final String studentId;
-  const SendMessageToAssistant({Key? key,required this.studentId}) : super(key: key);
+  const SendMessageToAssistant({super.key,required this.studentId});
 
   @override
   State<SendMessageToAssistant> createState() => _SendMessageToAssistantState();

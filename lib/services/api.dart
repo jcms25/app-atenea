@@ -45,21 +45,33 @@ class Api {
 
 
   //Teacher side end points
-  static const String _teacherEventsList = "teacher/events";
-  static String get teacherEventsList => _teacherEndpoint;
+  // static const String _teacherEventsList = "teacher/events";
+  // static String get teacherEventsList => _teacherEndpoint;
 
   static const String _teacherClassList = "teacher/classlist";
   static String get teacherClassList => _teacherClassList;
 
+  static const String _teacherSubjectList = "teacher/subjectlist";
+  static String get teacherSubjectList => _teacherSubjectList;
+
+  static const String _teacherStudentList = "teacher/studentlist";
+  static String get teacherStudentList => _teacherStudentList;
+
   static const String _teacherAddEditEvent = "events";
   static String get teacherAddEditEvent => _teacherAddEditEvent;
 
+  static const String _teacherSideListOfProfessor = "teacher/teacherlist";
+  static String get teacherSideListOfProfessor => _teacherSideListOfProfessor;
+
+  static const String _teacherSideListOfParents = "teacher/parentist";
+  static String get teacherSideListOfParents => _teacherSideListOfParents;
 
   static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,
       required Map<String, String>? header,
       Map<String, dynamic>? body}) async {
+
     try {
       Response response;
       if (requestType == RequestType.get) {

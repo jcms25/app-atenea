@@ -16,7 +16,6 @@ import 'package:get/get.dart';
 import '../../models/assistant/assistant_child_list_detail_model.dart';
 import '../../models/assistant/assistant_login_model.dart';
 import '../../services/api_class.dart';
-import '../../services/session_management.dart';
 
 class AssistantChildrenScreen extends StatefulWidget {
   final String classId;

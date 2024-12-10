@@ -29,7 +29,7 @@ class Data {
   String? eName;
   String? eSDate;
   String? eEDate;
-  Null? entryDate;
+  String? entryDate;
   String? time;
   String? comments;
   String? cName;

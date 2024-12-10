@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/dotted_line_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';

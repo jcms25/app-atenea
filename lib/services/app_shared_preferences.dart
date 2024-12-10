@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../controllers/student_parent_teacher_controller.dart';
 import '../models/assistant/assistant_login_model.dart';
 
 class AppSharedPreferences {

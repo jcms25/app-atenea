@@ -1,5 +1,4 @@
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
-import 'package:colegia_atenea/services/session_management.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +17,7 @@ import 'message_received_by_assistant_from_parent/assistant_received_message_det
 enum MessageType { received, send }
 
 class CommonMessageListScreen extends StatefulWidget {
-  const CommonMessageListScreen({Key? key}) : super(key: key);
+  const CommonMessageListScreen({super.key});
 
   @override
   State<CommonMessageListScreen> createState() =>

@@ -15,8 +15,7 @@ class LabelValueLayout extends StatelessWidget {
       fontWeight: FontWeight.w500,
       fontSize: 18);
 
-  LabelValueLayout({Key? key, required this.label, required this.value})
-      : super(key: key);
+  LabelValueLayout({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {

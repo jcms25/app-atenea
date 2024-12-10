@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
-import 'package:colegia_atenea/models/Failed.dart';
 import 'package:colegia_atenea/models/dashboard_model.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
@@ -290,8 +289,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         studentParentTeacherController.setSelectedDay(selectedDay: selectDay);
                                         studentParentTeacherController.setFocusDay(focusDay: focusDay);
 
-                                        DateFormat dateFormat =
-                                        DateFormat("yyyy-MM-dd");
+                                        // DateFormat dateFormat =
+                                        // DateFormat("yyyy-MM-dd");
                                         showModalBottomSheet(
                                             isDismissible: true,
                                             isScrollControlled: false,
@@ -368,8 +367,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                                       onDayLongPressed:
                                           (DateTime selectDay, DateTime focusDay) {
-                                        DateFormat dateFormat =
-                                        DateFormat("yyyy-MM-dd");
+                                        // DateFormat dateFormat =
+                                        // DateFormat("yyyy-MM-dd");
                                         showModalBottomSheet(
                                             isDismissible: true,
                                             isScrollControlled: false,

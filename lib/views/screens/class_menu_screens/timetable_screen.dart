@@ -5,6 +5,7 @@ import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -12,33 +13,33 @@ import 'package:provider/provider.dart';
 import '../../../utils/app_textstyle.dart';
 
 class TimeTableScreen extends StatefulWidget {
-  final String? cid;
-  final String studentId;
-  final String studentName;
-  final String className;
-
-  const TimeTableScreen(
-      {super.key,
-      required this.cid,
-      required this.studentId,
-      required this.studentName,
-      required this.className});
+  const TimeTableScreen({super.key});
 
   @override
   State<TimeTableScreen> createState() => TimeTable();
 }
 
 class TimeTable extends State<TimeTableScreen> {
-  StudentParentTeacherController? appController;
+  StudentParentTeacherController? studentParentTeacherController;
+  Map<String, dynamic>? arguments;
 
   @override
   void initState() {
     super.initState();
+    arguments = Get.arguments;
+    RoleType currentLoggedInUser = arguments?['role'];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      appController =
+      studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
-      appController?.getTimeTableData(
-          classId: widget.cid ?? "", studentId: widget.studentId);
+      if(arguments?['role'] == RoleType.teacher){
+        studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+      }
+      studentParentTeacherController?.getTimeTableData(
+          classId: currentLoggedInUser == RoleType.teacher
+              ? studentParentTeacherController
+                  ?.listOfClassAssignToTeacher[0].cid
+              : arguments?["classId"],
+          studentId: arguments?['wpUserId']);
     });
   }
 
@@ -47,14 +48,22 @@ class TimeTable extends State<TimeTableScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBarWidget(
-           onLeadingIconClicked: (){
-             Get.back();
-           },
+            onLeadingIconClicked: () {
+              Get.back();
+            },
             title: Text(
-          "Horario de ${widget.studentName} (${widget.className})",
-          style: AppTextStyle.getOutfit500(
-              textSize: 20, textColor: AppColors.white),
-        )),
+              arguments?['role'] == RoleType.teacher
+                  ? "Horario"
+                  : "Horario de ${arguments?["studentName"]} (${arguments?["className"]})",
+              style: AppTextStyle.getOutfit500(
+                  textSize: 20, textColor: AppColors.white),
+            ),
+            actionIcons: [
+             Visibility(
+                 visible: arguments?['role'] == RoleType.teacher,
+                 child: Expanded(child: TeacherClassListDropdown(fromWhichScreen: 5,)))
+            ],
+        ),
         body: Stack(
           children: [
             Column(
@@ -98,7 +107,9 @@ class TimeTable extends State<TimeTableScreen> {
                                             textColor: AppColors.secondary),
                                         border: InputBorder.none),
                                     cursorColor: AppColors.primary,
-                                    style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 18,
+                                        textColor: AppColors.secondary),
                                     keyboardType: TextInputType.text,
                                     textInputAction: TextInputAction.done,
                                     onChanged:
@@ -130,15 +141,18 @@ class TimeTable extends State<TimeTableScreen> {
                             itemBuilder: (context, position) {
                               return GestureDetector(
                                 onTap: () {
-                                  if(appController.timeTableList.isNotEmpty){
+                                  if (appController.timeTableList.isNotEmpty) {
                                     appController.setParticularDayTimeTableData(
-                                        particularDayTimeTableData: appController
-                                            .timeTableList[position].data ??
-                                            []);
+                                        particularDayTimeTableData:
+                                            appController
+                                                    .timeTableList[position]
+                                                    .data ??
+                                                []);
                                     appController.setCurrentSelectedDay(
                                         currentSelectedDay: position);
-                                  }else{
-                                    appController.setCurrentSelectedDay(currentSelectedDay: position);
+                                  } else {
+                                    appController.setCurrentSelectedDay(
+                                        currentSelectedDay: position);
                                   }
                                 },
                                 child: Container(
@@ -205,12 +219,16 @@ class TimeTable extends State<TimeTableScreen> {
                                         TimeTableItemData data = appController
                                                 .tempParticularDayTimeTableData[
                                             index];
-                                        String subjectName = data
-                                                    .subName?.length ==
-                                                2
-                                            ? appController.getSubjectName(
-                                                subjectName: data.subName ?? [])
-                                            : data.subName?.join("\n") ?? "-";
+                                        String subjectName = arguments?[
+                                                    'role'] ==
+                                                RoleType.teacher
+                                            ? data.subName?.join("\n") ?? "-"
+                                            : data.subName?.length == 2
+                                                ? appController.getSubjectName(
+                                                    subjectName:
+                                                        data.subName ?? [])
+                                                : data.subName?.join("\n") ??
+                                                    "-";
                                         return Container(
                                           width:
                                               MediaQuery.of(context).size.width,

@@ -1,5 +1,4 @@
 import 'package:colegia_atenea/models/assistant/assistant_slotlist_model.dart';
-import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_children_list_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
 import '../../services/api_class.dart';
-import '../../services/session_management.dart';
 
 class SlotList extends StatefulWidget{
   final String classId;

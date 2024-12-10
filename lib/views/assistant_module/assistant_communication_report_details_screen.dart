@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_final_fields
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
 import 'package:colegia_atenea/models/assistant/assistant_student_report_detail_model.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
@@ -17,7 +16,6 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
-import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 
 class CommunicationDetail extends StatefulWidget {

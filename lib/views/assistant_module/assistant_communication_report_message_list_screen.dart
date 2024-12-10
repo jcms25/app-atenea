@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/Parent/Parentlogin.dart';
 import '../../models/assistant/assistant_login_model.dart';
 import '../../models/assistant/assistant_student_rpt_message_list_model.dart';
 import '../../services/api_class.dart';
-import '../../services/session_management.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
 import '../custom_widgets/custom_loader.dart';
@@ -17,7 +15,7 @@ import 'assistant_communication_list_screen.dart';
 
 class ReportListScreen extends StatefulWidget {
   final String showInParent;
-  const ReportListScreen({Key? key,required this.showInParent}) : super(key: key);
+  const ReportListScreen({super.key,required this.showInParent});
 
   @override
   State<ReportListScreen> createState() => _ReportListScreenState();

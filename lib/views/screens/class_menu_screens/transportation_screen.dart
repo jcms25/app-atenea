@@ -12,7 +12,7 @@ import '../../../models/transport_list_model.dart';
 import '../../custom_widgets/custom_loader.dart';
 
 class TransportationScreen extends StatefulWidget {
-  const TransportationScreen({Key? key}) : super(key: key);
+  const TransportationScreen({super.key});
 
   @override
   State<StatefulWidget> createState() {

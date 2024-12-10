@@ -5,10 +5,8 @@ import 'package:get/get.dart';
 import 'app_colors.dart';
 import 'app_images.dart';
 
-class AppConstants{
-
-
-  static const List<String> daysInSpanish = ['Lu','Ma','Mi','Ju','Vi'];
+class AppConstants {
+  static const List<String> daysInSpanish = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
 
   //role drop down
   static const List<String> roleDropDown = [
@@ -19,52 +17,77 @@ class AppConstants{
     "Asistente"
   ];
 
-
   //bottom navigation bar
 
   //parent
   static const List<OptionModel> bottomNavigationBarParent = [
-    OptionModel(optionId: 0, optionName: "dashboard", optionIcon: AppImages.dashboard),
-    OptionModel(optionId: 1, optionName: "circular", optionIcon: AppImages.circular),
-    OptionModel(optionId: 2, optionName: "communication", optionIcon: AppImages.message),
-    OptionModel(optionId: 3, optionName: "child-info", optionIcon: AppImages.people),
-    OptionModel(optionId: 4, optionName: "class", optionIcon: AppImages.calender),
+    OptionModel(
+        optionId: 0, optionName: "dashboard", optionIcon: AppImages.dashboard),
+    OptionModel(
+        optionId: 1, optionName: "circular", optionIcon: AppImages.circular),
+    OptionModel(
+        optionId: 2,
+        optionName: "communication",
+        optionIcon: AppImages.message),
+    OptionModel(
+        optionId: 3, optionName: "child-info", optionIcon: AppImages.people),
+    OptionModel(
+        optionId: 4, optionName: "class", optionIcon: AppImages.calender),
     OptionModel(optionId: 5, optionName: "events", optionIcon: AppImages.event),
   ];
 
-
   //student
   static const List<OptionModel> bottomNavigationBarStudent = [
-    OptionModel(optionId: 0, optionName: "dashboard", optionIcon: AppImages.dashboard),
-    OptionModel(optionId: 1, optionName: "communication", optionIcon: AppImages.message),
-    OptionModel(optionId: 2, optionName: "child-info", optionIcon: AppImages.people),
-    OptionModel(optionId: 3, optionName: "class", optionIcon: AppImages.calender),
+    OptionModel(
+        optionId: 0, optionName: "dashboard", optionIcon: AppImages.dashboard),
+    OptionModel(
+        optionId: 1,
+        optionName: "communication",
+        optionIcon: AppImages.message),
+    OptionModel(
+        optionId: 2, optionName: "child-info", optionIcon: AppImages.people),
+    OptionModel(
+        optionId: 3, optionName: "class", optionIcon: AppImages.calender),
     OptionModel(optionId: 4, optionName: "events", optionIcon: AppImages.event),
   ];
 
-
   //assistant
   static List<OptionModel> bottomNavigationBarAssistant = [
-    const OptionModel(optionId: 0, optionName: 'Dashboard', optionIcon: AppImages.dashboard),
-    const OptionModel(optionId: 1, optionName: 'classes', optionIcon: AppImages.calender),
-    const OptionModel(optionId: 2, optionName: 'communication', optionIcon: AppImages.message),
-    const OptionModel(optionId: 3, optionName: 'send report communication', optionIcon: AppImages.dashboard)
+    const OptionModel(
+        optionId: 0, optionName: 'Dashboard', optionIcon: AppImages.dashboard),
+    const OptionModel(
+        optionId: 1, optionName: 'classes', optionIcon: AppImages.calender),
+    const OptionModel(
+        optionId: 2,
+        optionName: 'communication',
+        optionIcon: AppImages.message),
+    const OptionModel(
+        optionId: 3,
+        optionName: 'send report communication',
+        optionIcon: AppImages.dashboard)
   ];
-  
-  
+
   //teacher
   static const List<OptionModel> bottomNavigationBarTeacher = [
-    OptionModel(optionId: 0, optionName: 'Dashboard', optionIcon: AppImages.dashboard),
-    OptionModel(optionId: 1, optionName: 'Communications', optionIcon: AppImages.message),
-    OptionModel(optionId: 2, optionName: 'Clases ', optionIcon: AppImages.calender),
-    OptionModel(optionId: 3, optionName: 'Gestión docente ', optionIcon: AppImages.teachingManagement),
+    OptionModel(
+        optionId: 0, optionName: 'Dashboard', optionIcon: AppImages.dashboard),
+    OptionModel(
+        optionId: 1,
+        optionName: 'Communications',
+        optionIcon: AppImages.message),
+    OptionModel(
+        optionId: 2, optionName: 'Clases ', optionIcon: AppImages.calender),
+    OptionModel(
+        optionId: 3,
+        optionName: 'Gestión docente ',
+        optionIcon: AppImages.teachingManagement),
     OptionModel(optionId: 4, optionName: "events", optionIcon: AppImages.event),
   ];
 
   //Drawer List
 
   //parent
-  static final List<Map<String,dynamic>> drawerListParent = [
+  static final List<Map<String, dynamic>> drawerListParent = [
     {
       "name": "drawerOption1".tr,
       "icon": AppImages.dashboard,
@@ -85,11 +108,11 @@ class AppConstants{
       "name": "drawerOption4".tr,
       "icon": AppImages.event,
     },
+    {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
   ];
 
-
   //student
-  static final List<Map<String,String>> drawerListStudent = [
+  static final List<Map<String, String>> drawerListStudent = [
     {
       "name": "drawerOption1".tr,
       "icon": AppImages.dashboard,
@@ -109,12 +132,12 @@ class AppConstants{
     {
       "name": "drawerOption4".tr,
       "icon": AppImages.event,
-    }
+    },
+    {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
   ];
 
-
   //teacher
-  static final List<Map<String,String>> drawerListTeacher = [
+  static final List<Map<String, String>> drawerListTeacher = [
     {
       "name": "drawerOption1".tr,
       "icon": AppImages.dashboard,
@@ -123,13 +146,21 @@ class AppConstants{
       "name": "drawerOption6".tr,
       "icon": AppImages.message,
     },
+    {"name": 'drawerOption8'.tr, "icon": AppImages.calender},
+    {
+      "name": 'drawerOption9'.tr,
+      "icon": AppImages.teachingManagement,
+    },
+    {
+      "name": 'drawerOption4'.tr,
+      "icon": AppImages.event,
+    },
+    {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
   ];
 
   //sub menu list
-  static List<Map<String,String>> subMenuList = [
-    {
-      "name" : "Envíos del Profesor"
-    },
+  static List<Map<String, String>> subMenuList = [
+    {"name": "Envíos del Profesor"},
     {
       "name": "subMenuDrawer1".tr,
     },
@@ -156,37 +187,66 @@ class AppConstants{
     },
   ];
 
+
+  //teacher sub menu list 1
+  static List<Map<String, String>> classSubMenuListTeacher = [
+    {"name": "drawerOption7".tr},
+    {"name": "drawerOption2".tr},
+    {"name": 'subMenuDrawer2'.tr},
+    {"name": 'subMenuDrawer4'.tr},
+    {"name": 'subMenuDrawer1'.tr}
+  ];
+
+  //teacher sub menu list 2
+  static List<Map<String,String>> teachingSubMenuListTeacher = [
+    {"name" : 'subMenuDrawer12'.tr},
+    {"name" : 'subMenuDrawer5'.tr},
+    {"name" : 'subMenuDrawer6'.tr},
+    {"name" : 'subMenuDrawer13'.tr}
+  ];
+
+  //teacher sub menu list 3
+  static List<Map<String,String>> dinningSubMenuListTeacher = [
+    {"name" : 'subMenuDrawer11'.tr},
+    {"name" : 'subMenuDrawer10'.tr}
+  ];
+
+
   //show custom toast message
-  static void showCustomToast({required bool status,required String message}){
+  static void showCustomToast({required bool status, required String message}) {
     Fluttertoast.showToast(
         backgroundColor: status ? AppColors.green : AppColors.red,
         textColor: AppColors.white,
         msg: message);
   }
 
-
   //Message Type
   static String messageType1 = "Recibidas";
   static String messageType2 = "Enviadas";
 
   //Keys
-  static final GlobalKey<ScaffoldState> _mainScreenKey = GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> _mainScreenKey =
+      GlobalKey<ScaffoldState>();
+
   static GlobalKey<ScaffoldState> get mainScreenKey => _mainScreenKey;
 
-  static final GlobalKey<ScaffoldState> _assistantKey = GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> _assistantKey =
+      GlobalKey<ScaffoldState>();
+
   static GlobalKey<ScaffoldState> get assistantKey => _assistantKey;
 
   static final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
-  static GlobalKey<FormState> get loginFormKey => _loginFormKey;
 
+  static GlobalKey<FormState> get loginFormKey => _loginFormKey;
 }
 
-
-class OptionModel{
+class OptionModel {
   final int optionId;
   final String optionName;
   final String optionIcon;
 
-  const OptionModel({required this.optionId,required this.optionName,required this.optionIcon});
-
+  const OptionModel(
+      {required this.optionId,
+      required this.optionName,
+      required this.optionIcon});
 }

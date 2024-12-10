@@ -10,7 +10,7 @@ import '../../custom_widgets/custom_loader.dart';
 import 'assistant_received_message_detail_screen.dart';
 
 class AssistantMessageReceivedScreen extends StatefulWidget {
-  const AssistantMessageReceivedScreen({Key? key}) : super(key: key);
+  const AssistantMessageReceivedScreen({super.key});
 
   @override
   State<AssistantMessageReceivedScreen> createState() => _AssistantMessageReceivedScreenState();

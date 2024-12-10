@@ -3,11 +3,9 @@ import 'package:colegia_atenea/views/assistant_module/assistant_communication_re
 import 'package:colegia_atenea/views/custom_widgets/message_list_widget.dart';
 import 'package:colegia_atenea/views/screens/send_message_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
-import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 

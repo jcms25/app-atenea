@@ -15,7 +15,7 @@
 // import 'package:colegia_atenea/views/menu_screen/student_list_screen.dart';
 // import 'package:colegia_atenea/views/menu_screen/subject_list_screen.dart';
 // import 'package:colegia_atenea/views/menu_screen/teacher_list_screen.dart';
-// import 'package:colegia_atenea/views/menu_screen/test_screen.dart';
+// import 'package:colegia_atenea/views/menu_screen/exam_list_screen.dart';
 // import 'package:colegia_atenea/views/menu_screen/timetable_screen.dart';
 // import 'package:colegia_atenea/views/menu_screen/transportation_screen.dart';
 // import 'package:colegia_atenea/views/nav_screens/classes.dart';

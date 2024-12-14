@@ -11,6 +11,7 @@ class CustomButtonWidget extends StatelessWidget {
   final double? buttonHeight;
   final VoidCallback onPressed;
   final double? margin;
+  final double? padding;
 
   const CustomButtonWidget(
       {super.key,
@@ -18,6 +19,7 @@ class CustomButtonWidget extends StatelessWidget {
       this.suffixIcon,
       this.prefixIcon,
       this.buttonHeight,
+      this.padding,
       required this.onPressed,
       this.margin});
 
@@ -30,6 +32,10 @@ class CustomButtonWidget extends StatelessWidget {
             ? null
             : EdgeInsets.symmetric(
                 horizontal: margin ?? 0, vertical: margin ?? 0),
+        padding: padding == null
+            ? null
+            : EdgeInsets.symmetric(
+                horizontal: padding ?? 0, vertical: padding ?? 0),
         height: buttonHeight ?? 60,
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(blurRadius: 10, color: AppColors.primary.withOpacity(0.1))

@@ -105,6 +105,7 @@ class MessageItem {
   String? mDate;
   String? attachments;
   String? senderName;
+  String? receiverName;
 
   MessageItem(
       {
@@ -121,7 +122,9 @@ class MessageItem {
         this.rRead,
         this.mDate,
         this.attachments,
-        this.senderName});
+        this.senderName,
+        this.receiverName
+      });
 
   MessageItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -138,6 +141,7 @@ class MessageItem {
     mDate = json['m_date'];
     attachments = json['attachments'];
     senderName = json['sender_name'];
+    receiverName = json['receiver_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -156,6 +160,7 @@ class MessageItem {
     data['m_date'] = mDate;
     data['attachments'] = attachments;
     data['sender_name'] = senderName;
+    data['receiver_name'] = receiverName;
     return data;
   }
 }

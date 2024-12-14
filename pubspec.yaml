@@ -57,6 +57,7 @@ dependencies:
   flutter_local_notifications:
   provider:
   permission_handler:
+  flutter_multi_select_items:
 dev_dependencies:
   flutter_test:
     sdk: flutter

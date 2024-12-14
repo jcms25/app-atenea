@@ -32,8 +32,10 @@ class _TeacherParentListScreenState extends State<TeacherParentListScreen> {
     arguments = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp){
       studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
-      studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
-      studentParentTeacherController?.getListOfParents(classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "");
+      if(studentParentTeacherController?.listOfClassAssignToTeacher.isNotEmpty ?? false){
+        studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+        studentParentTeacherController?.getListOfParents(classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "");
+      }
     });
   }
 
@@ -200,96 +202,125 @@ class ParentItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
           color: AppColors.primary.withOpacity(0.05),
           borderRadius: const BorderRadius.all(Radius.circular(15))),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  // Get.to(() =>
-                  //     TeacherDetails(
-                  //       id: teacherItem.wpUsrId ?? "",
-                  //       subject: teacherItem.subjectName?.join("\n") ?? "",
-                  //       inCharge: teacherItem.inCharge?.join("\n") ?? "",
-                  //     ));
-                },
-                child: Row(
-               children: [
-                  CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(
-                        // parentItem.image!,
-                        parentItem.parentImage ?? "",
-                      ),
-                      backgroundColor: AppColors.primary,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const SizedBox(width: 10,),
-                    Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              parentItem.fullName?.isEmpty ?? false ? "-" : "${parentItem.fullName}",
-                              style: AppTextStyle.getOutfit600(
-                                  textSize: 20,
-                                  textColor: AppColors.secondary),
-                            ),
-                            const SizedBox(height: 5,),
-                            Row(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Get.to(() =>
+                      //     TeacherDetails(
+                      //       id: teacherItem.wpUsrId ?? "",
+                      //       subject: teacherItem.subjectName?.join("\n") ?? "",
+                      //       inCharge: teacherItem.inCharge?.join("\n") ?? "",
+                      //     ));
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(
+                            // parentItem.image!,
+                            parentItem.parentImage ?? "",
+                          ),
+                          backgroundColor: AppColors.primary,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const SizedBox(width: 10,),
+                        Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SvgPicture.asset(AppImages.message,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),width: 15,height: 15,),
-                                const SizedBox(width: 5,),
-                                Expanded(child: Text(
-                                  "${parentItem.userEmail}",
-                                  style: AppTextStyle.getOutfit400(
-                                      textSize: 16,
+                                Text(
+                                  parentItem.fullName?.isEmpty ?? false ? "-" : "${parentItem.fullName}",
+                                  style: AppTextStyle.getOutfit600(
+                                      textSize: 20,
                                       textColor: AppColors.secondary),
-                                ))
+                                ),
+                                const SizedBox(height: 5,),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(AppImages.message,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),width: 15,height: 15,),
+                                    const SizedBox(width: 5,),
+                                    Expanded(child: Text(
+                                      "${parentItem.userEmail}",
+                                      style: AppTextStyle.getOutfit400(
+                                          textSize: 16,
+                                          textColor: AppColors.secondary),
+                                    ))
+                                  ],
+                                ),
+                                const SizedBox(height: 5,),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(AppImages.people,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),),
+                                    const SizedBox(width: 5,),
+                                    Expanded(child: Text(
+                                        "${parentItem.sFname ?? ""}\t${parentItem.sLname ?? ""}",
+                                        style: AppTextStyle.getOutfit400(
+                                            textSize: 16,
+                                            textColor: AppColors.secondary)
+                                    ))
+                                  ],
+                                )
                               ],
-                            ),
-                            const SizedBox(height: 5,),
-                            Row(
-                              children: [
-                                SvgPicture.asset(AppImages.people,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),),
-                                const SizedBox(width: 5,),
-                                Expanded(child: Text(
-                                    "${parentItem.sFname ?? ""}\t${parentItem.sLname ?? ""}",
-                                    style: AppTextStyle.getOutfit400(
-                                        textSize: 16,
-                                        textColor: AppColors.secondary)
-                                ))
-                              ],
-                            )
-                          ],
-                        )),
-                  ],
-                ),
-              )),
-          const SizedBox(
-            width: 10,
+                            )),
+                      ],
+                    ),
+                  )),
+              const SizedBox(
+                width: 10,
+              ),
+              // Visibility(
+              //     visible: roleType != RoleType.teacher,
+              //     child: GestureDetector(
+              //       onTap: () {
+              //         Get.to(() =>
+              //             MessageSendScreen(
+              //               teacherId: teacherItem.wpUsrId,
+              //             ));
+              //       },
+              //       child: SvgPicture.asset(
+              //         AppImages.message,
+              //         colorFilter:
+              //         const ColorFilter.mode(AppColors.greyColor, BlendMode.srcIn),
+              //       ),
+              //     )),
+              // const SizedBox(
+              //   width: 10,
+              // )
+            ],
           ),
-          // Visibility(
-          //     visible: roleType != RoleType.teacher,
-          //     child: GestureDetector(
-          //       onTap: () {
-          //         Get.to(() =>
-          //             MessageSendScreen(
-          //               teacherId: teacherItem.wpUsrId,
-          //             ));
-          //       },
-          //       child: SvgPicture.asset(
-          //         AppImages.message,
-          //         colorFilter:
-          //         const ColorFilter.mode(AppColors.greyColor, BlendMode.srcIn),
-          //       ),
-          //     )),
-          // const SizedBox(
-          //   width: 10,
-          // )
+          const SizedBox(height: 20,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.phone,color: AppColors.primary,),
+              const SizedBox(width: 10,),
+              Text( parentItem.phoneNumber ?? "-",style: AppTextStyle.getOutfit400(
+                  textSize: 16,
+                  textColor: AppColors.secondary),)
+            ],
+          ),
+          const SizedBox(height: 5,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.home,color: AppColors.primary,),
+              const SizedBox(width: 10,),
+              Expanded(child: Text(parentItem.address ?? "-",style: AppTextStyle.getOutfit400(
+                  textSize: 16,
+                  textColor: AppColors.secondary),))
+            ],
+          ),
         ],
       ),
     );

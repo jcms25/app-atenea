@@ -6,9 +6,11 @@ import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/student_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -415,17 +417,41 @@ class CustomDrawerWidget extends StatelessWidget {
       required RoleType? roleType}) {
     switch (drawerMenuOption.name ?? "") {
       case "Escritorio":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        studentParentTeacherController.setCurrentBottomIndexSelected(index: 0);
         break;
       case "Padres":
-        Get.to(() => TeacherParentListScreen());
+        if (roleType == RoleType.teacher) {
+          Get.to(() => TeacherParentListScreen());
+        } else if (roleType == RoleType.student) {
+          AppConstants.mainScreenKey.currentState?.closeDrawer();
+          studentParentTeacherController.setCurrentBottomIndexSelected(
+              index: 2);
+        }
         break;
       case "Clase":
         break;
       case "Eventos":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        roleType == RoleType.student || roleType == RoleType.teacher
+            ? studentParentTeacherController.setCurrentBottomIndexSelected(
+                index: 4)
+            : studentParentTeacherController.setCurrentBottomIndexSelected(
+                index: 5);
         break;
       case "Circulares":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        studentParentTeacherController.setCurrentBottomIndexSelected(index: 1);
         break;
       case "Comunicaciones":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        if (roleType == RoleType.parent) {
+          studentParentTeacherController.setCurrentBottomIndexSelected(
+              index: 2);
+        } else {
+          studentParentTeacherController.setCurrentBottomIndexSelected(
+              index: 1);
+        }
         break;
       case "Alumnos":
         Get.to(() => StudentListScreen(),
@@ -440,6 +466,7 @@ class CustomDrawerWidget extends StatelessWidget {
                   });
         break;
       case "Clases":
+        // if(roleType == RoleType)
         break;
       case "Gestión docente":
         break;
@@ -482,6 +509,17 @@ class CustomDrawerWidget extends StatelessWidget {
                   });
         break;
       case "Exámenes/Trabajos":
+        if (roleType == RoleType.teacher) {
+          Get.to(() => ExamListScreen(), arguments: {"role": RoleType.teacher});
+        } else {
+          Get.to(() => ExamListScreen(), arguments: {
+            "role": roleType,
+            "wpUserId": drawerMenuOption.wpUserId,
+            "classId": drawerMenuOption.classId,
+            "className": drawerMenuOption.className,
+            "studentName": drawerMenuOption.studentName
+          });
+        }
         break;
       case "Notas":
         break;
@@ -490,6 +528,7 @@ class CustomDrawerWidget extends StatelessWidget {
       case "Ausencias":
         break;
       case "Transporte":
+        // if(roleType == RoleType.)
         break;
       case "Menu":
         break;
@@ -498,6 +537,9 @@ class CustomDrawerWidget extends StatelessWidget {
       case "Mi Horario":
         break;
       case "Seguimiento":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => TeacherFollowedUpScreen());
+        break;
       default:
         break;
     }

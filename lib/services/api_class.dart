@@ -1210,5 +1210,5 @@ void sessionExpired() async {
   await SharedPref.initialization();
   await SharedPref.pref.setBool(SharedPref.isLogin, false);
   Fluttertoast.showToast(msg: 'sessionExpired'.tr);
-  Get.offAll(const LoginScreen1());
+  Get.offAll(const LoginScreen());
 }

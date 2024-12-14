@@ -45,7 +45,7 @@ class MessageListWidget extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.bottomStart,
               child: Text(
-                messageItem.senderName ?? "",
+                messageItem.senderName ?? messageItem.receiverName ?? "",
                 style: AppTextStyle.getOutfit400(
                     textSize: 16, textColor: AppColors.secondary),
               ),

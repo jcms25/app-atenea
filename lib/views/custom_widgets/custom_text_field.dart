@@ -1,5 +1,6 @@
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../utils/app_colors.dart';
 
@@ -15,11 +16,13 @@ class CustomTextField extends StatelessWidget {
   final int? minLine;
   final int? maxLine;
   final String? label;
+  final Color? filledColor;
+  final Icon? prefixIcon;
 
- CustomTextField(
+  CustomTextField(
       {super.key,
       this.controller,
-        this.isObscure,
+      this.isObscure,
       this.suffixIcon,
       this.hintText,
       this.textInputAction,
@@ -28,6 +31,8 @@ class CustomTextField extends StatelessWidget {
       this.onTextChanged,
       this.minLine,
       this.maxLine,
+      this.filledColor,
+      this.prefixIcon,
       this.label});
 
   @override
@@ -47,7 +52,6 @@ class CustomTextField extends StatelessWidget {
             child: const SizedBox(
               height: 10,
             )),
-
         TextFormField(
           controller: controller,
           decoration: InputDecoration(
@@ -63,7 +67,7 @@ class CustomTextField extends StatelessWidget {
               hintStyle: AppTextStyle.getOutfit500(
                   textSize: 18,
                   textColor: AppColors.secondary.withOpacity(0.4)),
-              fillColor: AppColors.secondary.withOpacity(0.06)),
+              fillColor: filledColor ?? AppColors.secondary.withOpacity(0.06)),
           minLines: minLine,
           obscureText: isObscure != null ? !isObscure! : false,
           maxLines: maxLine ?? minLine ?? 0 + 1,
@@ -78,7 +82,5 @@ class CustomTextField extends StatelessWidget {
   }
 
   final InputBorder inputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide.none
-  );
+      borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none);
 }

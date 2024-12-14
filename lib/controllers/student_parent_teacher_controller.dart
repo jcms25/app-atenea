@@ -1,19 +1,24 @@
 import 'package:colegia_atenea/models/dashboard_model.dart';
+import 'package:colegia_atenea/models/exam_list_model.dart';
+import 'package:colegia_atenea/models/followed_up_model.dart';
 import 'package:colegia_atenea/models/list_of_messages_model.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/models/single_subject_detail_model.dart';
+import 'package:colegia_atenea/models/student_details_model.dart';
 import 'package:colegia_atenea/models/subject_list_model.dart';
 import 'package:colegia_atenea/models/teacher/parent_list_model.dart';
 import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/teacher/teacher_class_model.dart';
+import '../models/events_list.dart';
 import '../models/student_list_model.dart';
+import '../models/teacher/teacher_class_model.dart';
 import '../services/api.dart';
 
 enum RoleType { student, parent, teacher, assistant }
@@ -122,29 +127,30 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //get dashboard data
   void getDashboardData({required bool showLoader}) async {
-    try {
-      setIsLoading(isLoading: showLoader);
-      await Api.httpRequest(
-        requestType: RequestType.get,
-        endPoint: Api.dashboardEndpoint,
-        header: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': "Basic ${loginModel?.basicAuthToken}",
-          'Cookie': loginModel?.userdata?.cookies ?? ""
-        },
-      ).then((response) {
-        if (response['status']) {
-          Dashboard dashboard = Dashboard.fromJson(response);
-          setDashboardData(dashboard: dashboard);
-          setExamList(examList: dashboard.eventList.exams);
-          setEventList(events: dashboard.eventList.events);
-          setHolidayList(holiday: dashboard.eventList.holiday);
-        }
-        setIsLoading(isLoading: false);
-      });
-    } catch (exception) {
+    // try {
+    //   setIsLoading(isLoading: showLoader);
+    //
+    // } catch (exception) {
+    //   setIsLoading(isLoading: false);
+    // }
+    await Api.httpRequest(
+      requestType: RequestType.get,
+      endPoint: Api.dashboardEndpoint,
+      header: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': "Basic ${loginModel?.basicAuthToken}",
+        'Cookie': loginModel?.userdata?.cookies ?? ""
+      },
+    ).then((response) {
+      if (response['status']) {
+        Dashboard dashboard = Dashboard.fromJson(response);
+        setDashboardData(dashboard: dashboard);
+        setExamList(examList: dashboard.eventList.exams);
+        setEventList(events: dashboard.eventList.events);
+        setHolidayList(holiday: dashboard.eventList.holiday);
+      }
       setIsLoading(isLoading: false);
-    }
+    });
   }
 
   //Communication Section :
@@ -153,8 +159,9 @@ class StudentParentTeacherController extends ChangeNotifier {
   List<MessageItem> sendMessageList = [];
   List<MessageItem> tempMessageList = [];
 
-  void setMessageList({required List<MessageItem> listOfMessage,
-    required int messageListType}) {
+  void setMessageList(
+      {required List<MessageItem> listOfMessage,
+      required int messageListType}) {
     //messageListType -> 0 : received list , 1 : sender list
     messageListType == 0
         ? receivedMessageList = listOfMessage
@@ -198,7 +205,7 @@ class StudentParentTeacherController extends ChangeNotifier {
           }).then((response) {
         if (response['status']) {
           ListOfMessagesModel listOfMessages =
-          ListOfMessagesModel.fromJson(response);
+              ListOfMessagesModel.fromJson(response);
           setListOfMessageModel(listOfMessagesModel: listOfMessages);
           setMessageList(
               listOfMessage: listOfMessages.data?.receivedMessages ?? [],
@@ -231,8 +238,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     if (currentSelectedMessageListType == "Recibidas") {
       for (var messageData in receivedMessageList) {
         if (messageData.subject
-            ?.toLowerCase()
-            .contains(value?.toLowerCase() ?? "") ??
+                ?.toLowerCase()
+                .contains(value?.toLowerCase() ?? "") ??
             false ||
                 DateFormat("dd/MM/yy")
                     .format(DateTime.parse(messageData.mDate ?? ""))
@@ -243,8 +250,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     } else {
       for (var messageData in sendMessageList) {
         if (messageData.subject
-            ?.toLowerCase()
-            .contains(value?.toLowerCase() ?? "") ??
+                ?.toLowerCase()
+                .contains(value?.toLowerCase() ?? "") ??
             false ||
                 DateFormat("dd/MM/yy")
                     .format(DateTime.parse(messageData.mDate ?? ""))
@@ -280,10 +287,10 @@ class StudentParentTeacherController extends ChangeNotifier {
           }).then((response) {
         if (response['status']) {
           ListOfMessagesModel listOfMessagesModel =
-          ListOfMessagesModel.fromJson(response);
+              ListOfMessagesModel.fromJson(response);
           setListOfChildCommunication(
               listOfChildCommunication:
-              listOfMessagesModel.data?.receivedMessages ?? []);
+                  listOfMessagesModel.data?.receivedMessages ?? []);
         }
         setIsLoading(isLoading: false);
       });
@@ -309,15 +316,16 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   void getListOfSubjects(
-      {required String classId, required String? wpId, required RoleType roleType}) async {
+      {required String classId,
+      required String? wpId,
+      required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
           requestType: RequestType.get,
-          endPoint:
-          roleType == RoleType.teacher ? "${Api
-              .teacherSubjectList}?class_id=$classId" : "${Api
-              .subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
+          endPoint: roleType == RoleType.teacher
+              ? "${Api.teacherSubjectList}?class_id=$classId"
+              : "${Api.subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic ${loginModel?.basicAuthToken}",
@@ -325,8 +333,7 @@ class StudentParentTeacherController extends ChangeNotifier {
           }).then((response) {
         if (response['status']) {
           SubjectListModel subjectList = SubjectListModel.fromJson(response);
-          setListOfSubject(
-              listOfSubject: subjectList.subjectlist ?? []);
+          setListOfSubject(listOfSubject: subjectList.subjectlist ?? []);
         }
         setIsLoading(isLoading: false);
       });
@@ -338,8 +345,7 @@ class StudentParentTeacherController extends ChangeNotifier {
   //search subject in list
   void searchInSubjectList(String? value) {
     if (value?.isEmpty ?? true) {
-      setTempListOfSubject(
-          tempListOfStudentSubject: listOfSubject);
+      setTempListOfSubject(tempListOfStudentSubject: listOfSubject);
       return;
     }
 
@@ -450,8 +456,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       setIsLoading(isLoading: true);
       dynamic response = await Api.httpRequest(
           requestType: RequestType.get,
-          endPoint:
-          "${Api.timeTableEndpoint}/$classId?sid=${studentId ?? ""}",
+          endPoint: "${Api.timeTableEndpoint}/$classId?sid=${studentId ?? ""}",
           header: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic ${loginModel?.basicAuthToken}",
@@ -464,11 +469,10 @@ class StudentParentTeacherController extends ChangeNotifier {
         setTimeTableList(timeTableList: timeTable.sessionList ?? []);
         setParticularDayTimeTableData(
             particularDayTimeTableData:
-            timeTableList[currentSelectedDay].data ?? []);
+                timeTableList[currentSelectedDay].data ?? []);
         setStudentInfo(studentInfo: timeTable.stuentInfo);
         setIsLoading(isLoading: false);
-      }
-      else {
+      } else {
         setIsLoading(isLoading: false);
         AppConstants.showCustomToast(
             status: false, message: response['message']);
@@ -541,16 +545,17 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   void getListOfTeachers(
-      {required String? studentId, required String classId, required RoleType roleType}) async {
+      {required String? studentId,
+      required String classId,
+      required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
 
       await Api.httpRequest(
           requestType: RequestType.get,
-          endPoint:
-          roleType == RoleType.teacher ? "${Api
-              .teacherSideListOfProfessor}?class_id=$classId" : "${Api
-              .teacherEndpoint}?student_id=$studentId&class_id=$classId",
+          endPoint: roleType == RoleType.teacher
+              ? "${Api.teacherSideListOfProfessor}?class_id=$classId"
+              : "${Api.teacherEndpoint}?student_id=$studentId&class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic ${loginModel?.basicAuthToken}",
@@ -577,8 +582,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     List<TeacherItem> searchData = [];
     for (var teacherItem in listOfTeachers) {
       if (teacherItem.firstName!
-          .toLowerCase()
-          .contains(value?.toLowerCase() ?? "") ||
+              .toLowerCase()
+              .contains(value?.toLowerCase() ?? "") ||
           teacherItem.lastName!
               .toLowerCase()
               .contains(value?.toLowerCase() ?? "")) {
@@ -605,14 +610,18 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   void getListOfStudents(
-      {required String classId, required RoleType roleType}) async {
+      {required String classId,
+      required RoleType roleType,
+      required int fromWhere}) async {
+    // 0 means on student screen so student list will sorted according to last name
+    //1 means in followed up screen here student list will not sorted
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
           requestType: RequestType.get,
-          endPoint: roleType == RoleType.teacher ? "${Api
-              .teacherStudentList}?class_id=$classId" : "${Api
-              .studentEndpoint}?class_id=$classId",
+          endPoint: roleType == RoleType.teacher
+              ? "${Api.teacherStudentList}?class_id=$classId"
+              : "${Api.studentEndpoint}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic ${loginModel?.basicAuthToken}",
@@ -621,11 +630,15 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           StudentListModel student = StudentListModel.fromJson(response);
           List<StudentItem> studentItemList = student.studentlist ?? [];
-          studentItemList.sort((a, b) =>
-          a.sLname?.compareTo(b.sLname ?? "") ?? 0);
+          if (fromWhere == 0) {
+            studentItemList
+                .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
+          }
           setListOfStudents(listOfStudents: student.studentlist ?? []);
-          setIsLoading(isLoading: false);
+          setSelectedStudentForFollowUp(studentItem: studentItemList[0]);
         }
+
+        setIsLoading(isLoading: false);
       });
     } catch (exception) {
       setIsLoading(isLoading: false);
@@ -641,8 +654,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     List<StudentItem> searchData = [];
     for (var studentItem in listOfStudents) {
       if (studentItem.sFname!
-          .toLowerCase()
-          .contains(value?.toLowerCase() ?? "") ||
+              .toLowerCase()
+              .contains(value?.toLowerCase() ?? "") ||
           studentItem.sRollno!
               .toLowerCase()
               .contains(value?.toLowerCase() ?? "") ||
@@ -654,6 +667,58 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
 
     setTempListOfStudents(tempListOfStudents: searchData);
+  }
+
+  //student details model
+  StudentDetails? studentDetails;
+
+  setStudentDetails({required StudentDetails? studentDetails}) {
+    this.studentDetails = studentDetails;
+    notifyListeners();
+  }
+
+  //get student details
+  Future<void> getStudentDetails({required String studentId}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.studentDetailsEndpoint}/$studentId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': "${loginModel?.userdata?.cookies}"
+          }).then((response) {
+        if (response['status']) {
+          StudentDetailModel studentDetailModel =
+              StudentDetailModel.fromJson(response);
+          setStudentDetails(studentDetails: studentDetailModel.studentDetails);
+        }
+
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+
+  //is address visible
+  bool isAddressAndParentDetailsVisible({required String idOfStudentYouAreSeeingDetails}) {
+    if(currentLoggedInUserRole == RoleType.teacher){
+      return true;
+    }else if(currentLoggedInUserRole == RoleType.student){
+      return idOfStudentYouAreSeeingDetails == loginModel?.userdata?.wpUsrId;
+    }else{
+
+      for(StudentData studentData in loginModel?.userdata?.studentData ?? []){
+        if(studentData.wpUsrId == idOfStudentYouAreSeeingDetails){
+          return true;
+        }
+      }
+      return false;
+    }
   }
 
   //Transport section :
@@ -712,33 +777,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     setTempTransportList(transportList: searchData);
   }
 
-
-  //Logged out function : clear all controller data
-  void loggedOutClearData() {
-    currentLoggedInUserRole = null;
-    loginModel = null;
-    setCurrentBottomIndexSelected(index: 0);
-    timeTableList = [];
-    particularDayTimeTableData = [];
-    tempParticularDayTimeTableData = [];
-    studentInfo = null;
-    tempTransportList = [];
-    transportList = [];
-    listOfSubject = [];
-    tempListOfSubject = [];
-    subjectDetail = null;
-    subject = null;
-    tempListOfParents = [];
-    tempListOfParents = [];
-    tempListOfSubject = [];
-    tempListOfTeachers = [];
-    notifyListeners();
-  }
-
-  //log out user
-  void logOutUser() async {}
-
-
   //Teacher Section :
   TeacherClassItem? currentSelectedClass;
 
@@ -746,7 +784,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     currentSelectedClass = teacherClass;
     notifyListeners();
   }
-
 
   List<TeacherClassItem> listOfClassAssignToTeacher = [];
 
@@ -760,7 +797,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     try {
       setIsLoading(isLoading: showLoader);
 
-      await Api.httpRequest(requestType: RequestType.get,
+      await Api.httpRequest(
+          requestType: RequestType.get,
           endPoint: Api.teacherClassList,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -768,8 +806,8 @@ class StudentParentTeacherController extends ChangeNotifier {
             'Cookie': loginModel?.userdata?.cookies ?? ""
           }).then((res) {
         if (res['status']) {
-          TeacherClassListModel teacherClass = TeacherClassListModel.fromJson(
-              res);
+          TeacherClassListModel teacherClass =
+              TeacherClassListModel.fromJson(res);
           setListOfClassAssignToTeacher(
               listOfClassAssignToTeacher: teacherClass.data ?? []);
           setCurrentSelectedClass(teacherClass: teacherClass.data?[0]);
@@ -783,11 +821,9 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
-
   //get list of parents
   List<ParentItem> listOfParents = [];
   List<ParentItem> tempListOfParents = [];
-
 
   void setListOfParents({required List<ParentItem> listOfParents}) {
     this.listOfParents = listOfParents;
@@ -796,19 +832,18 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  void setTempListOfParents({required List<ParentItem> tempListOfParents}){
+  void setTempListOfParents({required List<ParentItem> tempListOfParents}) {
     this.tempListOfParents = tempListOfParents;
     notifyListeners();
   }
-
 
   //get list of parents
   void getListOfParents({required String classId}) async {
     try {
       setIsLoading(isLoading: true);
 
-      await Api.httpRequest(requestType: RequestType.get,
+      await Api.httpRequest(
+          requestType: RequestType.get,
           endPoint: "${Api.teacherSideListOfParents}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -828,9 +863,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
-
   //search in parent list
-  void searchInParentList(String? value){
+  void searchInParentList(String? value) {
     if (value?.isEmpty ?? true) {
       setTempListOfParents(tempListOfParents: listOfParents);
       return;
@@ -839,13 +873,14 @@ class StudentParentTeacherController extends ChangeNotifier {
     List<ParentItem> searchData = [];
     for (var parentItem in listOfParents) {
       if (parentItem.fullName!
-          .toLowerCase()
-          .contains(value?.toLowerCase() ?? "") ||
+              .toLowerCase()
+              .contains(value?.toLowerCase() ?? "") ||
           parentItem.sFname!
               .toLowerCase()
-              .contains(value?.toLowerCase() ?? "") || parentItem.sLname!
-          .toLowerCase()
-          .contains(value?.toLowerCase() ?? "")) {
+              .contains(value?.toLowerCase() ?? "") ||
+          parentItem.sLname!
+              .toLowerCase()
+              .contains(value?.toLowerCase() ?? "")) {
         searchData.add(parentItem);
       }
     }
@@ -853,4 +888,451 @@ class StudentParentTeacherController extends ChangeNotifier {
     setTempListOfParents(tempListOfParents: searchData);
   }
 
+  //Teacher Add - Edit event :
+
+  EventTypeModel selectedEventType = AppConstants.eventTypeList[0];
+
+  void setSelectedEventType({required EventTypeModel? eventTypeModel}) {
+    selectedEventType = eventTypeModel ?? AppConstants.eventTypeList[0];
+    notifyListeners();
+  }
+
+  EventColorModel selectedEventColor = AppConstants.eventColorModel[0];
+
+  void setSelectedEventColor({required EventColorModel? eventColorModel}) {
+    selectedEventColor = eventColorModel ?? AppConstants.eventColorModel[0];
+    notifyListeners();
+  }
+
+  //event start date
+  DateTime? eventStartDate;
+
+  void setSelectedEventStartDate({required DateTime? date}) {
+    eventStartDate = date;
+    notifyListeners();
+  }
+
+  //event end date
+  DateTime? eventEndDate;
+
+  void setSelectedEventEndDate({required DateTime? date}) {
+    eventEndDate = date;
+    notifyListeners();
+  }
+
+  //event start time
+  TimeOfDay? startTime;
+
+  void setSelectedStartTime({required TimeOfDay? startTime}) {
+    this.startTime = startTime;
+    notifyListeners();
+  }
+
+  //event end time
+  TimeOfDay? endTime;
+
+  void setSelectedEndTime({required TimeOfDay? endTime}) {
+    this.endTime = endTime;
+    notifyListeners();
+  }
+
+  //date picker
+  Future<DateTime?> pickDate({DateTime? startDate}) async {
+    //type means start date or end date
+    //when user select start date then startDate value will come
+    DateTime? dateTime = await showDatePicker(
+        context: Get.context!,
+        firstDate: startDate ?? DateTime(1900),
+        lastDate: DateTime(3000));
+    return dateTime;
+  }
+
+  //time picker
+  Future<TimeOfDay?> pickTime() async {
+    TimeOfDay? timeOfDay = await showTimePicker(
+      context: Get.context!,
+      initialTime: TimeOfDay.now(),
+      builder: (context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
+    );
+    return timeOfDay;
+  }
+
+  //add event user side
+  Future<void> addEditEvent(
+      {required String title,
+      required String description,
+      required String eventStartDate,
+      required String eventEndDate,
+      required String eventStartTime,
+      required String eventEndTime,
+      required String eventType,
+      required String eventColor,
+      String? eventId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.post,
+          endPoint: eventId == null ? Api.eventListEndPoint : "event/$eventId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          },
+          body: {
+            "etitle": title,
+            "edesc": description,
+            "sdate": eventStartDate,
+            "edate": eventEndDate,
+            "stime": eventStartTime,
+            "etime": eventEndTime,
+            "etype": eventType,
+            "ecolor": eventColor,
+          }).then((response) async {
+        if (response['status']) {
+          AppConstants.showCustomToast(
+              status: true, message: "Insertado exitosamente");
+          clearAddEditEventScreen();
+          setIsLoading(isLoading: false);
+          getEvents();
+          Get.back();
+        }
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //Events : student,parent and teacher
+  DateTime eventScreenFocusDay = DateTime.now();
+
+  void setEventScreenFocusDay({required DateTime dateTime}) {
+    eventScreenFocusDay = dateTime;
+    notifyListeners();
+  }
+
+  DateTime eventScreenSelectedDay = DateTime.now();
+
+  void setEventScreenSelectedDay({required DateTime dateTime}) {
+    eventScreenSelectedDay = dateTime;
+    notifyListeners();
+  }
+
+  //date time wise events list
+  Map<DateTime, List<EventListItemDetail>> mapOfEventsDateWise = {};
+
+  setMapOfEvents(
+      {required Map<DateTime, List<EventListItemDetail>> listOfEvent}) {
+    mapOfEventsDateWise = listOfEvent;
+    notifyListeners();
+  }
+
+  List<EventListItemDetail> todayEvent = [];
+
+  void setTodayEvent({required List<EventListItemDetail> eventList}) {
+    todayEvent = eventList;
+    notifyListeners();
+  }
+
+  List<EventListItemDetail> getEventsForDay(DateTime date) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+    List<EventListItemDetail> events =
+        mapOfEventsDateWise.containsKey(DateTime.parse(dateFormat.format(date)))
+            ? mapOfEventsDateWise[DateTime.parse(dateFormat.format(date))]!
+            : [];
+    return events;
+  }
+
+  //get list of events for parent,teacher,student
+  Future<void> getEvents() async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: currentLoggedInUserRole == RoleType.teacher
+              ? Api.teacherEventList
+              : Api.eventListEndPoint,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          }).then((response) {
+        if (response['status']) {
+          Events events = Events.fromJson(response);
+          setEventsAccordingDate(eventData: events.eventsList);
+        }
+
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //filter out events according date
+  void setEventsAccordingDate({required List<EventListItem> eventData}) {
+    Map<DateTime, List<EventListItemDetail>> eventMap = {};
+    DateFormat df = DateFormat("yyyy-MM-dd");
+    for (var element in eventData) {
+      if (eventMap[element.startDate] != null) {
+        eventMap[
+                DateTime.parse(df.format(element.startDate ?? DateTime.now()))]!
+            .addAll(element.list ?? []);
+      } else {
+        eventMap[DateTime.parse(
+                df.format(element.startDate ?? DateTime.now()))] =
+            element.list ?? [];
+      }
+    }
+
+    setTodayEvent(
+        eventList:
+            eventMap.containsKey(DateTime.parse(df.format(DateTime.now())))
+                ? eventMap[DateTime.parse(df.format(DateTime.now()))]!
+                : []);
+    mapOfEventsDateWise = eventMap;
+  }
+
+  //teacher followed up
+  List<FollowedUpItem> listOfStudentFollowedUp = [];
+  List<FollowedUpItem> tempListOfStudentFollowedUp = [];
+
+  void setListOfStudentFollowedUp(
+      {required List<FollowedUpItem> listOfStudentFollowedUp}) {
+    this.listOfStudentFollowedUp = listOfStudentFollowedUp;
+    tempListOfStudentFollowedUp = listOfStudentFollowedUp;
+    notifyListeners();
+  }
+
+  void setTempListOfStudentFollowedUp(
+      {required List<FollowedUpItem> tempListOfStudentFollowedUp}) {
+    this.tempListOfStudentFollowedUp = tempListOfStudentFollowedUp;
+    notifyListeners();
+  }
+
+  StudentItem? selectedStudentForFollowedUp;
+
+  void setSelectedStudentForFollowUp({required StudentItem? studentItem}) {
+    selectedStudentForFollowedUp = studentItem;
+    notifyListeners();
+  }
+
+  //get list of followed up
+  void getListOfFollowedUp(
+      {required String studentId, required String classId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint:
+              "${Api.teacherFollowedUp}?class_id=$classId&student_id=$studentId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          }).then((response) {
+        if (response['status']) {
+          FollowedUpModel followedUpModel = FollowedUpModel.fromJson(response);
+          setListOfStudentFollowedUp(
+              listOfStudentFollowedUp: followedUpModel.data ?? []);
+        }
+
+        setIsLoading(isLoading: false);
+      });
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //search in followed up list
+  void searchInFollowedUpList(String? value) {
+    if (value?.isEmpty ?? true) {
+      setTempListOfStudentFollowedUp(
+          tempListOfStudentFollowedUp: listOfStudentFollowedUp);
+      return;
+    }
+
+    List<FollowedUpItem> searchData = [];
+    for (FollowedUpItem item in listOfStudentFollowedUp) {
+      FollowedUpItemDetail? followedUpItemDetail = item.list?[0];
+      if (followedUpItemDetail?.subjectName
+              ?.toLowerCase()
+              .contains(value?.toLowerCase() ?? "") ??
+          false ||
+              followedUpItemDetail!.examName!
+                  .toLowerCase()
+                  .contains(value?.toLowerCase() ?? "")) {
+        searchData.add(item);
+      }
+    }
+
+    setTempListOfStudentFollowedUp(tempListOfStudentFollowedUp: searchData);
+  }
+
+  //clear event data after add-editing event
+  void clearAddEditEventScreen() {
+    eventStartDate = DateTime.now();
+    eventEndDate = DateTime.now();
+    startTime = TimeOfDay.now();
+    endTime = TimeOfDay.now();
+    selectedEventType = AppConstants.eventTypeList[0];
+    selectedEventColor = AppConstants.eventColorModel[0];
+    notifyListeners();
+  }
+
+  //Exam :
+  List<ExamListItem> listOfExams = [];
+  List<ExamListItem> tempListOfExams = [];
+
+  void setListOfExams({required List<ExamListItem> listOfExams}) {
+    this.listOfExams = listOfExams;
+    notifyListeners();
+  }
+
+  void setTempListOfExams({required List<ExamListItem> listOfExams}) {
+    tempListOfExams = listOfExams;
+    notifyListeners();
+  }
+
+
+  void getListOfExams(
+      {required String classId,
+      required String? wpUserId,
+      required RoleType roleType}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: roleType != RoleType.teacher
+              ? Api.studentParentExamListPoint
+              : Api.teacherExamListPoint,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          }).then((response) {
+        if (response['status']) {
+            ExamListModel examListModel = ExamListModel.fromJson(response);
+            setListOfExams(listOfExams: examListModel.data ?? []);
+        }
+      });
+
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //Add-Edit exam :
+  DateTime examStartDate = DateTime.now();
+
+  void setExamStartDate({required DateTime? dateTime}) {
+    examStartDate = dateTime ?? DateTime.now();
+    notifyListeners();
+  }
+
+  DateTime examEndDate = DateTime.now();
+
+  void setExamEndDate({required DateTime? dateTime}) {
+    examEndDate = dateTime ?? DateTime.now();
+    notifyListeners();
+  }
+
+  TimeOfDay examTime = TimeOfDay.now();
+
+  void setExamTime({required TimeOfDay? examTime}) {
+    this.examTime = examTime ?? TimeOfDay.now();
+    notifyListeners();
+  }
+
+  bool isAllSubjectSelected = false;
+
+  void setIsAllSubjectSelected({required bool isAllSubjectSelected}) {
+    this.isAllSubjectSelected = isAllSubjectSelected;
+    setListOfSelectedSubjectsId(listOfSelectedSubjectsId: tempListOfSubject);
+    notifyListeners();
+  }
+
+  List<SubjectItem> listOfSelectedSubjectsId = [];
+
+  void setListOfSelectedSubjectsId(
+      {required List<SubjectItem> listOfSelectedSubjectsId}) {
+    this.listOfSelectedSubjectsId = listOfSelectedSubjectsId;
+    notifyListeners();
+  }
+
+  void addSelectedSubject({required SubjectItem subject}) {
+    if (!listOfSelectedSubjectsId.contains(subject)) {
+      listOfSelectedSubjectsId.add(subject);
+      notifyListeners();
+    }
+  }
+
+  void removeSelectedSubject({required SubjectItem subject}) {
+    if (listOfSelectedSubjectsId.contains(subject)) {
+      listOfSelectedSubjectsId.remove(subject);
+      notifyListeners();
+    }
+  }
+
+  //add-edit exam function
+  void addEditExam(
+      {required String classId,
+      required String nameOfClass,
+      required String startDateOfExam,
+      required String endDateOfExam,
+      required String examTime,
+      required String comments,
+      required List<String> subjects}) async {
+    try {
+      setIsLoading(isLoading: true);
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //reset exam data
+  void resetExamData() {
+    setListOfSubject(listOfSubject: []);
+    examStartDate = DateTime.now();
+    examEndDate = DateTime.now();
+    examTime = TimeOfDay.now();
+    isAllSubjectSelected = false;
+    notifyListeners();
+  }
+
+  //Logged out function : clear all controller data
+  void loggedOutClearData() {
+    currentLoggedInUserRole = null;
+    loginModel = null;
+    dashboard = null;
+    setCurrentBottomIndexSelected(index: 0);
+    timeTableList = [];
+    particularDayTimeTableData = [];
+    tempParticularDayTimeTableData = [];
+    studentInfo = null;
+    tempTransportList = [];
+    transportList = [];
+    listOfSubject = [];
+    tempListOfSubject = [];
+    subjectDetail = null;
+    subject = null;
+    tempListOfParents = [];
+    tempListOfParents = [];
+    tempListOfSubject = [];
+    tempListOfTeachers = [];
+    examList = [];
+    todayEvent = [];
+    listOfSelectedSubjectsId = [];
+    listOfStudentFollowedUp = [];
+    tempListOfStudentFollowedUp = [];
+    notifyListeners();
+  }
 }

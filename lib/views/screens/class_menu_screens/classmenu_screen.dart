@@ -10,7 +10,7 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/send_message_to_
 import 'package:colegia_atenea/views/screens/class_menu_screens/student_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
-import 'package:colegia_atenea/views/screens/class_menu_screens/test_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/timetable_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/transportation_screen.dart';
 import 'package:colegia_atenea/views/screens/child_communication_list_screen.dart';
@@ -143,13 +143,17 @@ class ClassMenuScreen extends StatelessWidget {
                               menuName: "tests".tr,
                               leadingIcon: Icons.textsms_sharp,
                               onPressed: () {
-                                Get.to(() => TestScreen(
-                                    studentData != null
-                                        ? studentData?.classId ?? ""
-                                        : userdata?.classId ?? "",
-                                    studentData != null
-                                        ? studentData?.wpUsrId ?? ""
-                                        : userdata?.wpUsrId ?? ""));
+                                Get.to(() => ExamListScreen(),
+                                arguments: {
+                                  "role" : userdata != null ? RoleType.student : RoleType.parent,
+                                  "wpUserId" : studentData != null
+                                      ? studentData?.wpUsrId ?? ""
+                                      : userdata?.wpUsrId ?? "",
+                                  "classId" : studentData != null
+                                      ? studentData?.classId ?? ""
+                                      : userdata?.classId ?? "",
+                                }
+                                );
                               }),
                           ClassMenuWidget(
                               menuName: "grades".tr,

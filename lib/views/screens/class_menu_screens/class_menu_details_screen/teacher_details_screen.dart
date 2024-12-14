@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/Singleteacher.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
@@ -10,6 +11,7 @@ import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 
 class TeacherDetails extends StatefulWidget {
@@ -28,6 +30,7 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
   String familyCareHours="";
   String email="";
   String image="";
+  String phoneNumber = "";
   bool isLoading=true;
 
 
@@ -99,7 +102,7 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
                                   //crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.only(top: 100),
+                                      padding: const EdgeInsets.only(top: 60),
                                       margin: const EdgeInsets.only(left: 20,right: 20,top: 10),
                                       child: Column(
                                         crossAxisAlignment:
@@ -218,6 +221,38 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
                                                               style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
                                                             ),
                                                           )
+                                                      ),
+                                                      const SizedBox(height: 20,),
+                                                      Consumer<StudentParentTeacherController>(
+                                                        builder: (context,studentParentTeacherController,child){
+                                                          return Visibility(
+                                                              visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher,
+                                                              child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                "teléfono",style: CustomStyle.textValue.copyWith(color: AppColors.secondary.withOpacity(0.75)),
+                                                              ),
+                                                              const SizedBox(height: 10,),
+                                                              Container(
+                                                                  width: 350,
+                                                                  height: 60,
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(12),
+                                                                      color: AppColors.secondary.withOpacity(0.06)
+                                                                  ),
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.all(15),
+                                                                    child: Text(
+                                                                      phoneNumber,
+                                                                      textAlign: TextAlign.left,
+                                                                      style: CustomStyle.textHintValue.copyWith(color: AppColors.secondary),
+                                                                    ),
+                                                                  )
+                                                              ),
+                                                            ],
+                                                          ));
+                                                        }
                                                       )
                                                     ],
                                                   ),
@@ -235,8 +270,8 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
                           ),
                           Container(
                             margin: const EdgeInsets.only(top: 20),
-                            height: 180,
-                            width: 180,
+                            height: 140,
+                            width: 140,
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               border: Border.all(
@@ -319,6 +354,7 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
             familyCareHours = teacherDetails.data![0].familyCareHour!;
             email=teacherDetails.data![0].userEmail!;
             image=teacherDetails.data![0].image!;
+            phoneNumber = teacherDetails.data?[0].phone ?? "";
             isLoading=false;
           });
 

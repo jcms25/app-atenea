@@ -1,10 +1,10 @@
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
+import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/class_menu_details_screen/circular_detail_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,7 +83,7 @@ class _Circular extends State<CircularScreen> {
                                     ),
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
-                                style: CustomStyle.textValue,
+                                style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
                                 cursorColor: AppColors.primary,
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,

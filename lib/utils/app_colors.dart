@@ -17,6 +17,9 @@ class AppColors {
  static const Color greenLight=Color(0x2644D1A5);
  static const Color red=Color(0xFFF44336);
  static const Color darkPurple = Color(0xFF883FFF);
+ 
+ 
+ static const Color color10 = Color(0xffF7F4F5);
 
  static const Color transparent = Color(0x0fffffff);
 

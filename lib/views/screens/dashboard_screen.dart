@@ -8,14 +8,11 @@ import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
-import 'package:colegia_atenea/views/screens/class_menu_screens/test_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -30,14 +27,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DateTime _selectedDay = DateTime.now();
   final DateTime _focusedDay = DateTime.now();
   Map<DateTime, dynamic> selectedEvents = {};
-  String selectDay = "";
+  // String selectDay = "";
   int listToShow = 0;
-  String classname = "";
-  String examName = "";
-  String date = "";
-  String classname1 = "";
-  String examName1 = "";
-  String date1 = "";
+  // String classname = "";
+  // String examName = "";
+  // String date = "";
+  // String classname1 = "";
+  // String examName1 = "";
+  // String date1 = "";
 
   StudentParentTeacherController? studentParentTeacherController;
 
@@ -46,21 +43,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     // for setting local language to calendar
     initializeDateFormatting(Get.locale!.countryCode, null);
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
-      // if (studentParentTeacherController?.dashboard == null) {
-      //   studentParentTeacherController?.getDashboardData(showLoader: true);
-      // } else {
-      //   studentParentTeacherController?.getDashboardData(showLoader: false);
-      // }
-      studentParentTeacherController?.getDashboardData(showLoader: false);
-
-    });
-
-    // setUserInfo();
-    // getDashBoardData();
+      studentParentTeacherController?.getDashboardData(showLoader: true);
+  });
   }
 
   @override
@@ -288,9 +275,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           (DateTime selectDay, DateTime focusDay) {
                                         studentParentTeacherController.setSelectedDay(selectedDay: selectDay);
                                         studentParentTeacherController.setFocusDay(focusDay: focusDay);
-
-                                        // DateFormat dateFormat =
-                                        // DateFormat("yyyy-MM-dd");
                                         showModalBottomSheet(
                                             isDismissible: true,
                                             isScrollControlled: false,
@@ -401,179 +385,198 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   );
                                 },
                               ),
-                              Container(
-                                margin:
+                              Consumer<StudentParentTeacherController>(
+                                builder: (context,studentParentTeacherController,child){
+                                  return Visibility(
+                                      visible: studentParentTeacherController.currentLoggedInUserRole != RoleType.teacher,
+                                      child: Container(
+                                    margin:
                                     const EdgeInsets.only(top: 20, bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "exam".tr,
-                                        style: CustomStyle.calendarTextStyle,
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "exam".tr,
+                                            style: AppTextStyle.getOutfit600(textSize: 20, textColor: AppColors.secondary)
+                                          ),
+                                        ),
+                                        Consumer<StudentParentTeacherController>(
+                                          builder: (context,studentParentTeacherController,child){
+                                            return GestureDetector(
+                                              onTap: () {
+
+
+                                                // if (userDatas != null) {
+                                                //   goToExamScreen(userDatas!.classId!,
+                                                //       userDatas!.wpUsrId!);
+                                                // }
+                                                // else if (studentData != null) {
+                                                //   showBottomSheet(
+                                                //       context: context,
+                                                //       backgroundColor: AppColors
+                                                //           .primary,
+                                                //       shape:
+                                                //       const RoundedRectangleBorder(
+                                                //           borderRadius:
+                                                //           BorderRadius.only(
+                                                //               topLeft: Radius
+                                                //                   .circular(
+                                                //                   20),
+                                                //               topRight: Radius
+                                                //                   .circular(
+                                                //                   20))),
+                                                //       builder: (context) {
+                                                //         return SizedBox(
+                                                //           width:
+                                                //           MediaQuery.of(context)
+                                                //               .size
+                                                //               .width,
+                                                //           height: 200,
+                                                //           child: ScrollConfiguration(
+                                                //             behavior:
+                                                //             const ScrollBehavior()
+                                                //                 .copyWith(
+                                                //                 overscroll:
+                                                //                 false),
+                                                //             child:
+                                                //             SingleChildScrollView(
+                                                //               child: Column(
+                                                //                 crossAxisAlignment:
+                                                //                 CrossAxisAlignment
+                                                //                     .start,
+                                                //                 children: [
+                                                //                   const SizedBox(height: 10,),
+                                                //                   Padding(
+                                                //                       padding:
+                                                //                       const EdgeInsets
+                                                //                           .only(
+                                                //                           left:
+                                                //                           20),
+                                                //                       child: Row(
+                                                //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                //                         children: [
+                                                //                           Text(
+                                                //                             "exam".tr,
+                                                //                             style: const TextStyle(
+                                                //                                 fontSize:
+                                                //                                 24,
+                                                //                                 fontFamily:
+                                                //                                 "OutfitMedium",
+                                                //                                 fontWeight:
+                                                //                                 FontWeight
+                                                //                                     .w500,
+                                                //                                 color: AppColors
+                                                //                                     .white),
+                                                //                           ),
+                                                //                           IconButton(onPressed: (){
+                                                //                             Navigator.pop(context);
+                                                //                           }, icon: const Icon(Icons.close,color: AppColors.white,))
+                                                //                         ],
+                                                //                       )),
+                                                //                   ...studentData!
+                                                //                       .map((e) {
+                                                //                     return GestureDetector(
+                                                //                         onTap: () {
+                                                //                           Navigator.pop(
+                                                //                               context);
+                                                //                           goToExamScreen(
+                                                //                               e.classId!,
+                                                //                               e.wpUsrId!);
+                                                //                         },
+                                                //                         child:
+                                                //                         Container(
+                                                //                           height: 60,
+                                                //                           decoration: BoxDecoration(
+                                                //                               color: AppColors
+                                                //                                   .white,
+                                                //                               borderRadius:
+                                                //                               BorderRadius.circular(10)),
+                                                //                           margin:
+                                                //                           const EdgeInsets.all(
+                                                //                               10),
+                                                //                           padding: const EdgeInsets
+                                                //                               .only(
+                                                //                               left:
+                                                //                               20),
+                                                //                           width: MediaQuery.of(
+                                                //                               context)
+                                                //                               .size
+                                                //                               .width,
+                                                //                           child:
+                                                //                           Column(
+                                                //                             crossAxisAlignment:
+                                                //                             CrossAxisAlignment
+                                                //                                 .start,
+                                                //                             mainAxisAlignment:
+                                                //                             MainAxisAlignment
+                                                //                                 .center,
+                                                //                             children: [
+                                                //                               Text(
+                                                //                                 "${e.sFname}\t${e.sLname}",
+                                                //                                 style: const TextStyle(
+                                                //                                     fontSize: 16,
+                                                //                                     fontFamily: "OutfitMedium",
+                                                //                                     fontWeight: FontWeight.w500,
+                                                //                                     color: AppColors.primary),
+                                                //                               ),
+                                                //                               Text(
+                                                //                                 "${e.className}",
+                                                //                                 style: const TextStyle(
+                                                //                                     fontSize: 16,
+                                                //                                     fontFamily: "OutfitMedium",
+                                                //                                     fontWeight: FontWeight.w500,
+                                                //                                     color: AppColors.primary),
+                                                //                               ),
+                                                //                             ],
+                                                //                           ),
+                                                //                         ));
+                                                //                   }).toList()
+                                                //                 ],
+                                                //               ),
+                                                //             ),
+                                                //           ),
+                                                //         );
+                                                //       });
+                                                // }
+                                                // else {
+                                                //   setUserInfo();
+                                                //   Fluttertoast.showToast(
+                                                //       msg: "tryAgain".tr);
+                                                // }
+
+
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                      "viewall".tr,
+                                                      style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.primary)),
+                                                  const SizedBox(width: 2),
+                                                  SvgPicture.asset(AppImages.loginArrow,
+                                                      colorFilter:
+                                                      const ColorFilter.mode(
+                                                          AppColors.primary,
+                                                          BlendMode.srcIn)),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      ],
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        // if (userDatas != null) {
-                                        //   goToExamScreen(userDatas!.classId!,
-                                        //       userDatas!.wpUsrId!);
-                                        // } else if (studentData != null) {
-                                        //   showBottomSheet(
-                                        //       context: context,
-                                        //       backgroundColor: AppColors
-                                        //           .primary,
-                                        //       shape:
-                                        //       const RoundedRectangleBorder(
-                                        //           borderRadius:
-                                        //           BorderRadius.only(
-                                        //               topLeft: Radius
-                                        //                   .circular(
-                                        //                   20),
-                                        //               topRight: Radius
-                                        //                   .circular(
-                                        //                   20))),
-                                        //       builder: (context) {
-                                        //         return SizedBox(
-                                        //           width:
-                                        //           MediaQuery.of(context)
-                                        //               .size
-                                        //               .width,
-                                        //           height: 200,
-                                        //           child: ScrollConfiguration(
-                                        //             behavior:
-                                        //             const ScrollBehavior()
-                                        //                 .copyWith(
-                                        //                 overscroll:
-                                        //                 false),
-                                        //             child:
-                                        //             SingleChildScrollView(
-                                        //               child: Column(
-                                        //                 crossAxisAlignment:
-                                        //                 CrossAxisAlignment
-                                        //                     .start,
-                                        //                 children: [
-                                        //                   const SizedBox(height: 10,),
-                                        //                   Padding(
-                                        //                       padding:
-                                        //                       const EdgeInsets
-                                        //                           .only(
-                                        //                           left:
-                                        //                           20),
-                                        //                       child: Row(
-                                        //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        //                         children: [
-                                        //                           Text(
-                                        //                             "exam".tr,
-                                        //                             style: const TextStyle(
-                                        //                                 fontSize:
-                                        //                                 24,
-                                        //                                 fontFamily:
-                                        //                                 "OutfitMedium",
-                                        //                                 fontWeight:
-                                        //                                 FontWeight
-                                        //                                     .w500,
-                                        //                                 color: AppColors
-                                        //                                     .white),
-                                        //                           ),
-                                        //                           IconButton(onPressed: (){
-                                        //                             Navigator.pop(context);
-                                        //                           }, icon: const Icon(Icons.close,color: AppColors.white,))
-                                        //                         ],
-                                        //                       )),
-                                        //                   ...studentData!
-                                        //                       .map((e) {
-                                        //                     return GestureDetector(
-                                        //                         onTap: () {
-                                        //                           Navigator.pop(
-                                        //                               context);
-                                        //                           goToExamScreen(
-                                        //                               e.classId!,
-                                        //                               e.wpUsrId!);
-                                        //                         },
-                                        //                         child:
-                                        //                         Container(
-                                        //                           height: 60,
-                                        //                           decoration: BoxDecoration(
-                                        //                               color: AppColors
-                                        //                                   .white,
-                                        //                               borderRadius:
-                                        //                               BorderRadius.circular(10)),
-                                        //                           margin:
-                                        //                           const EdgeInsets.all(
-                                        //                               10),
-                                        //                           padding: const EdgeInsets
-                                        //                               .only(
-                                        //                               left:
-                                        //                               20),
-                                        //                           width: MediaQuery.of(
-                                        //                               context)
-                                        //                               .size
-                                        //                               .width,
-                                        //                           child:
-                                        //                           Column(
-                                        //                             crossAxisAlignment:
-                                        //                             CrossAxisAlignment
-                                        //                                 .start,
-                                        //                             mainAxisAlignment:
-                                        //                             MainAxisAlignment
-                                        //                                 .center,
-                                        //                             children: [
-                                        //                               Text(
-                                        //                                 "${e.sFname}\t${e.sLname}",
-                                        //                                 style: const TextStyle(
-                                        //                                     fontSize: 16,
-                                        //                                     fontFamily: "OutfitMedium",
-                                        //                                     fontWeight: FontWeight.w500,
-                                        //                                     color: AppColors.primary),
-                                        //                               ),
-                                        //                               Text(
-                                        //                                 "${e.className}",
-                                        //                                 style: const TextStyle(
-                                        //                                     fontSize: 16,
-                                        //                                     fontFamily: "OutfitMedium",
-                                        //                                     fontWeight: FontWeight.w500,
-                                        //                                     color: AppColors.primary),
-                                        //                               ),
-                                        //                             ],
-                                        //                           ),
-                                        //                         ));
-                                        //                   }).toList()
-                                        //                 ],
-                                        //               ),
-                                        //             ),
-                                        //           ),
-                                        //         );
-                                        //       });
-                                        // } else {
-                                        //   setUserInfo();
-                                        //   Fluttertoast.showToast(
-                                        //       msg: "tryAgain".tr);
-                                        // }
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text("viewall".tr,
-                                              style: CustomStyle.hello.copyWith(
-                                                  color: AppColors.primary)),
-                                          const SizedBox(width: 2),
-                                          SvgPicture.asset(AppImages.loginArrow,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                      AppColors.primary,
-                                                      BlendMode.srcIn)),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  ));
+                                },
                               ),
                               Consumer<StudentParentTeacherController>(
                                 builder: (context,studentParentTeacherController,child){
                                   List<ExamItem> examList = studentParentTeacherController.dashboard?.examList ?? [];
-                                  return examList.isEmpty
+                                  return Visibility(
+
+                                      visible: studentParentTeacherController.currentLoggedInUserRole != RoleType.teacher,
+                                      child: examList.isEmpty
                                       ? Center(
                                     child: Text("No hay calendario de exámenes.",
-                                        style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary),
+                                      style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary),
                                     ),
                                   )
                                       : ScrollConfiguration(
@@ -622,14 +625,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                       examList[
                                                       index]
                                                           .className,
-                                                      style: CustomStyle
-                                                          .calendarTextStyle
-                                                          .copyWith(
-                                                          color: AppColors
-                                                              .white,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w500),
+
+                                                      style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.white)
                                                     ),
                                                   ),
                                                   Align(
@@ -649,13 +646,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                               index]
                                                                   .name,
                                                               maxLines: 3,
-                                                              style: CustomStyle.hello.copyWith(
-                                                                  color: AppColors
-                                                                      .secondary,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  fontSize: 18),
+                                                              style: AppTextStyle.getOutfit600(textSize: 18, textColor: AppColors.secondary),
                                                             ),
                                                             Padding(
                                                                 padding:
@@ -667,16 +658,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                     examList[
                                                                     index]
                                                                         .date,
-                                                                    style: CustomStyle
-                                                                        .hello
-                                                                        .copyWith(
-                                                                        color:
-                                                                        AppColors.secondary)))
+
+                                                                    style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.white)
+                                            ))
                                                           ],
                                                         )),
                                                   )
                                                 ]));
-                                          }));
+                                          })));
                                 },
                               )
                             ],
@@ -937,12 +926,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //           margin: const EdgeInsets.all(20), child: const Text("No Events"));
   // }
 
-  void goToExamScreen(String classId, String studentId) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TestScreen(classId, studentId)));
-  }
+  // void goToExamScreen(String classId, String studentId) {
+  //   // Navigator.push(
+  //   //     context,
+  //   //     MaterialPageRoute(
+  //   //         builder: (context) => ExamListScreen(cid: classId, wpId:studentId)));
+  //
+  //   Get.to(ExamListScreen(),arguments: {
+  //     "role" : userdata != null ? RoleType.student : RoleType.parent,
+  //     "wpUserId" : studentData != null
+  //         ? studentData?.wpUsrId ?? ""
+  //         : userdata?.wpUsrId ?? "",
+  //     "classId" : studentData != null
+  //         ? studentData?.classId ?? ""
+  //         : userdata?.classId ?? "",
+  //   });
+  // }
 }
 
 class DashboardWidget1 extends StatelessWidget {

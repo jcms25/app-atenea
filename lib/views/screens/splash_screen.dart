@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:colegia_atenea/controllers/assistant_controller.dart';
 import 'package:colegia_atenea/controllers/splash_login_controller.dart';
+import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -90,21 +91,26 @@ class _SplashScreenState extends State<SplashScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(AppStrings.title,
-                            textAlign: TextAlign.center, style: CustomStyle.title),
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.getOutfit600(textSize: 32, textColor: AppColors.secondary),
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
                         Text(
                           "optimize".tr,
                           textAlign: TextAlign.center,
-                          style: CustomStyle.optimize,
+                          style: AppTextStyle.getOutfit400(textSize: 20, textColor: AppColors.secondary),
+                          // style: CustomStyle.optimize,
                         ),
                         const SizedBox(
                           height: 30,
                         ),
                         RichText(
                             textAlign: TextAlign.center,
-                            text: TextSpan(style: CustomStyle.txtvalue1, children: [
+                            text: TextSpan(
+                                style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),
+                                children: [
                               TextSpan(text: '© ${DateTime.now().year} '),
                               const TextSpan(
                                   text: AppStrings.iGexSolutions,

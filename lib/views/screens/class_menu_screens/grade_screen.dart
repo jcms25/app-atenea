@@ -2,11 +2,11 @@ import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
-import 'package:colegia_atenea/utils/app_images.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
+import 'package:colegia_atenea/utils/app_textstyle.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/dotted_line_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../models/student_marklist_format.dart';
@@ -37,25 +37,14 @@ class _GradeScreenChild extends State<GradeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-            titleSpacing: 0,
-            elevation: 0,
-            backgroundColor: AppColors.primary,
+        appBar: CustomAppBarWidget(
+            onLeadingIconClicked: () {
+              Get.back();
+            },
             title: Text(
               "grades".tr,
-              style: CustomStyle.appBarTitle,
-            ),
-            leading: Container(
-              margin: const EdgeInsets.all(10),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: SvgPicture.asset(
-                  AppImages.arrow,
-                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn)
-                ),
-              ),
+              style: AppTextStyle.getOutfit500(
+                  textSize: 20, textColor: AppColors.white),
             )),
         body: Stack(
           children: [
@@ -97,11 +86,14 @@ class _GradeScreenChild extends State<GradeScreen> {
                                         fontFamily: "Outfit",
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
-                                        color: AppColors.secondary.withOpacity(0.5)),
+                                        color: AppColors.secondary
+                                            .withOpacity(0.5)),
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
                                 cursorColor: AppColors.primary,
-                                style: CustomStyle.textValue,
+                                style: AppTextStyle.getOutfit400(
+                                    textSize: 16,
+                                    textColor: AppColors.secondary),
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 onChanged: onSearchTextChanged,
@@ -112,202 +104,196 @@ class _GradeScreenChild extends State<GradeScreen> {
                       ),
                     )),
                 Expanded(
-                    child: isLoading ? const SizedBox.shrink() : tempList.isEmpty ? Center(
-                      child: Text('noStudentFound'.tr,style: const TextStyle(
-                        fontFamily: "Outfit",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.secondary
-                      ),),
-                    ) : Padding(padding: const EdgeInsets.symmetric(vertical: 10),child: ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: tempList.length,
-                      itemBuilder: (context, position) {
-                        Markslist data = tempList[position];
-                        return Column(
-                          children: [
-                            Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 20),
-                                padding: const EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                    color: AppColors.primary
-                                        .withOpacity(0.05),
-                                    borderRadius:
-                                    const BorderRadius.all(
-                                        Radius.circular(15))),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                        height: 30,
-                                        width: 100,
-                                        decoration:
-                                        const BoxDecoration(
-                                            color:
-                                            AppColors.primary,
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius
-                                                    .circular(
-                                                    10))),
-                                        child: Center(
-                                          child: (Text(
-                                            data.sDate!,
-                                            style: CustomStyle
-                                                .txtvalue1
-                                                .copyWith(
-                                                color: AppColors
-                                                    .white),
-                                          )),
-                                        )),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
+                    child: isLoading
+                        ? const SizedBox.shrink()
+                        : tempList.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'noStudentFound'.tr,
+                                  style: const TextStyle(
+                                      fontFamily: "Outfit",
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.secondary),
+                                ),
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: ListView.separated(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: tempList.length,
+                                  itemBuilder: (context, position) {
+                                    Markslist data = tempList[position];
+                                    return Column(
                                       children: [
-                                        Expanded(
-                                          child: Text("subject".tr,
-                                              style: CustomStyle.hello
-                                                  .copyWith(
-                                                  color: AppColors
-                                                      .secondary
-                                                      .withOpacity(
-                                                      0.5))),
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                                tempList[position]
-                                                    .subjectName!,
-                                                style: CustomStyle
-                                                    .hello
-                                                    .copyWith(
-                                                    color: AppColors
-                                                        .secondary,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600)))
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CustomStyle.dottedLine,
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text("examname".tr,
-                                              style: CustomStyle.hello
-                                                  .copyWith(
-                                                  color: AppColors
-                                                      .secondary
-                                                      .withOpacity(
-                                                      0.5))),
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                                tempList[
-                                                position]
-                                                    .examNm!,
-                                                style: CustomStyle
-                                                    .hello
-                                                    .copyWith(
-                                                    color: AppColors
-                                                        .secondary,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600)))
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CustomStyle.dottedLine,
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text("grade".tr,
-                                              style: CustomStyle.hello
-                                                  .copyWith(
-                                                  color: AppColors
-                                                      .secondary
-                                                      .withOpacity(
-                                                      0.5))),
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                                tempList[
-                                                position]
-                                                    .mark!,
-                                                style: CustomStyle
-                                                    .hello
-                                                    .copyWith(
-                                                    color: AppColors
-                                                        .secondary,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600)))
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CustomStyle.dottedLine,
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Visibility(
-                                        // visible: RegExp(r'[1-9] | 10 | [a-zA-Z]*').hasMatch(tempList[position].remarks!),
-                                        visible: tempList[position].remarks != null && tempList[position].remarks!.isNotEmpty,
-                                        child: Column(
-                                          children: [
-                                            Row(
+                                        Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            padding: const EdgeInsets.all(15),
+                                            decoration: BoxDecoration(
+                                                color: AppColors.primary
+                                                    .withOpacity(0.05),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(15))),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Expanded(
-                                                  child: Text("obser".tr,
-                                                      style: CustomStyle.hello
-                                                          .copyWith(
-                                                          color: AppColors
-                                                              .secondary
-                                                              .withOpacity(
-                                                              0.5))),
+                                                Container(
+                                                    height: 30,
+                                                    width: 100,
+                                                    decoration: const BoxDecoration(
+                                                        color:
+                                                            AppColors.primary,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10))),
+                                                    child: Center(
+                                                      child: Text(
+                                                        data.sDate!,
+                                                        style: AppTextStyle
+                                                            .getOutfit400(
+                                                                textSize: 14,
+                                                                textColor: AppColors
+                                                                    .secondary),
+                                                      ),
+                                                    )),
+                                                const SizedBox(
+                                                  height: 20,
                                                 ),
-                                                Expanded(
-                                                    child: Text(
-                                                        tempList[
-                                                        position].remarks ?? "-",
-                                                        style: CustomStyle
-                                                            .hello
-                                                            .copyWith(
-                                                            color: AppColors
-                                                                .secondary,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w600)))
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            CustomStyle.dottedLine,
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                          ],
-                                        )),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text("subject".tr,
+                                                          style: AppTextStyle
+                                                              .getOutfit400(
+                                                                  textSize: 16,
+                                                                  textColor: AppColors
+                                                                      .secondary
+                                                                      .withOpacity(
+                                                                          0.5))),
+                                                    ),
+                                                    Expanded(
+                                                        child: Text(
+                                                      tempList[position]
+                                                          .subjectName!,
+                                                      style: AppTextStyle
+                                                          .getOutfit600(
+                                                              textSize: 16,
+                                                              textColor: AppColors
+                                                                  .secondary),
+                                                    ))
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                CustomDottedLineWidget(),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                         "examname".tr,
+                                                         style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                        child: Text(
+                                                            tempList[position]
+                                                                .examNm!,
+                                                            style : AppTextStyle.getOutfit600(textSize: 16, textColor: AppColors.secondary),)
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                CustomDottedLineWidget(),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text("grade".tr,
 
-                                  ],
-                                ))
-                          ],
-                        );
-                      }, separatorBuilder: (BuildContext context, int index) { return const SizedBox(height: 10,); },),)
-                    )
+                                                          style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+                                                          ),
+                                                    ),
+                                                    Expanded(
+                                                        child: Text(
+                                                            tempList[position]
+                                                                .mark!,
+                                                            style: AppTextStyle.getOutfit600(textSize: 16,textColor: AppColors.secondary),
+
+                                                        ))
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                CustomDottedLineWidget(),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Visibility(
+                                                    // visible: RegExp(r'[1-9] | 10 | [a-zA-Z]*').hasMatch(tempList[position].remarks!),
+                                                    visible: tempList[position]
+                                                                .remarks !=
+                                                            null &&
+                                                        tempList[position]
+                                                            .remarks!
+                                                            .isNotEmpty,
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                  "obser".tr,
+                                                                  style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+
+                                                                 ),
+                                                            ),
+                                                            Expanded(
+                                                                child: Text(
+                                                                    tempList[position]
+                                                                            .remarks ??
+                                                                        "-",
+                                                                    style:AppTextStyle.getOutfit600(textSize: 16, textColor: AppColors.secondary)
+
+                                                          )
+                                                            )
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        CustomDottedLineWidget(),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                      ],
+                                                    )),
+                                              ],
+                                            ))
+                                      ],
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 10,
+                                    );
+                                  },
+                                ),
+                              ))
               ],
             ),
             Visibility(
@@ -325,13 +311,14 @@ class _GradeScreenChild extends State<GradeScreen> {
   }
 
   void callAPI() async {
-
-    try{
+    try {
       LoginModel? loginModel = AppSharedPreferences.getUserData();
 
-
-      dynamic response =
-      await ApiClass().getMarks(loginModel?.basicAuthToken ?? "", widget.wpId, widget.cid,loginModel?.userdata?.cookies ?? "");
+      dynamic response = await ApiClass().getMarks(
+          loginModel?.basicAuthToken ?? "",
+          widget.wpId,
+          widget.cid,
+          loginModel?.userdata?.cookies ?? "");
       if (response['status']) {
         MarkList studentMarks = MarkList.fromJson(response);
         setState(() {
@@ -344,12 +331,11 @@ class _GradeScreenChild extends State<GradeScreen> {
           isLoading = false;
         });
       }
-    }catch(exception){
+    } catch (exception) {
       setState(() {
         isLoading = false;
       });
     }
-
 
     // ApiClass httpService = ApiClass();
     // SessionManagement sessionManagement = SessionManagement();
@@ -392,7 +378,6 @@ class _GradeScreenChild extends State<GradeScreen> {
   }
 
   onSearchTextChanged(String text) async {
-
     if (text.isEmpty) {
       setState(() {
         tempList = listMarks;
@@ -402,7 +387,9 @@ class _GradeScreenChild extends State<GradeScreen> {
 
     List<Markslist> searchData = [];
     for (var userDetail in listMarks) {
-      if(userDetail.subjectName!.isCaseInsensitiveContains(text) || userDetail.examNm!.isCaseInsensitiveContains(text) || userDetail.sDate!.isCaseInsensitiveContains(text)){
+      if (userDetail.subjectName!.isCaseInsensitiveContains(text) ||
+          userDetail.examNm!.isCaseInsensitiveContains(text) ||
+          userDetail.sDate!.isCaseInsensitiveContains(text)) {
         searchData.add(userDetail);
       }
     }

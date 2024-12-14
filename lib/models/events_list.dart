@@ -1,11 +1,6 @@
-// To parse this JSON data, do
-//
-//     final events = eventsFromJson(jsonString);
-
 import 'dart:convert';
 
 Events eventsFromJson(String str) => Events.fromJson(json.decode(str));
-
 String eventsToJson(Events data) => json.encode(data.toJson());
 
 class Events {
@@ -62,21 +57,26 @@ class EventListItem {
 }
 
 class EventListItemDetail {
+  String? id;
   DateTime? startDate;
   DateTime? endDate;
   String? title;
   String? color;
   String? createdBy;
+  String? description;
 
   EventListItemDetail(
       {required this.startDate,
-      required this.endDate,
+      required this.id,
+        required this.endDate,
       required this.title,
       required this.color,
+      required this.description,
       required this.createdBy});
 
   factory EventListItemDetail.fromJson(Map<String, dynamic> json) =>
       EventListItemDetail(
+          id: json['id'],
           startDate: json["StartDate"] == null
               ? null
               : DateTime.parse(json["StartDate"]),
@@ -84,13 +84,18 @@ class EventListItemDetail {
               json["EndDate"] == null ? null : DateTime.parse(json["EndDate"]),
           title: json["Title"],
           color: json["Color"],
-          createdBy: json['created_by']);
+          createdBy: json['created_by'],
+          description: json['description']
+
+      );
 
   Map<String, dynamic> toJson() => {
+        'id' : id,
         "StartDate": startDate?.toIso8601String(),
         "EndDate": endDate?.toIso8601String(),
         "Title": title,
         "Color": color,
-        'created_by': createdBy
+        'created_by': createdBy,
+        "description" : description
       };
 }

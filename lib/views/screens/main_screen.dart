@@ -37,6 +37,7 @@ class _MainScreenState extends State<MainScreen> {
       studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
       if(studentParentTeacherController?.currentLoggedInUserRole == RoleType.teacher){
         studentParentTeacherController?.getListOfClassesAssignToTeacher(showLoader: false);
+
       }
     });
 

@@ -2,7 +2,6 @@ import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dar
 import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
@@ -31,15 +30,24 @@ class TimeTable extends State<TimeTableScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
-      if(arguments?['role'] == RoleType.teacher){
-        studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+      if (arguments?['role'] == RoleType.teacher) {
+        if (studentParentTeacherController
+                ?.listOfClassAssignToTeacher.isNotEmpty ??
+            false) {
+          studentParentTeacherController?.setCurrentSelectedClass(
+              teacherClass: studentParentTeacherController
+                  ?.listOfClassAssignToTeacher[0]);
+          studentParentTeacherController?.getTimeTableData(
+              classId: currentLoggedInUser == RoleType.teacher
+                  ? studentParentTeacherController
+                      ?.listOfClassAssignToTeacher[0].cid
+                  : arguments?["classId"],
+              studentId: arguments?['wpUserId']);
+        }
+      } else {
+        studentParentTeacherController?.getTimeTableData(
+            classId: arguments?["classId"], studentId: arguments?['wpUserId']);
       }
-      studentParentTeacherController?.getTimeTableData(
-          classId: currentLoggedInUser == RoleType.teacher
-              ? studentParentTeacherController
-                  ?.listOfClassAssignToTeacher[0].cid
-              : arguments?["classId"],
-          studentId: arguments?['wpUserId']);
     });
   }
 
@@ -48,21 +56,24 @@ class TimeTable extends State<TimeTableScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBarWidget(
-            onLeadingIconClicked: () {
-              Get.back();
-            },
-            title: Text(
-              arguments?['role'] == RoleType.teacher
-                  ? "Horario"
-                  : "Horario de ${arguments?["studentName"]} (${arguments?["className"]})",
-              style: AppTextStyle.getOutfit500(
-                  textSize: 20, textColor: AppColors.white),
-            ),
-            actionIcons: [
-             Visibility(
-                 visible: arguments?['role'] == RoleType.teacher,
-                 child: Expanded(child: TeacherClassListDropdown(fromWhichScreen: 5,)))
-            ],
+          onLeadingIconClicked: () {
+            Get.back();
+          },
+          title: Text(
+            arguments?['role'] == RoleType.teacher
+                ? "Horario"
+                : "Horario de ${arguments?["studentName"]} (${arguments?["className"]})",
+            style: AppTextStyle.getOutfit500(
+                textSize: 20, textColor: AppColors.white),
+          ),
+          actionIcons: [
+            Visibility(
+                visible: arguments?['role'] == RoleType.teacher,
+                child: Expanded(
+                    child: TeacherClassListDropdown(
+                  fromWhichScreen: 5,
+                )))
+          ],
         ),
         body: Stack(
           children: [
@@ -168,14 +179,7 @@ class TimeTable extends State<TimeTableScreen> {
                                   child: Center(
                                     child: Text(
                                       AppConstants.daysInSpanish[position],
-                                      style: CustomStyle.txtvalue4.copyWith(
-                                        color:
-                                            appController.currentSelectedDay ==
-                                                    position
-                                                ? AppColors.white
-                                                : AppColors.primary,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: AppTextStyle.getOutfit500(textSize: 16, textColor: studentParentTeacherController?.currentSelectedDay == position ? AppColors.white : AppColors.primary),
                                     ),
                                   ),
                                 ),
@@ -287,17 +291,10 @@ class TimeTable extends State<TimeTableScreen> {
               ],
             ),
             Consumer<StudentParentTeacherController>(
-                builder: (context, appController, child) {
+                builder: (context, studentParentTeacherController, child) {
               return Visibility(
-                  visible: appController.isLoading,
-                  child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: const Center(
-                      child: LoadingLayout(),
-                    ),
-                  ));
+                  visible: studentParentTeacherController.isLoading,
+                  child: LoadingLayout());
             })
           ],
         ));

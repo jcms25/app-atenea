@@ -7,14 +7,19 @@ import '../../utils/app_images.dart';
 
 class CustomAppBarWidget extends StatelessWidget
     implements PreferredSizeWidget {
-  
   final String? leadingIcon;
   final VoidCallback? onLeadingIconClicked;
   final Widget title;
   final List<Widget>? actionIcons;
   final bool? showLeadingIcon;
-  
-  const CustomAppBarWidget({super.key, this.leadingIcon, required this.title, this.actionIcons, this.onLeadingIconClicked, this.showLeadingIcon});
+
+  const CustomAppBarWidget(
+      {super.key,
+      this.leadingIcon,
+      required this.title,
+      this.actionIcons,
+      this.onLeadingIconClicked,
+      this.showLeadingIcon});
 
   @override
   PreferredSizeWidget build(BuildContext context) {
@@ -25,29 +30,41 @@ class CustomAppBarWidget extends StatelessWidget
           color: AppColors.primary,
           child: Row(
             children: [
-              const SizedBox(width: 10,),
-              showLeadingIcon != null && showLeadingIcon == false ? const SizedBox.shrink() : leadingIcon != null ? GestureDetector(
-                onTap: onLeadingIconClicked ?? (){
-                  Get.back();
-                },
-                child: SvgPicture.asset(leadingIcon ?? ""),
-              ) : GestureDetector(
-                onTap: onLeadingIconClicked,
-                child: SvgPicture.asset(AppImages.arrow,
-                  width: 40,
-                  height: 40,
-                  colorFilter: const ColorFilter.mode(AppColors.orange, BlendMode.srcIn),
-                ),
+              const SizedBox(
+                width: 10,
               ),
-              const SizedBox(width: 10,),
+              showLeadingIcon != null && showLeadingIcon == false
+                  ? const SizedBox.shrink()
+                  : leadingIcon != null
+                      ? GestureDetector(
+                          onTap: onLeadingIconClicked ??
+                              () {
+                                Get.back();
+                              },
+                          child: SvgPicture.asset(leadingIcon ?? ""),
+                        )
+                      : GestureDetector(
+                          onTap: onLeadingIconClicked,
+                          child: SvgPicture.asset(
+                            AppImages.arrow,
+                            width: 40,
+                            height: 40,
+                            colorFilter: const ColorFilter.mode(
+                                AppColors.orange, BlendMode.srcIn),
+                          ),
+                        ),
+              const SizedBox(
+                width: 10,
+              ),
               Expanded(child: title),
-              ...actionIcons?.map((e){
-                return e;
-              }).toList() ?? []
+              ...actionIcons?.map((e) {
+                    return e;
+                  }).toList() ??
+                  [],
+              const SizedBox(width: 10,)
             ],
           ),
-        )
-    );
+        ));
   }
 
   @override

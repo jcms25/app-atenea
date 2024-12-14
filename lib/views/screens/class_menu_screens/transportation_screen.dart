@@ -1,7 +1,7 @@
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
+import 'package:colegia_atenea/views/custom_widgets/dotted_line_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -173,7 +173,7 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    CustomStyle.dottedLine,
+                                    CustomDottedLineWidget(),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -183,7 +183,7 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    CustomStyle.dottedLine,
+                                    CustomDottedLineWidget(),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -193,7 +193,7 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    CustomStyle.dottedLine,
+                                    CustomDottedLineWidget(),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -203,7 +203,7 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    CustomStyle.dottedLine,
+                                    CustomDottedLineWidget(),
                                     const SizedBox(
                                       height: 10,
                                     ),

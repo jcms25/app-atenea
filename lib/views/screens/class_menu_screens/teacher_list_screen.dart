@@ -37,13 +37,15 @@ class _TeacherScreenChild extends State<TeacherListScreen> {
 
 
       if (arguments?['role'] == RoleType.teacher) {
-        studentParentTeacherController?.setCurrentSelectedClass(
-            teacherClass: studentParentTeacherController
-                ?.listOfClassAssignToTeacher[0]);
-        studentParentTeacherController?.getListOfTeachers(studentId: null,
-            classId: studentParentTeacherController?.currentSelectedClass
-                ?.cid ?? "",
-            roleType: arguments?['role']);
+       if(studentParentTeacherController?.listOfClassAssignToTeacher.isNotEmpty ?? false){
+         studentParentTeacherController?.setCurrentSelectedClass(
+             teacherClass: studentParentTeacherController
+                 ?.listOfClassAssignToTeacher[0]);
+         studentParentTeacherController?.getListOfTeachers(studentId: null,
+             classId: studentParentTeacherController?.currentSelectedClass
+                 ?.cid ?? "",
+             roleType: arguments?['role']);
+       }
       } else {
         studentParentTeacherController?.getListOfTeachers(
             studentId: arguments?['wpUserId'],

@@ -36,6 +36,8 @@ class ParentItem {
   String? parentWpUsrId;
   String? classId;
   String? parentImage;
+  String? address;
+  String? phoneNumber;
 
   ParentItem(
       {this.userEmail,
@@ -45,7 +47,9 @@ class ParentItem {
         this.wpUsrId,
         this.parentWpUsrId,
         this.classId,
-        this.parentImage
+        this.parentImage,
+        this.address,
+        this.phoneNumber
       });
 
   ParentItem.fromJson(Map<String, dynamic> json) {
@@ -57,6 +61,8 @@ class ParentItem {
     parentWpUsrId = json['parent_wp_usr_id'];
     classId = json['class_id'];
     parentImage = json["parent_image"];
+    address = json['s_paddress'];
+    phoneNumber = json['p_phone'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +75,8 @@ class ParentItem {
     data['parent_wp_usr_id'] = parentWpUsrId;
     data['class_id'] = classId;
     data["parent_image"] = parentImage;
+    data['s_paddress'] = address;
+    data['p_phone'] = phoneNumber;
     return data;
   }
 }

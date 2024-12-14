@@ -36,10 +36,12 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
       studentParentTeacherController = Provider.of<StudentParentTeacherController>(context, listen: false);
 
         if(arguments?['role'] == RoleType.teacher){
-          studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
-          studentParentTeacherController?.getListOfSubjects(
-              classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "", wpId: null, roleType: arguments?['role']);
+         if(studentParentTeacherController?.listOfClassAssignToTeacher.isNotEmpty ?? false){
+           studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+           studentParentTeacherController?.getListOfSubjects(
+               classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "", wpId: null, roleType: arguments?['role']);
 
+         }
         }else{
           studentParentTeacherController?.getListOfSubjects(
               classId: arguments?['role'] == RoleType.teacher ? studentParentTeacherController?.currentSelectedClass?.cid ?? "" : arguments?['classId'] ?? "", wpId: arguments?['wpUserId'], roleType: arguments?['role']);

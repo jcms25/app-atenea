@@ -6,6 +6,7 @@ enum RequestType { post, get }
 
 class Api {
   static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
+  static const String _localBaseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
 
   static const String _loginEndpoint = "login";
   static String get loginEndPoint => _loginEndpoint;
@@ -31,6 +32,9 @@ class Api {
   static const String _studentEndpoint = "students";
   static String get studentEndpoint => _studentEndpoint;
 
+  static const String _studentDetailsEndpoint = "student";
+  static String get studentDetailsEndpoint => _studentDetailsEndpoint;
+
 
   static const String _subjectEndpoint = "subjects";
   static String get subjectEndpoint => _subjectEndpoint;
@@ -41,7 +45,11 @@ class Api {
   static const String _listOfAllMessages = "parentSendMessage";
   static String get listOfAllMessages => _listOfAllMessages;
 
+  static const String _eventListEndpoint = "events";
+  static String get eventListEndPoint => _eventListEndpoint;
 
+  static const String _studentParentExamListPoint = "exams";
+  static String get studentParentExamListPoint => _studentParentExamListPoint;
 
 
   //Teacher side end points
@@ -57,8 +65,8 @@ class Api {
   static const String _teacherStudentList = "teacher/studentlist";
   static String get teacherStudentList => _teacherStudentList;
 
-  static const String _teacherAddEditEvent = "events";
-  static String get teacherAddEditEvent => _teacherAddEditEvent;
+  static const String _teacherEventList = "teacher/events";
+  static String get teacherEventList => _teacherEventList;
 
   static const String _teacherSideListOfProfessor = "teacher/teacherlist";
   static String get teacherSideListOfProfessor => _teacherSideListOfProfessor;
@@ -66,10 +74,20 @@ class Api {
   static const String _teacherSideListOfParents = "teacher/parentist";
   static String get teacherSideListOfParents => _teacherSideListOfParents;
 
+  static const String _teacherFollowedUp = "teacher/followup";
+  static String get teacherFollowedUp => _teacherFollowedUp;
+
+  static const String _teacherExamListPoint = "teacher/exams";
+  static String get teacherExamListPoint => _teacherExamListPoint;
+
+  static const String _teacherEditExamEndPoint = "exam";
+  static String get teacherEditExam => _teacherEditExamEndPoint;
+
+
   static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,
-      required Map<String, String>? header,
+      Map<String, String>? header,
       Map<String, dynamic>? body}) async {
 
     try {
@@ -78,6 +96,34 @@ class Api {
         response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header);
       } else {
         response = await post(Uri.parse("$_baseURL/$endPoint"),
+            headers: header, body: body);
+      }
+      if (response.statusCode == 200) {
+        dynamic res = jsonDecode(response.body);
+        return res;
+      } else if (response.statusCode == 401) {
+        return {"status": false, "message": "No autorizado"};
+      } else {
+        return {"status": false, "message": "Por favor, inténtalo de nuevo"};
+      }
+    } catch (exception) {
+      return {"status": false, "message": '$exception'};
+    }
+  }
+
+  //for testing purpose - local request
+  static Future<Map<String, dynamic>> httpLocalRequest(
+      {required RequestType requestType,
+        required String endPoint,
+        required Map<String, String>? header,
+        Map<String, dynamic>? body}) async {
+
+    try {
+      Response response;
+      if (requestType == RequestType.get) {
+        response = await get(Uri.parse("$_localBaseURL/$endPoint"), headers: header);
+      } else {
+        response = await post(Uri.parse("$_localBaseURL/$endPoint"),
             headers: header, body: body);
       }
       if (response.statusCode == 200) {

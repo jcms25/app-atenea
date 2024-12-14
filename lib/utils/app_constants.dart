@@ -187,7 +187,6 @@ class AppConstants {
     },
   ];
 
-
   //teacher sub menu list 1
   static List<Map<String, String>> classSubMenuListTeacher = [
     {"name": "drawerOption7".tr},
@@ -198,19 +197,33 @@ class AppConstants {
   ];
 
   //teacher sub menu list 2
-  static List<Map<String,String>> teachingSubMenuListTeacher = [
-    {"name" : 'subMenuDrawer12'.tr},
-    {"name" : 'subMenuDrawer5'.tr},
-    {"name" : 'subMenuDrawer6'.tr},
-    {"name" : 'subMenuDrawer13'.tr}
+  static List<Map<String, String>> teachingSubMenuListTeacher = [
+    {"name": 'subMenuDrawer12'.tr},
+    {"name": 'subMenuDrawer5'.tr},
+    {"name": 'subMenuDrawer6'.tr},
+    {"name": 'subMenuDrawer13'.tr}
   ];
 
   //teacher sub menu list 3
-  static List<Map<String,String>> dinningSubMenuListTeacher = [
-    {"name" : 'subMenuDrawer11'.tr},
-    {"name" : 'subMenuDrawer10'.tr}
+  static List<Map<String, String>> dinningSubMenuListTeacher = [
+    {"name": 'subMenuDrawer11'.tr},
+    {"name": 'subMenuDrawer10'.tr}
   ];
 
+  //event type
+  static List<EventTypeModel> eventTypeList = [
+    EventTypeModel(id: "0", eventType: "Externo (mostrar a todos)"),
+    EventTypeModel(id: "1", eventType: "Internal (show to teachers only)")
+  ];
+
+  //event color model
+  static List<EventColorModel> eventColorModel = [
+    EventColorModel(id: "#007bff", color: "Por defecto"),
+    EventColorModel(id: "#28a745", color: "Sesión de evaluación"),
+    EventColorModel(id: "#ffc107", color: "Celebración Pedagógica"),
+    EventColorModel(id: "#dc3545", color: "Festividad"),
+    EventColorModel(id: "#17a2b8", color: "Vacaciones"),
+  ];
 
   //show custom toast message
   static void showCustomToast({required bool status, required String message}) {
@@ -249,4 +262,18 @@ class OptionModel {
       {required this.optionId,
       required this.optionName,
       required this.optionIcon});
+}
+
+class EventTypeModel {
+  final String id;
+  final String eventType;
+
+  const EventTypeModel({required this.id, required this.eventType});
+}
+
+class EventColorModel {
+  final String id;
+  final String color;
+
+  const EventColorModel({required this.id, required this.color});
 }

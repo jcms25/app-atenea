@@ -27,7 +27,7 @@ class AppRoutes{
 
   static final List<GetPage> routePages = [
     GetPage(name: _initialRoute, page: () => const SplashScreen()),
-    GetPage(name: _loginScreen, page: () => const LoginScreen1()),
+    GetPage(name: _loginScreen, page: () => const LoginScreen()),
     GetPage(name: _studentParentTeacherMainScreen, page: () => const MainScreen()),
 
     //parent teacher student

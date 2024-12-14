@@ -4,8 +4,8 @@ import '../../utils/app_colors.dart';
 
 class BackgroundLayout extends StatelessWidget {
   final String image;
-  final int imageType;
-  final Widget childWidget; //0 asset image,1 network image
+  final int imageType;//0 asset image,1 network image
+  final Widget childWidget;
   final Widget? loadingWidget;
   final Widget? circularImage;
 

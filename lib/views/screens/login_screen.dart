@@ -18,14 +18,14 @@ import '../../controllers/student_parent_teacher_controller.dart';
 import '../../utils/app_constants.dart';
 
 
-class LoginScreen1 extends StatefulWidget {
-  const LoginScreen1({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginScreen1> createState() => _LoginScreen1State();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreen1State extends State<LoginScreen1> {
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController? userNameController;
   TextEditingController? passwordController;
   StudentParentTeacherController? studentParentTeacherController;
@@ -185,7 +185,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                       child: Text(
                         "rember".tr,
-                        style: CustomStyle.txtvalue1,
+                        style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),
                       ),
                     ),
                   ),
@@ -198,7 +198,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                       },
                       child: Text(
                         "forgot".tr,
-                        style: CustomStyle.txtvalue1,
+                        style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),
                       ),
                     );
                   })
@@ -234,8 +234,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                     value: value,
                     child: Text(
                       value,
-                      style: CustomStyle.txtvalue2
-                          .copyWith(color: AppColors.secondary),
+                      style: AppTextStyle.getOutfit500(textSize: 18, textColor: AppColors.secondary),
                     ),
                   );
                 }).toList(),

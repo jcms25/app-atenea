@@ -1,13 +1,13 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
+import 'package:colegia_atenea/views/custom_widgets/dotted_line_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_colors.dart';
-import '../../utils/text_style.dart';
 
 class ParentStudentInfo extends StatefulWidget {
   const ParentStudentInfo({super.key});
@@ -83,7 +83,7 @@ class EmptyData extends StatelessWidget {
     return Center(
       child: Text(
         "No hay datos disponibles",
-        style: CustomStyle.textValue,
+        style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
       ),
     );
   }
@@ -123,7 +123,7 @@ class CustomRow extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        CustomStyle.dottedLine,
+        CustomDottedLineWidget()
       ],
     );
   }

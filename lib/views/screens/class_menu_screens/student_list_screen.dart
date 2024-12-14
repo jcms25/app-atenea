@@ -3,7 +3,6 @@ import 'package:colegia_atenea/models/student_list_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
@@ -14,7 +13,6 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class StudentListScreen extends StatefulWidget {
-
   const StudentListScreen({super.key});
 
   @override
@@ -22,24 +20,38 @@ class StudentListScreen extends StatefulWidget {
 }
 
 class _StudentScreenChild extends State<StudentListScreen> {
-
   StudentParentTeacherController? studentParentTeacherController;
-  Map<String,dynamic>? arguments;
-
+  Map<String, dynamic>? arguments;
 
   @override
   void initState() {
     super.initState();
     arguments = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
-      if(arguments?['role'] == RoleType.teacher){
-        studentParentTeacherController?.setCurrentSelectedClass(teacherClass: studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+      studentParentTeacherController =
+          Provider.of<StudentParentTeacherController>(context, listen: false);
+      if (arguments?['role'] == RoleType.teacher) {
+        if (studentParentTeacherController
+                ?.listOfClassAssignToTeacher.isNotEmpty ??
+            false) {
+          studentParentTeacherController?.setCurrentSelectedClass(
+              teacherClass: studentParentTeacherController
+                  ?.listOfClassAssignToTeacher[0]);
+          studentParentTeacherController?.getListOfStudents(
+              classId:
+                  studentParentTeacherController?.currentSelectedClass?.cid ??
+                      "",
+              roleType: arguments?['role'],
+              fromWhere: 0);
+        }
+      } else {
         studentParentTeacherController?.getListOfStudents(
-            classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "",roleType: arguments?['role']);
-      }else{
-        studentParentTeacherController?.getListOfStudents(
-            classId: arguments?['role'] == RoleType.teacher ? studentParentTeacherController?.currentSelectedClass?.cid ?? "" : arguments?['classId'] ?? "",roleType: arguments?['role']);
+            classId: arguments?['role'] == RoleType.teacher
+                ? studentParentTeacherController?.currentSelectedClass?.cid ??
+                    ""
+                : arguments?['classId'] ?? "",
+            roleType: arguments?['role'],
+            fromWhere: 0);
       }
     });
   }
@@ -55,8 +67,9 @@ class _StudentScreenChild extends State<StudentListScreen> {
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBarWidget(
               title: Text(
-                  arguments?['role'] == RoleType.teacher ? "student".tr :
-                  "${"student".tr} de ${arguments?['className']}",
+                  arguments?['role'] == RoleType.teacher
+                      ? "student".tr
+                      : "${"student".tr} de ${arguments?['className']}",
                   style: AppTextStyle.getOutfit500(
                       textSize: 20, textColor: AppColors.white)),
               onLeadingIconClicked: () {
@@ -67,7 +80,8 @@ class _StudentScreenChild extends State<StudentListScreen> {
               actionIcons: [
                 Visibility(
                     visible: arguments?['role'] == RoleType.teacher,
-                    child: Expanded(child: TeacherClassListDropdown(fromWhichScreen: 1)))
+                    child: Expanded(
+                        child: TeacherClassListDropdown(fromWhichScreen: 1)))
               ],
             ),
             body: Stack(
@@ -115,7 +129,8 @@ class _StudentScreenChild extends State<StudentListScreen> {
                                 //style: txtValueStyle,
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
-                                onChanged: studentParentTeacherController.searchInStudentList,
+                                onChanged: studentParentTeacherController
+                                    .searchInStudentList,
                               );
                             },
                           ),
@@ -144,7 +159,7 @@ class _StudentScreenChild extends State<StudentListScreen> {
                                     : Center(
                                         child: Text(
                                           'noStudentFound'.tr,
-                                          style: CustomStyle.textValue,
+                                          style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
                                         ),
                                       );
                               },
@@ -160,8 +175,6 @@ class _StudentScreenChild extends State<StudentListScreen> {
               ],
             )));
   }
-
-
 }
 
 class StudentItemWidget extends StatelessWidget {

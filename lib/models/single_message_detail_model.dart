@@ -1,38 +1,28 @@
-// To parse this JSON data, do
-//
-//     final singleMessageDetailModel = singleMessageDetailModelFromJson(jsonString);
+class MessageDetails {
+  bool? status;
+  String? message;
+  MessageDetailItem? data;
 
-import 'dart:convert';
+  MessageDetails({this.status, this.message, this.data});
 
-SingleMessageDetailModel singleMessageDetailModelFromJson(String str) => SingleMessageDetailModel.fromJson(json.decode(str));
+  MessageDetails.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['Message'];
+    data = json['data'] != null ? new MessageDetailItem.fromJson(json['data']) : null;
+  }
 
-String singleMessageDetailModelToJson(SingleMessageDetailModel data) => json.encode(data.toJson());
-
-class SingleMessageDetailModel {
-  bool status;
-  String message;
-  Data data;
-
-  SingleMessageDetailModel({
-    required this.status,
-    required this.message,
-    required this.data,
-  });
-
-  factory SingleMessageDetailModel.fromJson(Map<String, dynamic> json) => SingleMessageDetailModel(
-    status: json["status"],
-    message: json["Message"],
-    data: Data.fromJson(json["data"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "status": status,
-    "Message": message,
-    "data": data.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['Message'] = message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
 }
 
-class Data {
+class MessageDetailItem {
   String? mid;
   String? sId;
   String? rId;
@@ -47,59 +37,77 @@ class Data {
   String? attachments;
   String? name;
   String? image;
-  List<dynamic> subMessage;
+  String? recevierName;
+  String? recevierImage;
+  List<String>? subMessage;
 
-  Data({
-    required this.mid,
-    required this.sId,
-    required this.rId,
-    required this.subject,
-    required this.msg,
-    required this.replayId,
-    required this.mainMId,
-    required this.delStat,
-    required this.sRead,
-    required this.rRead,
-    required this.mDate,
-    required this.attachments,
-    required this.name,
-    required this.image,
-    required this.subMessage,
-  });
+  MessageDetailItem(
+      {this.mid,
+        this.sId,
+        this.rId,
+        this.subject,
+        this.msg,
+        this.replayId,
+        this.mainMId,
+        this.delStat,
+        this.sRead,
+        this.rRead,
+        this.mDate,
+        this.attachments,
+        this.name,
+        this.image,
+        this.recevierName,
+        this.recevierImage,
+        this.subMessage});
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-    mid: json["mid"],
-    sId: json["s_id"],
-    rId: json["r_id"],
-    subject: json["subject"],
-    msg: json["msg"],
-    replayId: json["replay_id"],
-    mainMId: json["main_m_id"],
-    delStat: json["del_stat"],
-    sRead: json["s_read"],
-    rRead: json["r_read"],
-    mDate: json["m_date"],
-    attachments: json["attachments"],
-    name: json["name"],
-    image: json["image"],
-    subMessage:json["sub_message"] == null ? [] : List<dynamic>.from(json["sub_message"].map((x) => x)),
-  );
+  MessageDetailItem.fromJson(Map<String, dynamic> json) {
+    mid = json['mid'];
+    sId = json['s_id'];
+    rId = json['r_id'];
+    subject = json['subject'];
+    msg = json['msg'];
+    replayId = json['replay_id'];
+    mainMId = json['main_m_id'];
+    delStat = json['del_stat'];
+    sRead = json['s_read'];
+    rRead = json['r_read'];
+    mDate = json['m_date'];
+    attachments = json['attachments'];
+    name = json['name'];
+    image = json['image'];
+    recevierName = json['recevier_name'];
+    recevierImage = json['recevier_image'];
+    if (json['sub_message'] != null) {
+      subMessage = <String>[];
+      json['sub_message'].forEach((v) {
+        if(v.runtimeType != String){
+          subMessage!.add("");
+        }
+      });
+    }
+  }
 
-  Map<String, dynamic> toJson() => {
-    "mid": mid,
-    "s_id": sId,
-    "r_id": rId,
-    "subject": subject,
-    "msg": msg,
-    "replay_id": replayId,
-    "main_m_id": mainMId,
-    "del_stat": delStat,
-    "s_read": sRead,
-    "r_read": rRead,
-    "m_date": mDate,
-    "attachments": attachments,
-    "name": name,
-    "image": image,
-    "sub_message": List<dynamic>.from(subMessage.map((x) => x)),
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['mid'] = mid;
+    data['s_id'] = sId;
+    data['r_id'] = rId;
+    data['subject'] = subject;
+    data['msg'] = msg;
+    data['replay_id'] = replayId;
+    data['main_m_id'] = mainMId;
+    data['del_stat'] = delStat;
+    data['s_read'] = sRead;
+    data['r_read'] = rRead;
+    data['m_date'] = mDate;
+    data['attachments'] = attachments;
+    data['name'] = name;
+    data['image'] = image;
+    data['recevier_name'] = recevierName;
+    data['recevier_image'] = recevierImage;
+    if (subMessage != null) {
+      data['sub_message'] = subMessage!.map((v) => v).toList();
+    }
+    return data;
+  }
 }

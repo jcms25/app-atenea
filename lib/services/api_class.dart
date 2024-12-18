@@ -496,7 +496,8 @@ class ApiClass{
 
       if (attachment.isEmpty) {
         request.fields['attachment'] = attachment;
-      } else {
+      }
+      else {
         request.files
             .add(await MultipartFile.fromPath('attachment', attachment));
       }

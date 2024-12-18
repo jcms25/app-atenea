@@ -11,7 +11,7 @@ String teacherListForSendToJson(TeacherListForSend data) => json.encode(data.toJ
 class TeacherListForSend {
   bool status;
   String message;
-  List<TeacherData> data;
+  List<TeacherItemForSendMessage> data;
 
   TeacherListForSend({
     required this.status,
@@ -22,7 +22,7 @@ class TeacherListForSend {
   factory TeacherListForSend.fromJson(Map<String, dynamic> json) => TeacherListForSend(
     status: json["status"],
     message: json["message"],
-    data: List<TeacherData>.from(json["data"].map((x) =>TeacherData.fromJson(x))),
+    data: List<TeacherItemForSendMessage>.from(json["data"].map((x) =>TeacherItemForSendMessage.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -32,16 +32,16 @@ class TeacherListForSend {
   };
 }
 
-class TeacherData {
+class TeacherItemForSendMessage {
   String wpUsrId;
   String teacherName;
 
-  TeacherData({
+  TeacherItemForSendMessage({
     required this.wpUsrId,
     required this.teacherName,
   });
 
-  factory TeacherData.fromJson(Map<String, dynamic> json) => TeacherData(
+  factory TeacherItemForSendMessage.fromJson(Map<String, dynamic> json) => TeacherItemForSendMessage(
     wpUsrId: json["wp_usr_id"],
     teacherName: json["teacher_name"],
   );

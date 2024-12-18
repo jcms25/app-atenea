@@ -1,6 +1,7 @@
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_details_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/message_list_widget.dart';
@@ -143,8 +144,8 @@ class MessageListScreen extends State<MessageScreen> {
                                                 isButtonView: false,
                                                 fromParent: true));
                                           } else {
-                                            Get.to(() => MessageDetail(
-                                                messageItem.mid ?? ""));
+                                            Get.to(() => MessageDetailScreen(
+                                                messageId:  messageItem.mid ?? "", messageType: appController.currentSelectedMessageListType,));
                                           }
                                         });
                                   },
@@ -168,18 +169,23 @@ class MessageListScreen extends State<MessageScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const MessageSendScreen();
-          }));
+      floatingActionButton: Consumer<StudentParentTeacherController>(
+        builder: (context,studentParentTeacherController,child){
+          return FloatingActionButton(
+            onPressed: () {
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return const MessageSendScreen();
+              // }));
+              Get.to(() => MessageSendScreen(roleType: studentParentTeacherController.currentLoggedInUserRole ?? RoleType.teacher));
+            },
+            backgroundColor: AppColors.primary,
+            elevation: 0,
+            child: const Icon(
+              Icons.add,
+              color: AppColors.white,
+            ),
+          );
         },
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        child: const Icon(
-          Icons.add,
-          color: AppColors.white,
-        ),
       ),
     );
   }

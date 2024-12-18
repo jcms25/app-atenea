@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:colegia_atenea/models/dashboard_model.dart';
 import 'package:colegia_atenea/models/exam_list_model.dart';
 import 'package:colegia_atenea/models/followed_up_model.dart';
+import 'package:colegia_atenea/models/get_teacher_list_send_message_model.dart';
 import 'package:colegia_atenea/models/list_of_messages_model.dart';
 import 'package:colegia_atenea/models/login_model.dart';
+import 'package:colegia_atenea/models/single_message_detail_model.dart';
 import 'package:colegia_atenea/models/single_subject_detail_model.dart';
 import 'package:colegia_atenea/models/student_details_model.dart';
 import 'package:colegia_atenea/models/subject_list_model.dart';
@@ -12,7 +16,8 @@ import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide MultipartFile, Response;
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -57,13 +62,11 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //open forgot password link
-  Future<void> openUrl() async {
+  Future<void> openUrl({required String url}) async {
     try {
-      var url = Uri.parse(
-          "http://colegioatenea.es/solicitud-de-credenciales-de-acceso/");
-      if (!await launchUrl(url)) {
-        AppConstants.showCustomToast(
-            status: false, message: 'Can\'t Launch URL');
+      var uri = Uri.parse(url);
+      if (!await launchUrl(uri)) {
+        AppConstants.showCustomToast(status: false, message: "canNot".tr);
       }
     } catch (e) {
       AppConstants.showCustomToast(status: false, message: "$e");
@@ -127,30 +130,29 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //get dashboard data
   void getDashboardData({required bool showLoader}) async {
-    // try {
-    //   setIsLoading(isLoading: showLoader);
-    //
-    // } catch (exception) {
-    //   setIsLoading(isLoading: false);
-    // }
-    await Api.httpRequest(
-      requestType: RequestType.get,
-      endPoint: Api.dashboardEndpoint,
-      header: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': "Basic ${loginModel?.basicAuthToken}",
-        'Cookie': loginModel?.userdata?.cookies ?? ""
-      },
-    ).then((response) {
-      if (response['status']) {
-        Dashboard dashboard = Dashboard.fromJson(response);
-        setDashboardData(dashboard: dashboard);
-        setExamList(examList: dashboard.eventList.exams);
-        setEventList(events: dashboard.eventList.events);
-        setHolidayList(holiday: dashboard.eventList.holiday);
-      }
+    try {
+      setIsLoading(isLoading: showLoader);
+      await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.dashboardEndpoint,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic ${loginModel?.basicAuthToken}",
+          'Cookie': loginModel?.userdata?.cookies ?? ""
+        },
+      ).then((response) {
+        if (response['status']) {
+          Dashboard dashboard = Dashboard.fromJson(response);
+          setDashboardData(dashboard: dashboard);
+          setExamList(examList: dashboard.eventList.exams);
+          setEventList(events: dashboard.eventList.events);
+          setHolidayList(holiday: dashboard.eventList.holiday);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
       setIsLoading(isLoading: false);
-    });
+    }
   }
 
   //Communication Section :
@@ -263,6 +265,171 @@ class StudentParentTeacherController extends ChangeNotifier {
 
     tempMessageList = searchData;
     notifyListeners();
+  }
+
+  //Message Details
+  MessageDetailItem? messageDetailItem;
+
+  void setMessageDetailItem({required MessageDetailItem? messageDetailItem}) {
+    this.messageDetailItem = messageDetailItem;
+    notifyListeners();
+  }
+
+  void getMessageDetails({required String messageId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.listOfAllMessages}?mid=$messageId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': "${loginModel?.userdata?.cookies}"
+          }).then((response) {
+        if (response['status']) {
+          MessageDetails messageDetails = MessageDetails.fromJson(response);
+          setMessageDetailItem(messageDetailItem: messageDetails.data);
+        }
+        AppConstants.showCustomToast(
+            status: response['status'], message: response['Message'] ?? "");
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //student and parent side teacher list
+  List<TeacherItemForSendMessage> teacherListForMessageSend = [];
+
+  void setListOfTeacherForMessageSend(
+      {required List<TeacherItemForSendMessage> teacherListForMessageSend}) {
+    this.teacherListForMessageSend = teacherListForMessageSend;
+    notifyListeners();
+  }
+
+  TeacherItemForSendMessage? currentSelectedTeacherForMessageSend;
+
+  void setCurrentSelectedTeacherForMessageSend(
+      {required TeacherItemForSendMessage?
+          currentSelectedTeacherForMessageSend}) {
+    this.currentSelectedTeacherForMessageSend =
+        currentSelectedTeacherForMessageSend;
+    notifyListeners();
+  }
+
+  //list of teacher to send message from parent and student
+  void getListOfTeacherForMessageSend({String? teacherId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: Api.teacherListForMessageSend,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': "${loginModel?.userdata?.cookies}"
+          }).then((response) {
+        if (response['status']) {
+          TeacherListForSend teacherListForSend =
+              TeacherListForSend.fromJson(response);
+          setListOfTeacherForMessageSend(
+              teacherListForMessageSend: teacherListForSend.data);
+          if (teacherListForSend.data.isNotEmpty) {
+            if (teacherId != null && teacherId.isNotEmpty) {
+              for (TeacherItemForSendMessage e in teacherListForSend.data) {
+                if (e.wpUsrId == teacherId) {
+                  setCurrentSelectedTeacherForMessageSend(
+                      currentSelectedTeacherForMessageSend: e);
+                  break;
+                }
+              }
+            } else {
+              currentSelectedTeacherForMessageSend = teacherListForSend.data[0];
+            }
+          }
+          setIsLoading(isLoading: false);
+        }
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //selected file path
+  String? selectedFilePath;
+
+  void setSelectedFilePath({required String? selectedFilePath}) {
+    this.selectedFilePath = selectedFilePath;
+    notifyListeners();
+  }
+
+  //whom to send radio button : parent,student (choice for teacher)
+  RoleType currentSendingMessageCategory = RoleType.student;
+  void setCurrentSendingMessageCategory({required RoleType roleType}){
+    currentSendingMessageCategory = roleType;
+    notifyListeners();
+  }
+
+  //selected student for sending message
+  StudentItem? currentSelectedStudentForSendMessage;
+  void setCurrentSelectedStudentForSendMessage({required StudentItem? studentItem}){
+    currentSelectedStudentForSendMessage = studentItem;
+    notifyListeners();
+  }
+
+  //selected parent for sending message
+  ParentItem? currentSelectedParentForSendMessage;
+  void setCurrentSelectedParentForSendMessage({required ParentItem? parentItem}){
+    currentSelectedParentForSendMessage = parentItem;
+    notifyListeners();
+  }
+
+
+  //send message to teacher
+  Future<void> sendMessage(
+      {required String messageSubject, required String description,required int whomToSend}) async {
+    //0 : to Teacher (Logged in with student,parent)
+    //1 : to Parent (Logged in with teacher)
+    //2 : to Student (Logged in with teacher)
+
+    try {
+      setIsLoading(isLoading: true);
+
+      final MultipartRequest request = MultipartRequest(
+          'POST', Uri.parse('${Api.localBaseURL}/parentSendMessage'));
+      request.headers.addAll({
+        "Authorization": "Basic ${loginModel?.basicAuthToken}",
+        'Cookie': "${loginModel?.userdata?.cookies}"
+      });
+
+      if (selectedFilePath?.isEmpty ?? true) {
+        request.fields['attachment'] = "";
+      }
+      else {
+        request.files.add(
+            await MultipartFile.fromPath('attachment', selectedFilePath ?? ""));
+      }
+      request.fields['sender_id'] = currentLoggedInUserRole == RoleType.parent
+          ? loginModel?.userdata?.parentWpUsrId ?? ""
+          : loginModel?.userdata?.wpUsrId ?? "";
+      request.fields['reciever_id[0]'] =
+      whomToSend == 0 ? currentSelectedTeacherForMessageSend?.wpUsrId ?? "" : whomToSend == 1 ? currentSelectedParentForSendMessage?.wpUsrId ?? "" : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
+      request.fields['subject'] = messageSubject;
+      request.fields['msg'] = description;
+
+      StreamedResponse streamResponse = await request.send();
+      var response = await Response.fromStream(streamResponse);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        AppConstants.showCustomToast(
+            status: data['status'],
+            message: data['Message'] ?? data['message'] ?? "");
+      }
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
   }
 
   /*
@@ -609,12 +776,12 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getListOfStudents(
+  Future<void> getListOfStudents(
       {required String classId,
       required RoleType roleType,
-      required int fromWhere}) async {
+      required bool sortedAccordingToLastName}) async {
     // 0 means on student screen so student list will sorted according to last name
-    //1 means in followed up screen here student list will not sorted
+    //1 means in followed up screen,or any other screen  here student list will not sorted
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
@@ -630,7 +797,7 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           StudentListModel student = StudentListModel.fromJson(response);
           List<StudentItem> studentItemList = student.studentlist ?? [];
-          if (fromWhere == 0) {
+          if (sortedAccordingToLastName) {
             studentItemList
                 .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
           }
@@ -703,17 +870,16 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
-
   //is address visible
-  bool isAddressAndParentDetailsVisible({required String idOfStudentYouAreSeeingDetails}) {
-    if(currentLoggedInUserRole == RoleType.teacher){
+  bool isAddressAndParentDetailsVisible(
+      {required String idOfStudentYouAreSeeingDetails}) {
+    if (currentLoggedInUserRole == RoleType.teacher) {
       return true;
-    }else if(currentLoggedInUserRole == RoleType.student){
+    } else if (currentLoggedInUserRole == RoleType.student) {
       return idOfStudentYouAreSeeingDetails == loginModel?.userdata?.wpUsrId;
-    }else{
-
-      for(StudentData studentData in loginModel?.userdata?.studentData ?? []){
-        if(studentData.wpUsrId == idOfStudentYouAreSeeingDetails){
+    } else {
+      for (StudentData studentData in loginModel?.userdata?.studentData ?? []) {
+        if (studentData.wpUsrId == idOfStudentYouAreSeeingDetails) {
           return true;
         }
       }
@@ -923,13 +1089,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   //event start time
   TimeOfDay? startTime;
 
-  void setSelectedStartTime({required TimeOfDay? startTime}) {
-    this.startTime = startTime;
-    notifyListeners();
-  }
-
   //event end time
   TimeOfDay? endTime;
+
+  void setSelectedStartTime({required TimeOfDay? startTime}) {
+    this.startTime = startTime;
+    endTime = startTime;
+    notifyListeners();
+  }
 
   void setSelectedEndTime({required TimeOfDay? endTime}) {
     this.endTime = endTime;
@@ -951,7 +1118,7 @@ class StudentParentTeacherController extends ChangeNotifier {
   Future<TimeOfDay?> pickTime() async {
     TimeOfDay? timeOfDay = await showTimePicker(
       context: Get.context!,
-      initialTime: TimeOfDay.now(),
+      initialTime: startTime ?? TimeOfDay.now(),
       builder: (context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -1199,7 +1366,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void getListOfExams(
       {required String classId,
       required String? wpUserId,
@@ -1218,8 +1384,8 @@ class StudentParentTeacherController extends ChangeNotifier {
             'Cookie': loginModel?.userdata?.cookies ?? ""
           }).then((response) {
         if (response['status']) {
-            ExamListModel examListModel = ExamListModel.fromJson(response);
-            setListOfExams(listOfExams: examListModel.data ?? []);
+          ExamListModel examListModel = ExamListModel.fromJson(response);
+          setListOfExams(listOfExams: examListModel.data ?? []);
         }
       });
 

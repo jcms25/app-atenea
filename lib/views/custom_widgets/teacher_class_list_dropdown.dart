@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class TeacherClassListDropdown extends StatelessWidget {
   final int fromWhichScreen;
   final Color? backgroundColor;
-  final int? fromWhereStudentListCalled;
+  final bool? fromWhereStudentListCalled;
   final double? height;
   //1 for students
   //2 for parents
@@ -15,6 +15,7 @@ class TeacherClassListDropdown extends StatelessWidget {
   //4 for subjects
   //5 for time table
   //6 for exam list
+  //7 for send message screen to parent,student
   const TeacherClassListDropdown({super.key, required this.fromWhichScreen, this.backgroundColor, this.fromWhereStudentListCalled, this.height});
 
   @override
@@ -47,7 +48,7 @@ class TeacherClassListDropdown extends StatelessWidget {
                 }else if(fromWhichScreen == 1){
                   studentParentTeacherController.setSelectedStudentForFollowUp(studentItem: null);
                   studentParentTeacherController.setListOfStudents(listOfStudents: []);
-                  studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, fromWhere: fromWhereStudentListCalled ?? 0);
+                  studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: fromWhereStudentListCalled ?? false);
                 }else if(fromWhichScreen == 2){
                   studentParentTeacherController.getListOfParents(classId: teacherClassItem?.cid ?? "");
                 }else if(fromWhichScreen == 3){
@@ -55,7 +56,8 @@ class TeacherClassListDropdown extends StatelessWidget {
                 }else if(fromWhichScreen == 6){
                     studentParentTeacherController.getListOfExams(classId: teacherClassItem?.cid ?? "", wpUserId: "", roleType: RoleType.teacher);
                 }else{
-
+                  studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: false);
+                  studentParentTeacherController.getListOfParents(classId: teacherClassItem?.cid ?? "");
                 }
               });
             }

@@ -10,6 +10,7 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen
 import 'package:colegia_atenea/views/screens/class_menu_screens/student_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -522,6 +523,11 @@ class CustomDrawerWidget extends StatelessWidget {
         }
         break;
       case "Notas":
+        if(roleType == RoleType.teacher){
+          Get.to(() => TeacherAddEditMarksScreen());
+        }else{
+
+        }
         break;
       case "Evaluaciones":
         break;

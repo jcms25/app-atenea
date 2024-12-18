@@ -35,7 +35,7 @@ class FollowedUpBottomSheet extends StatelessWidget {
                 SizedBox(
                   height: 60,
                   child: TeacherClassListDropdown(
-                    fromWhereStudentListCalled: 1,
+                    fromWhereStudentListCalled: false,
                     fromWhichScreen: 1,
                     backgroundColor: AppColors.secondary.withOpacity(0.06),
                   ),

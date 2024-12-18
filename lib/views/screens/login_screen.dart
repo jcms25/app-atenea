@@ -4,11 +4,10 @@ import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/back_layout_of_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
-import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart' hide Response;
@@ -16,7 +15,6 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/student_parent_teacher_controller.dart';
 import '../../utils/app_constants.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,13 +32,20 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    Map<String,dynamic>? loginCredentials = AppSharedPreferences.getSavedLoggedInCredential();
-    userNameController = TextEditingController(text: loginCredentials?["userName"]);
-    passwordController = TextEditingController(text: loginCredentials?["userPassword"]);
+    Map<String, dynamic>? loginCredentials =
+        AppSharedPreferences.getSavedLoggedInCredential();
+    userNameController =
+        TextEditingController(text: loginCredentials?["userName"]);
+    passwordController =
+        TextEditingController(text: loginCredentials?["userPassword"]);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      studentParentTeacherController = Provider.of<StudentParentTeacherController>(context, listen: false);
-      splashLoginController = Provider.of<SplashLoginController>(context,listen: false);
-      splashLoginController?.setSelectedRole(selectedRole: loginCredentials?['userRole'] ?? AppConstants.roleDropDown[0]);
+      studentParentTeacherController =
+          Provider.of<StudentParentTeacherController>(context, listen: false);
+      splashLoginController =
+          Provider.of<SplashLoginController>(context, listen: false);
+      splashLoginController?.setSelectedRole(
+          selectedRole:
+              loginCredentials?['userRole'] ?? AppConstants.roleDropDown[0]);
     });
   }
 
@@ -179,13 +184,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      splashLoginController.setIsRememberMe(status: !(splashLoginController.isRememberMe));
+                      splashLoginController.setIsRememberMe(
+                          status: !(splashLoginController.isRememberMe));
                     },
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                       child: Text(
                         "rember".tr,
-                        style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 14, textColor: AppColors.secondary),
                       ),
                     ),
                   ),
@@ -194,11 +201,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (context, appController, child) {
                     return GestureDetector(
                       onTap: () async {
-                        await appController.openUrl();
+                        await appController.openUrl(
+                            url:
+                                "http://colegioatenea.es/solicitud-de-credenciales-de-acceso/");
                       },
                       child: Text(
                         "forgot".tr,
-                        style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 14, textColor: AppColors.secondary),
                       ),
                     );
                   })
@@ -234,7 +244,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     value: value,
                     child: Text(
                       value,
-                      style: AppTextStyle.getOutfit500(textSize: 18, textColor: AppColors.secondary),
+                      style: AppTextStyle.getOutfit500(
+                          textSize: 18, textColor: AppColors.secondary),
                     ),
                   );
                 }).toList(),
@@ -248,7 +259,8 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(
             height: 20,
           ),
-          Consumer3<SplashLoginController, StudentParentTeacherController, AssistantController>(
+          Consumer3<SplashLoginController, StudentParentTeacherController,
+              AssistantController>(
             builder: (context, splashLoginController, appController,
                 assistantController, child) {
               return CustomButtonWidget(

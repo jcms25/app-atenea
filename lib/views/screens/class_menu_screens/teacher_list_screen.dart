@@ -288,7 +288,7 @@ class TeacherItemWidget extends StatelessWidget {
             onTap: () {
               Get.to(() =>
                   MessageSendScreen(
-                    teacherId: teacherItem.wpUsrId,
+                    teacherId: teacherItem.wpUsrId, roleType: roleType,
                   ));
             },
             child: SvgPicture.asset(

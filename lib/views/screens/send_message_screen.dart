@@ -1,18 +1,25 @@
+import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/get_teacher_list_send_message_model.dart';
-import 'package:colegia_atenea/models/login_model.dart';
-import 'package:colegia_atenea/services/api_class.dart';
-import 'package:colegia_atenea/services/app_shared_preferences.dart';
+import 'package:colegia_atenea/models/student_list_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
+import 'package:colegia_atenea/utils/app_textstyle.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
+import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
+import '../../models/teacher/parent_list_model.dart';
 
 class MessageSendScreen extends StatefulWidget {
+  final RoleType roleType;
   final String? teacherId;
-  const MessageSendScreen({super.key, this.teacherId});
+
+  const MessageSendScreen({super.key, this.teacherId, required this.roleType});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,417 +29,474 @@ class MessageSendScreen extends StatefulWidget {
 
 class _MessageSendScreenChild extends State<MessageSendScreen> {
   final TextEditingController _messageController = TextEditingController();
-  final TextEditingController _affairController = TextEditingController();
-  String fileName = 'chooseTitle'.tr;
-  int isFileSelected = 0; //0 means not selected and 1 selected
+  final TextEditingController _subjectController = TextEditingController();
 
-
-  bool isLoading = false;
-  late TeacherData selectTeacher;
-  List<TeacherData> teacherList = [TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---")];
+  StudentParentTeacherController? studentParentTeacherController;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    selectTeacher = teacherList[0];
-    setState(() {
-      isLoading = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      studentParentTeacherController =
+          Provider.of<StudentParentTeacherController>(context, listen: false);
+      if (widget.roleType != RoleType.teacher) {
+        studentParentTeacherController?.getListOfTeacherForMessageSend(
+            teacherId: widget.teacherId);
+      } else {
+        if (studentParentTeacherController
+                ?.listOfClassAssignToTeacher.isNotEmpty ??
+            false) {
+          studentParentTeacherController?.setCurrentSelectedClass(
+              teacherClass: studentParentTeacherController
+                  ?.listOfClassAssignToTeacher[0]);
+          if (studentParentTeacherController?.listOfStudents.isEmpty ?? true) {
+            studentParentTeacherController?.getListOfStudents(
+                classId: studentParentTeacherController
+                        ?.listOfClassAssignToTeacher[0].cid ??
+                    "",
+                roleType: RoleType.teacher,
+                sortedAccordingToLastName: false);
+            studentParentTeacherController?.getListOfParents(
+                classId: studentParentTeacherController
+                        ?.listOfClassAssignToTeacher[0].cid ??
+                    "");
+          }
+        }
+      }
     });
-    getTeacherList();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          elevation: 0,
-          title: Text(
-            'sendNewTitle'.tr,
-            style: const TextStyle(
-                fontFamily: "Outfit",
-                fontSize: 20,
-                fontWeight: FontWeight.w500),
-          ),
-        ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('selectTitle'.tr,style: const TextStyle(
-                        fontFamily: "Outfit",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        color: AppColors.secondary),),
-                    const SizedBox(height: 10,),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: AppColors.primary.withOpacity(0.05)
-                      ),
-                      child: DropdownButton<TeacherData>(
-                        isExpanded: true,
-                        value: selectTeacher,
-                        underline: const SizedBox(),
-                        icon: const Icon(Icons.arrow_drop_down_sharp),
-                        items: teacherList.map((TeacherData e){
-                          return DropdownMenuItem<TeacherData>(value: e,child: Text(e.teacherName,style: TextStyle(fontFamily: "Outfit",fontWeight: FontWeight.w400,color: AppColors.secondary.withOpacity(0.5),fontSize: 18)),);
-                        }).toList(), onChanged: (TeacherData? value) {
-                        setState(() {
-                          selectTeacher = value!;
-                        });
-                      },
-                      ),
-                    ),
-                    const SizedBox(height: 10,),
-                    Text(
-                      'afTitle'.tr,
-                      style: const TextStyle(
-                          fontFamily: "Outfit",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: AppColors.secondary),
-                    ),
-                    const SizedBox(height: 10,),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: AppColors.secondary.withOpacity(0.06)
-                      ),
-                      child: TextField(
-                        controller: _affairController,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none
-                        ),
-                        cursorColor: AppColors.primary,
-                        style: const TextStyle(
-                          fontFamily: "Outfit",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black
-                      ),
-                      ),
-                    ),
-                    const SizedBox(height: 20,),
-                    Text(
-                      'msgTitle'.tr,
-                      style: const TextStyle(
-                          fontFamily: "Outfit",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: AppColors.secondary),
-                    ),
-                    const SizedBox(height: 10,),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 120,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: AppColors.secondary.withOpacity(0.06)
-                      ),
-                      child: TextField(
-                        controller: _messageController,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        style: const TextStyle(
-                            fontFamily: "Outfit",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black
-                        ),
-                        cursorColor: AppColors.primary,
-                        minLines: 1,
-                        maxLines: 5,
-                      ),
-                    ),
-                    const SizedBox(height: 20,),
-                    Text(
-                      'attachTitle'.tr,
-                      style: const TextStyle(
-                          fontFamily: "Outfit",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: AppColors.secondary),
-                    ),
-                    const SizedBox(height: 10,),
-                    GestureDetector(onTap: (){
-                      pickFile();
-                    },
-                      child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      padding: const EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: AppColors.secondary.withOpacity(0.06)),
-                      child:Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(fileName != 'chooseTitle'.tr ? fileName.split("/").last : fileName,textAlign: TextAlign.start,),
-                      ),
-                    ),),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+    return PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (res, ctx) {
+          studentParentTeacherController
+              ?.setTempListOfStudentFollowedUp(tempListOfStudentFollowedUp: []);
+          studentParentTeacherController
+              ?.setCurrentSelectedTeacherForMessageSend(
+                  currentSelectedTeacherForMessageSend: null);
+          studentParentTeacherController?.setSelectedFilePath(
+              selectedFilePath: null);
+          studentParentTeacherController?.setIsLoading(isLoading: false);
+
+          studentParentTeacherController?.setListOfStudents(listOfStudents: []);
+          studentParentTeacherController?.setListOfParents(listOfParents: []);
+          studentParentTeacherController?.setCurrentSendingMessageCategory(
+              roleType: RoleType.student);
+          studentParentTeacherController
+              ?.setCurrentSelectedParentForSendMessage(parentItem: null);
+          studentParentTeacherController
+              ?.setCurrentSelectedStudentForSendMessage(studentItem: null);
+        },
+        child: Scaffold(
+            appBar: CustomAppBarWidget(
+                onLeadingIconClicked: () {
+                  studentParentTeacherController
+                      ?.setTempListOfStudentFollowedUp(
+                          tempListOfStudentFollowedUp: []);
+                  studentParentTeacherController
+                      ?.setCurrentSelectedTeacherForMessageSend(
+                          currentSelectedTeacherForMessageSend: null);
+                  studentParentTeacherController?.setSelectedFilePath(
+                      selectedFilePath: null);
+                  studentParentTeacherController?.setIsLoading(
+                      isLoading: false);
+                  studentParentTeacherController
+                      ?.setListOfStudents(listOfStudents: []);
+                  studentParentTeacherController
+                      ?.setListOfParents(listOfParents: []);
+                  studentParentTeacherController
+                      ?.setCurrentSendingMessageCategory(
+                          roleType: RoleType.student);
+                  studentParentTeacherController
+                      ?.setCurrentSelectedParentForSendMessage(
+                          parentItem: null);
+                  studentParentTeacherController
+                      ?.setCurrentSelectedStudentForSendMessage(
+                          studentItem: null);
+                  Get.back();
+                },
+                title: Text(
+                  'sendNewTitle'.tr,
+                  style: AppTextStyle.getOutfit500(
+                      textSize: 20, textColor: AppColors.white),
+                )),
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Visibility(
+                            visible: widget.roleType != RoleType.teacher,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'selectTitle'.tr,
+                                  style: AppTextStyle.getOutfit500(
+                                      textSize: 18,
+                                      textColor: AppColors.secondary),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 60,
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color:
+                                          AppColors.primary.withOpacity(0.05)),
+                                  child:
+                                      Consumer<StudentParentTeacherController>(
+                                    builder: (context,
+                                        studentParentTeacherController, child) {
+                                      return DropdownButton<
+                                          TeacherItemForSendMessage>(
+                                        isExpanded: true,
+                                        value: studentParentTeacherController
+                                            .currentSelectedTeacherForMessageSend,
+                                        underline: const SizedBox(),
+                                        icon: const Icon(
+                                            Icons.arrow_drop_down_sharp),
+                                        items: studentParentTeacherController
+                                            .teacherListForMessageSend
+                                            .map((TeacherItemForSendMessage e) {
+                                          return DropdownMenuItem<
+                                              TeacherItemForSendMessage>(
+                                            value: e,
+                                            child: Text(e.teacherName,
+                                                style:
+                                                    AppTextStyle.getOutfit400(
+                                                        textSize: 18,
+                                                        textColor: AppColors
+                                                            .secondary
+                                                            .withOpacity(0.5))),
+                                          );
+                                        }).toList(),
+                                        onChanged:
+                                            (TeacherItemForSendMessage? value) {
+                                          studentParentTeacherController
+                                              .setCurrentSelectedTeacherForMessageSend(
+                                                  currentSelectedTeacherForMessageSend:
+                                                      value);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                )
+                              ],
+                            )),
+                        Visibility(
+                            visible: widget.roleType == RoleType.teacher,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TeacherClassListDropdown(
+                                  fromWhichScreen: 7,
+                                  backgroundColor:
+                                      AppColors.secondary.withOpacity(0.06),
+                                  height: 60,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Consumer<StudentParentTeacherController>(
+                                  builder: (context,
+                                      studentParentTeacherController, child) {
+                                    return SizedBox(
+                                      height: 60,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                              child: RadioListTile<RoleType>(
+                                                  value: RoleType.student,
+                                                  title: Text(
+                                                    'Alumnos',
+                                                    style: AppTextStyle
+                                                        .getOutfit400(
+                                                            textSize: 18,
+                                                            textColor: AppColors
+                                                                .secondary),
+                                                  ),
+                                                  groupValue:
+                                                      studentParentTeacherController
+                                                          .currentSendingMessageCategory,
+                                                  onChanged:
+                                                      (RoleType? roleType) {
+                                                    if (roleType != null) {
+                                                      studentParentTeacherController
+                                                          .setCurrentSendingMessageCategory(
+                                                              roleType:
+                                                                  roleType);
+                                                    }
+                                                  })),
+                                          Expanded(
+                                              child: RadioListTile<RoleType>(
+                                                  value: RoleType.parent,
+                                                  title: Text(
+                                                    'Padre',
+                                                    style: AppTextStyle
+                                                        .getOutfit400(
+                                                            textSize: 18,
+                                                            textColor: AppColors
+                                                                .secondary),
+                                                  ),
+                                                  groupValue:
+                                                      studentParentTeacherController
+                                                          .currentSendingMessageCategory,
+                                                  onChanged:
+                                                      (RoleType? roleType) {
+                                                    if (roleType != null) {
+                                                      // if(studentParentTeacherController.listOfParents.)
+                                                      studentParentTeacherController
+                                                          .setCurrentSendingMessageCategory(
+                                                              roleType:
+                                                                  roleType);
+                                                    }
+                                                  }))
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Consumer<StudentParentTeacherController>(
+                                  builder: (context,
+                                      studentParentTeacherController, child) {
+                                    return Text(
+                                      studentParentTeacherController
+                                                  .currentSendingMessageCategory ==
+                                              RoleType.student
+                                          ? "Seleccionar Alumno"
+                                          : "Seleccionar Padre",
+                                      style: AppTextStyle.getOutfit500(
+                                          textSize: 18,
+                                          textColor: AppColors.secondary),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 60,
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color:
+                                          AppColors.primary.withOpacity(0.05)),
+                                  child:
+                                      Consumer<StudentParentTeacherController>(
+                                    builder: (context,
+                                        studentParentTeacherController, child) {
+                                      return studentParentTeacherController
+                                                  .currentSendingMessageCategory ==
+                                              RoleType.student
+                                          ? DropdownButton<StudentItem>(
+                                              isExpanded: true,
+                                              value: studentParentTeacherController
+                                                  .currentSelectedStudentForSendMessage,
+                                              underline: const SizedBox(),
+                                              icon: const Icon(
+                                                  Icons.arrow_drop_down_sharp),
+                                              items:
+                                                  studentParentTeacherController
+                                                      .tempListOfStudents
+                                                      .map((StudentItem e) {
+                                                return DropdownMenuItem<
+                                                    StudentItem>(
+                                                  value: e,
+                                                  child: Text(
+                                                      "${e.sFname}\t${e.sLname}",
+                                                      style: AppTextStyle
+                                                          .getOutfit400(
+                                                              textSize: 18,
+                                                              textColor: AppColors
+                                                                  .secondary
+                                                                  .withOpacity(
+                                                                      0.5))),
+                                                );
+                                              }).toList(),
+                                              onChanged: (StudentItem? value) {
+                                                studentParentTeacherController
+                                                    .setCurrentSelectedStudentForSendMessage(
+                                                        studentItem: value);
+                                              },
+                                            )
+                                          : DropdownButton<ParentItem>(
+                                              isExpanded: true,
+                                              value: studentParentTeacherController
+                                                  .currentSelectedParentForSendMessage,
+                                              underline: const SizedBox(),
+                                              icon: const Icon(
+                                                  Icons.arrow_drop_down_sharp),
+                                              items:
+                                                  studentParentTeacherController
+                                                      .tempListOfParents
+                                                      .map((ParentItem e) {
+                                                return DropdownMenuItem<
+                                                    ParentItem>(
+                                                  value: e,
+                                                  child: Text("${e.fullName}",
+                                                      style: AppTextStyle
+                                                          .getOutfit400(
+                                                              textSize: 18,
+                                                              textColor: AppColors
+                                                                  .secondary
+                                                                  .withOpacity(
+                                                                      0.5))),
+                                                );
+                                              }).toList(),
+                                              onChanged: (ParentItem? value) {
+                                                studentParentTeacherController
+                                                    .setCurrentSelectedParentForSendMessage(
+                                                        parentItem: value);
+                                              },
+                                            );
+                                    },
+                                  ),
+                                )
+                              ],
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'afTitle'.tr,
+                          style: AppTextStyle.getOutfit500(
+                              textSize: 18, textColor: AppColors.secondary),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                            controller: _subjectController,
+                            validateFunction: (String? value) {}),
                         SizedBox(
-                          width: 100,
-                          height: 50,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
-                                  )
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                if(isFileSelected == 0){
-                                  sendMessageToTeacher(isFileSelectedOrNot: 0,teacherData: selectTeacher,subject: _affairController.text,message: _messageController.text);
-                                }else{
-                                  sendMessageToTeacher(isFileSelectedOrNot: 1,attachment: fileName,teacherData: selectTeacher,subject: _affairController.text,message: _messageController.text);
+                          height: 20,
+                        ),
+                        Text(
+                          'msgTitle'.tr,
+                          style: AppTextStyle.getOutfit500(
+                              textSize: 18, textColor: AppColors.secondary),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                            controller: _messageController,
+                            maxLine: 5,
+                            validateFunction: (String? value) {}),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text('attachTitle'.tr,
+                            style: AppTextStyle.getOutfit500(
+                                textSize: 18, textColor: AppColors.secondary)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Consumer<StudentParentTeacherController>(
+                          builder:
+                              (context, studentParentTeacherController, child) {
+                            return GestureDetector(
+                              onTap: () async {
+                                FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles();
+                                if (result != null) {
+                                  studentParentTeacherController
+                                      .setSelectedFilePath(
+                                          selectedFilePath:
+                                              result.files.single.path ?? "");
                                 }
-                                },
-                              child: Text(
-                                "sendTitle".tr,
-                                style: const TextStyle(
-                                    fontFamily: "Outfit",
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.white,
-                                    fontSize: 16),
-                              )),
-                        )
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 60,
+                                padding: const EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color:
+                                        AppColors.secondary.withOpacity(0.06)),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    studentParentTeacherController
+                                                .selectedFilePath !=
+                                            null
+                                        ? studentParentTeacherController
+                                            .selectedFilePath!
+                                            .split("/")
+                                            .last
+                                        : "chooseTitle".tr,
+                                    textAlign: TextAlign.start,
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 18,
+                                        textColor: AppColors.secondary),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            width: 100,
+                            child: Consumer<StudentParentTeacherController>(
+                              builder: (context, studentParentTeacherController,
+                                  child) {
+                                return CustomButtonWidget(
+                                    buttonTitle: "sendTitle".tr,
+                                    onPressed: () async{
+
+                                     await studentParentTeacherController
+                                          .sendMessage(
+                                              messageSubject:
+                                                  _subjectController.text,
+                                              description:
+                                                  _messageController.text,
+                                              whomToSend: studentParentTeacherController
+                                                          .currentLoggedInUserRole !=
+                                                      RoleType.teacher
+                                                  ? 0
+                                                  : studentParentTeacherController
+                                                              .currentSendingMessageCategory ==
+                                                          RoleType.student
+                                                      ? 2
+                                                      : 1).then((response){
+
+                                     });
+                                    });
+                              },
+                            ),
+                          ),
+                        ),
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-              Visibility(
-                  visible: isLoading,
-                  child:Container(
-                color: AppColors.black.withOpacity(0.5),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: const Center(
-                  child: LoadingLayout(),
-                ),
-              ))
-          ],
-        ));
-  }
-
-
-  void sendMessageToTeacher({required int isFileSelectedOrNot,String? attachment,required TeacherData teacherData,required String subject,required String message}) async{
-    //isFileSelectedOrNot == 0 means file not selected and == 1 means file selected.
-
-   try{
-     String role = AppSharedPreferences.getUserLoggedInRole() ?? "";
-
-     LoginModel? loginModel = AppSharedPreferences.getUserData();
-     String token = loginModel?.basicAuthToken ?? "";
-     String senderId = role == "student" ? loginModel?.userdata?.wpUsrId ?? "": loginModel?.userdata?.parentWpUsrId ?? "";
-     if(isFileSelectedOrNot == 0){
-       sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message, cookie: loginModel?.userdata?.cookies ?? "");
-     }else{
-       sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!, cookie: loginModel?.userdata?.cookies ?? "");
-     }
-
-     setState(() {
-       isLoading = false;
-     });
-   }catch(exception){
-     setState(() {
-       isLoading = false;
-     });
-   }
-
-
-   //  SessionManagement sessionManagement = SessionManagement();
-   //  int? role = await sessionManagement.getRole('Role');
-   //
-   //  if(role == 0){
-   //    Studentlogin studentLogin = await sessionManagement.getModel('student');
-   //    String token = studentLogin.basicAuthToken;
-   //    String senderId = studentLogin.userdata.wpUsrId!;
-   //    if(isFileSelectedOrNot == 0){
-   //      sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message, cookie: studentLogin.userdata.cookie ?? "");
-   //    }else{
-   //      sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!, cookie: studentLogin.userdata.cookie ?? "");
-   //    }
-   // }else{
-   //    Parentlogin parentLogin = await sessionManagement.getModelParent('Parent');
-   //    String token = parentLogin.basicAuthToken;
-   //    String senderId = parentLogin.userdata.parentWpUsrId!;
-   //    if(isFileSelectedOrNot == 0){
-   //      sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message, cookie: parentLogin.userdata.cookie ?? "");
-   //    }else{
-   //      sendMessage( token: token , senderId: senderId, receivedId: teacherData.wpUsrId,subject: subject,message: message , attachment: attachment!, cookie: parentLogin.userdata.cookie ?? "");
-   //    }
-   //  }
-  }
-
-  void sendMessage({required String token,required String cookie,String? senderId,String? receivedId,String? subject,String? message,String? attachment}) async{
-    ApiClass apiClass = ApiClass();
-    dynamic response = await apiClass.sendMessageToTeacher(token,attachment ?? "",senderId!,selectTeacher.wpUsrId,subject!,message!,cookie);
-    if(response['status']){
-      Fluttertoast.showToast(msg: 'parentSendMessage'.tr);
-      setState(() {
-        isLoading = false;
-        fileName = "";
-        isFileSelected = 0;
-        _messageController.clear();
-        _affairController.clear();
-      });
-      navigateToBack();
-    }
-    else{
-      setState(() {
-        isLoading = false;
-      });
-    }
-    // //without attachment or with attachment
-    // if(isFileSelectedOrNot == 0){
-    //   Map<String,dynamic> bodyData = FormBodyData(senderId!,selectTeacher.wpUsrId,subject!,message!);
-    //   dynamic response =  await apiclass.sendMessageToTeacherWithOutAttachment(token,bodyData);
-    //   if(response['status']){
-    //     setState(() {
-    //       isLoading = false;
-    //       selectTeacher = teacherList[0];
-    //       _affairController.clear();
-    //       _messageController.clear();
-    //     });
-    //   }
-    //   else{
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //   }
-    // }
-    // else{
-    //   //send only message  attachment
-    //
-    // }
-  }
-
-  //pick file
-  void pickFile() async{
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if(result == null){
-    }else{
-      setState(() {
-        fileName = result.files.single.path!;
-        isFileSelected = 1;
-      });
-      // File file = File(result.files.single.path);
-    }
-  }
-
-  //get teacher list
-  void getTeacherList() async{
-
-    LoginModel? loginModel = AppSharedPreferences.getUserData();
-
-
-    dynamic response = await ApiClass().getTeacherListForSendMessage(loginModel?.basicAuthToken ?? "",
-        loginModel?.userdata?.cookies ?? "");
-    List<TeacherData> tempTeacherList = [];
-    tempTeacherList.add(TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---"));
-    TeacherData? teacherData;
-    if(response['status']){
-      TeacherListForSend teacherListForSend = TeacherListForSend.fromJson(response);
-      for(var x in teacherListForSend.data){
-        tempTeacherList.add(x);
-        if(widget.teacherId != null && x.wpUsrId == widget.teacherId){
-          teacherData = x;
-        }
-      }
-      setState(() {
-        teacherList = tempTeacherList;
-        selectTeacher = teacherData ?? tempTeacherList[0];
-        isLoading = false;
-      });
-    }
-    else{
-      setState(() {
-        isLoading = false;
-      });
-    }
-
-
-
-
-    // ApiClass apiClass = ApiClass();
-    // SessionManagement sessionManagement = SessionManagement();
-    // int? role = await sessionManagement.getRole("Role");
-    // if(role == 0){
-    //   Studentlogin studentLogin = await sessionManagement.getModel('Student');
-    //   String token = studentLogin.basicAuthToken;
-    //
-    // }
-    // else{
-    //   Parentlogin parentLogin = await sessionManagement.getModelParent('Parent');
-    //   String token = parentLogin.basicAuthToken;
-    //   dynamic response = await apiClass.getTeacherListForSendMessage(token,parentLogin.userdata.cookie ?? "");
-    //   List<TeacherData> tempTeacherList = [];
-    //   tempTeacherList.add(TeacherData(wpUsrId: "igexSol404", teacherName: "---${'selectTitle'.tr}---"));
-    //   TeacherData? teacherData;
-    //   if(response['status']){
-    //     TeacherListForSend teacherListForSend = TeacherListForSend.fromJson(response);
-    //     for(var x in teacherListForSend.data){
-    //       tempTeacherList.add(x);
-    //       if(widget.teacherId != null && x.wpUsrId == widget.teacherId){
-    //         teacherData = x;
-    //       }
-    //     }
-    //     setState(() {
-    //       teacherList = tempTeacherList;
-    //       selectTeacher = teacherData ?? tempTeacherList[0];
-    //       isLoading = false;
-    //     });
-    //   }else{
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //   }
-    // }
-
-  }
-
-  Map<String, dynamic> formBodyData(String senderId, String recieverId, String subject, String message) {
-    Map<String,dynamic> tempMap = {};
-    tempMap["sender_id"] = senderId;
-    // for(int i=0;i<recieverList.length;i++){
-    //   tempMap["reciever_id[$i]"] = recieverList[i];
-    // }
-    tempMap["reciever_id[0]"] = recieverId;
-    tempMap["subject"] = subject;
-    tempMap["msg"] = message;
-
-    return tempMap;
-  }
-
-
-  //once message sent successfully this will get back message screen.
-  void navigateToBack() {
-    Navigator.pop(context);
+                Consumer<StudentParentTeacherController>(
+                  builder: (context, studentParentTeacherController, child) {
+                    return Visibility(
+                        visible: studentParentTeacherController.isLoading,
+                        child: LoadingLayout());
+                  },
+                )
+              ],
+            )));
   }
 }

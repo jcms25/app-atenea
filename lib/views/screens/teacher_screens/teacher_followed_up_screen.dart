@@ -8,6 +8,7 @@ import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
 import 'package:colegia_atenea/views/custom_widgets/dotted_line_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_colors.dart';
@@ -74,7 +75,7 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                           studentParentTeacherController
                               .listOfClassAssignToTeacher[0]);
                       studentParentTeacherController.getListOfStudents(classId: studentParentTeacherController
-                          .listOfClassAssignToTeacher[0].cid ?? "", roleType: RoleType.teacher, fromWhere: 1);
+                          .listOfClassAssignToTeacher[0].cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: false);
                     } else {
                       studentParentTeacherController
                           .getListOfClassesAssignToTeacher(
@@ -222,7 +223,7 @@ class FollowedUpWidget extends StatelessWidget {
                 color: AppColors.primary),
             padding: const EdgeInsets.all(10),
             child: Text(
-              followedUpItemDetail?.date ?? "-",
+              DateFormat("dd-MM-yyyy").format(DateTime.parse(followedUpItemDetail?.date ?? "-")),
               style: AppTextStyle.getOutfit300(
                   textSize: 14, textColor: AppColors.white),
             ),

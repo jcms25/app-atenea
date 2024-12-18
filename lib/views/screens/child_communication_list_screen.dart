@@ -1,6 +1,7 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/list_of_messages_model.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
+import 'package:colegia_atenea/views/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
@@ -81,8 +82,8 @@ class _ChildCommunicationListScreenState
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MessageDetail(
-                                              messageItem.mid ?? "")));
+                                          builder: (context) => MessageDetailScreen(
+                                               messageId: messageItem.mid ?? "", messageType: "Recibidas",)));
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

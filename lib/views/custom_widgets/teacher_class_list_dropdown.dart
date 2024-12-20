@@ -16,6 +16,7 @@ class TeacherClassListDropdown extends StatelessWidget {
   //5 for time table
   //6 for exam list
   //7 for send message screen to parent,student
+  //8 for marks screen (on class changed get list of subjects and exam api called)
   const TeacherClassListDropdown({super.key, required this.fromWhichScreen, this.backgroundColor, this.fromWhereStudentListCalled, this.height});
 
   @override
@@ -39,25 +40,39 @@ class TeacherClassListDropdown extends StatelessWidget {
                     return DropdownMenuItem<TeacherClassItem>(
                         value: e,
                         child: Text(e.cName ?? "-",style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),));
-                  }).toList(), onChanged: (TeacherClassItem? teacherClassItem){
-                studentParentTeacherController.setCurrentSelectedClass(teacherClass: teacherClassItem);
-                if(fromWhichScreen == 5){
-                  studentParentTeacherController.getTimeTableData(classId: teacherClassItem?.cid ?? "", studentId: null);
-                }else if(fromWhichScreen == 4){
-                  studentParentTeacherController.getListOfSubjects(classId: teacherClassItem?.cid ?? "", wpId: null, roleType: RoleType.teacher);
-                }else if(fromWhichScreen == 1){
-                  studentParentTeacherController.setSelectedStudentForFollowUp(studentItem: null);
-                  studentParentTeacherController.setListOfStudents(listOfStudents: []);
-                  studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: fromWhereStudentListCalled ?? false);
-                }else if(fromWhichScreen == 2){
-                  studentParentTeacherController.getListOfParents(classId: teacherClassItem?.cid ?? "");
-                }else if(fromWhichScreen == 3){
-                  studentParentTeacherController.getListOfTeachers(studentId: null, classId: teacherClassItem?.cid ?? "",roleType: RoleType.teacher);
-                }else if(fromWhichScreen == 6){
+                  }).toList(), onChanged: (TeacherClassItem? teacherClassItem) async{
+                if(studentParentTeacherController.currentSelectedClass?.cid != teacherClassItem?.cid){
+                  studentParentTeacherController.setCurrentSelectedClass(teacherClass: teacherClassItem);
+                  if(fromWhichScreen == 5){
+                    studentParentTeacherController.getTimeTableData(classId: teacherClassItem?.cid ?? "", studentId: null);
+                  }
+                  else if(fromWhichScreen == 4){
+                    studentParentTeacherController.getListOfSubjects(classId: teacherClassItem?.cid ?? "", wpId: null, roleType: RoleType.teacher);
+                  }
+                  else if(fromWhichScreen == 1){
+                    studentParentTeacherController.setSelectedStudentForFollowUp(studentItem: null);
+                    studentParentTeacherController.setListOfStudents(listOfStudents: []);
+                    studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: fromWhereStudentListCalled ?? false);
+                  }
+                  else if(fromWhichScreen == 2){
+                    studentParentTeacherController.getListOfParents(classId: teacherClassItem?.cid ?? "");
+                  }
+                  else if(fromWhichScreen == 3){
+                    studentParentTeacherController.getListOfTeachers(studentId: null, classId: teacherClassItem?.cid ?? "",roleType: RoleType.teacher);
+                  }
+                  else if(fromWhichScreen == 6){
                     studentParentTeacherController.getListOfExams(classId: teacherClassItem?.cid ?? "", wpUserId: "", roleType: RoleType.teacher);
-                }else{
-                  studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: false);
-                  studentParentTeacherController.getListOfParents(classId: teacherClassItem?.cid ?? "");
+                  }
+                  else if(fromWhichScreen == 8) {
+                    studentParentTeacherController.setViewMarkSubjectSelected(subjectItem: null);
+                    await studentParentTeacherController.getListOfSubjects(classId: teacherClassItem?.cid ?? "", wpId: null, roleType: RoleType.teacher).then((response) async{
+                      await studentParentTeacherController.getListOfExams(classId: teacherClassItem?.cid ?? "", wpUserId: null, roleType: RoleType.teacher);
+                    });
+                  }
+                  else{
+                    studentParentTeacherController.getListOfStudents(classId: teacherClassItem?.cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: false);
+                    studentParentTeacherController.getListOfParents(classId: teacherClassItem?.cid ?? "");
+                  }
                 }
               });
             }

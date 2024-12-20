@@ -90,6 +90,14 @@ class Api {
   static String get teacherEditExam => _teacherEditExamEndPoint;
 
 
+  static const String _teacherMarksListEndPoint = "teacher/markslist";
+  static String get teacherMarksListEndPoint => _teacherMarksListEndPoint;
+
+
+  static const String _teacherMarksAddEditListEndPoint = "marks";
+  static String get teacherMarksAddEditList => _teacherMarksAddEditListEndPoint;
+
+
   static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,
@@ -98,16 +106,17 @@ class Api {
 
 
     try {
+
       Response response;
       if (requestType == RequestType.get) {
-        // response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header);
-        response = await get(Uri.parse("$_localBaseURL/$endPoint"), headers: header);
+        response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header);
+        // response = await get(Uri.parse("$_localBaseURL/$endPoint"), headers: header);
       }
       else {
-        // response = await post(Uri.parse("$_baseURL/$endPoint"),
-        //     headers: header, body: body);
-        response = await post(Uri.parse("$_localBaseURL/$endPoint"),
+        response = await post(Uri.parse("$_baseURL/$endPoint"),
             headers: header, body: body);
+        // response = await post(Uri.parse("$_localBaseURL/$endPoint"),
+        //     headers: header, body: body);
       }
       if (response.statusCode == 200) {
         dynamic res = jsonDecode(response.body);
@@ -123,6 +132,9 @@ class Api {
     } catch (exception) {
       return {"status": false, "message": '$exception'};
     }
+
+
+
   }
 
   //for testing purpose - local request

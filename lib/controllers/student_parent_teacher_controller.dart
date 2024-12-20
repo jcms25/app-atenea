@@ -11,6 +11,7 @@ import 'package:colegia_atenea/models/single_subject_detail_model.dart';
 import 'package:colegia_atenea/models/student_details_model.dart';
 import 'package:colegia_atenea/models/subject_list_model.dart';
 import 'package:colegia_atenea/models/teacher/parent_list_model.dart';
+import 'package:colegia_atenea/models/teacher/teacher_marks_list_model.dart';
 import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
@@ -196,7 +197,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       setIsLoading(isLoading: showLoader);
       String token = loginModel?.basicAuthToken ?? "";
       String cookies = loginModel?.userdata?.cookies ?? "";
-
+      print("Basic Authentication Token : $token\nCokiees is : $cookies");
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: Api.listOfAllMessages,
@@ -366,29 +367,35 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //whom to send radio button : parent,student (choice for teacher)
   RoleType currentSendingMessageCategory = RoleType.student;
-  void setCurrentSendingMessageCategory({required RoleType roleType}){
+
+  void setCurrentSendingMessageCategory({required RoleType roleType}) {
     currentSendingMessageCategory = roleType;
     notifyListeners();
   }
 
   //selected student for sending message
   StudentItem? currentSelectedStudentForSendMessage;
-  void setCurrentSelectedStudentForSendMessage({required StudentItem? studentItem}){
+
+  void setCurrentSelectedStudentForSendMessage(
+      {required StudentItem? studentItem}) {
     currentSelectedStudentForSendMessage = studentItem;
     notifyListeners();
   }
 
   //selected parent for sending message
   ParentItem? currentSelectedParentForSendMessage;
-  void setCurrentSelectedParentForSendMessage({required ParentItem? parentItem}){
+
+  void setCurrentSelectedParentForSendMessage(
+      {required ParentItem? parentItem}) {
     currentSelectedParentForSendMessage = parentItem;
     notifyListeners();
   }
 
-
   //send message to teacher
-  Future<void> sendMessage(
-      {required String messageSubject, required String description,required int whomToSend}) async {
+  Future<Map<String, dynamic>> sendMessage(
+      {required String messageSubject,
+      required String description,
+      required int whomToSend}) async {
     //0 : to Teacher (Logged in with student,parent)
     //1 : to Parent (Logged in with teacher)
     //2 : to Student (Logged in with teacher)
@@ -405,16 +412,18 @@ class StudentParentTeacherController extends ChangeNotifier {
 
       if (selectedFilePath?.isEmpty ?? true) {
         request.fields['attachment'] = "";
-      }
-      else {
+      } else {
         request.files.add(
             await MultipartFile.fromPath('attachment', selectedFilePath ?? ""));
       }
       request.fields['sender_id'] = currentLoggedInUserRole == RoleType.parent
           ? loginModel?.userdata?.parentWpUsrId ?? ""
           : loginModel?.userdata?.wpUsrId ?? "";
-      request.fields['reciever_id[0]'] =
-      whomToSend == 0 ? currentSelectedTeacherForMessageSend?.wpUsrId ?? "" : whomToSend == 1 ? currentSelectedParentForSendMessage?.wpUsrId ?? "" : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
+      request.fields['reciever_id[0]'] = whomToSend == 0
+          ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
+          : whomToSend == 1
+              ? currentSelectedParentForSendMessage?.wpUsrId ?? ""
+              : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
       request.fields['subject'] = messageSubject;
       request.fields['msg'] = description;
 
@@ -425,10 +434,17 @@ class StudentParentTeacherController extends ChangeNotifier {
         AppConstants.showCustomToast(
             status: data['status'],
             message: data['Message'] ?? data['message'] ?? "");
+        setIsLoading(isLoading: false);
+        return {
+          "status": data['status'],
+          "message": data['Message'] ?? data['message'] ?? ""
+        };
       }
       setIsLoading(isLoading: false);
+      return {"status": false, "message": "Please try again."};
     } catch (exception) {
       setIsLoading(isLoading: false);
+      return {"status": false, "message": "Please try again."};
     }
   }
 
@@ -482,7 +498,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getListOfSubjects(
+  Future<void> getListOfSubjects(
       {required String classId,
       required String? wpId,
       required RoleType roleType}) async {
@@ -1055,7 +1071,6 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //Teacher Add - Edit event :
-
   EventTypeModel selectedEventType = AppConstants.eventTypeList[0];
 
   void setSelectedEventType({required EventTypeModel? eventTypeModel}) {
@@ -1366,7 +1381,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getListOfExams(
+  Future<void> getListOfExams(
       {required String classId,
       required String? wpUserId,
       required RoleType roleType}) async {
@@ -1377,7 +1392,7 @@ class StudentParentTeacherController extends ChangeNotifier {
           requestType: RequestType.get,
           endPoint: roleType != RoleType.teacher
               ? Api.studentParentExamListPoint
-              : Api.teacherExamListPoint,
+              : "${Api.teacherExamListPoint}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic ${loginModel?.basicAuthToken}",
@@ -1393,6 +1408,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
+;
   }
 
   //Add-Edit exam :
@@ -1473,6 +1489,144 @@ class StudentParentTeacherController extends ChangeNotifier {
     isAllSubjectSelected = false;
     notifyListeners();
   }
+
+  //marks section :
+  List<ExamListItem> listOfExamBasedOnSubjects = [];
+  void setListOfExamBasedOnSubjects({required List<ExamListItem> listOfExams}){
+    listOfExamBasedOnSubjects = listOfExams;
+    notifyListeners();
+  }
+
+
+  ExamListItem? viewMarkSelectedExam;
+  void setViewMarkExamSelected({required ExamListItem? examListItem}){
+    viewMarkSelectedExam = examListItem;
+    notifyListeners();
+  }
+
+  SubjectItem? viewMarkSubjectSelected;
+  void setViewMarkSubjectSelected({required SubjectItem? subjectItem}){
+    viewMarkSubjectSelected = subjectItem;
+    if(listOfExams.isNotEmpty){
+      // setListOfExamBasedOnSubjects(listOfExams: );
+      List<ExamListItem> examList = listOfExams.where((e){
+        return e.subId == subjectItem?.id;
+      }).toList();
+    }
+
+    notifyListeners();
+  }
+
+  List<MarksItem> listOfMarksItem = [];
+
+  void setListOfMarks({required List<MarksItem> listOfMarksItem}) {
+    this.listOfMarksItem = listOfMarksItem;
+    notifyListeners();
+  }
+
+  List<TextEditingController> listOfMarksController = [];
+
+  void setListOfMarksController(
+      {required List<TextEditingController> listOfMarksController}) {
+    this.listOfMarksController = listOfMarksController;
+    notifyListeners();
+  }
+
+  List<TextEditingController> listOfObserverController = [];
+
+  void setListOfObserverController(
+      {required List<TextEditingController> listOfObserverController}) {
+    this.listOfObserverController = listOfObserverController;
+    notifyListeners();
+  }
+
+  //list of marks of students
+  Future<void> getListOfMarks(
+      {required String classId,
+      required String subjectId,
+      required String examId}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      print("${Api.teacherMarksListEndPoint}?class_id=$classId&subject_id=$subjectId&exam_id=$examId");
+      await Api.httpRequest(
+              requestType: RequestType.get,
+              endPoint:
+                  "${Api.teacherMarksListEndPoint}?class_id=$classId&subject_id=$subjectId&exam_id=$examId")
+          .then((response) {
+        if (response['status']) {
+          MarksList marksList = MarksList.fromJson(response);
+          setListOfMarksController(
+              listOfMarksController: List.generate(marksList.data?.length ?? 0,
+                  (index) => TextEditingController()));
+          setListOfObserverController(
+              listOfObserverController: List.generate(
+                  marksList.data?.length ?? 0,
+                  (index) => TextEditingController()));
+          setListOfMarks(listOfMarksItem: marksList.data ?? []);
+        } else {
+          AppConstants.showCustomToast(
+              status: false,
+              message: response['Message'] ?? response['message'] ?? "");
+        }
+      });
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+
+  //add-edit marks
+  void addEditMarks({
+    required String classId,
+    required String subjectId,
+    required String examId
+}) async{
+    try{
+
+      setIsLoading(isLoading: true);
+
+      Map<String,String> bodyData = {
+        "ClassID" : classId,
+        "SubjectID" : subjectId,
+        "ExamID" : examId,
+      };
+
+      if(listOfMarksItem.isNotEmpty){
+        for(int i=0;i<listOfMarksItem.length;i++){
+          bodyData["sid[$i]"] = listOfMarksItem[i].studentId ?? "";
+          bodyData["mark[$i]"] = listOfMarksController[i].text;
+          bodyData["remark[$i]"] = listOfObserverController[i].text;
+        }
+      }
+
+      await Api.httpRequest(
+          requestType: RequestType.post,
+          endPoint: Api.teacherMarksAddEditList,
+          body: bodyData
+      ).then((response){
+        if(response['status']){
+          Get.back();
+        }
+        setIsLoading(isLoading: false);
+        AppConstants.showCustomToast(status: response['status'], message: response['Message'] ?? response['message'] ?? "");
+      });
+
+      setIsLoading(isLoading: false);
+
+    }catch(exception){
+      setIsLoading(isLoading: false);
+    }
+ }
+
+ //clear screen after operation
+ void clearMarkScreen(){
+   setListOfMarks(listOfMarksItem: []);
+   setListOfMarksController(listOfMarksController: []);
+   setListOfObserverController(listOfObserverController: []);
+ }
+
 
   //Logged out function : clear all controller data
   void loggedOutClearData() {

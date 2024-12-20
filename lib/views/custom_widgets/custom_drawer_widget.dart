@@ -7,6 +7,7 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/grade_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/student_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
@@ -526,7 +527,7 @@ class CustomDrawerWidget extends StatelessWidget {
         if(roleType == RoleType.teacher){
           Get.to(() => TeacherAddEditMarksScreen());
         }else{
-
+          // Get.to(() => GradeScreen(cid, wpId))
         }
         break;
       case "Evaluaciones":

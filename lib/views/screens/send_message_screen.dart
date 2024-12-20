@@ -478,7 +478,9 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                           RoleType.student
                                                       ? 2
                                                       : 1).then((response){
-
+                                        if(response['status']){
+                                          Get.back();
+                                        }
                                      });
                                     });
                               },

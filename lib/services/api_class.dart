@@ -20,7 +20,7 @@ class ApiClass{
   // String embedBaseUrl =
   //     "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
-  
+
   // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
   // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
 

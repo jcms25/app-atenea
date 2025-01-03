@@ -174,68 +174,122 @@ class TeacherViewMarksBottomSheet extends StatelessWidget {
                             ));
                       },
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Consumer<StudentParentTeacherController>(
-                        builder:
-                            (context, studentParentTeacherController, child) {
-                          return SizedBox(
-                            width: MediaQuery.sizeOf(context).width * 0.30,
-                            child: CustomButtonWidget(
-                                buttonTitle: 'Ver datos',
-                                onPressed: studentParentTeacherController
-                                            .listOfSubject.isNotEmpty &&
-                                        studentParentTeacherController
-                                                .viewMarkSubjectSelected !=
-                                            null
-                                    ? () async {
-                                        if (studentParentTeacherController
-                                                .viewMarkSelectedExam !=
-                                            null) {
-                                          await studentParentTeacherController
-                                              .getListOfMarks(
-                                                  classId:
-                                                      studentParentTeacherController
-                                                              .currentSelectedClass
-                                                              ?.cid ??
-                                                          "",
-                                                  subjectId:
-                                                      studentParentTeacherController
-                                                              .viewMarkSubjectSelected
-                                                              ?.id ??
-                                                          "",
-                                                  examId:
-                                                      studentParentTeacherController
-                                                              .viewMarkSelectedExam
-                                                              ?.eid ??
-                                                          "")
-                                              .then((response) {
-                                            if (studentParentTeacherController
-                                                .listOfMarksItem.isNotEmpty) {
-                                              Get.back();
-                                            }
-                                          });
-                                          Get.back();
-                                        } else {
-                                          AppConstants.showCustomToast(
-                                              status: false,
-                                              message:
-                                                  "Por favor seleccione examen");
-                                        }
-                                      }
-                                    : () {
-                                        // if (studentParentTeacherController
-                                        //     .selectedStudentForFollowedUp ==
-                                        //     null) {
-                                        //   AppConstants.showCustomToast(
-                                        //       status: false,
-                                        //       message:
-                                        //       'Por favor seleccione estudiante');
-                                        // }
-                                      }),
-                          );
-                        },
-                      ),
+                    Row(
+                      children: [
+                        Expanded(child: Consumer<StudentParentTeacherController>(
+                          builder:
+                              (context, studentParentTeacherController, child) {
+                            return SizedBox(
+                              child: CustomButtonWidget(
+                                  buttonTitle: 'Agregar/Editar',
+                                  onPressed: studentParentTeacherController
+                                      .listOfSubject.isNotEmpty &&
+                                      studentParentTeacherController
+                                          .viewMarkSubjectSelected !=
+                                          null
+                                      ? () async {
+                                    if (studentParentTeacherController
+                                        .viewMarkSelectedExam !=
+                                        null) {
+                                      Get.back();
+                                      studentParentTeacherController.setViewOrAddEditMarks(viewOrAddEditMarks: 1);
+                                      await studentParentTeacherController
+                                          .getListOfMarks(
+                                          classId:
+                                          studentParentTeacherController
+                                              .currentSelectedClass
+                                              ?.cid ??
+                                              "",
+                                          subjectId:
+                                          studentParentTeacherController
+                                              .viewMarkSubjectSelected
+                                              ?.id ??
+                                              "",
+                                          examId:
+                                          studentParentTeacherController
+                                              .viewMarkSelectedExam
+                                              ?.eid ??
+                                              "")
+                                          .then((response) {
+
+                                      });
+                                    } else {
+                                      AppConstants.showCustomToast(
+                                          status: false,
+                                          message:
+                                          "Por favor seleccione examen");
+                                    }
+                                  }
+                                      : () {
+                                    if (studentParentTeacherController
+                                        .selectedStudentForFollowedUp ==
+                                        null) {
+                                      AppConstants.showCustomToast(
+                                          status: false,
+                                          message:
+                                          'Por favor seleccione estudiante');
+                                    }
+                                  }),
+                            );
+                          },
+                        )),
+                        const SizedBox(width: 20,),
+                        Expanded(child: Consumer<StudentParentTeacherController>(
+                          builder:
+                              (context, studentParentTeacherController, child) {
+                            return SizedBox(
+                              child: CustomButtonWidget(
+                                  buttonTitle: 'Ver datos',
+                                  onPressed: studentParentTeacherController
+                                      .listOfSubject.isNotEmpty &&
+                                      studentParentTeacherController
+                                          .viewMarkSubjectSelected !=
+                                          null
+                                      ? () async {
+                                    if (studentParentTeacherController
+                                        .viewMarkSelectedExam !=
+                                        null) {
+                                      Get.back();
+                                      studentParentTeacherController.setViewOrAddEditMarks(viewOrAddEditMarks: 0);
+                                      await studentParentTeacherController
+                                          .getListOfMarks(
+                                          classId:
+                                          studentParentTeacherController
+                                              .currentSelectedClass
+                                              ?.cid ??
+                                              "",
+                                          subjectId:
+                                          studentParentTeacherController
+                                              .viewMarkSubjectSelected
+                                              ?.id ??
+                                              "",
+                                          examId:
+                                          studentParentTeacherController
+                                              .viewMarkSelectedExam
+                                              ?.eid ??
+                                              "")
+                                          .then((response) {});
+                                    } else {
+                                      AppConstants.showCustomToast(
+                                          status: false,
+                                          message:
+                                          "Por favor seleccione examen");
+                                    }
+                                  }
+                                      : () {
+                                    if (studentParentTeacherController
+                                        .selectedStudentForFollowedUp ==
+                                        null) {
+                                      AppConstants.showCustomToast(
+                                          status: false,
+                                          message:
+                                          'Por favor seleccione estudiante');
+                                    }
+                                  }),
+                            );
+                          },
+                        ))
+                      ],
                     ),
                     const SizedBox(
                       height: 10,

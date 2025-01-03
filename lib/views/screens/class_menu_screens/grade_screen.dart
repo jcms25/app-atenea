@@ -158,7 +158,7 @@ class _GradeScreenChild extends State<GradeScreen> {
                                                             .getOutfit400(
                                                                 textSize: 14,
                                                                 textColor: AppColors
-                                                                    .secondary),
+                                                                    .white),
                                                       ),
                                                     )),
                                                 const SizedBox(
@@ -337,44 +337,7 @@ class _GradeScreenChild extends State<GradeScreen> {
       });
     }
 
-    // ApiClass httpService = ApiClass();
-    // SessionManagement sessionManagement = SessionManagement();
-    // int? role = await sessionManagement.getRole("Role");
-    // if (role == 0) {
-    //   Studentlogin login = await sessionManagement.getModel('Login');
-    //   String? token = login.basicAuthToken;
-    //   dynamic response =
-    //       await httpService.getMarks(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
-    //   if (response['status']) {
-    //     MarkList studentMarks = MarkList.fromJson(response);
-    //     setState(() {
-    //       listMarks = studentMarks.markslist;
-    //       tempList = studentMarks.markslist;
-    //       isLoading = false;
-    //     });
-    //   } else {
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //   }
-    // } else {
-    //   Parentlogin parent = await sessionManagement.getModelParent('Parent');
-    //   String ptoken = parent.basicAuthToken;
-    //   dynamic response =
-    //       await httpService.getMarks(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
-    //   if (response['status']) {
-    //     MarkList studentMarks = MarkList.fromJson(response);
-    //     setState(() {
-    //       listMarks = studentMarks.markslist;
-    //       tempList = studentMarks.markslist;
-    //       isLoading = false;
-    //     });
-    //   } else {
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //   }
-    // }
+
   }
 
   onSearchTextChanged(String text) async {

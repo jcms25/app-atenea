@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:colegia_atenea/controllers/edit_profile_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/controllers/assistant_controller.dart';
 import 'package:colegia_atenea/controllers/splash_login_controller.dart';
@@ -41,7 +41,7 @@ void main() async {
       android: androidInitializationSettings, iOS: iosSettings);
   // bool? initialize = await notificationsPlugin.initialize(initializationSettings);
   await notificationsPlugin.initialize(initializationSettings);
-  FirebaseMessaging.instance.getToken().then((value) => print("token is : $value"));
+  // FirebaseMessaging.instance.getToken().then((value) => print("token is : $value"));
   FirebaseMessaging.onMessage.listen((event) {
     if (Platform.isAndroid) {
       NotificationService.showNotification(event);
@@ -68,16 +68,16 @@ void main() async {
         create: (context) => StudentParentTeacherController(),
       ),
       ChangeNotifierProvider(create: (context) => SplashLoginController()),
-      ChangeNotifierProvider(create: (context) => AssistantController())
+      ChangeNotifierProvider(create: (context) => AssistantController()),
+      ChangeNotifierProvider(create: (context) => EditProfileController())
     ],
     child: SafeArea(
         child: GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: const SplashScreen(),
-      // home: const LoginScreen1(),
       translations: WorldLanguage(),
       //Language class from world_languages.dart
       locale: const Locale('es', 'ES'),
+      localizationsDelegates: [],
       // translations will be displayed in that locale
       fallbackLocale: const Locale('es', 'ES'),
       initialRoute: AppRoutes.initialRoute,
@@ -92,7 +92,7 @@ void main() async {
 
 void setLoginFalse() async {
   await AppSharedPreferences.loggedOutUser();
-  Get.offNamedUntil(AppRoutes.loginScreen,(routes) => false);
+  Get.offNamedUntil(AppRoutes.loginScreen, (routes) => false);
 }
 
 void getInitialMessage() async {
@@ -127,4 +127,3 @@ MaterialColor createMaterialColor(Color color) {
   }
   return MaterialColor(color.value, swatch);
 }
-

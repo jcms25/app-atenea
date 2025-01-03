@@ -1,7 +1,6 @@
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
+import 'package:flutter/services.dart';
 import '../../utils/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -11,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final TextInputAction? textInputAction;
   final TextInputType? textInputType;
+  final List<TextInputFormatter>? inputFormatter;
   final Function validateFunction;
   final Function(String?)? onTextChanged;
   final int? minLine;
@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
   final String? label;
   final Color? filledColor;
   final Icon? prefixIcon;
+  final bool? enabled;
 
   CustomTextField(
       {super.key,
@@ -33,6 +34,8 @@ class CustomTextField extends StatelessWidget {
       this.maxLine,
       this.filledColor,
       this.prefixIcon,
+      this.enabled,
+      this.inputFormatter,
       this.label});
 
   @override
@@ -54,6 +57,7 @@ class CustomTextField extends StatelessWidget {
             )),
         TextFormField(
           controller: controller,
+          enabled: enabled,
           decoration: InputDecoration(
               filled: true,
               border: inputBorder,
@@ -73,6 +77,7 @@ class CustomTextField extends StatelessWidget {
           maxLines: maxLine ?? minLine ?? 0 + 1,
           onChanged: onTextChanged,
           keyboardType: textInputType,
+          inputFormatters: inputFormatter,
           autofocus: false,
           textInputAction: textInputAction,
           validator: (value) => validateFunction(value),

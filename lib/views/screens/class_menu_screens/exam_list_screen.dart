@@ -1,29 +1,23 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/exam_list_model.dart';
-import 'package:colegia_atenea/models/login_model.dart';
-import 'package:colegia_atenea/services/api_class.dart';
-import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
+import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
 import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
-import 'package:colegia_atenea/views/screens/class_menu_screens/class_menu_details_screen/test_detail_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/class_menu_details_screen/exam_details_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_exam_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ExamListScreen extends StatefulWidget {
-  // final String? cid;
-  // final String? wpId;
-
   const ExamListScreen({
     super.key,
-    // this.cid,
-    // this.wpId,
   });
 
   @override
@@ -31,31 +25,41 @@ class ExamListScreen extends StatefulWidget {
 }
 
 class ExamListScreenState extends State<ExamListScreen> {
-  // // List<Exams> listExam = [];
-  // List<Datum> year = [];
-  // List<DatumDatum> month = [];
-  // List<Datum> searchlist = [];
-  // List<String> yearSelected = [];
-  TextEditingController search = TextEditingController();
-  bool isLoading = true;
-
-  List<ExamListItem> tempExamList = [];
-  List<ExamListItem> examList = [];
-
-
-  Map<String,dynamic>? arguments;
+  Map<String, dynamic>? arguments;
 
   StudentParentTeacherController? studentParentTeacherController;
 
   @override
   void initState() {
     super.initState();
-    // print(widget.cid);
-    // print(widget.wpId);
-    // getAllExamList();
     arguments = Get.arguments;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp){
-      studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      studentParentTeacherController =
+          Provider.of<StudentParentTeacherController>(context, listen: false);
+
+      if (arguments?['role'] == RoleType.teacher) {
+        if (studentParentTeacherController
+                ?.listOfClassAssignToTeacher.isNotEmpty ??
+            false) {
+          studentParentTeacherController?.setCurrentSelectedClass(
+              teacherClass: studentParentTeacherController
+                  ?.listOfClassAssignToTeacher[0]);
+          studentParentTeacherController?.getListOfExams(
+              classId:
+                  studentParentTeacherController?.currentSelectedClass?.cid ??
+                      "",
+              wpUserId: "",
+              roleType: RoleType.teacher);
+        } else {
+          studentParentTeacherController?.getListOfClassesAssignToTeacher(
+              showLoader: true, fromWhere: 8);
+        }
+      } else {
+        studentParentTeacherController?.getListOfExams(
+            classId: arguments?['classId'] ?? "",
+            wpUserId: arguments?['wpUserId'] ?? "",
+            roleType: arguments?['role']);
+      }
     });
   }
 
@@ -63,524 +67,132 @@ class ExamListScreenState extends State<ExamListScreen> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: true,
-        onPopInvokedWithResult: (ctx,res){
+        onPopInvokedWithResult: (ctx, res) {
           studentParentTeacherController?.setIsLoading(isLoading: false);
           studentParentTeacherController?.setListOfExams(listOfExams: []);
         },
-        child:  Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: CustomAppBarWidget(
-        title: Text(
-          "tests".tr,
-          style: AppTextStyle.getOutfit600(
-              textSize: 20, textColor: AppColors.white),
-        ),
-        onLeadingIconClicked: () {
-          studentParentTeacherController?.setIsLoading(isLoading: false);
-          studentParentTeacherController?.setListOfExams(listOfExams: []);
-          Get.back();
-        },
-        actionIcons: [
-          Consumer<StudentParentTeacherController>(
-            builder: (context,studentParentTeacherController,child){
-              return Visibility(
-                  visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher,
-                  child: TeacherClassListDropdown(fromWhichScreen: 6));
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: CustomAppBarWidget(
+            title: Text(
+              "tests".tr,
+              style: AppTextStyle.getOutfit600(
+                  textSize: 20, textColor: AppColors.white),
+            ),
+            onLeadingIconClicked: () {
+              studentParentTeacherController?.setIsLoading(isLoading: false);
+              studentParentTeacherController?.setListOfExams(listOfExams: []);
+              Get.back();
             },
-          )
-        ],
-      ),
-      body: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            actionIcons: [
+              Visibility(
+                  visible: arguments?['role'] == RoleType.teacher,
+                  child: Expanded(
+                      child: TeacherClassListDropdown(fromWhichScreen: 6)))
+            ],
+          ),
+          body: Stack(
             children: [
-              Container(
-                  height: 90,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20)),
-                      color: AppColors.primary),
-                  // child: Padding(
-                  //   padding: const EdgeInsets.only(left: 15, right: 15),
-                  //   child: Row(
-                  //     children: [
-                  //       Expanded(
-                  //         child: Container(
-                  //           height: 50,
-                  //           decoration: BoxDecoration(
-                  //             color: AppColors.white,
-                  //             borderRadius: BorderRadius.circular(12),
-                  //           ),
-                  //           child: TextField(
-                  //             controller: search,
-                  //             autofocus: false,
-                  //             decoration: InputDecoration(
-                  //                 prefixIcon: IconButton(
-                  //                   icon: const Icon(
-                  //                     Icons.search,
-                  //                     color: AppColors.searchIcon,
-                  //                   ),
-                  //                   onPressed: () {},
-                  //                 ),
-                  //                 hintText: 'search',
-                  //                 hintStyle: AppTextStyle.getOutfit500(
-                  //                     textSize: 18,
-                  //                     textColor:
-                  //                     AppColors.secondary.withOpacity(0.4)),
-                  //                 contentPadding: const EdgeInsets.all(10),
-                  //                 border: InputBorder.none),
-                  //             // style: CustomStyle.textValue,
-                  //             keyboardType: TextInputType.emailAddress,
-                  //             textInputAction: TextInputAction.next,
-                  //             onChanged: onSearchTextChanged,
-                  //             cursorColor: AppColors.primary,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // )
-                child: CustomTextField(
-                    controller: search,
-                    validateFunction: (String? value){}),
-              ),
-              Expanded(
-                  child: SizedBox(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20)),
+                        color: AppColors.primary),
+                    padding: const EdgeInsets.all(20),
+                    child: Consumer<StudentParentTeacherController>(
+                      builder:
+                          (context, studentParentTeacherController, child) {
+                        return CustomTextField(
+                          hintText: 'Buscar exámenes',
+                          filledColor: AppColors.white,
+                          validateFunction: (String? value) {},
+                          onTextChanged:
+                              studentParentTeacherController.searchInExamList,
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                      child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     width: MediaQuery.of(context).size.width,
                     child: ScrollConfiguration(
                       behavior:
-                      const ScrollBehavior().copyWith(overscroll: false),
+                          const ScrollBehavior().copyWith(overscroll: false),
                       child: Consumer<StudentParentTeacherController>(
-                        builder: (context,studentParentTeacherController,child){
-                          return ListView.builder(
-                              itemCount: tempExamList.length,
-                              itemBuilder: (context, index) {
-                                ExamListItem examListItem = studentParentTeacherController.tempListOfExams[index];
-                                return ExamItemWidget(examListItem: examListItem);
-                              });
+                        builder:
+                            (context, studentParentTeacherController, child) {
+                          return studentParentTeacherController
+                                  .tempListOfExams.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    "No se encontraron exámenes",
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 18,
+                                        textColor: AppColors.secondary
+                                            .withOpacity(0.5)),
+                                  ),
+                                )
+                              : ListView.separated(
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      height: 20,
+                                    );
+                                  },
+                                  itemCount: studentParentTeacherController
+                                      .tempListOfExams.length,
+                                  itemBuilder: (context, index) {
+                                    ExamListItem examListItem =
+                                        studentParentTeacherController
+                                            .tempListOfExams[index];
+                                    return ExamItemWidget(
+                                        examListItem: examListItem);
+                                  });
                         },
                       ),
                     ),
                   )),
-              const SizedBox(
-                height: 10,
+                  const SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
+              Consumer<StudentParentTeacherController>(
+                builder: (context, studentParentTeacherController, child) {
+                  return Visibility(
+                      visible: studentParentTeacherController.isLoading,
+                      child: LoadingLayout());
+                },
               )
             ],
           ),
-          Consumer<StudentParentTeacherController>(
-            builder: (context,studentParentTeacherController,child){
+          floatingActionButton: Consumer<StudentParentTeacherController>(
+            builder: (context, studentParentTeacherController, child) {
               return Visibility(
-                  visible: studentParentTeacherController.isLoading,
-                  child: LoadingLayout());
+                  visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher,
+                  child: FloatingActionButton(
+                onPressed: () {
+                  Get.to(() => TeacherAddEditExamScreen(),
+                      arguments: {"reason": "add-exam"});
+                },
+                elevation: 0,
+                child: Icon(Icons.add),
+              ));
             },
-          )
-        ],
-      ),
-    ));
-  }
-
-  void getAllExamList() async {
-    // ApiClass httpService = ApiClass();
-    // SessionManagement sessionManagement = SessionManagement();
-    // int? role = await sessionManagement.getRole("Role");
-    // if (role == 0) {
-    //   Studentlogin login = await sessionManagement.getModel('Student');
-    //   String? token = login.basicAuthToken;
-    //   dynamic response =
-    //       await httpService.getExamList(token, widget.wpId, widget.cid,login.userdata.cookie ?? "");
-    //  setExamList(response);
-    // } else {
-    //   Parentlogin parent = await sessionManagement.getModelParent('Parent');
-    //   String ptoken = parent.basicAuthToken;
-    //
-    //   dynamic response =
-    //       await httpService.getExamList(ptoken, widget.wpId, widget.cid,parent.userdata.cookie ?? "");
-    //   setExamList(response);
-    // }
-
-    LoginModel? loginModel = AppSharedPreferences.getUserData();
-    // dynamic response = await ApiClass().getExamList(
-    //     loginModel?.basicAuthToken ?? "",
-    //     widget.wpId ?? "",
-    //     widget.cid ?? "",
-    //     loginModel?.userdata?.cookies ?? "");
-    // setExamList(response);
-  }
-
-  setExamList(dynamic response) {
-    if (response['status']) {
-      ExamListModel exam = ExamListModel.fromJson(response);
-      setState(() {
-        // year = exam.data;
-        tempExamList = exam.data!;
-        examList = exam.data!;
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  getExamItem(ExamListItem examItem) {
-    String month = getMonthInSpan(DateTime.parse(examItem.eSDate!).month);
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TestDetails(
-                    examItem.eid!, examItem.sid!, examItem.professorName!)));
-      },
-      child: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.05),
-                  borderRadius: const BorderRadius.all(Radius.circular(15))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          margin: const EdgeInsets.all(15),
-                          height: 80,
-                          width: 80,
-                          decoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(00),
-                                child: Text(
-                                  DateFormat("dd")
-                                      .format(DateTime.parse(examItem.eSDate!)),
-                                  style: AppTextStyle.getOutfit900(
-                                      textSize: 32, textColor: AppColors.white),
-                                  // style: CustomStyle.id,
-                                ),
-                              ),
-                              AutoSizeText(
-                                "${month.length >= 5 ? month.substring(0, 3) : month}\t${DateFormat("yyyy").format(DateTime.parse(examItem.eSDate!))}",
-                                style: AppTextStyle.getOutfit400(
-                                    textSize: 14,
-                                    textColor: AppColors.secondary),
-                              ),
-                            ],
-                          )),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                examItem.eName!,
-                                style: AppTextStyle.getOutfit600(
-                                    textSize: 20,
-                                    textColor: AppColors.secondary),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              examItem.subName!,
-                              style: AppTextStyle.getOutfit400(
-                                  textSize: 18, textColor: AppColors.secondary),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              examItem.time!,
-                              style: AppTextStyle.getOutfit400(
-                                  textSize: 16, textColor: AppColors.white),
-                              // style: CustomStyle.hello.copyWith(color: AppColors.secondary),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              )),
-        ),
-      ),
-    );
-  }
-
-  String getMonthInSpan(int month) {
-    switch (month) {
-      case 1:
-        return "enero";
-      case 2:
-        return "febrero";
-      case 3:
-        return "marzo";
-      case 4:
-        return "abril";
-      case 5:
-        return "mayo";
-      case 6:
-        return "junio";
-      case 7:
-        return "julio";
-      case 8:
-        return "agosto";
-      case 9:
-        return "septiembre";
-      case 10:
-        return "octubre";
-      case 11:
-        return "noviembre";
-      default:
-        return "diciembre ";
-    }
-  }
-
-  // Widget getListView(List<Datum> year){
-  //   return Expanded(
-  //       child: year.isEmpty
-  //           ? Center(
-  //         child: Text("asList".tr),
-  //       )
-  //           : ScrollConfiguration(
-  //           behavior: const ScrollBehavior()
-  //               .copyWith(overscroll: false),
-  //           child: ListView.builder(
-  //               shrinkWrap: true,
-  //               itemCount: year.isEmpty ? 0 : year.length,
-  //               itemBuilder: (context, position) {
-  //                 List<DatumDatum> monthWiseData =
-  //                 List.from(
-  //                     year[position].data.reversed);
-  //                 return GestureDetector(
-  //                     onTap: () {},
-  //                     child: ListView.builder(
-  //                         physics:
-  //                         const NeverScrollableScrollPhysics(),
-  //                         shrinkWrap: true,
-  //                         reverse: true,
-  //                         itemCount: year.isEmpty
-  //                             ? 0
-  //                             : monthWiseData.length,
-  //                         itemBuilder: (context, index) {
-  //                           return Column(
-  //                             crossAxisAlignment:
-  //                             CrossAxisAlignment.start,
-  //                             children: [
-  //                               monthWiseData[index]
-  //                                   .data
-  //                                   .isEmpty
-  //                                   ? const SizedBox
-  //                                   .shrink()
-  //                                   : Padding(
-  //                                 padding:
-  //                                 const EdgeInsets
-  //                                     .only(
-  //                                     left: 20,
-  //                                     right: 20,
-  //                                     top: 10),
-  //                                 child: Text(
-  //                                   year.isEmpty
-  //                                       ? "January"
-  //                                       : "${monthWiseData[index].month} - ${year[position].year}",
-  //                                   style: CustomStyle
-  //                                       .appbartitle
-  //                                       .copyWith(
-  //                                       color: AppColors
-  //                                           .primary,
-  //                                       fontWeight:
-  //                                       FontWeight
-  //                                           .w600),
-  //                                 ),
-  //                               ),
-  //                               ListView.builder(
-  //                                   shrinkWrap: true,
-  //                                   physics:
-  //                                   const NeverScrollableScrollPhysics(),
-  //                                   itemCount: year.isEmpty
-  //                                       ? 0
-  //                                       : monthWiseData[
-  //                                   index]
-  //                                       .data
-  //                                       .length,
-  //                                   itemBuilder:
-  //                                       (context, item) {
-  //                                     String date = year
-  //                                         .isEmpty
-  //                                         ? "15"
-  //                                         : monthWiseData[
-  //                                     index]
-  //                                         .data[item]
-  //                                         .eSDate
-  //                                         .substring(
-  //                                         0, 2);
-  //                                     return GestureDetector(
-  //                                       onTap: () {
-  //                                         Navigator.push(
-  //                                             context,
-  //                                             MaterialPageRoute(
-  //                                                 builder: (context) => TestDetails(
-  //                                                     monthWiseData[index]
-  //                                                         .data[
-  //                                                     item]
-  //                                                         .eid,
-  //                                                     monthWiseData[index]
-  //                                                         .data[
-  //                                                     item]
-  //                                                         .sid,
-  //                                                     monthWiseData[index]
-  //                                                         .data[item]
-  //                                                         .professorname)));
-  //                                       },
-  //                                       child: Container(
-  //                                         margin:
-  //                                         const EdgeInsets
-  //                                             .only(
-  //                                             left: 20,
-  //                                             right: 20,
-  //                                             top: 10),
-  //                                         child: Padding(
-  //                                           padding:
-  //                                           const EdgeInsets
-  //                                               .only(
-  //                                               top:
-  //                                               00),
-  //                                           child:
-  //                                           Container(
-  //                                               decoration: BoxDecoration(
-  //                                                   color: AppColors.primary.withOpacity(
-  //                                                       0.05),
-  //                                                   borderRadius: const BorderRadius.all(Radius.circular(
-  //                                                       15))),
-  //                                               child:
-  //                                               Column(
-  //                                                 children: [
-  //                                                   Row(
-  //                                                     children: [
-  //                                                       Container(
-  //                                                           margin: const EdgeInsets.all(15),
-  //                                                           height: 80,
-  //                                                           width: 80,
-  //                                                           decoration: const BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.all(Radius.circular(10))),
-  //                                                           child: Column(
-  //                                                             mainAxisAlignment: MainAxisAlignment.center,
-  //                                                             children: [
-  //                                                               Padding(
-  //                                                                 padding: const EdgeInsets.all(00),
-  //                                                                 child: Text(
-  //                                                                   date,
-  //                                                                   style: CustomStyle.id,
-  //                                                                 ),
-  //                                                               ),
-  //                                                               Padding(
-  //                                                                 padding: const EdgeInsets.only(
-  //                                                                   left: 10,
-  //                                                                   right: 10,
-  //                                                                 ),
-  //                                                                 child: Text(
-  //                                                                   year.isEmpty
-  //                                                                       ? "Jan".toString()
-  //                                                                       : monthWiseData[index].month.length > 5
-  //                                                                       ? monthWiseData[index].month.substring(0, 3)
-  //                                                                       : monthWiseData[index].month,
-  //                                                                   style: CustomStyle.txtvalue1.copyWith(color: AppColors.white),
-  //                                                                 ),
-  //                                                               ),
-  //                                                             ],
-  //                                                           )),
-  //                                                       Expanded(
-  //                                                         child: Column(
-  //                                                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                                                           children: [
-  //                                                             Padding(
-  //                                                               padding: const EdgeInsets.only(top: 10),
-  //                                                               child: Text(
-  //                                                                 year.isEmpty ? "Subject name".toString() : monthWiseData[index].data[item].subName,
-  //                                                                 style: CustomStyle.calaender,
-  //                                                               ),
-  //                                                             ),
-  //                                                             const SizedBox(
-  //                                                               height: 5,
-  //                                                             ),
-  //                                                             Text(
-  //                                                               year.isEmpty ? "Exam Name".toString() : monthWiseData[index].data[item].eName,
-  //                                                               style: CustomStyle.txtvalue,
-  //                                                             ),
-  //                                                             const SizedBox(
-  //                                                               height: 5,
-  //                                                             ),
-  //                                                             Text(
-  //                                                               year.isEmpty ? "hour".toString() : monthWiseData[index].data[item].time,
-  //                                                               style: CustomStyle.hello.copyWith(color: AppColors.secondary),
-  //                                                             ),
-  //                                                             const SizedBox(
-  //                                                               height: 10,
-  //                                                             ),
-  //                                                           ],
-  //                                                         ),
-  //                                                       )
-  //                                                     ],
-  //                                                   ),
-  //                                                 ],
-  //                                               )),
-  //                                         ),
-  //                                       ),
-  //                                     );
-  //                                   }),
-  //                             ],
-  //                           );
-  //                         }));
-  //               })));
-  // }
-
-  // Widget getFilterData() {
-  //   List<Datum> yearList = [];
-  //   filterData.forEach((key, value) {
-  //   });
-  //   return getListView(yearList);
-  // }
-
-  void onSearchTextChanged(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        tempExamList = examList;
-      });
-    } else {
-      List<ExamListItem> searchedData = [];
-      for (var examDetail in examList) {
-        if (examDetail.eName!.isCaseInsensitiveContains(value) ||
-            examDetail.subName!.isCaseInsensitiveContains(value)) {
-          searchedData.add(examDetail);
-        }
-      }
-      setState(() {
-        tempExamList = searchedData;
-      });
-    }
+          ),
+        ));
   }
 }
 
-
 class ExamItemWidget extends StatelessWidget {
   final ExamListItem examListItem;
+
   const ExamItemWidget({super.key, required this.examListItem});
 
   @override
@@ -588,9 +200,119 @@ class ExamItemWidget extends StatelessWidget {
     return Container(
       width: MediaQuery.sizeOf(context).width,
       decoration: BoxDecoration(
-
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.primary.withOpacity(0.05)),
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+              child: GestureDetector(
+            onTap: () {
+              Get.to(() => ExamDetailScreen(
+                    id: examListItem.eid ?? "",
+                    sID: examListItem.subjectId ?? "",
+                    professorName: examListItem.professorName ?? "",
+                    subjectName: examListItem.subName ?? "-   ",
+                  ));
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  constraints: BoxConstraints(minHeight: 60, minWidth: 60),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${DateTime.parse(examListItem.eSDate ?? "").day}",
+                        style: AppTextStyle.getOutfit900(
+                            textSize: 32, textColor: AppColors.white),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "${AppConstants.getMonthInSpan(DateTime.parse(examListItem.eSDate ?? "").month).length > 5 ? AppConstants.getMonthInSpan(DateTime.parse(examListItem.eSDate ?? "").month).substring(0, 3) : AppConstants.getMonthInSpan(DateTime.parse(examListItem.eSDate ?? "").month)}\t${DateTime.parse(examListItem.eSDate ?? "").year}",
+                        style: AppTextStyle.getOutfit300(
+                            textSize: 14, textColor: AppColors.white),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      examListItem.eName ?? "-",
+                      style: AppTextStyle.getOutfit600(
+                          textSize: 20, textColor: AppColors.secondary),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      examListItem.subName ?? "-",
+                      style: AppTextStyle.getOutfit400(
+                          textSize: 18, textColor: AppColors.secondary),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      examListItem.time ?? "-",
+                      style: AppTextStyle.getOutfit400(
+                          textSize: 18, textColor: AppColors.secondary),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                  ],
+                )),
+              ],
+            ),
+          )),
+          const SizedBox(
+            width: 10,
+          ),
+          Consumer<StudentParentTeacherController>(
+            builder: (context, studentParentController, child) {
+              return Visibility(
+                  visible: studentParentController.currentLoggedInUserRole ==
+                          RoleType.teacher &&
+                      examListItem.createdBy ==
+                          studentParentController.loginModel?.userdata?.wpUsrId,
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.to(() => TeacherAddEditExamScreen(),
+                          arguments: {"reason": "edit-exam",
+                          "exam-data" : examListItem
+                          });
+                    },
+                    child: SvgPicture.asset(
+                      AppImages.edit,
+                      colorFilter:
+                          ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                      width: 20,
+                      height: 20,
+                    ),
+                  ));
+            },
+          )
+        ],
       ),
     );
   }
 }
-

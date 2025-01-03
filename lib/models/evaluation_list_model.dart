@@ -17,12 +17,12 @@ class Evaluation {
 
   bool status;
   String message;
-  List<Datum> data;
+  List<EvaluationItem> data;
 
   factory Evaluation.fromJson(Map<String, dynamic> json) => Evaluation(
     status: json["status"],
     message: json["Message"],
-    data: List<Datum>.from(json["Data"].map((x) => Datum.fromJson(x))),
+    data: List<EvaluationItem>.from(json["Data"].map((x) => EvaluationItem.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -32,20 +32,20 @@ class Evaluation {
   };
 }
 
-class Datum {
-  Datum({
+class EvaluationItem {
+  EvaluationItem({
     required this.subject,
     required this.marks,
     required this.observation,
   });
 
   String subject;
-  Marks marks;
+  EvaluationMarks marks;
   Observation observation;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory EvaluationItem.fromJson(Map<String, dynamic> json) => EvaluationItem(
     subject: json["subject"],
-    marks: Marks.fromJson(json["marks"]),
+    marks: EvaluationMarks.fromJson(json["marks"]),
     observation: Observation.fromJson(json["observation"]),
   );
 
@@ -56,8 +56,8 @@ class Datum {
   };
 }
 
-class Marks {
-  Marks({
+class EvaluationMarks {
+  EvaluationMarks({
     required this.evaluation4,
     required this.evaluation3,
     required this.evaluation2,
@@ -69,7 +69,7 @@ class Marks {
   String evaluation2;
   String evaluation1;
 
-  factory Marks.fromJson(Map<String, dynamic> json) => Marks(
+  factory EvaluationMarks.fromJson(Map<String, dynamic> json) => EvaluationMarks(
     evaluation4: json["evaluation 4"],
     evaluation3: json["evaluation 3"],
     evaluation2: json["evaluation 2"],

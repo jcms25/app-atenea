@@ -1,17 +1,17 @@
-class Singleteacher {
+class SingleTeacherModel {
   bool? status;
   String? message;
-  List<Data>? data;
+  List<SingleTeacherDetailItem>? data;
 
-  Singleteacher({this.status, this.message, this.data});
+  SingleTeacherModel({this.status, this.message, this.data});
 
-  Singleteacher.fromJson(Map<String, dynamic> json) {
+  SingleTeacherModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['Message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <SingleTeacherDetailItem>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(SingleTeacherDetailItem.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class Singleteacher {
   }
 }
 
-class Data {
+class SingleTeacherDetailItem {
   String? tid;
   String? wpUsrId;
   String? firstName;
@@ -37,7 +37,7 @@ class Data {
   String? country;
   String? city;
   String? address;
-  String? empcode;
+  String? empCode;
   String? dob;
   String? doj;
   String? dol;
@@ -59,8 +59,9 @@ class Data {
   String? userStatus;
   String? displayName;
   String? image;
+  List<String>? subjectName;
 
-  Data(
+  SingleTeacherDetailItem(
       {this.tid,
         this.wpUsrId,
         this.firstName,
@@ -70,7 +71,7 @@ class Data {
         this.country,
         this.city,
         this.address,
-        this.empcode,
+        this.empCode,
         this.dob,
         this.doj,
         this.dol,
@@ -91,9 +92,11 @@ class Data {
         this.userActivationKey,
         this.userStatus,
         this.displayName,
-        this.image});
+        this.image,
+        this.subjectName
+      });
 
-  Data.fromJson(Map<String, dynamic> json) {
+  SingleTeacherDetailItem.fromJson(Map<String, dynamic> json) {
     tid = json['tid'];
     wpUsrId = json['wp_usr_id'];
     firstName = json['first_name'];
@@ -103,7 +106,7 @@ class Data {
     country = json['country'];
     city = json['city'];
     address = json['address'];
-    empcode = json['empcode'];
+    empCode = json['empcode'];
     dob = json['dob'];
     doj = json['doj'];
     dol = json['dol'];
@@ -125,6 +128,14 @@ class Data {
     userStatus = json['user_status'];
     displayName = json['display_name'];
     image = json['image'];
+    // subjectName = json['subject_name'];
+
+    if (json['subject_name'] != null) {
+      subjectName = <String>[];
+      json['subject_name'].forEach((v) {
+        subjectName!.add(v);
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -138,7 +149,7 @@ class Data {
     data['country'] = country;
     data['city'] = city;
     data['address'] = address;
-    data['empcode'] = empcode;
+    data['empcode'] = empCode;
     data['dob'] = dob;
     data['doj'] = doj;
     data['dol'] = dol;
@@ -160,6 +171,7 @@ class Data {
     data['user_status'] = userStatus;
     data['display_name'] = displayName;
     data['image'] = image;
+    data['subject_name'] = subjectName;
     return data;
   }
 }

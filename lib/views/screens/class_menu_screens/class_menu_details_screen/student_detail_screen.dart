@@ -128,7 +128,10 @@ class _StudentDetailsChild extends State<StudentDetails> {
                               builder: (context, studentParentTeacherController,
                                   child) {
                                 return Visibility(
-                                  visible: studentParentTeacherController.isAddressAndParentDetailsVisible(idOfStudentYouAreSeeingDetails: widget.sid),
+                                  visible: studentParentTeacherController
+                                      .isAddressAndParentDetailsVisible(
+                                          idOfStudentYouAreSeeingDetails:
+                                              widget.sid),
                                   child: CustomStudentDetailRow(
                                       label: 'streetaddress'.tr,
                                       height: 100,
@@ -205,17 +208,17 @@ class _StudentDetailsChild extends State<StudentDetails> {
                               height: 20,
                             ),
                             Consumer<StudentParentTeacherController>(
-                              builder: (context, studentParentTeacherController, child) {
+                              builder: (context, studentParentTeacherController,
+                                  child) {
                                 return CustomStudentDetailRow(
                                     label: "doj".tr,
-                                    value:
-                                    studentParentTeacherController
-                                        .studentDetails?.sDoj !=
-                                        null
+                                    value: studentParentTeacherController
+                                                .studentDetails?.sDoj !=
+                                            null
                                         ? DateFormat("dd/MM/yyyy").format(
-                                        studentParentTeacherController
-                                            .studentDetails?.sDoj ??
-                                            DateTime.now())
+                                            studentParentTeacherController
+                                                    .studentDetails?.sDoj ??
+                                                DateTime.now())
                                         : "-");
                               },
                             ),
@@ -281,9 +284,9 @@ class _StudentDetailsChild extends State<StudentDetails> {
                       alignment: Alignment.topCenter,
                       child: Container(
                         margin: EdgeInsets.only(
-                            top: MediaQuery.sizeOf(context).height * 0.10),
-                        height: 160,
-                        width: 160,
+                            top: MediaQuery.sizeOf(context).height * 0.02),
+                        height: 140,
+                        width: 140,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(
@@ -309,7 +312,7 @@ class _StudentDetailsChild extends State<StudentDetails> {
                               backgroundImage: NetworkImage(
                                   studentParentTeacherController
                                           .studentDetails?.stuImage ??
-                                      ""),
+                                      "https://colegioatenea.es/wp-content/plugins/scl-rest-api/img/default_avtar.jpg"),
                               backgroundColor: AppColors.primary,
                             );
                           },
@@ -392,8 +395,13 @@ class ParentWidget extends StatelessWidget {
       children: [
         Text(
           parentData.pGender == "Male"
-              ? "parentsdetail".tr
-              : "parentsdetail2".tr,
+              // ? "parentsdetail".tr
+              // : "parentsdetail2".tr,
+            ? "Datalles del Padre" :
+            "Datalles de la Madre",
+          // parentData.pGender == "Male" ?
+          //       "Nombre de la Padre"
+          //     : "Nombre de la Madre",
           style: AppTextStyle.getOutfit600(
               textSize: 18, textColor: AppColors.secondary),
         ),
@@ -401,7 +409,12 @@ class ParentWidget extends StatelessWidget {
           height: 10,
         ),
         CustomStudentDetailRow(
-            label: parentData.pGender == "Male" ? "pname".tr : "pname2".tr,
+            label: parentData.pGender == "Male"
+                ?
+                // "pname".tr
+                "Nombre del Padre"
+                : "Nombre de la Madre",
+            // "pname2".tr,
             value: "${parentData.pFname}\t${parentData.pLname}"),
         const SizedBox(
           height: 10,

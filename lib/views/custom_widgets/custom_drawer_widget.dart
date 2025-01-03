@@ -7,10 +7,11 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
-import 'package:colegia_atenea/views/screens/class_menu_screens/grade_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/student_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
+import 'package:colegia_atenea/views/screens/dinning_section_screen/manage_service_screen.dart';
+import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
@@ -538,8 +539,10 @@ class CustomDrawerWidget extends StatelessWidget {
         // if(roleType == RoleType.)
         break;
       case "Menu":
+        Get.to(() => MenuScreen());
         break;
       case "Gestionar Servicio":
+        Get.to(() => ManageServiceScreen());
         break;
       case "Mi Horario":
         break;

@@ -8,7 +8,7 @@ class MessageDetails {
   MessageDetails.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['Message'];
-    data = json['data'] != null ? new MessageDetailItem.fromJson(json['data']) : null;
+    data = json['data'] != null ? MessageDetailItem.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {

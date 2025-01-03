@@ -6,10 +6,10 @@ enum RequestType { post, get }
 
 class Api {
 
-  static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
+  // static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
 
-  static const String _localBaseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
-  static String get localBaseURL => _localBaseURL;
+  static const String _baseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
+  static String get localBaseURL => _baseURL;
 
   static const String _loginEndpoint = "login";
   static String get loginEndPoint => _loginEndpoint;
@@ -31,6 +31,9 @@ class Api {
 
   static const String _teacherEndpoint = "teachers";
   static String get teacherEndpoint => _teacherEndpoint;
+
+  static const String  _teacherDetailsEndPoint = "teacher";
+  static String get teacherDetailsEndPoint => _teacherDetailsEndPoint;
 
   static const String _studentEndpoint = "students";
   static String get studentEndpoint => _studentEndpoint;
@@ -57,6 +60,14 @@ class Api {
   static const String _studentParentExamListPoint = "exams";
   static String get studentParentExamListPoint => _studentParentExamListPoint;
 
+  static const String _examDetailEndPoint = "exam";
+   static String get examDetailEndPoint => _examDetailEndPoint;
+
+   static const String _evaluationEndPoint = "evaluation";
+   static String get evaluationEndPoint => _evaluationEndPoint;
+
+   static const String _evaluationPDFDownloadEndpoint = "evaluationpdf";
+   static String get evaluationPDFDownloadEndpoint => _evaluationPDFDownloadEndpoint;
 
   //Teacher side end points
   // static const String _teacherEventsList = "teacher/events";
@@ -86,6 +97,9 @@ class Api {
   static const String _teacherExamListPoint = "teacher/exams";
   static String get teacherExamListPoint => _teacherExamListPoint;
 
+  static const String _teacherAddExamEndPoint = "exams";
+  static String get teacherAddExamEndPoint => _teacherAddExamEndPoint;
+
   static const String _teacherEditExamEndPoint = "exam";
   static String get teacherEditExam => _teacherEditExamEndPoint;
 
@@ -98,25 +112,31 @@ class Api {
   static String get teacherMarksAddEditList => _teacherMarksAddEditListEndPoint;
 
 
+
+  //Dinning Section
+  static const String _dinningSectionEndPoint = "diningmenu";
+  static String get dinningSectionEndPoint => _dinningSectionEndPoint;
+
+  static const String _dinningStudentListEndPoint = "diningstudents";
+  static String get dinningStudentListEndPoint => _dinningStudentListEndPoint;
+
+  static const String _addEditDinningTeacherSide = "diningservice";
+  static String get addEditDinningTeacherSide => _addEditDinningTeacherSide;
+
   static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,
       Map<String, String>? header,
       Map<String, dynamic>? body}) async {
 
-
     try {
-
       Response response;
       if (requestType == RequestType.get) {
         response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header);
-        // response = await get(Uri.parse("$_localBaseURL/$endPoint"), headers: header);
       }
       else {
         response = await post(Uri.parse("$_baseURL/$endPoint"),
             headers: header, body: body);
-        // response = await post(Uri.parse("$_localBaseURL/$endPoint"),
-        //     headers: header, body: body);
       }
       if (response.statusCode == 200) {
         dynamic res = jsonDecode(response.body);
@@ -129,37 +149,6 @@ class Api {
         return {"status": false, "message": "Por favor, inténtalo de nuevo"};
       }
 
-    } catch (exception) {
-      return {"status": false, "message": '$exception'};
-    }
-
-
-
-  }
-
-  //for testing purpose - local request
-  static Future<Map<String, dynamic>> httpLocalRequest(
-      {required RequestType requestType,
-        required String endPoint,
-        required Map<String, String>? header,
-        Map<String, dynamic>? body}) async {
-
-    try {
-      Response response;
-      if (requestType == RequestType.get) {
-        response = await get(Uri.parse("$_localBaseURL/$endPoint"), headers: header);
-      } else {
-        response = await post(Uri.parse("$_localBaseURL/$endPoint"),
-            headers: header, body: body);
-      }
-      if (response.statusCode == 200) {
-        dynamic res = jsonDecode(response.body);
-        return res;
-      } else if (response.statusCode == 401) {
-        return {"status": false, "message": "No autorizado"};
-      } else {
-        return {"status": false, "message": "Por favor, inténtalo de nuevo"};
-      }
     } catch (exception) {
       return {"status": false, "message": '$exception'};
     }

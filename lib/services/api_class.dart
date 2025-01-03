@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:colegia_atenea/models/Failed.dart';
+import 'package:colegia_atenea/models/failed_class_model.dart';
 import 'package:colegia_atenea/services/share_preferences.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
@@ -364,8 +364,8 @@ class ApiClass{
           return Failed.fromJson(data);
         }
       } else if (res.statusCode == 401) {
-        sessionExpired();
-        return {'status': false, 'Message': 'Session Expired.'};
+        // sessionExpired();
+       return {'status': false, 'Message': 'Session Expired.'};
       } else {
         return {"status": false, "Message": "Some thing went wrong"};
       }

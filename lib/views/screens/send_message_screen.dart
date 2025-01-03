@@ -55,8 +55,7 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                 classId: studentParentTeacherController
                         ?.listOfClassAssignToTeacher[0].cid ??
                     "",
-                roleType: RoleType.teacher,
-                sortedAccordingToLastName: false);
+                roleType: RoleType.teacher);
             studentParentTeacherController?.getListOfParents(
                 classId: studentParentTeacherController
                         ?.listOfClassAssignToTeacher[0].cid ??
@@ -347,7 +346,7 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                 return DropdownMenuItem<
                                                     ParentItem>(
                                                   value: e,
-                                                  child: Text("${e.fullName}",
+                                                  child: Text("${e.pFname} ${e.pLname}",
                                                       style: AppTextStyle
                                                           .getOutfit400(
                                                               textSize: 18,

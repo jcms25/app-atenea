@@ -1,14 +1,14 @@
-class Singleexam {
+class ExamDetailsModel {
   bool? status;
   String? message;
-  Data? data;
+  ExamDetailItem? data;
 
-  Singleexam({this.status, this.message, this.data});
+  ExamDetailsModel({this.status, this.message, this.data});
 
-  Singleexam.fromJson(Map<String, dynamic> json) {
+  ExamDetailsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['Message'];
-    data = json['Data'] != null ? Data.fromJson(json['Data']) : null;
+    data = json['Data'] != null ? ExamDetailItem.fromJson(json['Data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,9 +22,9 @@ class Singleexam {
   }
 }
 
-class Data {
+class ExamDetailItem {
   String? eid;
-  String? classid;
+  String? classId;
   String? subjectId;
   String? eName;
   String? eSDate;
@@ -32,12 +32,14 @@ class Data {
   String? entryDate;
   String? time;
   String? comments;
+  String? createdBy;
+  String? updatedBy;
   String? cName;
-  List<Subdetails>? subdetails;
+  List<SubDetails>? subDetails;
 
-  Data(
+  ExamDetailItem(
       {this.eid,
-        this.classid,
+        this.classId,
         this.subjectId,
         this.eName,
         this.eSDate,
@@ -45,12 +47,14 @@ class Data {
         this.entryDate,
         this.time,
         this.comments,
+        this.createdBy,
+        this.updatedBy,
         this.cName,
-        this.subdetails});
+        this.subDetails});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ExamDetailItem.fromJson(Map<String, dynamic> json) {
     eid = json['eid'];
-    classid = json['classid'];
+    classId = json['classid'];
     subjectId = json['subject_id'];
     eName = json['e_name'];
     eSDate = json['e_s_date'];
@@ -58,11 +62,13 @@ class Data {
     entryDate = json['entry_date'];
     time = json['time'];
     comments = json['comments'];
+    createdBy = json['created_by'];
+    updatedBy = json['updated_by'];
     cName = json['c_name'];
     if (json['subdetails'] != null) {
-      subdetails = <Subdetails>[];
+      subDetails = <SubDetails>[];
       json['subdetails'].forEach((v) {
-        subdetails!.add(Subdetails.fromJson(v));
+        subDetails!.add(SubDetails.fromJson(v));
       });
     }
   }
@@ -70,7 +76,7 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['eid'] = eid;
-    data['classid'] = classid;
+    data['classid'] = classId;
     data['subject_id'] = subjectId;
     data['e_name'] = eName;
     data['e_s_date'] = eSDate;
@@ -78,21 +84,23 @@ class Data {
     data['entry_date'] = entryDate;
     data['time'] = time;
     data['comments'] = comments;
+    data['created_by'] = createdBy;
+    data['updated_by'] = updatedBy;
     data['c_name'] = cName;
-    if (subdetails != null) {
-      data['subdetails'] = subdetails!.map((v) => v.toJson()).toList();
+    if (subDetails != null) {
+      data['subdetails'] = subDetails!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class Subdetails {
+class SubDetails {
   String? name;
   String? id;
 
-  Subdetails({this.name, this.id});
+  SubDetails({this.name, this.id});
 
-  Subdetails.fromJson(Map<String, dynamic> json) {
+  SubDetails.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     id = json['id'];
   }

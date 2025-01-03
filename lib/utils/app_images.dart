@@ -36,6 +36,8 @@ class AppImages{
 
   static const String whiteAppLogo = "$rootPath/white_logo_atenea.png";
 
+  static const String menuImage = "$rootPath/colegio_menu_image.png";
+
   //assistant
   static const String asDashboard = "$rootPath/assistant_dashboard.svg";
   static const String asDashBoardActive = "$rootPath/assistant_dashboard_active.svg";

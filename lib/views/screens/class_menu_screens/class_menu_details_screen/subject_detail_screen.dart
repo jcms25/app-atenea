@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
+import 'package:colegia_atenea/views/custom_widgets/back_layout_of_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/dotted_line_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
@@ -34,7 +35,8 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentController = Provider.of(context, listen: false);
-      studentParentController?.getSingleSubjectDetails(subjectId: widget.subjectId);
+      studentParentController?.getSingleSubjectDetails(
+          subjectId: widget.subjectId);
     });
   }
 
@@ -42,314 +44,206 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: true,
-        onPopInvokedWithResult: (result,onPopInvoked){
+        onPopInvokedWithResult: (result, onPopInvoked) {
           studentParentController?.setSubjectDetails(subjectDetail: null);
           studentParentController?.setSubject(subject: null);
         },
         child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: CustomAppBarWidget(
-
-            onLeadingIconClicked: (){
-              studentParentController?.setSubject(subject: null);
-              Get.back();
-            },
-            title: Text(
-            "subjectdetail".tr,
-            style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.white),
-        )),
-        body: Stack(
-          children: [
-            Container(
-              color: AppColors.primary,
-              child: SafeArea(
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            color: AppColors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                    SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Stack(
-                        alignment: Alignment.topCenter,
+          resizeToAvoidBottomInset: false,
+          appBar: CustomAppBarWidget(
+              onLeadingIconClicked: () {
+                studentParentController?.setSubject(subject: null);
+                Get.back();
+              },
+              title: Text(
+                "subjectdetail".tr,
+                style: AppTextStyle.getOutfit500(
+                    textSize: 20, textColor: AppColors.white),
+              )),
+          body: BackgroundLayout(
+            image: "",
+            imageType: 0,
+            childWidget: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Consumer<StudentParentTeacherController>(
+                          builder: (context, appController, child) {
+                        return AutoSizeText(
+                          textAlign: TextAlign.center,
+                          maxLines: 5,
+                          appController.subjectDetail?.subName ?? "-",
+                          style: AppTextStyle.getOutfit600(
+                              textSize: 22, textColor: AppColors.secondary),
+                        );
+                      }),
+                    )),
+                Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.secondary.withOpacity(0.06)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Consumer<StudentParentTeacherController>(
+                        builder: (context, appController, child) {
+                          return CustomSubjectDetailRow(
+                              label: 'groupName'.tr, value: widget.group);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const CustomDottedLineWidget(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Consumer<StudentParentTeacherController>(
+                        builder: (context, appController, child) {
+                          return CustomSubjectDetailRow(
+                              label: "subjectcode".tr,
+                              value:
+                                  appController.subjectDetail?.subCode ?? "-");
+                        },
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const CustomDottedLineWidget(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Consumer<StudentParentTeacherController>(
+                        builder: (context, appController, child) {
+                          return CustomSubjectDetailRow(
+                              label: "faculty".tr,
+                              value:
+                                  "${appController.subjectDetail?.firstName ?? "-"}\t${appController.subjectDetail?.lastName ?? "-"}");
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const CustomDottedLineWidget(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 100, bottom: 30),
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                    topLeft: Radius.circular(30))),
-                            child: Column(
-                              //crossAxisAlignment: CrossAxisAlignment.start,
-                              // mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.only(top: 70),
-                                      margin: const EdgeInsets.only(top: 10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 70),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                    width:
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width,
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 60),
-                                                    child: Center(
-                                                      child: Consumer<
-                                                          StudentParentTeacherController>(
-                                                          builder: (context,
-                                                              appController,
-                                                              child) {
-                                                            return AutoSizeText(
-                                                              textAlign:
-                                                              TextAlign.center,
-                                                              maxLines: 5,
-                                                              appController
-                                                                  .subjectDetail
-                                                                  ?.subName ??
-                                                                  "-",
-                                                              style: AppTextStyle
-                                                                  .getOutfit600(
-                                                                  textSize: 22,
-                                                                  textColor:
-                                                                  AppColors
-                                                                      .secondary),
-                                                            );
-                                                          }),
-                                                    )),
-                                                Container(
-                                                  margin: const EdgeInsets.only(
-                                                      top: 20,
-                                                      left: 20,
-                                                      right: 20),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      Consumer<StudentParentTeacherController>(
-                                                        builder: (context,
-                                                            appController,
-                                                            child) {
-                                                          return CustomSubjectDetailRow(
-                                                              label: 'groupName'
-                                                                  .tr,
-                                                              value:
-                                                              widget.group);
-                                                        },
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      const CustomDottedLineWidget(),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Consumer<StudentParentTeacherController>(
-                                                        builder: (context,
-                                                            appController,
-                                                            child) {
-                                                          return CustomSubjectDetailRow(
-                                                              label:
-                                                              "subjectcode"
-                                                                  .tr,
-                                                              value: appController
-                                                                  .subjectDetail
-                                                                  ?.subCode ??
-                                                                  "-");
-                                                        },
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      const CustomDottedLineWidget(),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Consumer<StudentParentTeacherController>(
-                                                        builder: (context,
-                                                            appController,
-                                                            child) {
-                                                          return CustomSubjectDetailRow(
-                                                              label:
-                                                              "faculty".tr,
-                                                              value:
-                                                              "${appController.subjectDetail?.firstName ?? "-"}\t${appController.subjectDetail?.lastName ?? "-"}");
-                                                        },
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      const CustomDottedLineWidget(),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                        children: [
-                                                          Text(
-                                                            'nameofthebook'.tr,
-                                                            style: AppTextStyle.getOutfit400(
-                                                                textSize: 18,
-                                                                textColor: AppColors
-                                                                    .secondary
-                                                                    .withOpacity(
-                                                                    0.75)),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Consumer<
-                                                              StudentParentTeacherController>(
-                                                            builder: (context,
-                                                                appController,
-                                                                child) {
-                                                              return Text(
-                                                                appController
-                                                                    .subject
-                                                                    ?.data?[0]
-                                                                    .bookName
-                                                                    ?.replaceAll(
-                                                                    ";",
-                                                                    "\n") ??
-                                                                    "-",
-                                                                style: AppTextStyle
-                                                                    .getOutfit600(
-                                                                    textSize:
-                                                                    18,
-                                                                    textColor:
-                                                                    AppColors.secondary),
-                                                              );
-                                                            },
-                                                          )
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      ScrollConfiguration(behavior: const ScrollBehavior().copyWith(overscroll: false), child: Consumer<StudentParentTeacherController>(
-                                                        builder: (context,
-                                                            appController,
-                                                            child) {
-                                                          Map<String, dynamic>
-                                                          booksMap =
-                                                          jsonDecode(appController
-                                                              .subject
-                                                              ?.books ??
-                                                              "{}");
-
-                                                          List<Widget>
-                                                          bookWidget =
-                                                          booksMap.values.map((e) {
-                                                            return CachedNetworkImage(
-                                                              imageUrl: e,
-                                                              width: 200,
-                                                              height: 200,
-                                                              placeholder: (context,error) => const SizedBox(width: 30,height: 30, child: CircularProgressIndicator(color: AppColors.primary,),),
-                                                              errorWidget: (context,url,error) => const Icon(Icons.book,size: 20,),
-                                                            );
-                                                          }).toList();
-
-                                                          return SingleChildScrollView(
-                                                            scrollDirection:
-                                                            Axis.horizontal,
-                                                            child: Row(
-                                                              children:
-                                                              bookWidget,
-                                                            ),
-                                                          );
-                                                        },
-                                                      ))
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          Text(
+                            'nameofthebook'.tr,
+                            style: AppTextStyle.getOutfit400(
+                                textSize: 18,
+                                textColor:
+                                    AppColors.secondary.withOpacity(0.75)),
                           ),
-                          Container(
-                            //
-                            margin: const EdgeInsets.only(top: 40),
-                            height: 120,
-                            width: 120,
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              border: Border.all(
-                                  color: AppColors.primary,
-                                  width: 3.0,
-                                  style: BorderStyle.solid),
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(160)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.5),
-                                  spreadRadius: 0,
-                                  blurRadius: 25,
-                                  offset: const Offset(
-                                      0, 0), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: CircleAvatar(
-                              backgroundColor: AppColors.white,
-                              radius: 8.0,
-                              child: SvgPicture.asset(AppImages.book,
-                                  width: 50, height: 50
-                                //
-                              ),
-                            ),
+                          const SizedBox(
+                            height: 5,
                           ),
+                          Consumer<StudentParentTeacherController>(
+                            builder: (context, appController, child) {
+                              return Text(
+                                appController.subject?.data?[0].bookName
+                                        ?.replaceAll(";", "\n") ??
+                                    "-",
+                                style: AppTextStyle.getOutfit600(
+                                    textSize: 18,
+                                    textColor: AppColors.secondary),
+                              );
+                            },
+                          )
                         ],
                       ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ScrollConfiguration(
+                    behavior:
+                        const ScrollBehavior().copyWith(overscroll: false),
+                    child: Consumer<StudentParentTeacherController>(
+                      builder: (context, appController, child) {
+                        Map<String, dynamic> booksMap =
+                            jsonDecode(appController.subject?.books ?? "{}");
+
+                        List<Widget> bookWidget = booksMap.values.map((e) {
+                          return CachedNetworkImage(
+                            imageUrl: e,
+                            width: 200,
+                            height: 200,
+                            placeholder: (context, error) => const SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.book,
+                              size: 20,
+                            ),
+                          );
+                        }).toList();
+
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: bookWidget,
+                          ),
+                        );
+                      },
+                    ))
+              ],
+            ),
+            circularImage: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.sizeOf(context).width * 0.02),
+                height: 140,
+                width: 140,
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  border: Border.all(
+                      color: AppColors.primary,
+                      width: 3.0,
+                      style: BorderStyle.solid),
+                  borderRadius: const BorderRadius.all(Radius.circular(160)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.5),
+                      spreadRadius: 0,
+                      blurRadius: 25,
+                      offset: const Offset(0, 0), // changes position of shadow
                     ),
                   ],
                 ),
+                child: CircleAvatar(
+                  backgroundColor: AppColors.white,
+                  radius: 8.0,
+                  child: SvgPicture.asset(AppImages.book, width: 50, height: 50
+                      //
+                      ),
+                ),
               ),
             ),
-            Consumer<StudentParentTeacherController>(builder: (context, appController, child) {
-              return Visibility(
-                  visible: appController.isLoading,
-                  child: const LoadingLayout());
-            })
-          ],
-        )));
+            loadingWidget: Consumer<StudentParentTeacherController>(
+              builder: (context, studentParentTeacherController, child) {
+                return Visibility(
+                    visible: studentParentTeacherController.isLoading,
+                    child: LoadingLayout());
+              },
+            ),
+          ),
+        ));
   }
 }
 

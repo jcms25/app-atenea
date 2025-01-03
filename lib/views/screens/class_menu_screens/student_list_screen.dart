@@ -41,8 +41,9 @@ class _StudentScreenChild extends State<StudentListScreen> {
               classId:
                   studentParentTeacherController?.currentSelectedClass?.cid ??
                       "",
-              roleType: arguments?['role'],
-              sortedAccordingToLastName: true);
+              roleType: arguments?['role']);
+        }else{
+          studentParentTeacherController?.getListOfClassesAssignToTeacher(showLoader: true);
         }
       } else {
         studentParentTeacherController?.getListOfStudents(
@@ -50,8 +51,7 @@ class _StudentScreenChild extends State<StudentListScreen> {
                 ? studentParentTeacherController?.currentSelectedClass?.cid ??
                     ""
                 : arguments?['classId'] ?? "",
-            roleType: arguments?['role'],
-            sortedAccordingToLastName: true);
+            roleType: arguments?['role']);
       }
     });
   }

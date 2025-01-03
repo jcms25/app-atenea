@@ -30,6 +30,22 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
+
+      if (studentParentTeacherController
+              ?.listOfClassAssignToTeacher.isNotEmpty ??
+          false) {
+        studentParentTeacherController?.setCurrentSelectedClass(
+            teacherClass:
+                studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+        studentParentTeacherController?.getListOfStudents(
+            classId: studentParentTeacherController
+                    ?.listOfClassAssignToTeacher[0].cid ??
+                "",
+            roleType: RoleType.teacher);
+      } else {
+        studentParentTeacherController?.getListOfClassesAssignToTeacher(
+            showLoader: true);
+      }
     });
   }
 
@@ -41,77 +57,58 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
           studentParentTeacherController
               ?.setListOfStudentFollowedUp(listOfStudentFollowedUp: []);
           studentParentTeacherController?.setListOfStudents(listOfStudents: []);
-          studentParentTeacherController?.setSelectedStudentForFollowUp(studentItem: null);
+          studentParentTeacherController?.setSelectedStudentForFollowUp(
+              studentItem: null);
           studentParentTeacherController?.setIsLoading(isLoading: false);
         },
         child: Scaffold(
           appBar: CustomAppBarWidget(
-              onLeadingIconClicked: () {
-                studentParentTeacherController
-                    ?.setListOfStudentFollowedUp(listOfStudentFollowedUp: []);
-                studentParentTeacherController?.setListOfStudents(listOfStudents: []);
-                studentParentTeacherController?.setSelectedStudentForFollowUp(studentItem: null);
-                studentParentTeacherController?.setIsLoading(isLoading: false);
-                Get.back();
-              },
-              title: Text(
-                'subMenuDrawer13'.tr,
-                style: AppTextStyle.getOutfit600(
-                    textSize: 20, textColor: AppColors.white),
-              ),
-              actionIcons: [
-                GestureDetector(
-                  onTap: () {
-                    StudentParentTeacherController
-                    studentParentTeacherController =
-                    Provider.of<StudentParentTeacherController>(
-                        context,
-                        listen: false);
-                    if (studentParentTeacherController
-                        .listOfClassAssignToTeacher.isNotEmpty) {
-                      studentParentTeacherController
-                          .setCurrentSelectedClass(
-                          teacherClass:
-                          studentParentTeacherController
-                              .listOfClassAssignToTeacher[0]);
-                      studentParentTeacherController.getListOfStudents(classId: studentParentTeacherController
-                          .listOfClassAssignToTeacher[0].cid ?? "", roleType: RoleType.teacher, sortedAccordingToLastName: false);
-                    } else {
-                      studentParentTeacherController
-                          .getListOfClassesAssignToTeacher(
-                          showLoader: true);
-                    }
-                    showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(30),
-                                topLeft: Radius.circular(30))),
-                        builder: (context) {
-                          return StatefulBuilder(
-                              builder: (context, state) {
-                                return FollowedUpBottomSheet();
-                              });
+            onLeadingIconClicked: () {
+              studentParentTeacherController
+                  ?.setListOfStudentFollowedUp(listOfStudentFollowedUp: []);
+              studentParentTeacherController
+                  ?.setListOfStudents(listOfStudents: []);
+              studentParentTeacherController?.setSelectedStudentForFollowUp(
+                  studentItem: null);
+              studentParentTeacherController?.setIsLoading(isLoading: false);
+              Get.back();
+            },
+            title: Text(
+              'subMenuDrawer13'.tr,
+              style: AppTextStyle.getOutfit600(
+                  textSize: 20, textColor: AppColors.white),
+            ),
+            actionIcons: [
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(30),
+                              topLeft: Radius.circular(30))),
+                      builder: (context) {
+                        return StatefulBuilder(builder: (context, state) {
+                          return FollowedUpBottomSheet();
                         });
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.all(10),
-                    decoration:
-                    BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: AppColors.orange),
-                    child: Center(
-                      child: Text(
-                        "Ver datos",
-                        style: AppTextStyle.getOutfit400(
-                            textSize: 16, textColor: AppColors.white),
-                      ),
+                      });
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.orange),
+                  child: Center(
+                    child: Text(
+                      "Ver datos",
+                      style: AppTextStyle.getOutfit400(
+                          textSize: 16, textColor: AppColors.white),
                     ),
                   ),
-                )
-              ],
-
+                ),
+              )
+            ],
           ),
           body: Stack(
             children: [
@@ -126,8 +123,8 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                           color: AppColors.primary),
                       padding: const EdgeInsets.all(20),
                       child: Consumer<StudentParentTeacherController>(
-                        builder: (context, studentParentTeacherController,
-                            child) {
+                        builder:
+                            (context, studentParentTeacherController, child) {
                           return CustomTextField(
                               filledColor: AppColors.white,
                               prefixIcon: Icon(
@@ -135,7 +132,8 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                                 color: AppColors.secondary,
                               ),
                               hintText: 'Buscar tema,examen',
-                              onTextChanged: studentParentTeacherController.searchInFollowedUpList,
+                              onTextChanged: studentParentTeacherController
+                                  .searchInFollowedUpList,
                               validateFunction: (String? value) {});
                         },
                       )),
@@ -144,8 +142,8 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                   ),
                   Expanded(
                       child: ScrollConfiguration(
-                          behavior:
-                            const ScrollBehavior().copyWith(overscroll: false),
+                          behavior: const ScrollBehavior()
+                              .copyWith(overscroll: false),
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             child: Consumer<StudentParentTeacherController>(
@@ -178,7 +176,7 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                                                       index]
                                                   .list?[0];
                                           return FollowedUpWidget(
-                                           followedUpItemDetail: item,
+                                            followedUpItemDetail: item,
                                           );
                                         });
                               },
@@ -201,12 +199,9 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
 }
 
 class FollowedUpWidget extends StatelessWidget {
-
   final FollowedUpItemDetail? followedUpItemDetail;
 
-  const FollowedUpWidget(
-      {super.key,
-      required this.followedUpItemDetail});
+  const FollowedUpWidget({super.key, required this.followedUpItemDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +218,8 @@ class FollowedUpWidget extends StatelessWidget {
                 color: AppColors.primary),
             padding: const EdgeInsets.all(10),
             child: Text(
-              DateFormat("dd-MM-yyyy").format(DateTime.parse(followedUpItemDetail?.date ?? "-")),
+              DateFormat("dd-MM-yyyy")
+                  .format(DateTime.parse(followedUpItemDetail?.date ?? "-")),
               style: AppTextStyle.getOutfit300(
                   textSize: 14, textColor: AppColors.white),
             ),
@@ -231,7 +227,9 @@ class FollowedUpWidget extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          CustomFollowedUpRow(label: "subject".tr, value: followedUpItemDetail?.subjectName ?? "-"),
+          CustomFollowedUpRow(
+              label: "subject".tr,
+              value: followedUpItemDetail?.subjectName ?? "-"),
           const SizedBox(
             height: 10,
           ),
@@ -239,7 +237,9 @@ class FollowedUpWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          CustomFollowedUpRow(label: "examname".tr, value: followedUpItemDetail?.examName ?? "-"),
+          CustomFollowedUpRow(
+              label: "examname".tr,
+              value: followedUpItemDetail?.examName ?? "-"),
           const SizedBox(
             height: 10,
           ),
@@ -247,7 +247,8 @@ class FollowedUpWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          CustomFollowedUpRow(label: "grade".tr, value: followedUpItemDetail?.mark ?? "-"),
+          CustomFollowedUpRow(
+              label: "grade".tr, value: followedUpItemDetail?.mark ?? "-"),
           const SizedBox(
             height: 10,
           ),
@@ -255,7 +256,8 @@ class FollowedUpWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          CustomFollowedUpRow(label: "obser".tr, value: followedUpItemDetail?.remarks ?? "-"),
+          CustomFollowedUpRow(
+              label: "obser".tr, value: followedUpItemDetail?.remarks ?? "-"),
           const SizedBox(
             height: 10,
           ),

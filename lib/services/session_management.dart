@@ -1,5 +1,5 @@
 // import 'dart:convert';
-// import 'package:colegia_atenea/models/Parent/Parentlogin.dart';
+// import 'package:colegia_atenea/models/Parent/parent_login_model.dart';
 // import 'package:colegia_atenea/models/Student/student_login.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 //

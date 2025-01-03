@@ -38,6 +38,7 @@ class MarksItem {
   String? attendance;
   String? studentName;
   String? studentRollNo;
+  String? studentImage;
 
   MarksItem(
       {this.mid,
@@ -49,6 +50,7 @@ class MarksItem {
         this.remarks,
         this.attendance,
         this.studentName,
+        this.studentImage,
         this.studentRollNo});
 
   MarksItem.fromJson(Map<String, dynamic> json) {
@@ -62,6 +64,7 @@ class MarksItem {
     attendance = json['attendance'];
     studentName = json['student_name'];
     studentRollNo = json['student_roll_no'];
+    studentImage = json['stud_image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -76,6 +79,7 @@ class MarksItem {
     data['attendance'] = attendance;
     data['student_name'] = studentName;
     data['student_roll_no'] = studentRollNo;
+    data['stud_image'] = studentImage;
     return data;
   }
 }

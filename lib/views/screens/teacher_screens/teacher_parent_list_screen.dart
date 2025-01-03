@@ -238,7 +238,7 @@ class ParentItemWidget extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  parentItem.fullName?.isEmpty ?? false ? "-" : "${parentItem.fullName}",
+                                  "${parentItem.pFname?.isEmpty ?? false ? "-" : "${parentItem.pFname}"} ${parentItem.pLname?.isEmpty ?? false ? "-" : "${parentItem.pLname}"}",
                                   style: AppTextStyle.getOutfit600(
                                       textSize: 20,
                                       textColor: AppColors.secondary),
@@ -262,7 +262,7 @@ class ParentItemWidget extends StatelessWidget {
                                     SvgPicture.asset(AppImages.people,colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),),
                                     const SizedBox(width: 5,),
                                     Expanded(child: Text(
-                                        "${parentItem.sFname ?? ""}\t${parentItem.sLname ?? ""}",
+                                        parentItem.studentName ?? "",
                                         style: AppTextStyle.getOutfit400(
                                             textSize: 16,
                                             textColor: AppColors.secondary)
@@ -304,7 +304,7 @@ class ParentItemWidget extends StatelessWidget {
             children: [
               Icon(Icons.phone,color: AppColors.primary,),
               const SizedBox(width: 10,),
-              Text( parentItem.phoneNumber ?? "-",style: AppTextStyle.getOutfit400(
+              Text( parentItem.pPhone ?? "-",style: AppTextStyle.getOutfit400(
                   textSize: 16,
                   textColor: AppColors.secondary),)
             ],
@@ -316,7 +316,7 @@ class ParentItemWidget extends StatelessWidget {
             children: [
               Icon(Icons.home,color: AppColors.primary,),
               const SizedBox(width: 10,),
-              Expanded(child: Text(parentItem.address ?? "-",style: AppTextStyle.getOutfit400(
+              Expanded(child: Text(parentItem.sPAddress ?? "-",style: AppTextStyle.getOutfit400(
                   textSize: 16,
                   textColor: AppColors.secondary),))
             ],

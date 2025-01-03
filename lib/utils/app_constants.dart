@@ -237,6 +237,52 @@ class AppConstants {
   static String messageType1 = "Recibidas";
   static String messageType2 = "Enviadas";
 
+  //month in spanish
+  static String getMonthInSpan(int month) {
+    switch (month) {
+      case 1:
+        return "enero";
+      case 2:
+        return "febrero";
+      case 3:
+        return "marzo";
+      case 4:
+        return "abril";
+      case 5:
+        return "mayo";
+      case 6:
+        return "junio";
+      case 7:
+        return "julio";
+      case 8:
+        return "agosto";
+      case 9:
+        return "septiembre";
+      case 10:
+        return "octubre";
+      case 11:
+        return "noviembre";
+      default:
+        return "diciembre";
+    }
+  }
+
+  //list of spanish month
+  static List<MonthModel> monthInSpanish = [
+    MonthModel(id: 1, monthName: "Enero"),
+    MonthModel(id: 2, monthName: "Febrero"),
+    MonthModel(id: 3, monthName: 'Marzo'),
+    MonthModel(id: 4, monthName: 'Abril'),
+    MonthModel(id: 5, monthName: 'Mayo'),
+    MonthModel(id: 6, monthName: "Junio"),
+    MonthModel(id: 7, monthName: "Julio"),
+    MonthModel(id: 8, monthName: "Agosto"),
+    MonthModel(id: 9, monthName: "Septiembre"),
+    MonthModel(id: 10, monthName: "Octubre"),
+    MonthModel(id: 11, monthName: "Noviembre"),
+    MonthModel(id: 12, monthName: "Diciembre")
+  ];
+
   //Keys
   static final GlobalKey<ScaffoldState> _mainScreenKey =
       GlobalKey<ScaffoldState>();
@@ -276,4 +322,10 @@ class EventColorModel {
   final String color;
 
   const EventColorModel({required this.id, required this.color});
+}
+
+class MonthModel{
+  final int id;
+  final String monthName;
+  const MonthModel({required this.id,required this.monthName});
 }

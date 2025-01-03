@@ -1,7 +1,5 @@
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
-import 'package:colegia_atenea/views/assistant_module/assistant_communication_common_message_list_screen.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_details_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/message_list_widget.dart';

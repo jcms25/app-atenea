@@ -8,13 +8,14 @@ class BackgroundLayout extends StatelessWidget {
   final Widget childWidget;
   final Widget? loadingWidget;
   final Widget? circularImage;
+  final EdgeInsets? childWidgetMarginFromTop;
 
   const BackgroundLayout(
       {super.key,
       required this.image,
       required this.imageType,
       required this.childWidget,
-      this.loadingWidget, this.circularImage});
+      this.loadingWidget, this.circularImage, this.childWidgetMarginFromTop});
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +43,9 @@ class BackgroundLayout extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(
-                          top: MediaQuery.sizeOf(context).height * 0.20,
+                        width: MediaQuery.sizeOf(context).width,
+                        margin: childWidgetMarginFromTop ?? EdgeInsets.only(
+                          top: MediaQuery.sizeOf(context).height * 0.10,
                         ),
                         decoration: const BoxDecoration(
                             color: AppColors.white,

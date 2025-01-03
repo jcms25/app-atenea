@@ -99,7 +99,7 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Fetch',
+                                    'Fecha de inicio',
                                     style: AppTextStyle.getOutfit500(
                                         textSize: 18,
                                         textColor: AppColors.secondary),
@@ -157,7 +157,7 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Fetch final',
+                                    'Fecha de finalización',
                                     style: AppTextStyle.getOutfit500(
                                         textSize: 18,
                                         textColor: AppColors.secondary),

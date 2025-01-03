@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
@@ -228,62 +229,69 @@ class TeacherItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Get.to(() =>
-                      TeacherDetails(
-                        id: teacherItem.wpUsrId ?? "",
-                        subject: teacherItem.subjectName?.join("\n") ?? "",
-                        inCharge: teacherItem.inCharge?.join("\n") ?? "",
-                      ));
+              child: Consumer<StudentParentTeacherController>(
+                builder: (context,studentParentTeacherController,child){
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() =>
+                          TeacherDetails(
+                            wpUserId: teacherItem.wpUsrId ?? "",
+                            subject: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher ? null : teacherItem.subjectName?.join("\n") ?? "",
+                            inCharge: teacherItem.inCharge?.join("\n") ?? "",
+                          ));
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          // backgroundImage: NetworkImage(
+                          //   teacherItem.image!,
+                          // ),
+                          backgroundImage: CachedNetworkImageProvider(
+                              teacherItem.image ?? "",
+                          ),
+                          backgroundColor: AppColors.primary,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    "${teacherItem.firstName!}\t${teacherItem
+                                        .lastName}",
+                                    style: AppTextStyle.getOutfit600(
+                                        textSize: 20,
+                                        textColor: AppColors.secondary),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5, bottom: 10),
+                                  child: Text(
+                                    teacherItem.subjectName!.join("\n"),
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 16,
+                                        textColor: AppColors.secondary),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
+                  );
                 },
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(
-                        teacherItem.image!,
-                      ),
-                      backgroundColor: AppColors.primary,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                "${teacherItem.firstName!}\t${teacherItem
-                                    .lastName}",
-                                style: AppTextStyle.getOutfit600(
-                                    textSize: 20,
-                                    textColor: AppColors.secondary),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 5, bottom: 10),
-                              child: Text(
-                                teacherItem.subjectName!.join("\n"),
-                                style: AppTextStyle.getOutfit400(
-                                    textSize: 16,
-                                    textColor: AppColors.secondary),
-                              ),
-                            ),
-                          ],
-                        )),
-                  ],
-                ),
               )),
           const SizedBox(
             width: 10,
           ),
           Visibility(
-              visible: roleType != RoleType.teacher,
+              visible: roleType == RoleType.parent,
               child: GestureDetector(
             onTap: () {
               Get.to(() =>

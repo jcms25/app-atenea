@@ -41,68 +41,80 @@ class SubjectListDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5)),
                   value: studentParentTeacherController.isAllSubjectSelected,
                   onChanged: (bool? value) {
-                    if(value ?? false){
-
+                    if (value ?? false) {
                       studentParentTeacherController.setIsAllSubjectSelected(
                           isAllSubjectSelected: value ?? false);
-                    }else{
-                      studentParentTeacherController.setIsAllSubjectSelected(isAllSubjectSelected: false);
-                      studentParentTeacherController.setListOfSelectedSubjectsId(listOfSelectedSubjectsId: []);
+                    } else {
+                      studentParentTeacherController.setIsAllSubjectSelected(
+                          isAllSubjectSelected: false);
+                      studentParentTeacherController
+                          .setListOfSelectedSubjectsId(
+                              listOfSelectedSubjectsId: []);
                     }
                   });
             }),
             Expanded(child: Consumer<StudentParentTeacherController>(
               builder: (context, studentParentTeacherController, child) {
-                return studentParentTeacherController.listOfSubject.isNotEmpty ? ListView.builder(
-                    itemCount:
-                        studentParentTeacherController.tempListOfSubject.length,
-                    itemBuilder: (context, index) {
-                      SubjectItem subjectItem = studentParentTeacherController
-                          .tempListOfSubject[index];
-                      return CheckboxListTile(
-                          checkboxShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2),
-                              side: BorderSide(
-                                  color: AppColors.secondary, width: 2)),
-                          activeColor: AppColors.white,
-                          checkColor: AppColors.primary,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          side: BorderSide(
-                            width: 1,
-                            color: AppColors.secondary
-                          ),
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 5),
-                          title: Text(
-                            subjectItem.subName ?? "",
-                            style: AppTextStyle.getOutfit400(
-                                textSize: 16, textColor: AppColors.black),
-                          ),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          value: studentParentTeacherController
-                              .listOfSelectedSubjectsId
-                              .contains(subjectItem),
-                          onChanged: (bool? value) {
-                            if (value ?? false) {
-                              studentParentTeacherController.addSelectedSubject(
-                                  subject: subjectItem);
-                            } else {
+                return studentParentTeacherController.listOfSubject.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: studentParentTeacherController
+                            .tempListOfSubject.length,
+                        itemBuilder: (context, index) {
+                          SubjectItem subjectItem =
                               studentParentTeacherController
-                                  .removeSelectedSubject(subject: subjectItem);
-                            }
-                          });
-                    }) : Center(
-                  child: Text('Sujetos no encontrados',
-                  style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary),
-                  ),
-                );
+                                  .tempListOfSubject[index];
+                          return CheckboxListTile(
+                              checkboxShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  side: BorderSide(
+                                      color: AppColors.secondary, width: 2)),
+                              activeColor: AppColors.white,
+                              checkColor: AppColors.primary,
+                              controlAffinity: ListTileControlAffinity.leading,
+                              side: BorderSide(
+                                  width: 1, color: AppColors.secondary),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              title: Text(
+                                subjectItem.subName ?? "",
+                                style: AppTextStyle.getOutfit400(
+                                    textSize: 16, textColor: AppColors.black),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              value: studentParentTeacherController
+                                  .listOfSelectedSubjectsId
+                                  .contains(subjectItem),
+                              onChanged: (bool? value) {
+                                if (value ?? false) {
+                                  studentParentTeacherController
+                                      .addSelectedSubject(subject: subjectItem);
+                                } else {
+                                  studentParentTeacherController
+                                      .removeSelectedSubject(
+                                          subject: subjectItem);
+                                }
+                              });
+                        })
+                    : Center(
+                        child: Text(
+                          'Sujetos no encontrados',
+                          style: AppTextStyle.getOutfit400(
+                              textSize: 16, textColor: AppColors.secondary),
+                        ),
+                      );
               },
             )),
-            CustomButtonWidget(
-                padding: 10, buttonTitle: 'Bueno', onPressed: () {
-                  Get.back();
-            }),
+            Consumer<StudentParentTeacherController>(
+              builder: (context,studentParentTeacherController,child){
+                return CustomButtonWidget(
+                    padding: 10,
+                    buttonTitle: 'Hecho',
+                    onPressed: () {
+                      Get.back();
+                    });
+              },
+            ),
           ],
         ),
       ),

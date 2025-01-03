@@ -1,16 +1,12 @@
-// To parse this JSON data, do
-//
-//     final parentlogin = parentloginFromJson(jsonString);
-
 import 'dart:convert';
 
 
-Parentlogin parentloginFromJson(String str) => Parentlogin.fromJson(json.decode(str));
+ParentLogin parentLoginFromJson(String str) => ParentLogin.fromJson(json.decode(str));
 
-String parentloginToJson(Parentlogin data) => json.encode(data.toJson());
+String parentLoginToJson(ParentLogin data) => json.encode(data.toJson());
 
-class Parentlogin {
-  Parentlogin({
+class ParentLogin {
+  ParentLogin({
    required this.status,
     required this.message,
     required this.basicAuthToken,
@@ -22,7 +18,7 @@ class Parentlogin {
   String basicAuthToken;
   Userdata userdata;
 
-  factory Parentlogin.fromJson(Map<String, dynamic> json) => Parentlogin(
+  factory ParentLogin.fromJson(Map<String, dynamic> json) => ParentLogin(
     status: json["status"],
     message: json["Message"],
     basicAuthToken: json["basicAuthToken"],

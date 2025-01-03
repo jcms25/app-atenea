@@ -28,55 +28,54 @@ class ParentListModel {
 }
 
 class ParentItem {
+  String? iD;
   String? userEmail;
-  String? fullName;
-  String? sFname;
-  String? sLname;
-  String? wpUsrId;
   String? parentWpUsrId;
-  String? classId;
+  String? stuWpUsrId;
+  String? pFname;
+  String? pLname;
+  String? pPhone;
+  String? sPAddress;
+  String? studentName;
   String? parentImage;
-  String? address;
-  String? phoneNumber;
 
   ParentItem(
-      {this.userEmail,
-        this.fullName,
-        this.sFname,
-        this.sLname,
-        this.wpUsrId,
+      {this.iD,
+        this.userEmail,
         this.parentWpUsrId,
-        this.classId,
-        this.parentImage,
-        this.address,
-        this.phoneNumber
-      });
+        this.stuWpUsrId,
+        this.pFname,
+        this.pLname,
+        this.pPhone,
+        this.sPAddress,
+        this.studentName,
+        this.parentImage});
 
   ParentItem.fromJson(Map<String, dynamic> json) {
+    iD = json['ID'];
     userEmail = json['user_email'];
-    fullName = json['full_name'];
-    sFname = json['s_fname'];
-    sLname = json['s_lname'];
-    wpUsrId = json['wp_usr_id'];
     parentWpUsrId = json['parent_wp_usr_id'];
-    classId = json['class_id'];
-    parentImage = json["parent_image"];
-    address = json['s_paddress'];
-    phoneNumber = json['p_phone'];
+    stuWpUsrId = json['stu_wp_usr_id'];
+    pFname = json['p_fname'];
+    pLname = json['p_lname'];
+    pPhone = json['p_phone'];
+    sPAddress = json['s_paddress'];
+    studentName = json['student_name'];
+    parentImage = json['parent_image'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['ID'] = iD;
     data['user_email'] = userEmail;
-    data['full_name'] = fullName;
-    data['s_fname'] = sFname;
-    data['s_lname'] = sLname;
-    data['wp_usr_id'] = wpUsrId;
     data['parent_wp_usr_id'] = parentWpUsrId;
-    data['class_id'] = classId;
-    data["parent_image"] = parentImage;
-    data['s_paddress'] = address;
-    data['p_phone'] = phoneNumber;
+    data['stu_wp_usr_id'] = stuWpUsrId;
+    data['p_fname'] = pFname;
+    data['p_lname'] = pLname;
+    data['p_phone'] = pPhone;
+    data['s_paddress'] = sPAddress;
+    data['student_name'] = studentName;
+    data['parent_image'] = parentImage;
     return data;
   }
 }

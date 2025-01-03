@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:colegia_atenea/models/dashboard_model.dart';
+import 'package:colegia_atenea/models/dinning_student_list_response.dart';
+import 'package:colegia_atenea/models/dinning_menu_response.dart';
+import 'package:colegia_atenea/models/evaluation_list_model.dart';
+import 'package:colegia_atenea/models/exam_detail_model.dart';
 import 'package:colegia_atenea/models/exam_list_model.dart';
 import 'package:colegia_atenea/models/followed_up_model.dart';
 import 'package:colegia_atenea/models/get_teacher_list_send_message_model.dart';
@@ -8,6 +12,7 @@ import 'package:colegia_atenea/models/list_of_messages_model.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/models/single_message_detail_model.dart';
 import 'package:colegia_atenea/models/single_subject_detail_model.dart';
+import 'package:colegia_atenea/models/single_teacher_details_model.dart';
 import 'package:colegia_atenea/models/student_details_model.dart';
 import 'package:colegia_atenea/models/subject_list_model.dart';
 import 'package:colegia_atenea/models/teacher/parent_list_model.dart';
@@ -16,6 +21,7 @@ import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
+import 'package:colegia_atenea/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, Response;
 import 'package:http/http.dart';
@@ -82,50 +88,114 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<EventItem> examList = [];
-  List<EventItem> events = [];
-  List<EventItem> holiday = [];
+  List<EventItem> dashboardExamList = [];
+  List<EventItem> dashboardEvents = [];
+  List<EventItem> dashboardHoliday = [];
 
   //exam list
   void setExamList({required List<EventItem> examList}) {
-    this.examList = examList;
+    dashboardExamList = examList;
     notifyListeners();
   }
 
   //event list
   void setEventList({required List<EventItem> events}) {
-    this.events = events;
+    dashboardEvents = events;
     notifyListeners();
   }
 
   //holiday list
   void setHolidayList({required List<EventItem> holiday}) {
-    this.holiday = holiday;
+    dashboardHoliday = holiday;
     notifyListeners();
   }
 
-  //for showing list in calendar
-  int currentListToShowInCalendar = 1;
+  //dashboard event map
+  Map<DateTime, List<EventItemDetail>> dashboardEventMap = {};
 
-  void setCurrentListToShowInCalendar(
-      {required int currentListToShowInCalendar}) {
-    this.currentListToShowInCalendar = currentListToShowInCalendar;
+  void setDashboardEventsMap(
+      {required Map<DateTime, List<EventItemDetail>> eventMap}) {
+    dashboardEventMap = eventMap;
     notifyListeners();
+  }
+
+  void setDashboardEvents({required int dashboardActivitiesToShow}) {
+    Map<DateTime, List<EventItemDetail>> eventMap = {};
+    DateFormat df = DateFormat("yyyy-MM-dd");
+
+    if (dashboardActivitiesToShow == 1) {
+      for (EventItem e in dashboardEvents) {
+        if (eventMap.keys.contains(DateTime.parse(df.format(e.startDate)))) {
+          eventMap[DateTime.parse(df.format(e.startDate))]?.addAll(e.list);
+        } else {
+          eventMap[DateTime.parse(df.format(e.startDate))] = e.list;
+        }
+      }
+    } else if (dashboardActivitiesToShow == 2) {
+      for (EventItem e in dashboardExamList) {
+        if (eventMap[DateTime.parse(df.format(e.startDate))] != null) {
+          eventMap[DateTime.parse(df.format(e.startDate))]?.addAll(e.list);
+        } else {
+          eventMap[DateTime.parse(df.format(e.startDate))] = e.list;
+        }
+      }
+    } else {
+      for (EventItem e in dashboardHoliday) {
+        if (eventMap[DateTime.parse(df.format(e.startDate))] != null) {
+          eventMap[DateTime.parse(df.format(e.startDate))]?.addAll(e.list);
+        } else {
+          eventMap[DateTime.parse(df.format(e.startDate))] = e.list;
+        }
+      }
+    }
+    setDashboardEventsMap(eventMap: eventMap);
+  }
+
+  //get events for dashboard
+  List<EventItemDetail> getDashboardEvents(DateTime date) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+    List<EventItemDetail>? events =
+        dashboardEventMap[DateTime.parse(dateFormat.format(date))]
+                    .runtimeType ==
+                EventItemDetail
+            ? dashboardEventMap[DateTime.parse(dateFormat.format(date))]
+            : dashboardEventMap[DateTime.parse(dateFormat.format(date))];
+    return events ?? [];
   }
 
   //calendar handler
-  DateTime focusDay = DateTime.now();
-  DateTime selectedDay = DateTime.now();
+  DateTime dashboardCalendarFocusDay = DateTime.now();
+
+  void setDashboardCalendarFocusDay({required DateTime focusDay}) {
+    dashboardCalendarFocusDay = focusDay;
+    notifyListeners();
+  }
+
+  DateTime dashboardCalendarSelectedDay = DateTime.now();
+
+  void setDashboardCalendarSelectedDay({required DateTime selectedDay}) {
+    dashboardCalendarSelectedDay = selectedDay;
+    notifyListeners();
+  }
 
   //set focus day
   void setFocusDay({required DateTime focusDay}) {
-    this.focusDay = focusDay;
+    dashboardCalendarFocusDay = focusDay;
     notifyListeners();
   }
 
   //set selected day
   void setSelectedDay({required DateTime selectedDay}) {
-    this.selectedDay = selectedDay;
+    dashboardCalendarSelectedDay = selectedDay;
+    notifyListeners();
+  }
+
+  //category to show in calendar of activities
+  //1 -> Events , 2 -> Examen , 3-> Holidays/Vacations
+  int dashboardActivitiesToShow = 1;
+
+  void setDashboardActivitiesToShow({required int dashboardActivitiesToShow}) {
+    this.dashboardActivitiesToShow = dashboardActivitiesToShow;
     notifyListeners();
   }
 
@@ -133,9 +203,10 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getDashboardData({required bool showLoader}) async {
     try {
       setIsLoading(isLoading: showLoader);
+      String userRole = loginModel?.userdata?.userRole ?? "";
       await Api.httpRequest(
         requestType: RequestType.get,
-        endPoint: Api.dashboardEndpoint,
+        endPoint: "${Api.dashboardEndpoint}?role=$userRole",
         header: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic ${loginModel?.basicAuthToken}",
@@ -148,6 +219,7 @@ class StudentParentTeacherController extends ChangeNotifier {
           setExamList(examList: dashboard.eventList.exams);
           setEventList(events: dashboard.eventList.events);
           setHolidayList(holiday: dashboard.eventList.holiday);
+          setDashboardEvents(dashboardActivitiesToShow: 1);
         }
         setIsLoading(isLoading: false);
       });
@@ -197,7 +269,6 @@ class StudentParentTeacherController extends ChangeNotifier {
       setIsLoading(isLoading: showLoader);
       String token = loginModel?.basicAuthToken ?? "";
       String cookies = loginModel?.userdata?.cookies ?? "";
-      print("Basic Authentication Token : $token\nCokiees is : $cookies");
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: Api.listOfAllMessages,
@@ -422,7 +493,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       request.fields['reciever_id[0]'] = whomToSend == 0
           ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
           : whomToSend == 1
-              ? currentSelectedParentForSendMessage?.wpUsrId ?? ""
+              ? currentSelectedParentForSendMessage?.parentWpUsrId ?? ""
               : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
       request.fields['subject'] = messageSubject;
       request.fields['msg'] = description;
@@ -712,6 +783,40 @@ class StudentParentTeacherController extends ChangeNotifier {
         : "";
   }
 
+
+  //Evaluation parent and student side;
+  List<EvaluationItem> evaluationItem = [];
+  void setEvaluationItem({required List<EvaluationItem> evaluationItem}){
+    this.evaluationItem = evaluationItem;
+    notifyListeners();
+  }
+
+  //get evaluation
+  void getEvaluation({required String classId,required String studentWpUserId}) async{
+    try{
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': "${loginModel?.userdata?.cookies}"
+          },
+          endPoint: "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId").then((res){
+        AppConstants.showCustomToast(status: res['status'], message: res['Message'] ?? res['message'] ?? "");
+        if(res['status']){
+          Evaluation evaluation = Evaluation.fromJson(res);
+          setEvaluationItem(evaluationItem: evaluation.data);
+        }
+        setIsLoading(isLoading: false);
+      });
+    }catch(exception){
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
+  }
+
+
   //get list of professor
   List<TeacherItem> listOfTeachers = [];
   List<TeacherItem> tempListOfTeachers = [];
@@ -777,6 +882,40 @@ class StudentParentTeacherController extends ChangeNotifier {
     setTempListOfTeachers(listOfTeachers: searchData);
   }
 
+  //Teacher details
+  SingleTeacherDetailItem? teacherDetail;
+
+  void setTeacherDetail(
+      {required SingleTeacherDetailItem? singleTeacherModel}) {
+    teacherDetail = singleTeacherModel;
+    notifyListeners();
+  }
+
+  //get single teacher details
+  void getSingleTeacherDetails({required String teacherWPUserId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.teacherDetailsEndPoint}/$teacherWPUserId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': "${loginModel?.userdata?.cookies}"
+          }).then((response) {
+        if (response['status']) {
+          SingleTeacherModel singleTeacherModel =
+              SingleTeacherModel.fromJson(response);
+          setTeacherDetail(singleTeacherModel: singleTeacherModel.data?[0]);
+        }
+
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
   //Student List Screen :
   List<StudentItem> listOfStudents = [];
   List<StudentItem> tempListOfStudents = [];
@@ -793,11 +932,7 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   Future<void> getListOfStudents(
-      {required String classId,
-      required RoleType roleType,
-      required bool sortedAccordingToLastName}) async {
-    // 0 means on student screen so student list will sorted according to last name
-    //1 means in followed up screen,or any other screen  here student list will not sorted
+      {required String classId, required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
@@ -813,10 +948,8 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           StudentListModel student = StudentListModel.fromJson(response);
           List<StudentItem> studentItemList = student.studentlist ?? [];
-          if (sortedAccordingToLastName) {
-            studentItemList
-                .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
-          }
+          studentItemList
+              .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
           setListOfStudents(listOfStudents: student.studentlist ?? []);
           setSelectedStudentForFollowUp(studentItem: studentItemList[0]);
         }
@@ -975,7 +1108,13 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getListOfClassesAssignToTeacher({required bool showLoader}) async {
+  void getListOfClassesAssignToTeacher(
+      {required bool showLoader, int? fromWhere,
+       String? classId
+      }) async {
+    //8 means exam list screen
+    //9 edit exam screen
+
     try {
       setIsLoading(isLoading: showLoader);
 
@@ -993,6 +1132,13 @@ class StudentParentTeacherController extends ChangeNotifier {
           setListOfClassAssignToTeacher(
               listOfClassAssignToTeacher: teacherClass.data ?? []);
           setCurrentSelectedClass(teacherClass: teacherClass.data?[0]);
+
+          if (fromWhere == 8) {
+            getListOfExams(
+                classId: teacherClass.data?[0].cid ?? "",
+                wpUserId: "",
+                roleType: RoleType.teacher);
+          }
         }
         setIsLoading(isLoading: false);
       });
@@ -1034,6 +1180,10 @@ class StudentParentTeacherController extends ChangeNotifier {
           }).then((res) {
         if (res['status']) {
           ParentListModel parentListModel = ParentListModel.fromJson(res);
+          List<ParentItem> parentList = parentListModel.data ?? [];
+          parentList
+              .sort((a, b) => a.pLname?.compareTo(b.pLname ?? "") ?? 0);
+
           setListOfParents(listOfParents: parentListModel.data ?? []);
         }
         setIsLoading(isLoading: false);
@@ -1054,13 +1204,13 @@ class StudentParentTeacherController extends ChangeNotifier {
 
     List<ParentItem> searchData = [];
     for (var parentItem in listOfParents) {
-      if (parentItem.fullName!
+      if (parentItem.pFname!
               .toLowerCase()
               .contains(value?.toLowerCase() ?? "") ||
-          parentItem.sFname!
+          parentItem.pFname!
               .toLowerCase()
               .contains(value?.toLowerCase() ?? "") ||
-          parentItem.sLname!
+          parentItem.userEmail!
               .toLowerCase()
               .contains(value?.toLowerCase() ?? "")) {
         searchData.add(parentItem);
@@ -1124,7 +1274,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     //when user select start date then startDate value will come
     DateTime? dateTime = await showDatePicker(
         context: Get.context!,
-        firstDate: startDate ?? DateTime(1900),
+        firstDate: DateTime.now(),
         lastDate: DateTime(3000));
     return dateTime;
   }
@@ -1319,8 +1469,11 @@ class StudentParentTeacherController extends ChangeNotifier {
           }).then((response) {
         if (response['status']) {
           FollowedUpModel followedUpModel = FollowedUpModel.fromJson(response);
+          List<FollowedUpItem> followUpList = followedUpModel.data ?? [];
+          followUpList.sort((a,b) => a.list?[0].date?.compareTo(b.list?[0].date ?? "") ?? 1);
+          followUpList = followUpList.reversed.toList();
           setListOfStudentFollowedUp(
-              listOfStudentFollowedUp: followedUpModel.data ?? []);
+              listOfStudentFollowedUp: followUpList);
         }
 
         setIsLoading(isLoading: false);
@@ -1342,13 +1495,16 @@ class StudentParentTeacherController extends ChangeNotifier {
     List<FollowedUpItem> searchData = [];
     for (FollowedUpItem item in listOfStudentFollowedUp) {
       FollowedUpItemDetail? followedUpItemDetail = item.list?[0];
+
       if (followedUpItemDetail?.subjectName
               ?.toLowerCase()
               .contains(value?.toLowerCase() ?? "") ??
           false ||
               followedUpItemDetail!.examName!
                   .toLowerCase()
-                  .contains(value?.toLowerCase() ?? "")) {
+                  .contains(value?.toLowerCase() ?? "") ||
+          followedUpItemDetail.date!.toLowerCase().contains(value?.toLowerCase() ?? "")
+      ) {
         searchData.add(item);
       }
     }
@@ -1373,6 +1529,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   void setListOfExams({required List<ExamListItem> listOfExams}) {
     this.listOfExams = listOfExams;
+    tempListOfExams = listOfExams;
     notifyListeners();
   }
 
@@ -1391,7 +1548,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: roleType != RoleType.teacher
-              ? Api.studentParentExamListPoint
+              ? "${Api.studentParentExamListPoint}?student_id=$wpUserId&class_id=$classId"
               : "${Api.teacherExamListPoint}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -1408,7 +1565,58 @@ class StudentParentTeacherController extends ChangeNotifier {
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
-;
+  }
+
+  //search in exam list
+  void searchInExamList(String? value) {
+    if (value?.isEmpty ?? true) {
+      setTempListOfExams(listOfExams: listOfExams);
+    }
+    // date, exam name, or even subject
+    List<ExamListItem> searchData = [];
+    for (ExamListItem e in listOfExams) {
+      if (e.eName?.toLowerCase().contains(value?.toLowerCase() ?? "") ??
+          false ||
+              e.subName!.toLowerCase().contains(value?.toLowerCase() ?? "") ||
+              e.eSDate!.toLowerCase().contains(value?.toLowerCase() ?? "") ||
+              e.eEDate!.toLowerCase().contains(value?.toLowerCase() ?? "")) {
+        searchData.add(e);
+      }
+    }
+
+    setTempListOfExams(listOfExams: searchData);
+  }
+
+  //get detail of exam
+  ExamDetailItem? examDetailItem;
+
+  void setExamDetailItem({required ExamDetailItem? examDetailItem}) {
+    this.examDetailItem = examDetailItem;
+    notifyListeners();
+  }
+
+  void getDetailsOfExam({required String examId}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      await Api.httpRequest(
+              requestType: RequestType.get,
+              endPoint: "${Api.examDetailEndPoint}/$examId")
+          .then((response) {
+        if (response['status']) {
+          AppConstants.showCustomToast(
+              status: response['status'],
+              message: response['message'] ?? response['Message'] ?? "");
+          ExamDetailsModel examDetailsModel =
+              ExamDetailsModel.fromJson(response);
+          setExamDetailItem(examDetailItem: examDetailsModel.data);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
   }
 
   //Add-Edit exam :
@@ -1464,17 +1672,53 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //add-edit exam function
-  void addEditExam(
-      {required String classId,
-      required String nameOfClass,
+  Future<void> addEditExam(
+      {String? examId,
+      required String classId,
+      required String examName,
       required String startDateOfExam,
       required String endDateOfExam,
       required String examTime,
       required String comments,
-      required List<String> subjects}) async {
+      required List<SubjectItem> subjects}) async {
     try {
       setIsLoading(isLoading: true);
-      setIsLoading(isLoading: false);
+
+      Map<String, String> bodyData = {
+        "classid": classId,
+        "e_name": examName,
+        "exam_start_date": startDateOfExam,
+        "exam_end_date": endDateOfExam,
+        "time": examTime,
+        "comments": comments
+      };
+
+      for (int i = 0; i < subjects.length; i++) {
+        bodyData["subject_id[$i]"] = subjects[i].id ?? "";
+      }
+
+      await Api.httpRequest(
+          requestType: RequestType.post,
+          endPoint: examId == null
+              ? Api.teacherAddExamEndPoint
+              : "${Api.teacherEditExam}/$examId",
+          body: bodyData,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          }).then((response) {
+        setIsLoading(isLoading: false);
+        AppConstants.showCustomToast(
+            status: response['status'],
+            message: response['Message'] ?? response['message'] ?? "");
+        if (response['status']) {
+          setListOfExams(listOfExams: []);
+          resetExamData();
+          Get.offUntil(MaterialPageRoute(builder: (context) => MainScreen()),
+              (route) => false);
+        }
+      });
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
@@ -1486,37 +1730,44 @@ class StudentParentTeacherController extends ChangeNotifier {
     examStartDate = DateTime.now();
     examEndDate = DateTime.now();
     examTime = TimeOfDay.now();
+    listOfSelectedSubjectsId = [];
     isAllSubjectSelected = false;
     notifyListeners();
   }
 
   //marks section :
   List<ExamListItem> listOfExamBasedOnSubjects = [];
-  void setListOfExamBasedOnSubjects({required List<ExamListItem> listOfExams}){
+
+  void setListOfExamBasedOnSubjects({required List<ExamListItem> listOfExams}) {
     listOfExamBasedOnSubjects = listOfExams;
     notifyListeners();
   }
 
-
   ExamListItem? viewMarkSelectedExam;
-  void setViewMarkExamSelected({required ExamListItem? examListItem}){
+
+  void setViewMarkExamSelected({required ExamListItem? examListItem}) {
     viewMarkSelectedExam = examListItem;
     notifyListeners();
   }
 
   SubjectItem? viewMarkSubjectSelected;
-  void setViewMarkSubjectSelected({required SubjectItem? subjectItem}){
+
+  void setViewMarkSubjectSelected({required SubjectItem? subjectItem}) {
     viewMarkSubjectSelected = subjectItem;
-    if(listOfExams.isNotEmpty){
+    viewMarkSelectedExam = null;
+
+    if (listOfExams.isNotEmpty) {
       // setListOfExamBasedOnSubjects(listOfExams: );
-      List<ExamListItem> examList = listOfExams.where((e){
-        return e.subId == subjectItem?.id;
+      List<ExamListItem> examList = listOfExams.where((e) {
+        return e.subjectId?.split(",").contains(subjectItem?.id) ?? false;
       }).toList();
+      setListOfExamBasedOnSubjects(listOfExams: examList);
     }
 
     notifyListeners();
   }
 
+  //list of marks of students
   List<MarksItem> listOfMarksItem = [];
 
   void setListOfMarks({required List<MarksItem> listOfMarksItem}) {
@@ -1548,7 +1799,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     try {
       setIsLoading(isLoading: true);
 
-      print("${Api.teacherMarksListEndPoint}?class_id=$classId&subject_id=$subjectId&exam_id=$examId");
       await Api.httpRequest(
               requestType: RequestType.get,
               endPoint:
@@ -1576,25 +1826,31 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
+  //current view or add-edit marks : for 0 it means only want to see marks so it will be in table form
+  // for 1 means want to add-edit marks so it will be in list form which contains marks enter text fields
+  int? viewOrAddEditMarks;
+  void setViewOrAddEditMarks({required int? viewOrAddEditMarks}){
+    this.viewOrAddEditMarks = viewOrAddEditMarks;
+    notifyListeners();
+  }
+
 
   //add-edit marks
-  void addEditMarks({
-    required String classId,
-    required String subjectId,
-    required String examId
-}) async{
-    try{
-
+  Future<void> addEditMarks(
+      {required String classId,
+      required String subjectId,
+      required String examId}) async {
+    try {
       setIsLoading(isLoading: true);
 
-      Map<String,String> bodyData = {
-        "ClassID" : classId,
-        "SubjectID" : subjectId,
-        "ExamID" : examId,
+      Map<String, String> bodyData = {
+        "ClassID": classId,
+        "SubjectID": subjectId,
+        "ExamID": examId,
       };
 
-      if(listOfMarksItem.isNotEmpty){
-        for(int i=0;i<listOfMarksItem.length;i++){
+      if (listOfMarksItem.isNotEmpty) {
+        for (int i = 0; i < listOfMarksItem.length; i++) {
           bodyData["sid[$i]"] = listOfMarksItem[i].studentId ?? "";
           bodyData["mark[$i]"] = listOfMarksController[i].text;
           bodyData["remark[$i]"] = listOfObserverController[i].text;
@@ -1602,31 +1858,204 @@ class StudentParentTeacherController extends ChangeNotifier {
       }
 
       await Api.httpRequest(
-          requestType: RequestType.post,
-          endPoint: Api.teacherMarksAddEditList,
-          body: bodyData
-      ).then((response){
+              requestType: RequestType.post, endPoint: "marks", body: bodyData)
+          .then((response) async {
+        if (response['status']) {
+          AppConstants.showCustomToast(
+              status: response['status'],
+              message: response['status']
+                  ? "Agregar/Editar con éxito"
+                  : "Por favor, inténtalo de nuevo");
+          await getListOfMarks(
+                  classId: classId, subjectId: subjectId, examId: examId)
+              .then((response) {
+            setIsLoading(isLoading: false);
+          });
+        } else {
+          AppConstants.showCustomToast(
+              status: false,
+              message: response['Message'] ?? response['message'] ?? "");
+          setIsLoading(isLoading: false);
+        }
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //clear screen after operation
+  void clearMarkScreen() {
+    setListOfMarks(listOfMarksItem: []);
+    setListOfMarksController(listOfMarksController: []);
+    setListOfObserverController(listOfObserverController: []);
+  }
+
+
+  //Dinning Screen :
+  DinningMenuData? dinningMenuResponse;
+  void setDinningMenuResponse({required DinningMenuData? dinningMenuResponse}){
+    this.dinningMenuResponse = dinningMenuResponse;
+    notifyListeners();
+  }
+
+  //get dinning menu
+  void getDinningMenu() async{
+    try{
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          },
+          endPoint: Api.dinningSectionEndPoint).then((response){
         if(response['status']){
-          Get.back();
+          DinningMenuResponse dinningMenuResponse = DinningMenuResponse.fromJson(response);
+          setDinningMenuResponse(dinningMenuResponse: dinningMenuResponse.data);
+        }else{
+          AppConstants.showCustomToast(status: false, message: response['message'] ?? response['Message'] ?? "");
         }
         setIsLoading(isLoading: false);
-        AppConstants.showCustomToast(status: response['status'], message: response['Message'] ?? response['message'] ?? "");
+      });
+
+    }catch(exception){
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+
+    }
+  }
+
+  //selected dinning month
+  MonthModel? selectedDinningMonth;
+  void setCurrentSelectedDinningMonth({required MonthModel? dinningMonth}){
+    selectedDinningMonth = dinningMonth;
+    notifyListeners();
+  }
+
+  List<DinningStudentItem> dinningStudentList = [];
+  void setDinningStudentList({required List<DinningStudentItem> dinningStudentList}){
+    this.dinningStudentList = dinningStudentList;
+    notifyListeners();
+  }
+
+  List<String?> listOfStatusOfStudentDinning = [];
+  void setListOfStatusOfStudentDinning({required List<String?> listOfStatusOfStudentDinning}){
+    this.listOfStatusOfStudentDinning = listOfStatusOfStudentDinning;
+    notifyListeners();
+  }
+
+  //student id : status
+  Map<String,int> mapOfStatusOfStudentDinning = {};
+  void setMapOfStatusOfStudentDinning({required Map<String,int> mapOfStatusOfStudentDinning}){
+    this.mapOfStatusOfStudentDinning = mapOfStatusOfStudentDinning;
+    notifyListeners();
+  }
+
+  void addDinningStatusData({required String keyName,required,required int status}){
+    mapOfStatusOfStudentDinning[keyName] = status;
+    notifyListeners();
+}
+
+  //selected day
+  int? currentSelectedDinningDay;
+  void setCurrentSelectedDinningDay({required int? selectedDinningDay}){
+    currentSelectedDinningDay = selectedDinningDay;
+    notifyListeners();
+  }
+
+
+  //dinning settings
+  DinningSettings? dinningSettings;
+  void setDinningSettings({required DinningSettings? dinningSettings}){
+    this.dinningSettings = dinningSettings;
+    notifyListeners();
+  }
+
+  //get dinning student list
+    Future<void> getDinningStudentList({required String classId,required int month,required int day}) async{
+    try{
+      setIsLoading(isLoading: true);
+
+      await Api.httpRequest(requestType: RequestType.get,
+
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          },
+          endPoint: "${Api.dinningStudentListEndPoint}?class_id=$classId&month=$month&day=$day&current_role=${currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher"}").then((response){
+        if(response['status']){
+          DinningStudentListResponse dinningStudentListResponse = DinningStudentListResponse.fromJson(response);
+          List<DinningStudentItem> dinningStudentList = dinningStudentListResponse.data ?? [];
+          setDinningStudentList(dinningStudentList: dinningStudentList);
+          Map<String,int> studentDinningStatus = {};
+          for (var e in dinningStudentList) {
+            studentDinningStatus[e.wpUsrId ?? ""] = e.atten == "1" ? 1 : 0;
+          }
+          setDinningSettings(dinningSettings: dinningStudentListResponse.diningSettings);
+          setMapOfStatusOfStudentDinning(mapOfStatusOfStudentDinning: studentDinningStatus);
+        }else{
+          AppConstants.showCustomToast(status: false, message: response['Message'] ?? response['message'] ?? "");
+        }
       });
 
       setIsLoading(isLoading: false);
 
     }catch(exception){
       setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
     }
- }
+  }
 
- //clear screen after operation
- void clearMarkScreen(){
-   setListOfMarks(listOfMarksItem: []);
-   setListOfMarksController(listOfMarksController: []);
-   setListOfObserverController(listOfObserverController: []);
- }
 
+
+  //add edit dinning at teacher side
+  Future<void> addEditDinningStatus({required int monthNumber,required int day}) async{
+
+    try{
+
+      setIsLoading(isLoading: true);
+      Map<String,dynamic> bodyData = {
+        "Month" : "$monthNumber",
+        "Day" : "$day"
+      };
+
+      List<int> listOfStatus = mapOfStatusOfStudentDinning.values.toList();
+      for(int i = 0;  i < listOfStatus.length ; i++) {
+        bodyData["atten[$i]"] = "${listOfStatus[i]}";
+      }
+
+      List<String> listOfStudentId = mapOfStatusOfStudentDinning.keys.toList();
+      for(int i = 0;  i < listOfStatus.length ; i++) {
+        bodyData["student_id[$i]"] = listOfStudentId[i];
+      }
+
+      //all class id  of student
+      for(int i = 0; i< dinningStudentList.length; i++){
+        bodyData["class_id[$i]"] = dinningStudentList[i].wpUsrId ?? "";
+      }
+      await Api.httpRequest(requestType: RequestType.post, endPoint: Api.addEditDinningTeacherSide,
+
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic ${loginModel?.basicAuthToken}",
+            'Cookie': loginModel?.userdata?.cookies ?? ""
+          },
+          body : bodyData
+      ).then((response) async{
+        AppConstants.showCustomToast(status: response['status'], message: response['Message'] ?? response['message'] ?? "");
+        if(response['status']){
+          setDinningStudentList(dinningStudentList: []);
+          await getDinningStudentList(classId: currentLoggedInUserRole == RoleType.parent ? ""  : currentSelectedClass?.cid ?? "", month: monthNumber, day: day);
+        }
+      });
+    }catch(exception){
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+
+  }
 
   //Logged out function : clear all controller data
   void loggedOutClearData() {
@@ -1648,7 +2077,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     tempListOfParents = [];
     tempListOfSubject = [];
     tempListOfTeachers = [];
-    examList = [];
+    dashboardExamList = [];
     todayEvent = [];
     listOfSelectedSubjectsId = [];
     listOfStudentFollowedUp = [];

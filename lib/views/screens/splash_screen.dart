@@ -11,7 +11,6 @@ import '../../controllers/student_parent_teacher_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_images.dart';
 import '../../utils/app_strings.dart';
-import '../../utils/text_style.dart';
 import '../custom_widgets/item_logo_rounded.dart';
 
 

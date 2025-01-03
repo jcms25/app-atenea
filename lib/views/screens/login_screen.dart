@@ -293,6 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ],
       ),
+      childWidgetMarginFromTop: EdgeInsets.only(top: 150),
       loadingWidget: Consumer<SplashLoginController>(
         builder: (context, splashLoginController, child) {
           return Visibility(

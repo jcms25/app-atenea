@@ -1,5 +1,5 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
-import 'package:colegia_atenea/utils/app_constants.dart';
+import 'package:colegia_atenea/models/exam_list_model.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
@@ -9,10 +9,12 @@ import 'package:colegia_atenea/views/custom_widgets/dialog_boxes_widgets/subject
 import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_constants.dart';
 
 class TeacherAddEditExamScreen extends StatefulWidget {
   const TeacherAddEditExamScreen({super.key});
@@ -29,13 +31,16 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
 
   TextEditingController? nameOfExamController;
   TextEditingController? comments;
+  ExamListItem? examListItem;
 
   @override
   void initState() {
     super.initState();
     arguments = Get.arguments;
-    nameOfExamController = TextEditingController();
-    comments = TextEditingController();
+    examListItem = arguments?['edit-exam'];
+    nameOfExamController = TextEditingController(text: examListItem?.eName);
+    comments = TextEditingController(text: examListItem?.comments);
+    initializeDateFormatting(Get.locale!.languageCode, null);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
@@ -54,7 +59,9 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
             roleType: RoleType.teacher);
       } else {
         studentParentTeacherController?.getListOfClassesAssignToTeacher(
-            showLoader: true);
+            showLoader: true,
+            fromWhere: examListItem == null ? null : 9
+        );
       }
     });
   }
@@ -128,7 +135,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                   CustomTextField(
                                       controller: nameOfExamController,
                                       validateFunction: (String? value) {
-                                        if(value == null || value.isEmpty){
+                                        if (value == null || value.isEmpty) {
                                           return "Se requiere el título del examen";
                                         }
                                         return null;
@@ -161,6 +168,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                           studentParentTeacherController
                                               .setExamStartDate(
                                                   dateTime: dateTime);
+                                          studentParentTeacherController.setExamEndDate(dateTime: dateTime);
                                         },
                                         child: Container(
                                           height: 60,
@@ -176,7 +184,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              DateFormat("yyyy-MM-dd").format(
+                                              DateFormat("dd-MM-yyyy").format(
                                                   studentParentTeacherController
                                                       .examStartDate),
                                               textAlign: TextAlign.left,
@@ -214,7 +222,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                         onTap: () async {
                                           DateTime? dateTime =
                                               await studentParentTeacherController
-                                                  .pickDate();
+                                                  .pickDate(startDate: studentParentTeacherController.examStartDate);
                                           studentParentTeacherController
                                               .setExamEndDate(
                                                   dateTime: dateTime);
@@ -233,7 +241,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              DateFormat("yyyy-MM-dd").format(
+                                              DateFormat("dd-MM-yyyy").format(
                                                   studentParentTeacherController
                                                       .examEndDate),
                                               textAlign: TextAlign.left,
@@ -319,41 +327,55 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                 builder: (context,
                                     studentParentTeacherController, child) {
                                   return GestureDetector(
-                                    onTap: (){
-                                      showDialog(context: context, builder: (context){
-                                        return SubjectListDialog();
-                                      });
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return SubjectListDialog();
+                                          });
                                     },
                                     child: Container(
                                       height: 60,
                                       width: MediaQuery.sizeOf(context).width,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          color: AppColors.secondary.withOpacity(0.06)
-                                      ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: AppColors.secondary
+                                              .withOpacity(0.06)),
                                       padding: const EdgeInsets.only(left: 20),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          'seleccionar asignaturas',
-                                          style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
+                                          'Seleccionar Asignaturas',
+                                          style: AppTextStyle.getOutfit400(
+                                              textSize: 18,
+                                              textColor: AppColors.secondary),
                                         ),
                                       ),
                                     ),
                                   );
                                 },
                               ),
-                              const SizedBox(height: 5,),
+                              const SizedBox(
+                                height: 5,
+                              ),
                               Consumer<StudentParentTeacherController>(
-                                builder: (context,studentParentTeacherController,child){
+                                builder: (context,
+                                    studentParentTeacherController, child) {
                                   return Text(
-                                    studentParentTeacherController.listOfSelectedSubjectsId.map((e){return e.subName ?? "";}).toList().join(","),
-                                    style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),
+                                    studentParentTeacherController
+                                        .listOfSelectedSubjectsId
+                                        .map((e) {
+                                          return e.subName ?? "";
+                                        })
+                                        .toList()
+                                        .join(","),
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 14,
+                                        textColor: AppColors.secondary),
                                   );
                                 },
                               ),
-
-
                               const SizedBox(
                                 height: 15,
                               ),
@@ -370,7 +392,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                     height: 10,
                                   ),
                                   CustomTextField(
-                                      controller: nameOfExamController,
+                                      controller: comments,
                                       validateFunction: (String? value) {}),
                                 ],
                               ),
@@ -383,22 +405,48 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                   width: 100,
                                   child:
                                       Consumer<StudentParentTeacherController>(
-                                    builder: (context, studentParentController,
-                                        child) {
+                                    builder: (context,
+                                        studentParentTeacherController, child) {
                                       return CustomButtonWidget(
                                           buttonTitle:
                                               arguments?['reason'] == "add-exam"
                                                   ? 'Agregar'
                                                   : 'Editar',
-                                          onPressed: () {
-                                            if(_addEditExamFormKey.currentState?.validate() ?? false){
-                                                if(studentParentController.listOfSelectedSubjectsId.isNotEmpty){
-
-                                                }else{
-                                                  AppConstants.showCustomToast(status: false, message: "Por favor seleccione asignaturas");
-                                                }
+                                          onPressed: () async{
+                                            if (_addEditExamFormKey.currentState
+                                                    ?.validate() ??
+                                                false) {
+                                              if (studentParentTeacherController
+                                                  .listOfSelectedSubjectsId
+                                                  .isNotEmpty) {
+                                               await studentParentTeacherController.addEditExam(
+                                                    classId: studentParentTeacherController.currentSelectedClass?.cid ??
+                                                        "",
+                                                    examName: nameOfExamController?.text ?? "",
+                                                    startDateOfExam:
+                                                        studentParentTeacherController
+                                                            .examStartDate
+                                                            .toString(),
+                                                    endDateOfExam:
+                                                        studentParentTeacherController
+                                                            .examEndDate
+                                                            .toString(),
+                                                    examTime: studentParentTeacherController
+                                                                .examTime
+                                                                .minute <
+                                                            10
+                                                        ? "${studentParentTeacherController.examTime.hour}:0${studentParentTeacherController.examTime.minute}"
+                                                        : "${studentParentTeacherController.examTime.hour}:${studentParentTeacherController.examTime.minute}",
+                                                    comments:
+                                                        comments?.text ?? "",
+                                                    subjects: studentParentTeacherController.listOfSelectedSubjectsId);
+                                              } else {
+                                                AppConstants.showCustomToast(
+                                                    status: false,
+                                                    message:
+                                                        "Por favor seleccione asignaturas");
+                                              }
                                             }
-
                                           });
                                     },
                                   ),

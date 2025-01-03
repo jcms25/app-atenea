@@ -1,4 +1,4 @@
-import 'package:colegia_atenea/models/Evaluationreportmodel.dart';
+import 'package:colegia_atenea/models/evaluation_report_world.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/text_style.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class EvaluationReportScreen extends StatefulWidget {
-  final List<Evaluationreport> evolutionReport;
+  final List<EvaluationReport> evolutionReport;
   final String evaluation;
 
   const EvaluationReportScreen(this.evolutionReport, this.evaluation, {super.key});

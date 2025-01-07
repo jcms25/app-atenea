@@ -43,11 +43,11 @@ class _ParentStudentInfoChild extends State<ParentStudentInfo> {
 
                     if (userRole == RoleType.student) {
                       parentData = studentParentTeacherController
-                          .loginModel?.userdata?.parentData ??
+                          .userdata?.parentData ??
                           [];
                     } else {
                       studentData = studentParentTeacherController
-                          .loginModel?.userdata?.studentData ??
+                          .userdata?.studentData ??
                           [];
                     }
 

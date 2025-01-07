@@ -98,9 +98,10 @@ class SplashLoginController extends ChangeNotifier {
             roleOfUser == "parent" ||
             roleOfUser == "teacher") {
           LoginModel loginModel = LoginModel.fromJson(response);
-          await AppSharedPreferences.saveLoginData(
-              loginData: loginModel, role: roleOfUser);
-          studentParentTeacherController.setLoginModel(loginModel: loginModel);
+          await AppSharedPreferences.saveUserData(
+            basicAuthToken: loginModel.basicAuthToken,
+              userdata: loginModel.userdata, role: roleOfUser);
+          studentParentTeacherController.setLoginModel(userdata: loginModel.userdata);
           studentParentTeacherController.setRole(
               role: roleOfUser == "student"
                   ? RoleType.student
@@ -138,14 +139,15 @@ class SplashLoginController extends ChangeNotifier {
 
     if (role != null) {
       if (role == "student" || role == "parent" || role == "teacher") {
-        LoginModel? loginModel = AppSharedPreferences.getUserData();
-        studentParentTeacherController?.setLoginModel(loginModel: loginModel);
+        Userdata? userdata = AppSharedPreferences.getUserData();
+        studentParentTeacherController?.setLoginModel(userdata: userdata);
         studentParentTeacherController?.setRole(
             role: role == "student"
                 ? RoleType.student
                 : role == "parent"
                     ? RoleType.parent
                     : RoleType.teacher);
+
         Get.offNamedUntil(
             AppRoutes.studentParentTeacherMainScreen, (routes) => false);
       } else {

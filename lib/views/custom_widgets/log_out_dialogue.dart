@@ -73,10 +73,10 @@ class LogOutDialogue extends StatelessWidget {
                             : roleType == RoleType.student ||
                                     roleType == RoleType.teacher
                                 ? studentParentTeacherController
-                                        .loginModel?.userdata?.wpUsrId ??
+                                        .userdata?.wpUsrId ??
                                     ""
                                 : studentParentTeacherController
-                                        .loginModel?.userdata?.parentWpUsrId ??
+                                        .userdata?.parentWpUsrId ??
                                     ""
                       }).then((response) async {
                     if (response['status']) {

@@ -312,13 +312,13 @@ class _GradeScreenChild extends State<GradeScreen> {
 
   void callAPI() async {
     try {
-      LoginModel? loginModel = AppSharedPreferences.getUserData();
-
+      Userdata? userdata = AppSharedPreferences.getUserData();
+      String? token = AppSharedPreferences.getBasicAthToken() ?? "";
       dynamic response = await ApiClass().getMarks(
-          loginModel?.basicAuthToken ?? "",
+          token,
           widget.wpId,
           widget.cid,
-          loginModel?.userdata?.cookies ?? "");
+          userdata?.cookies ?? "");
       if (response['status']) {
         MarkList studentMarks = MarkList.fromJson(response);
         setState(() {

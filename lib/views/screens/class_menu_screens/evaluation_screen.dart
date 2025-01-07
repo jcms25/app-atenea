@@ -79,7 +79,7 @@ class TableExample extends State<EvaluationScreen> {
                         child: IconButton(
                             onPressed: () async {
                               try {
-                                 studentParentTeacherController.setIsLoading(isLoading: true);
+                                studentParentTeacherController.setIsLoading(isLoading: true);
                                 await Api.httpRequest(requestType: RequestType.get, endPoint: "${Api.evaluationPDFDownloadEndpoint}?student_id=${widget.wpId}&class_id=${widget.cid}").then((res) async{
                                   studentParentTeacherController.setIsLoading(isLoading: false);
                                   if(res['status']){
@@ -90,7 +90,8 @@ class TableExample extends State<EvaluationScreen> {
                                       }else{
                                         AppConstants.showCustomToast(status: false, message: 'No se pudo recuperar');
                                       }
-                                    }else{
+                                    }
+                                    else{
                                       AppConstants.showCustomToast(status: false, message: 'No se pudo recuperar');
                                     }
                                   }

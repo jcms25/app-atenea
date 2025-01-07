@@ -238,7 +238,7 @@ class EventWidget extends StatelessWidget {
               Consumer<StudentParentTeacherController>(
                 builder: (context,studentParentTeacherController,child){
                   return Visibility(
-                    visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher && studentParentTeacherController.loginModel?.userdata?.wpUsrId == eventListItemDetail.createdBy,
+                    visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher && studentParentTeacherController.userdata?.wpUsrId == eventListItemDetail.createdBy,
                       child: IconButton(icon: Icon(Icons.edit),color: color, onPressed: () {
                         Get.to(() => TeacherAddEditEvents(),
                           arguments: {

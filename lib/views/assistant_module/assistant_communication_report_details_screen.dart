@@ -500,9 +500,9 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
       cookie = assistant?.userdata.data.cookie ?? "";
     } else {
       // Parentlogin parentLogin = await sessionManagement.getModelParent('');
-      LoginModel? loginModel = AppSharedPreferences.getUserData();
-      token = loginModel?.basicAuthToken ?? "";
-      cookie = loginModel?.userdata?.cookies ?? "";
+      Userdata? userdata = AppSharedPreferences.getUserData();
+      token = AppSharedPreferences.getBasicAthToken() ?? "";
+      cookie = userdata?.cookies ?? "";
     }
     if (isCommonMessageOrStudentReport == 0) {
       //this will  get details of common message.

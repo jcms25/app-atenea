@@ -22,7 +22,7 @@ class ClassesScreen extends StatelessWidget {
             Consumer<StudentParentTeacherController>(
                 builder: (context, studentParentTeacherController, child) {
               Userdata? userdata =
-                  studentParentTeacherController.loginModel?.userdata;
+                  studentParentTeacherController.userdata;
               return studentParentTeacherController.currentLoggedInUserRole ==
                       RoleType.student
                   ? ClassWidget(

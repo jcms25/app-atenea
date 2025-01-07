@@ -59,6 +59,7 @@ dependencies:
   permission_handler:
   flutter_multi_select_items:
   flutter_localization:
+  path_provider:
 dev_dependencies:
   flutter_test:
     sdk: flutter

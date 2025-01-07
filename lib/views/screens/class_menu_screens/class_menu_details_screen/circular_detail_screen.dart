@@ -152,12 +152,12 @@ class CircularData extends State<CircularDetail> {
   void callAPI() async {
 
 
-    LoginModel? parent = AppSharedPreferences.getUserData();
-    String ptoken = parent?.basicAuthToken ?? "";
+    Userdata? parent = AppSharedPreferences.getUserData();
+    String ptoken = AppSharedPreferences.getBasicAthToken() ?? "";
     dynamic singleCircularDetails = await ApiClass().getSingleCircular(
       ptoken,
       widget.cid,
-      parent?.userdata?.cookies ?? ""
+      parent?.cookies ?? ""
     );
     if (singleCircularDetails['status']) {
       Singlecircular circular = Singlecircular.fromJson(singleCircularDetails);

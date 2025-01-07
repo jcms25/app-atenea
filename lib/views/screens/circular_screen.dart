@@ -163,9 +163,9 @@ class _Circular extends State<CircularScreen> {
   void getCircularList() async {
     //this will only accesssible through parent
     try{
-
-      LoginModel? loginModel = AppSharedPreferences.getUserData();
-      dynamic response = await ApiClass().getCircular(loginModel?.basicAuthToken ?? "",loginModel?.userdata?.cookies ?? "");
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      Userdata? userdata = AppSharedPreferences.getUserData();
+      dynamic response = await ApiClass().getCircular(token,userdata?.cookies ?? "");
       if (response['status']) {
         Circular circularData = Circular.fromJson(response);
         setState(() {

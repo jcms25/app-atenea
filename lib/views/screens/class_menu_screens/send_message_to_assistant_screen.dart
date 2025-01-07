@@ -258,8 +258,11 @@ try{
   // SessionManagement sessionManagement = SessionManagement();
   // Parentlogin parentLogin = await sessionManagement.getModelParent('');
 
-  LoginModel? loginModel = AppSharedPreferences.getUserData();
-  dynamic response = await ApiClass().sendMessageToAssistant(token: loginModel?.basicAuthToken ?? "", senderId: loginModel?.userdata?.parentWpUsrId ?? "", receiverId: "${selectedAssistant.id}", studentId: widget.studentId, subject: _affairController.text, message: _messageController.text, attachment: fileName == 'chooseTitle'.tr ? "" : fileName, cookie: loginModel?.userdata?.cookies ?? "");
+  String token = AppSharedPreferences.getBasicAthToken() ?? "";
+
+
+  Userdata? userdata = AppSharedPreferences.getUserData();
+  dynamic response = await ApiClass().sendMessageToAssistant(token: token, senderId: userdata?.parentWpUsrId ?? "", receiverId: "${selectedAssistant.id}", studentId: widget.studentId, subject: _affairController.text, message: _messageController.text, attachment: fileName == 'chooseTitle'.tr ? "" : fileName, cookie: userdata?.cookies ?? "");
   if(response['status']){
     setState(() {
       isLoading = false;
@@ -293,9 +296,11 @@ try{
         isLoading = true;
       });
 
-      LoginModel? loginModel = AppSharedPreferences.getUserData();
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
 
-      dynamic response = await ApiClass().getAssistantList(loginModel?.basicAuthToken ?? "",loginModel?.userdata?.cookies ?? "");
+      Userdata? userData = AppSharedPreferences.getUserData();
+
+      dynamic response = await ApiClass().getAssistantList(token,userData?.cookies ?? "");
       List<AssistantData> tempAssistantList = [];
       tempAssistantList.add(AssistantData(id: 404, firstName: "-- ${'selectAssistant'.tr}", lastName: ""));
       if(response['status']){

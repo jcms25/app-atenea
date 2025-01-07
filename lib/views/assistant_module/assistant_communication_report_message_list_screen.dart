@@ -97,10 +97,9 @@ class _ReportListScreenState extends State<ReportListScreen> {
     }
     else{
       // Parentlogin parentLogin = await sessionManagement.getModelParent('');
-
-      LoginModel? loginModel = AppSharedPreferences.getUserData();
-      String token = loginModel?.basicAuthToken ?? "";
-      getList(token,1 , loginModel?.userdata?.cookies ?? "");
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      Userdata? userdata = AppSharedPreferences.getUserData();
+      getList(token,1 , userdata?.cookies ?? "");
     }
   }
 

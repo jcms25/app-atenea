@@ -6,6 +6,7 @@ import '../models/assistant/assistant_login_model.dart';
 
 class AppSharedPreferences {
   static const String _userDataKey = "userdata";
+  static const String _baseAuthToken = "basicAuthToken";
   static const String _loggedInUserRole = "loggedInUserRole";
   static const String _loggedInUserCredential = "loggedInUserCredential";
 
@@ -14,7 +15,6 @@ class AppSharedPreferences {
   static Future<void> initialization() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
-
 
   //save login credentials
   static Future<void> saveLoggedInCredential({required Map<String,dynamic> userCredential}) async {
@@ -27,19 +27,37 @@ class AppSharedPreferences {
     return  savedLoggedInCredential != null ? jsonDecode(savedLoggedInCredential) : null;
   }
 
-  //save user data
-  static Future<void> saveLoginData(
-      {required LoginModel loginData, required String role}) async {
-    await sharedPreferences?.setString(_userDataKey, jsonEncode(loginData));
-    await sharedPreferences?.setString(_loggedInUserRole, role);
+
+  // save userdata
+  static Future<void> saveUserData({required Userdata? userdata,String? basicAuthToken,String? role}) async{
+    await sharedPreferences?.setString(_userDataKey, jsonEncode(userdata));
+    if(basicAuthToken != null){
+      await sharedPreferences?.setString(_baseAuthToken, basicAuthToken);
+    }
+    if(role != null){
+      await sharedPreferences?.setString(_loggedInUserRole, role);
+    }
   }
 
   //get user data
-  static LoginModel? getUserData() {
+  static Userdata? getUserData() {
     String? userData = sharedPreferences?.getString(_userDataKey);
-    return userData == null ? null : LoginModel.fromJson(jsonDecode(userData));
+   if(userData != null){
+     Userdata userdata = Userdata.fromJson(jsonDecode(userData));
+     return userdata;
+   }
+    return null;
   }
 
+  //save basic authentication token
+  static Future<void> saveBasicAuthToken({required String basicAuthToken}) async{
+    await sharedPreferences?.setString(_baseAuthToken, basicAuthToken);
+  }
+
+  //get basic authentication token
+  static String? getBasicAthToken(){
+    return sharedPreferences?.getString(_baseAuthToken);
+  }
   //save assistant logged in data
   static Future<void> saveAssistantLoggedInData(
       {required Assistant assistant}) async {
@@ -66,6 +84,7 @@ class AppSharedPreferences {
   static Future<void> loggedOutUser() async{
     await sharedPreferences?.remove(_userDataKey);
     await sharedPreferences?.remove(_loggedInUserRole);
+    await sharedPreferences?.remove(_baseAuthToken);
   }
 }
 

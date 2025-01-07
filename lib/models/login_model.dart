@@ -30,7 +30,7 @@ class LoginModel {
 class Userdata {
   String? sid;
   String? wpUsrId;
-  String? sRollno;
+  String? sRollNo;
   String? sFname;
   String? sMname;
   String? sLname;
@@ -41,7 +41,7 @@ class Userdata {
   String? sZipcode;
   String? sCountry;
   String? sPhone;
-  String? sBloodgrp;
+  String? sBloodGroup;
   String? sDoj;
   String? classId;
   String? classDate;
@@ -56,11 +56,11 @@ class Userdata {
   String? pEdu;
   String? pPhone;
   String? pProfession;
-  String? pBloodgrp;
+  String? pBloodGroup;
   String? sPaddress;
-  String? sPcity;
-  String? sPcountry;
-  String? sPzipcode;
+  String? sPCity;
+  String? sPCountry;
+  String? sPZipCode;
   String? parentImage;
   String? parentEmail;
   List<StudentData>? studentData;
@@ -75,16 +75,16 @@ class Userdata {
   String? country;
   String? city;
   String? address;
-  String? empcode;
+  String? empCode;
   String? dob;
   String? doj;
   String? dol;
   String? phone;
   String? qualification;
   String? gender;
-  String? bloodgrp;
+  String? bloodGroup;
   String? position;
-  String? whours;
+  String? wHours;
   String? familyCareHour;
   String? teacherImage;
   String? teacherEmail;
@@ -92,7 +92,7 @@ class Userdata {
   Userdata(
       {this.sid,
         this.wpUsrId,
-        this.sRollno,
+        this.sRollNo,
         this.sFname,
         this.sMname,
         this.sLname,
@@ -103,7 +103,7 @@ class Userdata {
         this.sZipcode,
         this.sCountry,
         this.sPhone,
-        this.sBloodgrp,
+        this.sBloodGroup,
         this.sDoj,
         this.classId,
         this.classDate,
@@ -118,11 +118,11 @@ class Userdata {
         this.pEdu,
         this.pPhone,
         this.pProfession,
-        this.pBloodgrp,
+        this.pBloodGroup,
         this.sPaddress,
-        this.sPcity,
-        this.sPcountry,
-        this.sPzipcode,
+        this.sPCity,
+        this.sPCountry,
+        this.sPZipCode,
         this.parentImage,
         this.parentEmail,
         this.studentData,
@@ -137,16 +137,16 @@ class Userdata {
         this.country,
         this.city,
         this.address,
-        this.empcode,
+        this.empCode,
         this.dob,
         this.doj,
         this.dol,
         this.phone,
         this.qualification,
         this.gender,
-        this.bloodgrp,
+        this.bloodGroup,
         this.position,
-        this.whours,
+        this.wHours,
         this.familyCareHour,
         this.teacherImage,
         this.teacherEmail,
@@ -156,7 +156,7 @@ class Userdata {
   Userdata.fromJson(Map<String, dynamic> json) {
     sid = json['sid'];
     wpUsrId = json['wp_usr_id'];
-    sRollno = json['s_rollno'];
+    sRollNo = json['s_rollno'];
     sFname = json['s_fname'];
     sMname = json['s_mname'];
     sLname = json['s_lname'];
@@ -167,7 +167,7 @@ class Userdata {
     sZipcode = json['s_zipcode'];
     sCountry = json['s_country'];
     sPhone = json['s_phone'];
-    sBloodgrp = json['s_bloodgrp'];
+    sBloodGroup = json['s_bloodgrp'];
     sDoj = json['s_doj'];
     classId = json['class_id'];
     classDate = json['class_date'];
@@ -187,11 +187,11 @@ class Userdata {
     pEdu = json['p_edu'];
     pPhone = json['p_phone'];
     pProfession = json['p_profession'];
-    pBloodgrp = json['p_bloodgrp'];
+    pBloodGroup = json['p_bloodgrp'];
     sPaddress = json['s_paddress'];
-    sPcity = json['s_pcity'];
-    sPcountry = json['s_pcountry'];
-    sPzipcode = json['s_pzipcode'];
+    sPCity = json['s_pcity'];
+    sPCountry = json['s_pcountry'];
+    sPZipCode = json['s_pzipcode'];
     parentImage = json['parent_image'];
     parentEmail = json['parent_email'];
     if (json['studentData'] != null) {
@@ -212,16 +212,16 @@ class Userdata {
     country = json['country'];
     city = json['city'];
     address = json['address'];
-    empcode = json['empcode'];
+    empCode = json['empcode'];
     dob = json['dob'];
     doj = json['doj'];
     dol = json['dol'];
     phone = json['phone'];
     qualification = json['qualification'];
     gender = json['gender'];
-    bloodgrp = json['bloodgrp'];
+    bloodGroup = json['bloodgrp'];
     position = json['position'];
-    whours = json['whours'];
+    wHours = json['whours'];
     familyCareHour = json['family_care_hour'];
     teacherImage = json['teacher_image'];
     teacherEmail = json['teacher_email'];
@@ -231,7 +231,7 @@ class Userdata {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['sid'] = sid;
     data['wp_usr_id'] = wpUsrId;
-    data['s_rollno'] = sRollno;
+    data['s_rollno'] = sRollNo;
     data['s_fname'] = sFname;
     data['s_mname'] = sMname;
     data['s_lname'] = sLname;
@@ -242,7 +242,7 @@ class Userdata {
     data['s_zipcode'] = sZipcode;
     data['s_country'] = sCountry;
     data['s_phone'] = sPhone;
-    data['s_bloodgrp'] = sBloodgrp;
+    data['s_bloodgrp'] = sBloodGroup;
     data['s_doj'] = sDoj;
     data['class_id'] = classId;
     data['class_date'] = classDate;
@@ -259,11 +259,11 @@ class Userdata {
     data['p_edu'] = pEdu;
     data['p_phone'] = pPhone;
     data['p_profession'] = pProfession;
-    data['p_bloodgrp'] = pBloodgrp;
+    data['p_bloodgrp'] = pBloodGroup;
     data['s_paddress'] = sPaddress;
-    data['s_pcity'] = sPcity;
-    data['s_pcountry'] = sPcountry;
-    data['s_pzipcode'] = sPzipcode;
+    data['s_pcity'] = sPCity;
+    data['s_pcountry'] = sPCountry;
+    data['s_pzipcode'] = sPZipCode;
     data['parent_image'] = parentImage;
     data['parent_email'] = parentEmail;
     if (studentData != null) {
@@ -282,16 +282,16 @@ class Userdata {
     data['country'] = country;
     data['city'] = city;
     data['address'] = address;
-    data['empcode'] = empcode;
+    data['empcode'] = empCode;
     data['dob'] = dob;
     data['doj'] = doj;
     data['dol'] = dol;
     data['phone'] = phone;
     data['qualification'] = qualification;
     data['gender'] = gender;
-    data['bloodgrp'] = bloodgrp;
+    data['bloodgrp'] = bloodGroup;
     data['position'] = position;
-    data['whours'] = whours;
+    data['whours'] = wHours;
     data['family_care_hour'] = familyCareHour;
     data['teacher_image'] = teacherImage;
     data['teacher_email'] = teacherEmail;

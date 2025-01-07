@@ -12,6 +12,7 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_scr
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/manage_service_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.dart';
+import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
@@ -34,13 +35,13 @@ class CustomDrawerWidget extends StatelessWidget {
     RoleType? currentUserRole =
         studentParentTeacherController.currentLoggedInUserRole;
     String? profileImage = currentUserRole == RoleType.student
-        ? studentParentTeacherController.loginModel?.userdata?.stuImage ?? ""
+        ? studentParentTeacherController.userdata?.stuImage ?? ""
         : currentUserRole == RoleType.parent
             ? studentParentTeacherController
-                    .loginModel?.userdata?.parentImage ??
+                    .userdata?.parentImage ??
                 ""
             : studentParentTeacherController
-                    .loginModel?.userdata?.teacherImage ??
+                    .userdata?.teacherImage ??
                 "";
     List<DrawerMenuOption> drawerListOption = _buildDrawerMenuOption(
         appController: studentParentTeacherController,
@@ -60,69 +61,73 @@ class CustomDrawerWidget extends StatelessWidget {
                 )),
             padding: const EdgeInsets.all(15),
             width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 65,
-                      width: 65,
-                      child: profileImage.isEmpty
-                          ? const CircleAvatar(
-                              backgroundImage: AssetImage(AppImages.people),
-                            )
-                          : CircleAvatar(
-                              radius: 16.0,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(65.0),
-                                child: Image.network(
-                                  profileImage,
-                                  fit: BoxFit.cover,
-                                  height: 65,
-                                  width: 65,
-                                ),
-                              ),
+            child: Consumer<StudentParentTeacherController>(
+              builder: (context,studentParentTeacherController,child){
+                return GestureDetector(
+                  onTap: (){
+                    Get.to(() => EditProfileScreen(userdata: studentParentTeacherController.userdata,roleType: studentParentTeacherController.currentLoggedInUserRole,));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 65,
+                        width: 65,
+                        child: profileImage.isEmpty
+                            ? const CircleAvatar(
+                          backgroundImage: AssetImage(AppImages.people),
+                        )
+                            : CircleAvatar(
+                          radius: 16.0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(65.0),
+                            child: Image.network(
+                              profileImage,
+                              fit: BoxFit.cover,
+                              height: 65,
+                              width: 65,
                             ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "hello".tr,
-                          style: AppTextStyle.getOutfit300(
-                              textSize: 16, textColor: AppColors.white),
+                          ),
                         ),
-                        AutoSizeText(
-                            maxLines: 1,
-                            currentUserRole == RoleType.student
-                                ? studentParentTeacherController
-                                        .loginModel?.userdata?.sFname ??
-                                    "-"
-                                : currentUserRole == RoleType.parent
-                                    ? studentParentTeacherController
-                                            .loginModel?.userdata?.pFname ??
-                                        "-"
-                                    : studentParentTeacherController
-                                            .loginModel?.userdata?.firstName ??
-                                        "",
-                            style: AppTextStyle.getOutfit600(
-                                textSize: 20, textColor: AppColors.white))
-                      ],
-                    )),
-                    // const Spacer(),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Image.asset(AppImages.whiteAppLogo, width: 50, height: 50)
-                  ],
-                )
-              ],
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "hello".tr,
+                                style: AppTextStyle.getOutfit300(
+                                    textSize: 16, textColor: AppColors.white),
+                              ),
+                              AutoSizeText(
+                                  maxLines: 1,
+                                  currentUserRole == RoleType.student
+                                      ? studentParentTeacherController
+                                      .userdata?.sFname ??
+                                      "-"
+                                      : currentUserRole == RoleType.parent
+                                      ? studentParentTeacherController
+                                      .userdata?.pFname ??
+                                      "-"
+                                      : studentParentTeacherController
+                                      .userdata?.firstName ??
+                                      "",
+                                  style: AppTextStyle.getOutfit600(
+                                      textSize: 20, textColor: AppColors.white))
+                            ],
+                          )),
+                      // const Spacer(),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Image.asset(AppImages.whiteAppLogo, width: 50, height: 50)
+                    ],
+                  ),
+                );
+              },
             ),
           ),
           Expanded(
@@ -167,15 +172,15 @@ class CustomDrawerWidget extends StatelessWidget {
         if (drawerMenuOption.name == 'drawerOption3'.tr) {
           drawerMenuOption.subMenu ??= [
             DrawerMenuOption(
-                name: appController?.loginModel?.userdata?.className ?? "",
+                name: appController?.userdata?.className ?? "",
                 subMenu: buildSubMenu(
-                    classId: appController?.loginModel?.userdata?.classId ?? "",
+                    classId: appController?.userdata?.classId ?? "",
                     studentId:
-                        appController?.loginModel?.userdata?.wpUsrId ?? "",
+                        appController?.userdata?.wpUsrId ?? "",
                     className:
-                        appController?.loginModel?.userdata?.className ?? "",
+                        appController?.userdata?.className ?? "",
                     studentName:
-                        appController?.loginModel?.userdata?.sFname ?? "",
+                        appController?.userdata?.sFname ?? "",
                     roleType: RoleType.student))
           ];
         }
@@ -238,7 +243,7 @@ class CustomDrawerWidget extends StatelessWidget {
           if (drawerMenuOption.subMenu == null) {
             List<DrawerMenuOption> tempList = [];
             List<StudentData> studentData =
-                appController?.loginModel?.userdata?.studentData ?? [];
+                appController?.userdata?.studentData ?? [];
             for (var student in studentData) {
               tempList.add(DrawerMenuOption(
                 name:

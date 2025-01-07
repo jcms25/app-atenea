@@ -20,6 +20,7 @@ import 'package:colegia_atenea/models/teacher/teacher_marks_list_model.dart';
 import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -53,10 +54,10 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //current logged in user data
-  LoginModel? loginModel;
+  Userdata? userdata;
 
-  void setLoginModel({required LoginModel? loginModel}) {
-    this.loginModel = loginModel;
+  void setLoginModel({required Userdata? userdata}) {
+    this.userdata = userdata;
     notifyListeners();
   }
 
@@ -201,16 +202,19 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //get dashboard data
   void getDashboardData({required bool showLoader}) async {
+
     try {
+
       setIsLoading(isLoading: showLoader);
-      String userRole = loginModel?.userdata?.userRole ?? "";
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String userRole = userdata?.userRole ?? "";
       await Api.httpRequest(
         requestType: RequestType.get,
         endPoint: "${Api.dashboardEndpoint}?role=$userRole",
         header: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': "Basic ${loginModel?.basicAuthToken}",
-          'Cookie': loginModel?.userdata?.cookies ?? ""
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? ""
         },
       ).then((response) {
         if (response['status']) {
@@ -223,6 +227,8 @@ class StudentParentTeacherController extends ChangeNotifier {
         }
         setIsLoading(isLoading: false);
       });
+
+
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
@@ -267,8 +273,8 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getMessageList({required bool showLoader}) async {
     try {
       setIsLoading(isLoading: showLoader);
-      String token = loginModel?.basicAuthToken ?? "";
-      String cookies = loginModel?.userdata?.cookies ?? "";
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String cookies = userdata?.cookies ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: Api.listOfAllMessages,
@@ -350,13 +356,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getMessageDetails({required String messageId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: "${Api.listOfAllMessages}?mid=$messageId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           MessageDetails messageDetails = MessageDetails.fromJson(response);
@@ -394,13 +401,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getListOfTeacherForMessageSend({String? teacherId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: Api.teacherListForMessageSend,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           TeacherListForSend teacherListForSend =
@@ -473,12 +481,12 @@ class StudentParentTeacherController extends ChangeNotifier {
 
     try {
       setIsLoading(isLoading: true);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       final MultipartRequest request = MultipartRequest(
           'POST', Uri.parse('${Api.localBaseURL}/parentSendMessage'));
       request.headers.addAll({
-        "Authorization": "Basic ${loginModel?.basicAuthToken}",
-        'Cookie': "${loginModel?.userdata?.cookies}"
+        "Authorization": "Basic $token",
+        'Cookie': "${userdata?.cookies}"
       });
 
       if (selectedFilePath?.isEmpty ?? true) {
@@ -488,8 +496,8 @@ class StudentParentTeacherController extends ChangeNotifier {
             await MultipartFile.fromPath('attachment', selectedFilePath ?? ""));
       }
       request.fields['sender_id'] = currentLoggedInUserRole == RoleType.parent
-          ? loginModel?.userdata?.parentWpUsrId ?? ""
-          : loginModel?.userdata?.wpUsrId ?? "";
+          ? userdata?.parentWpUsrId ?? ""
+          : userdata?.wpUsrId ?? "";
       request.fields['reciever_id[0]'] = whomToSend == 0
           ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
           : whomToSend == 1
@@ -575,6 +583,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: roleType == RoleType.teacher
@@ -582,8 +591,8 @@ class StudentParentTeacherController extends ChangeNotifier {
               : "${Api.subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           SubjectListModel subjectList = SubjectListModel.fromJson(response);
@@ -633,13 +642,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getSingleSubjectDetails({required String subjectId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: "${Api.subjectDetailEndpoint}/$subjectId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           Subject subject = Subject.fromJson(response);
@@ -708,13 +718,14 @@ class StudentParentTeacherController extends ChangeNotifier {
       {required String? classId, required String? studentId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       dynamic response = await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: "${Api.timeTableEndpoint}/$classId?sid=${studentId ?? ""}",
           header: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           });
       int currentDay = getCurrentDay() - 1;
       setCurrentSelectedDay(currentSelectedDay: currentDay);
@@ -795,12 +806,13 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getEvaluation({required String classId,required String studentWpUserId}) async{
     try{
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           },
           endPoint: "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId").then((res){
         AppConstants.showCustomToast(status: res['status'], message: res['Message'] ?? res['message'] ?? "");
@@ -838,7 +850,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: roleType == RoleType.teacher
@@ -846,8 +858,8 @@ class StudentParentTeacherController extends ChangeNotifier {
               : "${Api.teacherEndpoint}?student_id=$studentId&class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           Teacher teacher = Teacher.fromJson(response);
@@ -895,13 +907,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getSingleTeacherDetails({required String teacherWPUserId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: "${Api.teacherDetailsEndPoint}/$teacherWPUserId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           SingleTeacherModel singleTeacherModel =
@@ -935,6 +948,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       {required String classId, required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: roleType == RoleType.teacher
@@ -942,8 +956,8 @@ class StudentParentTeacherController extends ChangeNotifier {
               : "${Api.studentEndpoint}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           StudentListModel student = StudentListModel.fromJson(response);
@@ -997,14 +1011,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   Future<void> getStudentDetails({required String studentId}) async {
     try {
       setIsLoading(isLoading: true);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: "${Api.studentDetailsEndpoint}/$studentId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': "${loginModel?.userdata?.cookies}"
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
           }).then((response) {
         if (response['status']) {
           StudentDetailModel studentDetailModel =
@@ -1025,9 +1039,9 @@ class StudentParentTeacherController extends ChangeNotifier {
     if (currentLoggedInUserRole == RoleType.teacher) {
       return true;
     } else if (currentLoggedInUserRole == RoleType.student) {
-      return idOfStudentYouAreSeeingDetails == loginModel?.userdata?.wpUsrId;
+      return idOfStudentYouAreSeeingDetails == userdata?.wpUsrId;
     } else {
-      for (StudentData studentData in loginModel?.userdata?.studentData ?? []) {
+      for (StudentData studentData in userdata?.studentData ?? []) {
         if (studentData.wpUsrId == idOfStudentYouAreSeeingDetails) {
           return true;
         }
@@ -1054,13 +1068,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getTransportData() async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: Api.transportEndpoint,
           header: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((response) {
         if (response['status']) {
           Transport transport = Transport.fromJson(response);
@@ -1117,14 +1132,14 @@ class StudentParentTeacherController extends ChangeNotifier {
 
     try {
       setIsLoading(isLoading: showLoader);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: Api.teacherClassList,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((res) {
         if (res['status']) {
           TeacherClassListModel teacherClass =
@@ -1169,14 +1184,14 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getListOfParents({required String classId}) async {
     try {
       setIsLoading(isLoading: true);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: "${Api.teacherSideListOfParents}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((res) {
         if (res['status']) {
           ParentListModel parentListModel = ParentListModel.fromJson(res);
@@ -1307,13 +1322,14 @@ class StudentParentTeacherController extends ChangeNotifier {
       String? eventId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.post,
           endPoint: eventId == null ? Api.eventListEndPoint : "event/$eventId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           },
           body: {
             "etitle": title,
@@ -1383,6 +1399,7 @@ class StudentParentTeacherController extends ChangeNotifier {
   Future<void> getEvents() async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: currentLoggedInUserRole == RoleType.teacher
@@ -1390,8 +1407,8 @@ class StudentParentTeacherController extends ChangeNotifier {
               : Api.eventListEndPoint,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((response) {
         if (response['status']) {
           Events events = Events.fromJson(response);
@@ -1458,14 +1475,15 @@ class StudentParentTeacherController extends ChangeNotifier {
       {required String studentId, required String classId}) async {
     try {
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint:
               "${Api.teacherFollowedUp}?class_id=$classId&student_id=$studentId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((response) {
         if (response['status']) {
           FollowedUpModel followedUpModel = FollowedUpModel.fromJson(response);
@@ -1544,7 +1562,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           endPoint: roleType != RoleType.teacher
@@ -1552,8 +1570,8 @@ class StudentParentTeacherController extends ChangeNotifier {
               : "${Api.teacherExamListPoint}?class_id=$classId",
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((response) {
         if (response['status']) {
           ExamListModel examListModel = ExamListModel.fromJson(response);
@@ -1696,7 +1714,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       for (int i = 0; i < subjects.length; i++) {
         bodyData["subject_id[$i]"] = subjects[i].id ?? "";
       }
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.post,
           endPoint: examId == null
@@ -1705,8 +1723,8 @@ class StudentParentTeacherController extends ChangeNotifier {
           body: bodyData,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           }).then((response) {
         setIsLoading(isLoading: false);
         AppConstants.showCustomToast(
@@ -1902,12 +1920,13 @@ class StudentParentTeacherController extends ChangeNotifier {
   void getDinningMenu() async{
     try{
       setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           },
           endPoint: Api.dinningSectionEndPoint).then((response){
         if(response['status']){
@@ -1976,13 +1995,13 @@ class StudentParentTeacherController extends ChangeNotifier {
     Future<void> getDinningStudentList({required String classId,required int month,required int day}) async{
     try{
       setIsLoading(isLoading: true);
-
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(requestType: RequestType.get,
 
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           },
           endPoint: "${Api.dinningStudentListEndPoint}?class_id=$classId&month=$month&day=$day&current_role=${currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher"}").then((response){
         if(response['status']){
@@ -2035,12 +2054,14 @@ class StudentParentTeacherController extends ChangeNotifier {
       for(int i = 0; i< dinningStudentList.length; i++){
         bodyData["class_id[$i]"] = dinningStudentList[i].wpUsrId ?? "";
       }
+
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(requestType: RequestType.post, endPoint: Api.addEditDinningTeacherSide,
 
           header: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic ${loginModel?.basicAuthToken}",
-            'Cookie': loginModel?.userdata?.cookies ?? ""
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
           },
           body : bodyData
       ).then((response) async{
@@ -2060,7 +2081,7 @@ class StudentParentTeacherController extends ChangeNotifier {
   //Logged out function : clear all controller data
   void loggedOutClearData() {
     currentLoggedInUserRole = null;
-    loginModel = null;
+    userdata = null;
     dashboard = null;
     setCurrentBottomIndexSelected(index: 0);
     timeTableList = [];

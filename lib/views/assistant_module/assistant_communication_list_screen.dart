@@ -162,9 +162,9 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
         getCommonMessageList(token,role!,assistant?.userdata.data.cookie ?? "");
       }else{
         // Parentlogin parentLogin = await sessionManagement.getModelParent('');
-        LoginModel? loginModel = AppSharedPreferences.getUserData();
-        String token = loginModel?.basicAuthToken ?? "";
-        getCommonMessageList(token,role!,loginModel?.userdata?.cookies ?? "");
+        Userdata? userdata = AppSharedPreferences.getUserData();
+        String token = AppSharedPreferences.getBasicAthToken() ?? "";
+        getCommonMessageList(token,role!,userdata?.cookies ?? "");
       }
 
     }else{
@@ -179,9 +179,9 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
         getStudentReportList(token,role ?? "",assistant?.userdata.data.cookie ?? "");
       }
       else{
-        LoginModel? loginModel = AppSharedPreferences.getUserData();
-        String token = loginModel?.basicAuthToken ?? "";
-        getStudentReportList(token,role!,loginModel?.userdata?.cookies ?? "");
+        Userdata? userdata = AppSharedPreferences.getUserData();
+        String token = AppSharedPreferences.getBasicAthToken() ?? "";
+        getStudentReportList(token,role!, userdata?.cookies ?? "");
       }
     }
   }

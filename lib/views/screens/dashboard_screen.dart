@@ -72,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           builder:
                               (context, studentParentTeacherController, child) {
                             Userdata? userdata = studentParentTeacherController
-                                .loginModel?.userdata;
+                                .userdata;
                             String? userRole =
                                 AppSharedPreferences.getUserLoggedInRole();
                             String? profileImage = userRole == "student"
@@ -88,7 +88,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                             return GestureDetector(
                               onTap: (){
-                                Get.to(() => EditProfileScreen());
+                                Get.to(() => EditProfileScreen(userdata: studentParentTeacherController.userdata,roleType: studentParentTeacherController.currentLoggedInUserRole,));
                               },
                               child: Container(
                                 // height: 100,

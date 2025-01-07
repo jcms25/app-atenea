@@ -293,7 +293,7 @@ class ExamItemWidget extends StatelessWidget {
                   visible: studentParentController.currentLoggedInUserRole ==
                           RoleType.teacher &&
                       examListItem.createdBy ==
-                          studentParentController.loginModel?.userdata?.wpUsrId,
+                          studentParentController.userdata?.wpUsrId,
                   child: GestureDetector(
                     onTap: () {
                       Get.to(() => TeacherAddEditExamScreen(),

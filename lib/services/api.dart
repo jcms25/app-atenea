@@ -69,6 +69,16 @@ class Api {
    static const String _evaluationPDFDownloadEndpoint = "evaluationpdf";
    static String get evaluationPDFDownloadEndpoint => _evaluationPDFDownloadEndpoint;
 
+
+   static const String _updateStudentProfile = "update_student_profile";
+   static String get updateStudentProfile => _updateStudentProfile;
+
+   static const String _updateParentProfile = "update_parent_profile";
+   static String get updateParentProfile => _updateParentProfile;
+
+   static const String _updateTeacherProfile = "update_teacher_profile";
+   static String get updateTeacherProfile => _updateTeacherProfile;
+
   //Teacher side end points
   // static const String _teacherEventsList = "teacher/events";
   // static String get teacherEventsList => _teacherEndpoint;

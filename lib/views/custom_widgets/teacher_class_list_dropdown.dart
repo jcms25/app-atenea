@@ -129,12 +129,17 @@ class TeacherClassListDropdown extends StatelessWidget {
 
                     studentParentTeacherController.setDinningSettings(
                         dinningSettings: null);
-                  } else {
+                  } else if(fromWhichScreen == 7){
+                    studentParentTeacherController.setCurrentSelectedStudentForSendMessage(studentItem: null);
+                    studentParentTeacherController.setCurrentSelectedParentForSendMessage(parentItem: null);
+                    studentParentTeacherController.setCurrentSendingMessageCategory(messageSendingCategoryForTeacher: null);
                     studentParentTeacherController.getListOfStudents(
                         classId: teacherClassItem?.cid ?? "",
                         roleType: RoleType.teacher);
                     studentParentTeacherController.getListOfParents(
                         classId: teacherClassItem?.cid ?? "");
+                  }else{
+
                   }
                 }
               });

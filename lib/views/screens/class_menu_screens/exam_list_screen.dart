@@ -220,8 +220,9 @@ class ExamItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  constraints: BoxConstraints(minHeight: 60, minWidth: 60),
-                  padding: const EdgeInsets.all(10),
+                  width: 80,
+                  constraints: BoxConstraints(minHeight: 60),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(10)),
@@ -239,6 +240,7 @@ class ExamItemWidget extends StatelessWidget {
                       ),
                       Text(
                         "${AppConstants.getMonthInSpan(DateTime.parse(examListItem.eSDate ?? "").month).length > 5 ? AppConstants.getMonthInSpan(DateTime.parse(examListItem.eSDate ?? "").month).substring(0, 3) : AppConstants.getMonthInSpan(DateTime.parse(examListItem.eSDate ?? "").month)}\t${DateTime.parse(examListItem.eSDate ?? "").year}",
+                        textAlign: TextAlign.center,
                         style: AppTextStyle.getOutfit300(
                             textSize: 14, textColor: AppColors.white),
                       ),

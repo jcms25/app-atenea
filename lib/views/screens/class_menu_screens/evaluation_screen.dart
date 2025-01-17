@@ -79,20 +79,30 @@ class TableExample extends State<EvaluationScreen> {
                         child: IconButton(
                             onPressed: () async {
                               try {
-                                studentParentTeacherController.setIsLoading(isLoading: true);
-                                await Api.httpRequest(requestType: RequestType.get, endPoint: "${Api.evaluationPDFDownloadEndpoint}?student_id=${widget.wpId}&class_id=${widget.cid}").then((res) async{
-                                  studentParentTeacherController.setIsLoading(isLoading: false);
-                                  if(res['status']){
+                                studentParentTeacherController.setIsLoading(
+                                    isLoading: true);
+                                await Api.httpRequest(
+                                        requestType: RequestType.get,
+                                        endPoint:
+                                            "${Api.evaluationPDFDownloadEndpoint}?student_id=${widget.wpId}&class_id=${widget.cid}")
+                                    .then((res) async {
+                                  studentParentTeacherController.setIsLoading(
+                                      isLoading: false);
+                                  if (res['status']) {
                                     String? pdfURL = res['PDFLink'];
-                                    if(pdfURL != null || pdfURL != ""){
-                                      if(mounted){
-                                        await launchUrl(Uri.parse(pdfURL ?? ""));
-                                      }else{
-                                        AppConstants.showCustomToast(status: false, message: 'No se pudo recuperar');
+                                    if (pdfURL != null || pdfURL != "") {
+                                      if (mounted) {
+                                        await launchUrl(
+                                            Uri.parse(pdfURL ?? ""));
+                                      } else {
+                                        AppConstants.showCustomToast(
+                                            status: false,
+                                            message: 'No se pudo recuperar');
                                       }
-                                    }
-                                    else{
-                                      AppConstants.showCustomToast(status: false, message: 'No se pudo recuperar');
+                                    } else {
+                                      AppConstants.showCustomToast(
+                                          status: false,
+                                          message: 'No se pudo recuperar');
                                     }
                                   }
                                 });
@@ -148,11 +158,12 @@ class TableExample extends State<EvaluationScreen> {
                                             width: 1,
                                             color: AppColors.secondary)),
                                     columnWidths: {
-                                      0: FlexColumnWidth(3),
-                                      1: FlexColumnWidth(1),
-                                      2: FlexColumnWidth(1),
-                                      3: FlexColumnWidth(1),
-                                      4: FlexColumnWidth(2),
+                                      // 0: FlexColumnWidth(3),
+                                      0: FlexColumnWidth(4),
+                                      1: FlexColumnWidth(1.5),
+                                      2: FlexColumnWidth(1.5),
+                                      3: FlexColumnWidth(1.5),
+                                      4: FlexColumnWidth(1.5),
                                     },
                                     children: [
                                       TableRow(children: [
@@ -170,7 +181,7 @@ class TableExample extends State<EvaluationScreen> {
                                                   TableCellVerticalAlignment
                                                       .middle,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(5),
+                                                padding: const EdgeInsets.all(5.0),
                                                 child: Text(
                                                   e.subject,
                                                   style:
@@ -180,85 +191,94 @@ class TableExample extends State<EvaluationScreen> {
                                                               .secondary),
                                                 ),
                                               )),
-                                          TableCell(
-                                              verticalAlignment:
-                                                  TableCellVerticalAlignment
-                                                      .middle,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Text(
-                                                  e.marks.evaluation1,
-                                                  style:
-                                                      AppTextStyle.getOutfit400(
-                                                          textSize: 16,
-                                                          textColor: AppColors
-                                                              .secondary),
-                                                ),
-                                              )),
-                                          TableCell(
-                                              verticalAlignment:
-                                                  TableCellVerticalAlignment
-                                                      .middle,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Text(
-                                                  e.marks.evaluation2,
-                                                  style:
-                                                      AppTextStyle.getOutfit400(
-                                                          textSize: 16,
-                                                          textColor: AppColors
-                                                              .secondary),
-                                                ),
-                                              )),
-                                          TableCell(
-                                              verticalAlignment:
-                                                  TableCellVerticalAlignment
-                                                      .middle,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Text(
-                                                  e.marks.evaluation3,
-                                                  style:
-                                                      AppTextStyle.getOutfit400(
-                                                          textSize: 16,
-                                                          textColor: AppColors
-                                                              .secondary),
-                                                ),
-                                              )),
-                                          TableCell(
-                                              verticalAlignment:
-                                                  TableCellVerticalAlignment
-                                                      .middle,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Text(
-                                                  e.marks.evaluation4,
-                                                  style:
-                                                      AppTextStyle.getOutfit400(
-                                                          textSize: 16,
-                                                          textColor: AppColors
-                                                              .secondary),
-                                                ),
-                                              )),
+                                          // TableCell(
+                                          //     verticalAlignment:
+                                          //         TableCellVerticalAlignment
+                                          //             .middle,
+                                          //     child: Expanded(child: Text(
+                                          //       e.marks.evaluation1,
+                                          //       style:
+                                          //       AppTextStyle.getOutfit400(
+                                          //           textSize: 16,
+                                          //           textColor: AppColors
+                                          //               .secondary),
+                                          //     ))),
+                                          DataCellWidget(
+                                              data: e.marks.evaluation1),
+                                          DataCellWidget(data: e.marks.evaluation2),
+                                          DataCellWidget(data: e.marks.evaluation3),
+                                          DataCellWidget(data: e.marks.evaluation4)
+                                          // TableCell(
+                                          //     verticalAlignment:
+                                          //         TableCellVerticalAlignment
+                                          //             .middle,
+                                          //     child: Text(
+                                          //       e.marks.evaluation2,
+                                          //       style:
+                                          //           AppTextStyle.getOutfit400(
+                                          //               textSize: 16,
+                                          //               textColor: AppColors
+                                          //                   .secondary),
+                                          //     )),
+                                          // TableCell(
+                                          //     verticalAlignment:
+                                          //         TableCellVerticalAlignment
+                                          //             .middle,
+                                          //     child: Text(
+                                          //       e.marks.evaluation3,
+                                          //       style:
+                                          //           AppTextStyle.getOutfit400(
+                                          //               textSize: 16,
+                                          //               textColor: AppColors
+                                          //                   .secondary),
+                                          //     )),
+                                          // TableCell(
+                                          //     verticalAlignment:
+                                          //         TableCellVerticalAlignment
+                                          //             .middle,
+                                          //     child: Text(
+                                          //       e.marks.evaluation4,
+                                          //       style:
+                                          //           AppTextStyle.getOutfit400(
+                                          //               textSize: 16,
+                                          //               textColor: AppColors
+                                          //                   .secondary),
+                                          //     )),
                                         ]);
                                       }),
                                       TableRow(children: [
                                         LabelTableCell(label: "obser".tr),
                                         IconTableCell(onIconClick: () {
-                                            onObservationView(evaluation: 1, evaluationName: '1st'.tr, evaluationItems: studentParentController.evaluationItem);
+                                          onObservationView(
+                                              evaluation: 1,
+                                              evaluationName: '1st'.tr,
+                                              evaluationItems:
+                                                  studentParentController
+                                                      .evaluationItem);
                                         }),
                                         IconTableCell(onIconClick: () {
-                                          onObservationView(evaluation: 2, evaluationName: '2nd'.tr, evaluationItems: studentParentController.evaluationItem);
+                                          onObservationView(
+                                              evaluation: 2,
+                                              evaluationName: '2nd'.tr,
+                                              evaluationItems:
+                                                  studentParentController
+                                                      .evaluationItem);
                                         }),
                                         IconTableCell(onIconClick: () {
-                                          onObservationView(evaluation: 3, evaluationName: '3rd'.tr, evaluationItems: studentParentController.evaluationItem);
+                                          onObservationView(
+                                              evaluation: 3,
+                                              evaluationName: '3rd'.tr,
+                                              evaluationItems:
+                                                  studentParentController
+                                                      .evaluationItem);
                                         }),
                                         IconTableCell(onIconClick: () {
-                                          onObservationView(evaluation: 4, evaluationName: 'final'.tr, evaluationItems: studentParentController.evaluationItem);
+                                          onObservationView(
+                                              evaluation: 4,
+                                              evaluationName: 'final'.tr,
+                                              evaluationItems:
+                                                  studentParentController
+                                                      .evaluationItem);
                                         }),
                                       ]),
                                     ],
@@ -280,29 +300,37 @@ class TableExample extends State<EvaluationScreen> {
             )));
   }
 
+  void onObservationView(
+      {required int evaluation,
+      required String evaluationName,
+      required List<EvaluationItem> evaluationItems}) {
+    List<EvaluationReport> evaluationReport = [];
 
-  void onObservationView({required int evaluation,required String evaluationName,required List<EvaluationItem> evaluationItems}) {
-   List<EvaluationReport> evaluationReport = [];
-
-   for(EvaluationItem e in evaluationItems){
+    for (EvaluationItem e in evaluationItems) {
       Observation observation = e.observation;
-      String evaluationRemark =  evaluation == 1 ? observation.observation1 : evaluation == 2 ? observation.observation2 : evaluation == 3 ? observation.observation3 : observation.observation4;
-      if(evaluationRemark.isEmpty){
+      String evaluationRemark = evaluation == 1
+          ? observation.observation1
+          : evaluation == 2
+              ? observation.observation2
+              : evaluation == 3
+                  ? observation.observation3
+                  : observation.observation4;
+      if (evaluationRemark.isEmpty) {
         continue;
-      }else{
+      } else {
         evaluationReport.add(EvaluationReport(e.subject, evaluationRemark));
       }
-   }
+    }
 
-   if(evaluationReport.isEmpty){
-     showDialog(context: context, builder: (context){
-       return NoObservationDialogEvaluationDialog();
-     });
-   }else{
-     Get.to(EvaluationReportScreen(evaluationReport, evaluationName));
-   }
-
-
+    if (evaluationReport.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return NoObservationDialogEvaluationDialog();
+          });
+    } else {
+      Get.to(EvaluationReportScreen(evaluationReport, evaluationName));
+    }
   }
 }
 
@@ -380,7 +408,6 @@ class LabelTableCell extends StatelessWidget {
         child: Container(
           height: 60,
           color: AppColors.primary,
-          padding: const EdgeInsets.only(left: 10, right: 10),
           child: Align(
             alignment: Alignment.center,
             child: Text(
@@ -414,5 +441,28 @@ class IconTableCell extends StatelessWidget {
             )),
       ),
     ));
+  }
+}
+
+class DataCellWidget extends StatelessWidget {
+  final String data;
+
+  const DataCellWidget({super.key, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 3,right: 2),
+          child: AutoSizeText(
+            data,
+            maxLines: 2,
+            minFontSize: 16,
+            maxFontSize: 16,
+            style: AppTextStyle.getOutfit400(
+                textSize: 16, textColor: AppColors.secondary),
+          ),
+        ));
   }
 }

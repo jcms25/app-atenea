@@ -17,6 +17,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'controllers/store_controller.dart';
+
 FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
@@ -69,7 +71,8 @@ void main() async {
       ),
       ChangeNotifierProvider(create: (context) => SplashLoginController()),
       ChangeNotifierProvider(create: (context) => AssistantController()),
-      ChangeNotifierProvider(create: (context) => EditProfileController())
+      ChangeNotifierProvider(create: (context) => EditProfileController()),
+      ChangeNotifierProvider(create: (context) => StoreController())
     ],
     child: SafeArea(
         child: GetMaterialApp(

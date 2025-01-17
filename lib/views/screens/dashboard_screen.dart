@@ -36,6 +36,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
       studentParentTeacherController?.getDashboardData(showLoader: true);
+      // if(studentParentTeacherController?.dashboard == null){
+      //   studentParentTeacherController?.getDashboardData(showLoader: true);
+      // }
     });
   }
 
@@ -71,8 +74,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Consumer<StudentParentTeacherController>(
                           builder:
                               (context, studentParentTeacherController, child) {
-                            Userdata? userdata = studentParentTeacherController
-                                .userdata;
+                            Userdata? userdata =
+                                studentParentTeacherController.userdata;
                             String? userRole =
                                 AppSharedPreferences.getUserLoggedInRole();
                             String? profileImage = userRole == "student"
@@ -87,11 +90,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     : userdata?.firstName ?? "";
 
                             return GestureDetector(
-                              onTap: (){
-                                Get.to(() => EditProfileScreen(userdata: studentParentTeacherController.userdata,roleType: studentParentTeacherController.currentLoggedInUserRole,));
+                              onTap: () {
+                                Get.to(() => EditProfileScreen(
+                                      userdata: studentParentTeacherController
+                                          .userdata,
+                                      roleType: studentParentTeacherController
+                                          .currentLoggedInUserRole,
+                                    ));
                               },
                               child: Container(
-                                // height: 100,
+                                  // height: 100,
                                   width: MediaQuery.of(context).size.width,
                                   padding: const EdgeInsets.all(20),
                                   decoration: const BoxDecoration(
@@ -108,21 +116,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           radius: 16.0,
                                           child: ClipRRect(
                                             borderRadius:
-                                            BorderRadius.circular(65.0),
+                                                BorderRadius.circular(65.0),
                                             child: profileImage == null ||
-                                                profileImage.isEmpty
+                                                    profileImage.isEmpty
                                                 ? Image.asset(
-                                              AppImages.person,
-                                              fit: BoxFit.cover,
-                                              height: 65,
-                                              width: 65,
-                                            )
+                                                    AppImages.person,
+                                                    fit: BoxFit.cover,
+                                                    height: 65,
+                                                    width: 65,
+                                                  )
                                                 : Image.network(
-                                              profileImage,
-                                              fit: BoxFit.cover,
-                                              height: 65,
-                                              width: 65,
-                                            ),
+                                                    profileImage,
+                                                    fit: BoxFit.cover,
+                                                    height: 65,
+                                                    width: 65,
+                                                  ),
                                           ),
                                         ),
                                       ),
@@ -131,9 +139,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                       Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "hello".tr,
@@ -348,7 +356,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           //     8.0)
                                         ),
                                         markersMaxCount: 3,
-                                        outsideDaysVisible: true,
+                                        outsideDaysVisible: false,
                                       ),
                                       onDayLongPressed: (DateTime selectDay,
                                           DateTime focusDay) {},

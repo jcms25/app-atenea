@@ -73,10 +73,16 @@ class _MenuScreenState extends State<MenuScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(
-                      DateFormat("dd/MM/yyyy").format(DateTime.now()),
-                      style: AppTextStyle.getOutfit400(
-                          textSize: 20, textColor: AppColors.black),
+                    Consumer<StudentParentTeacherController>(
+                      builder: (context,studentParentTeacherController,child){
+                        return Visibility(
+                            visible: studentParentTeacherController.dinningMenuResponse != null,
+                            child: Text(
+                              studentParentTeacherController.dinningMenuResponse?.menuDate == null ? "" : DateFormat("dd/MM/yyyy").format(DateTime.parse(studentParentTeacherController.dinningMenuResponse?.menuDate ?? "")),
+                          style: AppTextStyle.getOutfit400(
+                              textSize: 20, textColor: AppColors.black),
+                        ));
+                      },
                     ),
                     const SizedBox(
                       height: 10,
@@ -100,6 +106,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             Text(studentParentTeacherController
                                 .dinningMenuResponse?.menuP1 ??
                                 "",
+                                textAlign: TextAlign.center,
                                 style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.primary),
                             ),
                             const SizedBox(height: 10,),

@@ -36,6 +36,8 @@ import '../services/api.dart';
 
 enum RoleType { student, parent, teacher, assistant }
 
+
+
 class StudentParentTeacherController extends ChangeNotifier {
   //Loader visibility handler
   bool isLoading = false;
@@ -89,6 +91,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
+
+
   List<EventItem> dashboardExamList = [];
   List<EventItem> dashboardEvents = [];
   List<EventItem> dashboardHoliday = [];
@@ -120,17 +124,22 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
+
+
   void setDashboardEvents({required int dashboardActivitiesToShow}) {
     Map<DateTime, List<EventItemDetail>> eventMap = {};
     DateFormat df = DateFormat("yyyy-MM-dd");
 
     if (dashboardActivitiesToShow == 1) {
+
       for (EventItem e in dashboardEvents) {
         if (eventMap.keys.contains(DateTime.parse(df.format(e.startDate)))) {
           eventMap[DateTime.parse(df.format(e.startDate))]?.addAll(e.list);
-        } else {
+        }
+        else {
           eventMap[DateTime.parse(df.format(e.startDate))] = e.list;
         }
+        break;
       }
     } else if (dashboardActivitiesToShow == 2) {
       for (EventItem e in dashboardExamList) {
@@ -155,13 +164,50 @@ class StudentParentTeacherController extends ChangeNotifier {
   //get events for dashboard
   List<EventItemDetail> getDashboardEvents(DateTime date) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-    List<EventItemDetail>? events =
-        dashboardEventMap[DateTime.parse(dateFormat.format(date))]
-                    .runtimeType ==
-                EventItemDetail
-            ? dashboardEventMap[DateTime.parse(dateFormat.format(date))]
-            : dashboardEventMap[DateTime.parse(dateFormat.format(date))];
-    return events ?? [];
+      // List<EventItemDetail>? events =
+      //     dashboardEventMap[DateTime.parse(dateFormat.format(date))]
+      //                 .runtimeType ==
+      //             EventItemDetail
+      //         ? dashboardEventMap[DateTime.parse(dateFormat.format(date))]
+      //         : dashboardEventMap[DateTime.parse(dateFormat.format(date))];
+
+
+
+
+    List<EventItemDetail> events = dashboardEventMap[DateTime.parse(dateFormat.format(date))] ?? [];
+    return events;
+  }
+
+
+  //get dashboard data
+  void getDashboardData({required bool showLoader}) async {
+
+    try {
+      setIsLoading(isLoading: showLoader);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String userRole = userdata?.userRole ?? "";
+      await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.dashboardEndpoint}?role=$userRole",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? ""
+        },
+      ).then((response) {
+        if (response['status']) {
+          Dashboard dashboard = Dashboard.fromJson(response);
+          setDashboardData(dashboard: dashboard);
+          setExamList(examList: dashboard.eventList.exams);
+          setEventList(events: dashboard.eventList.events);
+          setHolidayList(holiday: dashboard.eventList.holiday);
+          setDashboardEvents(dashboardActivitiesToShow: dashboardActivitiesToShow);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
   }
 
   //calendar handler
@@ -200,39 +246,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  //get dashboard data
-  void getDashboardData({required bool showLoader}) async {
 
-    try {
-
-      setIsLoading(isLoading: showLoader);
-      String token = AppSharedPreferences.getBasicAthToken() ?? "";
-      String userRole = userdata?.userRole ?? "";
-      await Api.httpRequest(
-        requestType: RequestType.get,
-        endPoint: "${Api.dashboardEndpoint}?role=$userRole",
-        header: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': "Basic $token",
-          'Cookie': userdata?.cookies ?? ""
-        },
-      ).then((response) {
-        if (response['status']) {
-          Dashboard dashboard = Dashboard.fromJson(response);
-          setDashboardData(dashboard: dashboard);
-          setExamList(examList: dashboard.eventList.exams);
-          setEventList(events: dashboard.eventList.events);
-          setHolidayList(holiday: dashboard.eventList.holiday);
-          setDashboardEvents(dashboardActivitiesToShow: 1);
-        }
-        setIsLoading(isLoading: false);
-      });
-
-
-    } catch (exception) {
-      setIsLoading(isLoading: false);
-    }
-  }
 
   //Communication Section :
   ListOfMessagesModel? listOfMessagesModel;
@@ -445,10 +459,16 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //whom to send radio button : parent,student (choice for teacher)
-  RoleType currentSendingMessageCategory = RoleType.student;
+  MessageSendCategoryForTeacher? currentSendingMessageCategory;
 
-  void setCurrentSendingMessageCategory({required RoleType roleType}) {
-    currentSendingMessageCategory = roleType;
+  void setCurrentSendingMessageCategory({required MessageSendCategoryForTeacher? messageSendingCategoryForTeacher}) {
+    if(currentSelectedStudentForSendMessage != null){
+      setCurrentSelectedStudentForSendMessage(studentItem: null);
+    }
+    if(currentSelectedParentForSendMessage != null){
+      setCurrentSelectedParentForSendMessage(parentItem: null);
+    }
+    currentSendingMessageCategory = messageSendingCategoryForTeacher;
     notifyListeners();
   }
 
@@ -470,11 +490,16 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
+
   //send message to teacher
   Future<Map<String, dynamic>> sendMessage(
       {required String messageSubject,
       required String description,
-      required int whomToSend}) async {
+      required int whomToSend,
+      String? classId,
+      String? toAllParent,
+      String? toAllStudent
+      }) async {
     //0 : to Teacher (Logged in with student,parent)
     //1 : to Parent (Logged in with teacher)
     //2 : to Student (Logged in with teacher)
@@ -485,24 +510,37 @@ class StudentParentTeacherController extends ChangeNotifier {
       final MultipartRequest request = MultipartRequest(
           'POST', Uri.parse('${Api.localBaseURL}/parentSendMessage'));
       request.headers.addAll({
-        "Authorization": "Basic $token",
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': "Basic $token",
         'Cookie': "${userdata?.cookies}"
       });
 
       if (selectedFilePath?.isEmpty ?? true) {
         request.fields['attachment'] = "";
-      } else {
+      }
+
+      else {
         request.files.add(
             await MultipartFile.fromPath('attachment', selectedFilePath ?? ""));
       }
+
       request.fields['sender_id'] = currentLoggedInUserRole == RoleType.parent
           ? userdata?.parentWpUsrId ?? ""
           : userdata?.wpUsrId ?? "";
-      request.fields['reciever_id[0]'] = whomToSend == 0
-          ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
-          : whomToSend == 1
-              ? currentSelectedParentForSendMessage?.parentWpUsrId ?? ""
-              : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
+
+      if(classId != null){
+        request.fields['classid'] = classId;
+        request.fields['studentall'] = toAllStudent ?? "";
+        request.fields['parentall'] = toAllParent ?? "";
+      }
+      else{
+        request.fields['reciever_id[0]'] = whomToSend == 0
+            ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
+            : whomToSend == 1
+            ? currentSelectedParentForSendMessage?.parentWpUsrId ?? ""
+            : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
+      }
+
       request.fields['subject'] = messageSubject;
       request.fields['msg'] = description;
 
@@ -519,12 +557,19 @@ class StudentParentTeacherController extends ChangeNotifier {
           "message": data['Message'] ?? data['message'] ?? ""
         };
       }
-      setIsLoading(isLoading: false);
-      return {"status": false, "message": "Please try again."};
+      else{
+        setIsLoading(isLoading: false);
+        AppConstants.showCustomToast(status: false, message: "${response.statusCode}");
+        return {
+          "status" :  false,
+          "message" : "Please try again."
+        };
+      }
     } catch (exception) {
       setIsLoading(isLoading: false);
       return {"status": false, "message": "Please try again."};
     }
+
   }
 
   /*

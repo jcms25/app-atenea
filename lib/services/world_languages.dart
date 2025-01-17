@@ -206,6 +206,7 @@ class WorldLanguage extends Translations {
           'drawerOption8' : 'Classes',
           'drawerOption9' : 'Teaching Management',
           'drawerOption10' : 'Dining Room',
+          'drawerOption11' : 'Store',
 
           //sub menu option
           'subMenuDrawer1' : 'Time Table',
@@ -221,6 +222,20 @@ class WorldLanguage extends Translations {
           'subMenuDrawer11' : 'Manage Service',
           'subMenuDrawer12' : 'My Schedule',
           'subMenuDrawer13' : 'Follow-up',
+
+          //store submenu option
+          'subMenuDrawer14' : 'My Data',
+          'subMenuDrawer15' : 'My Purchase Atenea',
+          'subMenuDrawer16' : 'Online Store',
+          'subMenuDrawer17' : 'Cart',
+          'subMenuDrawer18' : 'Coupons',
+
+          //product sub menu
+          'subMenuDrawer19' : 'Books',
+          'subMenuDrawer20' : 'Uniforms',
+          'subMenuDrawer21' : 'Material',
+          'subMenuDrawer22' : 'Notebooks',
+          'subMenuDrawer23' : 'Diary',
 
 
           //Assistant Module Strings
@@ -439,6 +454,7 @@ class WorldLanguage extends Translations {
           'drawerOption8' : 'Clases',
           'drawerOption9' : 'Gestión docente',
           'drawerOption10' : 'Comedor',
+          'drawerOption11' : 'Tienda',
 
           //sub menu option
           'subMenuDrawer1' : 'Horario',
@@ -454,6 +470,21 @@ class WorldLanguage extends Translations {
           'subMenuDrawer11' : 'Gestionar Servicio',
           'subMenuDrawer12' : 'Mi Horario',
           'subMenuDrawer13' : 'Seguimiento',
+
+
+          //store submenu option
+          'subMenuDrawer14' : 'Mis Datos',
+          'subMenuDrawer15' : 'Mis Compras Atenea',
+          'subMenuDrawer16' : 'Tienda Online',
+          'subMenuDrawer17' : 'Carrito',
+          'subMenuDrawer18' : 'Cupones',
+
+          //Tienda Online sub menu
+          'subMenuDrawer19' : 'Libros',
+          'subMenuDrawer20' : 'Uniformes',
+          'subMenuDrawer21' : 'Material',
+          'subMenuDrawer22' : 'Cuadernos',
+          'subMenuDrawer23' : 'Agenda',
 
           //
           'as1' : 'Niños',

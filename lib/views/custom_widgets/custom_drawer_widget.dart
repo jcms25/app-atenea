@@ -13,6 +13,8 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_scr
 import 'package:colegia_atenea/views/screens/dinning_section_screen/manage_service_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.dart';
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/my_data_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/order_history_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
@@ -184,7 +186,6 @@ class CustomDrawerWidget extends StatelessWidget {
                     roleType: RoleType.student))
           ];
         }
-
         if (drawerMenuOption.name == 'drawerOption10'.tr) {
           drawerMenuOption.subMenu ??= buildSubMenu(
               classId: "",
@@ -277,6 +278,15 @@ class CustomDrawerWidget extends StatelessWidget {
               roleType: roleType,
               teacherDrawerMenuName: 'drawerOption10'.tr);
         }
+        if (drawerMenuOption.name == 'drawerOption11'.tr) {
+          drawerMenuOption.subMenu ??= buildSubMenu(
+              classId: "",
+              studentId: "",
+              className: "",
+              studentName: "",
+              roleType: roleType,
+              teacherDrawerMenuName: 'drawerOption11'.tr);
+        }
         drawerMenuOptionList.add(drawerMenuOption);
       }
     }
@@ -303,7 +313,9 @@ class CustomDrawerWidget extends StatelessWidget {
       });
       drawerMenuOption1.wpUserId = studentId;
       subMenu.add(drawerMenuOption1);
-    } else if (roleType != null && roleType == RoleType.teacher) {
+    }
+
+    else if (roleType != null && roleType == RoleType.teacher) {
       if (teacherDrawerMenuName == 'drawerOption8'.tr) {
         for (var e in AppConstants.classSubMenuListTeacher) {
           DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
@@ -313,7 +325,8 @@ class CustomDrawerWidget extends StatelessWidget {
           drawerMenuOption.studentName = studentName;
           subMenu.add(drawerMenuOption);
         }
-      } else if (teacherDrawerMenuName == 'drawerOption9'.tr) {
+      }
+      else if (teacherDrawerMenuName == 'drawerOption9'.tr) {
         for (var e in AppConstants.teachingSubMenuListTeacher) {
           DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
           drawerMenuOption.classId = classId;
@@ -332,7 +345,9 @@ class CustomDrawerWidget extends StatelessWidget {
           subMenu.add(drawerMenuOption);
         }
       }
-    } else {
+    }
+
+    else {
       if (teacherDrawerMenuName == 'drawerOption10'.tr) {
         for (var e in AppConstants.dinningSubMenuListTeacher) {
           if (e['name'] == 'subMenuDrawer11'.tr &&
@@ -347,7 +362,19 @@ class CustomDrawerWidget extends StatelessWidget {
             subMenu.add(drawerMenuOption);
           }
         }
-      } else {
+      }
+
+      else if(roleType == RoleType.parent && teacherDrawerMenuName == "drawerOption11".tr){
+        for(var e in AppConstants.subMenuListStore){
+          DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
+          drawerMenuOption.classId = classId;
+          drawerMenuOption.wpUserId = studentId;
+          drawerMenuOption.className = className;
+          drawerMenuOption.studentName = studentName;
+          subMenu.add(drawerMenuOption);
+        }
+      }
+      else {
         List<Map<String, dynamic>> subMenuList = AppConstants.subMenuList;
         for (var e in subMenuList) {
           if (e['name'] == "Envíos del Profesor" &&
@@ -364,6 +391,8 @@ class CustomDrawerWidget extends StatelessWidget {
         }
       }
     }
+
+
     return subMenu;
   }
 
@@ -555,6 +584,13 @@ class CustomDrawerWidget extends StatelessWidget {
         AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => TeacherFollowedUpScreen());
         break;
+      case "Mis Datos":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => MyDataScreen());
+        break;
+      case "Mis Compras Atenea":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => OrderHistoryScreen());
       default:
         break;
     }

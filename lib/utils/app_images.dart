@@ -30,7 +30,7 @@ class AppImages{
   static const String document="$rootPath/document.png";
   static const String female="$rootPath/female.svg";
   static const String teachingManagement = "$rootPath/teaching_management.svg";
-  static const String dinningIcon = "$rootPath/dinning_icon.svg";
+  static const String dinningIcon = "$rootPath/new_dinning_icon.svg";
   static const String searchIcon = "$rootPath/search.svg";
 
 
@@ -52,4 +52,9 @@ class AppImages{
   static const String asChildClass = "$rootPath/as_class_symbol.svg";
   static const String asPeoplePrimary = "$rootPath/people_primary.svg";
   static const String whiteBookIcon = "$rootPath/subject_white_icon.svg";
+
+
+
+  //store icons
+  static const String storeIcon = "$rootPath/store_icon.svg";
 }

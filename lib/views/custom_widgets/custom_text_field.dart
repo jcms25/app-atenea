@@ -49,7 +49,8 @@ class CustomTextField extends StatelessWidget {
               label ?? "",
               style: AppTextStyle.getOutfit400(
                   textSize: 18, textColor: AppColors.secondary),
-            )),
+            )
+        ),
         Visibility(
             visible: label != null,
             child: const SizedBox(

@@ -1,7 +1,7 @@
-
 import 'dart:convert';
 
 Dashboard dashboardFromJson(String str) => Dashboard.fromJson(json.decode(str));
+
 String dashboardToJson(Dashboard data) => json.encode(data.toJson());
 
 class Dashboard {
@@ -20,20 +20,23 @@ class Dashboard {
   EventList eventList;
 
   factory Dashboard.fromJson(Map<String, dynamic> json) => Dashboard(
-    status: json["status"],
-    message: json["Message"],
-    count: Count.fromJson(json["count"]),
-    examList: json["examlist"] == null ? [] : List<ExamItem>.from(json["examlist"].map((x) => ExamItem.fromJson(x))),
-    eventList:  EventList.fromJson(json["event_list"]),
-  );
+        status: json["status"],
+        message: json["Message"],
+        count: Count.fromJson(json["count"]),
+        examList: json["examlist"] == null
+            ? []
+            : List<ExamItem>.from(
+                json["examlist"].map((x) => ExamItem.fromJson(x))),
+        eventList: EventList.fromJson(json["event_list"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "status": status,
-    "Message": message,
-    "count": count.toJson(),
-    "examlist": List<dynamic>.from(examList.map((x) => x.toJson())),
-    "event_list": eventList.toJson(),
-  };
+        "status": status,
+        "Message": message,
+        "count": count.toJson(),
+        "examlist": List<dynamic>.from(examList.map((x) => x.toJson())),
+        "event_list": eventList.toJson(),
+      };
 }
 
 class Count {
@@ -50,18 +53,18 @@ class Count {
   String classCount;
 
   factory Count.fromJson(Map<String, dynamic> json) => Count(
-    studentCount: json["student_count"],
-    teacherCount: json["teacher_count"],
-    parentCount: json["parent_count"],
-    classCount: json["class_count"],
-  );
+        studentCount: json["student_count"],
+        teacherCount: json["teacher_count"],
+        parentCount: json["parent_count"],
+        classCount: json["class_count"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "student_count": studentCount,
-    "teacher_count": teacherCount,
-    "parent_count": parentCount,
-    "class_count": classCount,
-  };
+        "student_count": studentCount,
+        "teacher_count": teacherCount,
+        "parent_count": parentCount,
+        "class_count": classCount,
+      };
 }
 
 class EventList {
@@ -76,16 +79,25 @@ class EventList {
   List<EventItem> holiday;
 
   factory EventList.fromJson(Map<String, dynamic> json) => EventList(
-    exams: json["Exams"] == null ? [] : List<EventItem>.from(json["Exams"].map((x) => EventItem.fromJson(x)).toList()),
-    events: json["Events"] == null ? [] : List<EventItem>.from(json["Events"].map((x) => EventItem.fromJson(x)).toList()),
-    holiday: json["Holiday"] == null ? [] : List<EventItem>.from(json["Holiday"].map((x) => EventItem.fromJson(x)).toList()),
-  );
+        exams: json["Exams"] == null
+            ? []
+            : List<EventItem>.from(
+                json["Exams"].map((x) => EventItem.fromJson(x)).toList()),
+        events: json["Events"] == null
+            ? []
+            : List<EventItem>.from(
+                json["Events"].map((x) => EventItem.fromJson(x)).toList()),
+        holiday: json["Holiday"] == null
+            ? []
+            : List<EventItem>.from(
+                json["Holiday"].map((x) => EventItem.fromJson(x)).toList()),
+      );
 
   Map<String, dynamic> toJson() => {
-    "Exams": List<dynamic>.from(exams.map((x) => x.toJson())),
-    "Events": List<dynamic>.from(events.map((x) => x.toJson())),
-    "Holiday": List<dynamic>.from(holiday.map((x) => x.toJson())),
-  };
+        "Exams": List<dynamic>.from(exams.map((x) => x.toJson())),
+        "Events": List<dynamic>.from(events.map((x) => x.toJson())),
+        "Holiday": List<dynamic>.from(holiday.map((x) => x.toJson())),
+      };
 }
 
 class EventItem {
@@ -98,14 +110,18 @@ class EventItem {
   List<EventItemDetail> list;
 
   factory EventItem.fromJson(Map<String, dynamic> json) => EventItem(
-    startDate: DateTime.parse(json["StartDate"]),
-    list: json["list"] == null ? List<EventItemDetail>.from(json["list"].map((x) => EventItemDetail.fromJson(x))) : [],
-  );
+        startDate: DateTime.parse(json["StartDate"]),
+        list: json["list"] == null
+            ? List<EventItemDetail>.from(
+                json["list"].map((x) => EventItemDetail.fromJson(x))).toList()
+            : [],
+      );
 
   Map<String, dynamic> toJson() => {
-    "StartDate": "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
-    "list": List<dynamic>.from(list.map((x) => x.toJson())),
-  };
+        "StartDate":
+            "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
+        "list": List<dynamic>.from(list.map((x) => x.toJson())),
+      };
 }
 
 class EventItemDetail {
@@ -115,24 +131,23 @@ class EventItemDetail {
     required this.title,
   });
 
-  dynamic startDate;
-  dynamic endDate;
+  DateTime? startDate;
+  DateTime? endDate;
   String title;
 
-  factory EventItemDetail.fromJson(Map<String, dynamic> json) => EventItemDetail(
-    startDate: json["StartDate"],
-    endDate: json["EndDate"],
-    title: json["Title"],
-  );
+  factory EventItemDetail.fromJson(Map<String, dynamic> json) =>
+      EventItemDetail(
+        startDate: json["StartDate"],
+        endDate: json["EndDate"],
+        title: json["Title"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "StartDate": startDate,
-    "EndDate": endDate,
-    "Title": title,
-  };
+        "StartDate": startDate,
+        "EndDate": endDate,
+        "Title": title,
+      };
 }
-
-
 
 class ExamItem {
   ExamItem({
@@ -148,18 +163,16 @@ class ExamItem {
   List<String> subjects;
 
   factory ExamItem.fromJson(Map<String, dynamic> json) => ExamItem(
-    date: json["date"],
-    name: json["name"],
-    className: json["class_name"],
-    subjects: List<String>.from(json["subjects"].map((x) => x)),
-  );
+        date: json["date"],
+        name: json["name"],
+        className: json["class_name"],
+        subjects: List<String>.from(json["subjects"].map((x) => x)),
+      );
 
   Map<String, dynamic> toJson() => {
-    "date": date,
-    "name": name,
-    "class_name": className,
-    "subjects": List<dynamic>.from(subjects.map((x) => x)),
-  };
+        "date": date,
+        "name": name,
+        "class_name": className,
+        "subjects": List<dynamic>.from(subjects.map((x) => x)),
+      };
 }
-
-

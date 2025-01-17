@@ -5,8 +5,19 @@ import 'package:get/get.dart';
 import 'app_colors.dart';
 import 'app_images.dart';
 
+enum MessageSendCategoryForTeacher{student,parent,toAllParent,toAllStudent}
+
 class AppConstants {
   static const List<String> daysInSpanish = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
+
+
+  static const List<MessageSendCategoryForTeacher> listOfCategoryToTeacherSendMessage = [
+    MessageSendCategoryForTeacher.student,
+    MessageSendCategoryForTeacher.parent,
+    MessageSendCategoryForTeacher.toAllStudent,
+    MessageSendCategoryForTeacher.toAllParent
+  ];
+
 
   //role drop down
   static const List<String> roleDropDown = [
@@ -108,7 +119,12 @@ class AppConstants {
       "name": "drawerOption4".tr,
       "icon": AppImages.event,
     },
-    {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
+    {"name": 'drawerOption10'.tr,
+      "icon": AppImages.dinningIcon,
+    },
+    {"name": 'drawerOption11'.tr,
+      "icon": AppImages.storeIcon,
+    }
   ];
 
   //student
@@ -210,6 +226,25 @@ class AppConstants {
     {"name": 'subMenuDrawer10'.tr}
   ];
 
+  //store sub menu list : parent
+  static List<Map<String,String>> subMenuListStore = [
+    {"name" : "subMenuDrawer14".tr},
+    {"name" : "subMenuDrawer15".tr},
+    {"name" : "subMenuDrawer16".tr},
+    {"name" : "subMenuDrawer17".tr},
+    {"name" : "subMenuDrawer18".tr},
+  ];
+
+  //Products sub menu list ; parent
+  static List<Map<String,String>> subMenuListProducts = [
+    {"name" : "subMenuDrawer19".tr},
+    {"name" : "subMenuDrawer20".tr},
+    {"name" : "subMenuDrawer21".tr},
+    {"name" : "subMenuDrawer22".tr},
+    {"name" : "subMenuDrawer23".tr},
+  ];
+
+
   //event type
   static List<EventTypeModel> eventTypeList = [
     EventTypeModel(id: "0", eventType: "Externo (mostrar a todos)"),
@@ -241,29 +276,41 @@ class AppConstants {
   static String getMonthInSpan(int month) {
     switch (month) {
       case 1:
-        return "enero";
+        // return "enero";
+        return "ene";
       case 2:
-        return "febrero";
+        // return "febrero";
+        return "feb";
       case 3:
-        return "marzo";
+        // return "marzo";
+        return "mar";
       case 4:
-        return "abril";
+        // return "abril";
+        return "abr";
       case 5:
-        return "mayo";
+        // return "mayo";
+        return "may";
       case 6:
-        return "junio";
+        // return "junio";
+        return "jun";
       case 7:
-        return "julio";
+        // return "julio";
+        return "jul";
       case 8:
-        return "agosto";
+        // return "agosto";
+        return "ago";
       case 9:
-        return "septiembre";
+        // return "septiembre";
+        return "sep";
       case 10:
-        return "octubre";
+        // return "octubre";
+        return "oct";
       case 11:
-        return "noviembre";
+        // return "noviembre";
+        return "nov";
       default:
-        return "diciembre";
+        // return "diciembre";
+        return "dic";
     }
   }
 

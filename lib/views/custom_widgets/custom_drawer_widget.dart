@@ -13,11 +13,14 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_scr
 import 'package:colegia_atenea/views/screens/dinning_section_screen/manage_service_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.dart';
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/coupon_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/my_data_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/order_history_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/product_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
+import 'package:colegia_atenea/views/webview_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -39,12 +42,8 @@ class CustomDrawerWidget extends StatelessWidget {
     String? profileImage = currentUserRole == RoleType.student
         ? studentParentTeacherController.userdata?.stuImage ?? ""
         : currentUserRole == RoleType.parent
-            ? studentParentTeacherController
-                    .userdata?.parentImage ??
-                ""
-            : studentParentTeacherController
-                    .userdata?.teacherImage ??
-                "";
+            ? studentParentTeacherController.userdata?.parentImage ?? ""
+            : studentParentTeacherController.userdata?.teacherImage ?? "";
     List<DrawerMenuOption> drawerListOption = _buildDrawerMenuOption(
         appController: studentParentTeacherController,
         roleType: currentUserRole);
@@ -64,10 +63,14 @@ class CustomDrawerWidget extends StatelessWidget {
             padding: const EdgeInsets.all(15),
             width: double.infinity,
             child: Consumer<StudentParentTeacherController>(
-              builder: (context,studentParentTeacherController,child){
+              builder: (context, studentParentTeacherController, child) {
                 return GestureDetector(
-                  onTap: (){
-                    Get.to(() => EditProfileScreen(userdata: studentParentTeacherController.userdata,roleType: studentParentTeacherController.currentLoggedInUserRole,));
+                  onTap: () {
+                    Get.to(() => EditProfileScreen(
+                          userdata: studentParentTeacherController.userdata,
+                          roleType: studentParentTeacherController
+                              .currentLoggedInUserRole,
+                        ));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -77,50 +80,50 @@ class CustomDrawerWidget extends StatelessWidget {
                         width: 65,
                         child: profileImage.isEmpty
                             ? const CircleAvatar(
-                          backgroundImage: AssetImage(AppImages.people),
-                        )
+                                backgroundImage: AssetImage(AppImages.people),
+                              )
                             : CircleAvatar(
-                          radius: 16.0,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(65.0),
-                            child: Image.network(
-                              profileImage,
-                              fit: BoxFit.cover,
-                              height: 65,
-                              width: 65,
-                            ),
-                          ),
-                        ),
+                                radius: 16.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(65.0),
+                                  child: Image.network(
+                                    profileImage,
+                                    fit: BoxFit.cover,
+                                    height: 65,
+                                    width: 65,
+                                  ),
+                                ),
+                              ),
                       ),
                       const SizedBox(
                         width: 10,
                       ),
                       Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "hello".tr,
-                                style: AppTextStyle.getOutfit300(
-                                    textSize: 16, textColor: AppColors.white),
-                              ),
-                              AutoSizeText(
-                                  maxLines: 1,
-                                  currentUserRole == RoleType.student
-                                      ? studentParentTeacherController
-                                      .userdata?.sFname ??
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "hello".tr,
+                            style: AppTextStyle.getOutfit300(
+                                textSize: 16, textColor: AppColors.white),
+                          ),
+                          AutoSizeText(
+                              maxLines: 1,
+                              currentUserRole == RoleType.student
+                                  ? studentParentTeacherController
+                                          .userdata?.sFname ??
                                       "-"
-                                      : currentUserRole == RoleType.parent
+                                  : currentUserRole == RoleType.parent
                                       ? studentParentTeacherController
-                                      .userdata?.pFname ??
-                                      "-"
+                                              .userdata?.pFname ??
+                                          "-"
                                       : studentParentTeacherController
-                                      .userdata?.firstName ??
-                                      "",
-                                  style: AppTextStyle.getOutfit600(
-                                      textSize: 20, textColor: AppColors.white))
-                            ],
-                          )),
+                                              .userdata?.firstName ??
+                                          "",
+                              style: AppTextStyle.getOutfit600(
+                                  textSize: 20, textColor: AppColors.white))
+                        ],
+                      )),
                       // const Spacer(),
                       const SizedBox(
                         width: 10,
@@ -177,12 +180,9 @@ class CustomDrawerWidget extends StatelessWidget {
                 name: appController?.userdata?.className ?? "",
                 subMenu: buildSubMenu(
                     classId: appController?.userdata?.classId ?? "",
-                    studentId:
-                        appController?.userdata?.wpUsrId ?? "",
-                    className:
-                        appController?.userdata?.className ?? "",
-                    studentName:
-                        appController?.userdata?.sFname ?? "",
+                    studentId: appController?.userdata?.wpUsrId ?? "",
+                    className: appController?.userdata?.className ?? "",
+                    studentName: appController?.userdata?.sFname ?? "",
                     roleType: RoleType.student))
           ];
         }
@@ -279,13 +279,23 @@ class CustomDrawerWidget extends StatelessWidget {
               teacherDrawerMenuName: 'drawerOption10'.tr);
         }
         if (drawerMenuOption.name == 'drawerOption11'.tr) {
-          drawerMenuOption.subMenu ??= buildSubMenu(
-              classId: "",
-              studentId: "",
-              className: "",
-              studentName: "",
-              roleType: roleType,
-              teacherDrawerMenuName: 'drawerOption11'.tr);
+          if (drawerMenuOption.subMenu == null) {
+            List<DrawerMenuOption> tempSubMenu = [];
+            for (var e in AppConstants.subMenuListStore) {
+              DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
+              if (drawerMenuOption.name == "subMenuDrawer16".tr) {
+                drawerMenuOption.subMenu = buildSubMenu(
+                    classId: "",
+                    studentId: "",
+                    className: "",
+                    studentName: "",
+                    roleType: roleType,
+                    teacherDrawerMenuName: 'subMenuDrawer16'.tr);
+              }
+              tempSubMenu.add(drawerMenuOption);
+            }
+            drawerMenuOption.subMenu = tempSubMenu;
+          }
         }
         drawerMenuOptionList.add(drawerMenuOption);
       }
@@ -313,9 +323,7 @@ class CustomDrawerWidget extends StatelessWidget {
       });
       drawerMenuOption1.wpUserId = studentId;
       subMenu.add(drawerMenuOption1);
-    }
-
-    else if (roleType != null && roleType == RoleType.teacher) {
+    } else if (roleType != null && roleType == RoleType.teacher) {
       if (teacherDrawerMenuName == 'drawerOption8'.tr) {
         for (var e in AppConstants.classSubMenuListTeacher) {
           DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
@@ -325,8 +333,7 @@ class CustomDrawerWidget extends StatelessWidget {
           drawerMenuOption.studentName = studentName;
           subMenu.add(drawerMenuOption);
         }
-      }
-      else if (teacherDrawerMenuName == 'drawerOption9'.tr) {
+      } else if (teacherDrawerMenuName == 'drawerOption9'.tr) {
         for (var e in AppConstants.teachingSubMenuListTeacher) {
           DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
           drawerMenuOption.classId = classId;
@@ -345,9 +352,7 @@ class CustomDrawerWidget extends StatelessWidget {
           subMenu.add(drawerMenuOption);
         }
       }
-    }
-
-    else {
+    } else {
       if (teacherDrawerMenuName == 'drawerOption10'.tr) {
         for (var e in AppConstants.dinningSubMenuListTeacher) {
           if (e['name'] == 'subMenuDrawer11'.tr &&
@@ -362,10 +367,9 @@ class CustomDrawerWidget extends StatelessWidget {
             subMenu.add(drawerMenuOption);
           }
         }
-      }
-
-      else if(roleType == RoleType.parent && teacherDrawerMenuName == "drawerOption11".tr){
-        for(var e in AppConstants.subMenuListStore){
+      } else if (roleType == RoleType.parent &&
+          teacherDrawerMenuName == "subMenuDrawer16".tr) {
+        for (var e in AppConstants.subMenuListProducts) {
           DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
           drawerMenuOption.classId = classId;
           drawerMenuOption.wpUserId = studentId;
@@ -373,8 +377,7 @@ class CustomDrawerWidget extends StatelessWidget {
           drawerMenuOption.studentName = studentName;
           subMenu.add(drawerMenuOption);
         }
-      }
-      else {
+      } else {
         List<Map<String, dynamic>> subMenuList = AppConstants.subMenuList;
         for (var e in subMenuList) {
           if (e['name'] == "Envíos del Profesor" &&
@@ -391,7 +394,6 @@ class CustomDrawerWidget extends StatelessWidget {
         }
       }
     }
-
 
     return subMenu;
   }
@@ -559,9 +561,9 @@ class CustomDrawerWidget extends StatelessWidget {
         }
         break;
       case "Notas":
-        if(roleType == RoleType.teacher){
+        if (roleType == RoleType.teacher) {
           Get.to(() => TeacherAddEditMarksScreen());
-        }else{
+        } else {
           // Get.to(() => GradeScreen(cid, wpId))
         }
         break;
@@ -591,6 +593,24 @@ class CustomDrawerWidget extends StatelessWidget {
       case "Mis Compras Atenea":
         AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => OrderHistoryScreen());
+        break;
+      case "Libros":
+      case "Uniformes":
+      case "Material":
+      case "Cuadernos":
+      case "Agenda":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => ProductListScreen(productCategory: drawerMenuOption.name ?? ""));
+        break;
+
+      case "Carrito":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => WebviewDemo());
+        break;
+      case "Cupones":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => CouponScreen());
+        break;
       default:
         break;
     }

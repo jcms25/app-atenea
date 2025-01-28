@@ -42,18 +42,17 @@ class _MenuScreenState extends State<MenuScreen> {
         },
         child: Scaffold(
           appBar: CustomAppBarWidget(
-              onLeadingIconClicked: () {
-                studentParentTeacherController?.setDinningMenuResponse(
-                    dinningMenuResponse: null);
-                studentParentTeacherController?.setIsLoading(isLoading: false);
-                Get.back();
-              },
-              title: Text(
-                'Comedor',
-                style: AppTextStyle.getOutfit600(
-                    textSize: 20, textColor: AppColors.white),
-              ),
-
+            onLeadingIconClicked: () {
+              studentParentTeacherController?.setDinningMenuResponse(
+                  dinningMenuResponse: null);
+              studentParentTeacherController?.setIsLoading(isLoading: false);
+              Get.back();
+            },
+            title: Text(
+              'Comedor',
+              style: AppTextStyle.getOutfit600(
+                  textSize: 20, textColor: AppColors.white),
+            ),
           ),
           body: Stack(
             children: [
@@ -62,6 +61,13 @@ class _MenuScreenState extends State<MenuScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Image.asset(AppImages.menuBanner),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -74,14 +80,26 @@ class _MenuScreenState extends State<MenuScreen> {
                       height: 10,
                     ),
                     Consumer<StudentParentTeacherController>(
-                      builder: (context,studentParentTeacherController,child){
+                      builder:
+                          (context, studentParentTeacherController, child) {
                         return Visibility(
-                            visible: studentParentTeacherController.dinningMenuResponse != null,
+                            visible: studentParentTeacherController
+                                    .dinningMenuResponse !=
+                                null,
                             child: Text(
-                              studentParentTeacherController.dinningMenuResponse?.menuDate == null ? "" : DateFormat("dd/MM/yyyy").format(DateTime.parse(studentParentTeacherController.dinningMenuResponse?.menuDate ?? "")),
-                          style: AppTextStyle.getOutfit400(
-                              textSize: 20, textColor: AppColors.black),
-                        ));
+                              studentParentTeacherController
+                                          .dinningMenuResponse?.menuDate ==
+                                      null
+                                  ? ""
+                                  : DateFormat("dd/MM/yyyy").format(
+                                      DateTime.parse(
+                                          studentParentTeacherController
+                                                  .dinningMenuResponse
+                                                  ?.menuDate ??
+                                              "")),
+                              style: AppTextStyle.getOutfit400(
+                                  textSize: 20, textColor: AppColors.black),
+                            ));
                       },
                     ),
                     const SizedBox(
@@ -102,36 +120,53 @@ class _MenuScreenState extends State<MenuScreen> {
                                 ),
                               )
                             : Column(
-                          children: [
-                            Text(studentParentTeacherController
-                                .dinningMenuResponse?.menuP1 ??
-                                "",
-                                textAlign: TextAlign.center,
-                                style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.primary),
-                            ),
-                            const SizedBox(height: 10,),
-                            Text(studentParentTeacherController
-                                .dinningMenuResponse?.menuP2 ??
-                                "",
-                                style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.primary)
-                            ),
-                            const SizedBox(height: 10,),
-                            Text(studentParentTeacherController
-                                .dinningMenuResponse?.menuP3 ??
-                                "",
-                                style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.primary)
-                            ),
-                            const SizedBox(height: 10,),
-                            Text(studentParentTeacherController
-                                .dinningMenuResponse?.menuP4 ??
-                                "",
-                                style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.primary)
-                            ),
-                          ],
-                        );
+                                children: [
+                                  Text(
+                                    studentParentTeacherController
+                                            .dinningMenuResponse?.menuP1 ??
+                                        "",
+                                    textAlign: TextAlign.center,
+                                    style: AppTextStyle.getOutfit500(
+                                        textSize: 20,
+                                        textColor: AppColors.primary),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                      studentParentTeacherController
+                                              .dinningMenuResponse?.menuP2 ??
+                                          "",
+                                      style: AppTextStyle.getOutfit500(
+                                          textSize: 20,
+                                          textColor: AppColors.primary)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                      studentParentTeacherController
+                                              .dinningMenuResponse?.menuP3 ??
+                                          "",
+                                      style: AppTextStyle.getOutfit500(
+                                          textSize: 20,
+                                          textColor: AppColors.primary)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                      studentParentTeacherController
+                                              .dinningMenuResponse?.menuP4 ??
+                                          "",
+                                      style: AppTextStyle.getOutfit500(
+                                          textSize: 20,
+                                          textColor: AppColors.primary)),
+                                ],
+                              );
                       },
                     )),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Expanded(child: Image.asset(AppImages.menuImage)),
                     const SizedBox(
                       height: 10,

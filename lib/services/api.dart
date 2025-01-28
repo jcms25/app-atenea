@@ -123,6 +123,14 @@ class Api {
 
 
 
+  //store api :
+  static const String _billingDetailEndPoint = "tiendaprofile";
+  static String get billingDetailEndPoint => _billingDetailEndPoint;
+
+  static const String _billingEditDetailEndPoint =   "tiendaeditprofile";
+  static String get billingEditDetailEndPoint => _billingEditDetailEndPoint;
+
+
   //Dinning Section
   static const String _dinningSectionEndPoint = "diningmenu";
   static String get dinningSectionEndPoint => _dinningSectionEndPoint;

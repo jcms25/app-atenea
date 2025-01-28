@@ -2,6 +2,7 @@ import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
+import 'package:colegia_atenea/views/screens/store_screens/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -164,7 +165,9 @@ class OrderHistoryWidget extends StatelessWidget {
                   ),
                   Expanded(
                       child: CustomButtonWidget(
-                          buttonTitle: 'View', onPressed: () {})),
+                          buttonTitle: 'View', onPressed: () {
+                            Get.to(() => OrderDetailPage(orderNumber: orderHistory.orderNumber ?? "",));
+                      })),
                 ],
               )
             ],

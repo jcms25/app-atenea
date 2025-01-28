@@ -88,6 +88,7 @@ class Userdata {
   String? familyCareHour;
   String? teacherImage;
   String? teacherEmail;
+  String? tiendaToken;
 
   Userdata(
       {this.sid,
@@ -150,7 +151,7 @@ class Userdata {
         this.familyCareHour,
         this.teacherImage,
         this.teacherEmail,
-
+        this.tiendaToken
       });
 
   Userdata.fromJson(Map<String, dynamic> json) {
@@ -225,6 +226,7 @@ class Userdata {
     familyCareHour = json['family_care_hour'];
     teacherImage = json['teacher_image'];
     teacherEmail = json['teacher_email'];
+    tiendaToken = json['tiendaToken'];
   }
 
   Map<String, dynamic> toJson() {
@@ -295,7 +297,7 @@ class Userdata {
     data['family_care_hour'] = familyCareHour;
     data['teacher_image'] = teacherImage;
     data['teacher_email'] = teacherEmail;
-
+    data['tiendaToken'] = tiendaToken;
     return data;
   }
 }

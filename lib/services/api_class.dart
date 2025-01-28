@@ -716,12 +716,12 @@ class ApiClass{
   }
 
 
-  //assistant related api's
+  //assistant related apis
 
   //assistant dashboard data get api
   Future<dynamic> getAsDashboard(String token, String cookie) async {
     try {
-      Response res = await get(Uri.parse('${liveBaseUrl}dashboard'),
+      Response res = await get(Uri.parse('${liveBaseUrl}dashboard/?current_role=assistant'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",

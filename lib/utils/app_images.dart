@@ -32,6 +32,7 @@ class AppImages{
   static const String teachingManagement = "$rootPath/teaching_management.svg";
   static const String dinningIcon = "$rootPath/new_dinning_icon.svg";
   static const String searchIcon = "$rootPath/search.svg";
+  static const String menuBanner = "$rootPath/menu_logo.png";
 
 
   static const String whiteAppLogo = "$rootPath/white_logo_atenea.png";
@@ -57,4 +58,11 @@ class AppImages{
 
   //store icons
   static const String storeIcon = "$rootPath/store_icon.svg";
+
+  static const String cartIcon = "$rootPath/add_to_cart.svg";
+  static const String couponIcon = "$rootPath/coupon.svg";
+  static const String billingIcon = "$rootPath/my_data_icon.svg";
+  static const String orderHistory = "$rootPath/order_history.svg";
+  static const String categoriesIcon = "$rootPath/categories.svg";
+
 }

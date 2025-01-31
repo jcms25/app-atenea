@@ -1,12 +1,15 @@
 import 'package:colegia_atenea/controllers/store_controller.dart';
+import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
+import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/screens/store_screens/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/store_model/order_list_model.dart';
 import '../../../utils/app_colors.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
@@ -18,12 +21,15 @@ class OrderHistoryScreen extends StatefulWidget {
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   StoreController? storeController;
+  StudentParentTeacherController? studentParentTeacherController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       storeController = Provider.of<StoreController>(context, listen: false);
+      studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
+      storeController?.getListOfOrders(wpUserId: studentParentTeacherController?.userdata?.parentWpUsrId ?? "");
     });
   }
 
@@ -31,10 +37,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: true,
-        onPopInvokedWithResult: (es, ctx) {},
+        onPopInvokedWithResult: (es, ctx) {
+          storeController?.setIsLoading(isLoading: false);
+          storeController?.setListOfOrders(listOfOrders: []);
+        },
         child: Scaffold(
           appBar: CustomAppBarWidget(
               onLeadingIconClicked: () {
+                storeController?.setIsLoading(isLoading: false);
+                storeController?.setListOfOrders(listOfOrders: []);
                 Get.back();
               },
               title: Text(
@@ -42,69 +53,69 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 style: AppTextStyle.getOutfit500(
                     textSize: 20, textColor: AppColors.white),
               )),
-          body: Consumer<StoreController>(
-            builder: (context, storeController, child) {
-              return storeController.listOfOrders.isEmpty
-                  ? Center(
-                      child: Text(
-                        'Sin historial de pedidos.',
-                        style: AppTextStyle.getOutfit500(
-                            textSize: 18, textColor: AppColors.secondary),
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Histórico de pedidos',
-                            style: AppTextStyle.getOutfit700(
-                                textSize: 20, textColor: AppColors.secondary),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Expanded(
-                              child: ScrollConfiguration(
-                                  behavior: ScrollBehavior()
-                                      .copyWith(overscroll: false),
-                                  child: ListView.separated(
-                                      itemBuilder: (context, index) {
-                                        return OrderHistoryWidget(
-                                            orderHistory: storeController
-                                                .listOfOrders[index]);
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return const SizedBox(
-                                          height: 20,
-                                        );
-                                      },
-                                      itemCount:
-                                          storeController.listOfOrders.length)))
-                        ],
-                      ),
-                    );
-            },
+          body: Stack(
+            children: [
+              Consumer<StoreController>(
+                builder: (context, storeController, child) {
+                  return storeController.listOfOrders.isEmpty
+                      ? Center(
+                    child: Text(
+                      'Sin historial de pedidos.',
+                      style: AppTextStyle.getOutfit500(
+                          textSize: 18, textColor: AppColors.secondary),
+                    ),
+                  )
+                      : Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Histórico de pedidos',
+                          style: AppTextStyle.getOutfit700(
+                              textSize: 20, textColor: AppColors.secondary),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Expanded(
+                            child: ScrollConfiguration(
+                                behavior: ScrollBehavior()
+                                    .copyWith(overscroll: false),
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) {
+                                      return OrderHistoryWidget(
+                                          orderItem: storeController
+                                              .listOfOrders[index]);
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(
+                                        height: 20,
+                                      );
+                                    },
+                                    itemCount:
+                                    storeController.listOfOrders.length)))
+                      ],
+                    ),
+                  );
+                },
+              ),
+              Consumer<StoreController>(
+                  builder: (context, storeController, child) {
+                    return Visibility(
+                        visible: storeController.isLoading, child: LoadingLayout());
+                  })
+            ],
           ),
         ));
   }
 }
 
-class OrderHistory {
-  String? orderNumber;
-  String? orderDate;
-  String? orderStatus;
-  String? orderTotal;
-
-  OrderHistory(
-      {this.orderNumber, this.orderDate, this.orderStatus, this.orderTotal});
-}
 
 class OrderHistoryWidget extends StatelessWidget {
-  final OrderHistory orderHistory;
+  final OrderItem orderItem;
 
-  const OrderHistoryWidget({super.key, required this.orderHistory});
+  const OrderHistoryWidget({super.key, required this.orderItem});
 
   @override
   Widget build(BuildContext context) {
@@ -123,12 +134,12 @@ class OrderHistoryWidget extends StatelessWidget {
             children: [
               Expanded(
                   child: Text(
-                orderHistory.orderNumber ?? "",
+                orderItem.orderId ?? "",
                 style: AppTextStyle.getOutfit400(
                     textSize: 18, textColor: AppColors.white),
               )),
               Text(
-                orderHistory.orderDate ?? "",
+                orderItem.date ?? "",
                 style: AppTextStyle.getOutfit400(
                     textSize: 18, textColor: AppColors.white),
               )
@@ -147,11 +158,11 @@ class OrderHistoryWidget extends StatelessWidget {
           child: Column(
             children: [
               OrderRowWidget(
-                  label: 'Estado', value: orderHistory.orderStatus ?? ""),
+                  label: 'Estado', value: orderItem.status ?? ""),
               SizedBox(
                 height: 10,
               ),
-              OrderRowWidget(label: 'Total', value: "7,35 €para 7 articulos"),
+              OrderRowWidget(label: 'Total', value: orderItem.total ?? ""),
               SizedBox(
                 height: 10,
               ),
@@ -166,7 +177,7 @@ class OrderHistoryWidget extends StatelessWidget {
                   Expanded(
                       child: CustomButtonWidget(
                           buttonTitle: 'View', onPressed: () {
-                            Get.to(() => OrderDetailPage(orderNumber: orderHistory.orderNumber ?? "",));
+                            Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
                       })),
                 ],
               )

@@ -130,6 +130,12 @@ class Api {
   static const String _billingEditDetailEndPoint =   "tiendaeditprofile";
   static String get billingEditDetailEndPoint => _billingEditDetailEndPoint;
 
+  static const String _orderListEndPoint = "tiendauserorders?user_id";
+  static String get orderListEndPoint => _orderListEndPoint;
+
+  static const String _orderDetailEndPoint = "tiendaUserorderdetails?order_id";
+  static String get orderDetailEndPoint => _orderDetailEndPoint;
+
 
   //Dinning Section
   static const String _dinningSectionEndPoint = "diningmenu";

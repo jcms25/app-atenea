@@ -1,10 +1,11 @@
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
+import 'package:colegia_atenea/models/store_model/order_details_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
-import 'package:colegia_atenea/views/screens/store_screens/order_history_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../models/store_model/order_list_model.dart';
 import '../services/api.dart';
 import '../services/app_shared_preferences.dart';
 
@@ -24,16 +25,6 @@ class StoreController extends ChangeNotifier {
     this.isLoading = isLoading;
     notifyListeners();
   }
-
-  List<OrderHistory> listOfOrders = [
-    OrderHistory(
-        orderNumber: "#312709",
-        orderDate: "12/02/2024",
-        orderStatus: "Completed",
-        orderTotal: "€ 7 for all items"),
-  ];
-
-  List<OrderHistory> listOfOrders1 = [];
 
   //billing details
   BillingDetail? billingDetail;
@@ -154,11 +145,11 @@ class StoreController extends ChangeNotifier {
         "billing_wooccm10": billingAlumnosName
       };
 
-      if(selectedClassItem.isNotEmpty){
+      if (selectedClassItem.isNotEmpty) {
         for (int i = 0; i < selectedClassItem.length; i++) {
           bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
         }
-      }else{
+      } else {
         bodyData['billing_wooccm12'] = "";
       }
       await Api.httpRequest(
@@ -176,7 +167,7 @@ class StoreController extends ChangeNotifier {
         AppConstants.showCustomToast(
             status: res['status'],
             message: res['message'] ?? res['Message'] ?? "");
-        if(res['status']){
+        if (res['status']) {
           Get.back();
         }
       });
@@ -185,4 +176,63 @@ class StoreController extends ChangeNotifier {
       setIsLoading(isLoading: false);
     }
   }
+
+  //list of orders
+  List<OrderItem> listOfOrders = [];
+
+  void setListOfOrders({required List<OrderItem> listOfOrders}) {
+    this.listOfOrders = listOfOrders;
+    notifyListeners();
+  }
+
+  //list of orders
+  void getListOfOrders({required String wpUserId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+              requestType: RequestType.get,
+              endPoint: "${Api.orderListEndPoint}=$wpUserId")
+          .then((res) {
+        if (res['status']) {
+          OrderList orderList = OrderList.fromJson(res);
+          setListOfOrders(listOfOrders: orderList.data ?? []);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //order details
+  OrderDetailModel? orderDetailModel;
+
+  void setOrderDetailModel({required OrderDetailModel? orderDetailModel}) {
+    this.orderDetailModel = orderDetailModel;
+    notifyListeners();
+  }
+
+  //details of order
+  void getOrderDetails({required String orderId}) async {
+    // try {
+    //   setIsLoading(isLoading: true);
+    //
+    // } catch (exception) {
+    //   AppConstants.showCustomToast(status: false, message: "$exception");
+    //   setIsLoading(isLoading: false);
+    // }
+    await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.orderDetailEndPoint}=$orderId")
+        .then((res) {
+      if (res['status']) {
+        OrderDetailModel orderDetailModel = OrderDetailModel.fromJson(res);
+        setOrderDetailModel(orderDetailModel: orderDetailModel);
+      }
+      setIsLoading(isLoading: false);
+    });
+  }
+
+
 }

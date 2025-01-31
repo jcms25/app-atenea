@@ -595,21 +595,31 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(() => OrderHistoryScreen());
         break;
       case "Libros":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/tienda-de-libros/', label: 'Libros',));
       case "Uniformes":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/product-category/uniformes/', label: 'Uniformes',));
+        break;
       case "Material":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/tienda-de-material/', label: 'Material',));
+        break;
       case "Cuadernos":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/product-category/cuadernos/', label: 'Cuadernos',));
+        break;
       case "Agenda":
         AppConstants.mainScreenKey.currentState?.closeDrawer();
-        Get.to(() => ProductListScreen(productCategory: drawerMenuOption.name ?? ""));
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/product-category/agenda/', label: 'Agenda',));
         break;
-
       case "Carrito":
         AppConstants.mainScreenKey.currentState?.closeDrawer();
-        Get.to(() => WebviewDemo());
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/carrito2/', label: 'Carrito',));
         break;
       case "Cupones":
         AppConstants.mainScreenKey.currentState?.closeDrawer();
-        Get.to(() => CouponScreen());
+        Get.to(() => WebView(loadURL: 'https://colegioatenea.es/mi-cuenta/wc-smart-coupons/', label: 'Cupones',));
         break;
       default:
         break;

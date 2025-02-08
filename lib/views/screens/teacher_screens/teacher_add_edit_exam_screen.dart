@@ -36,6 +36,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting(Get.locale!.countryCode, null);
     arguments = Get.arguments;
     examListItem = arguments?['edit-exam'];
     nameOfExamController = TextEditingController(text: examListItem?.eName);
@@ -157,46 +158,89 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Consumer<StudentParentTeacherController>(
-                                    builder: (context,
-                                        studentParentTeacherController, child) {
-                                      return GestureDetector(
-                                        onTap: () async {
-                                          DateTime? dateTime =
-                                              await studentParentTeacherController
-                                                  .pickDate();
-                                          studentParentTeacherController
-                                              .setExamStartDate(
-                                                  dateTime: dateTime);
-                                          studentParentTeacherController.setExamEndDate(dateTime: dateTime);
-                                        },
-                                        child: Container(
-                                          height: 60,
-                                          width:
-                                              MediaQuery.sizeOf(context).width,
-                                          padding:
-                                              const EdgeInsets.only(left: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: AppColors.secondary
-                                                  .withOpacity(0.06)),
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              DateFormat("dd-MM-yyyy").format(
-                                                  studentParentTeacherController
-                                                      .examStartDate),
-                                              textAlign: TextAlign.left,
-                                              style: AppTextStyle.getOutfit400(
-                                                  textSize: 18,
-                                                  textColor:
-                                                      AppColors.secondary),
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                  // Consumer<StudentParentTeacherController>(
+                                  //   builder: (context,
+                                  //       studentParentTeacherController, child) {
+                                  //     return GestureDetector(
+                                  //       onTap: () async {
+                                  //         DateTime? dateTime =
+                                  //         await showDatePicker(
+                                  //             locale: Locale('es','ES'),
+                                  //             context: Get.context!,
+                                  //             firstDate: DateTime.now(),
+                                  //             lastDate: DateTime(3000));
+                                  //         studentParentTeacherController
+                                  //             .setExamStartDate(
+                                  //                 dateTime: dateTime);
+                                  //         studentParentTeacherController.setExamEndDate(dateTime: dateTime);
+                                  //       },
+                                  //       child: Container(
+                                  //         height: 60,
+                                  //         width:
+                                  //             MediaQuery.sizeOf(context).width,
+                                  //         padding:
+                                  //             const EdgeInsets.only(left: 20),
+                                  //         decoration: BoxDecoration(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(10),
+                                  //             color: AppColors.secondary
+                                  //                 .withOpacity(0.06)),
+                                  //         child: Align(
+                                  //           alignment: Alignment.centerLeft,
+                                  //           child: Text(
+                                  //             DateFormat("dd-MM-yyyy").format(
+                                  //                 studentParentTeacherController
+                                  //                     .examStartDate),
+                                  //             textAlign: TextAlign.left,
+                                  //             style: AppTextStyle.getOutfit400(
+                                  //                 textSize: 18,
+                                  //                 textColor:
+                                  //                     AppColors.secondary),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // )
+                                  GestureDetector(
+                                    onTap: () async {
+                                      // DateTime? dateTime =
+                                      // await showDatePicker(
+                                      //     locale: Locale('es','ES'),
+                                      //     context: Get.context!,
+                                      //     firstDate: DateTime.now(),
+                                      //     lastDate: DateTime(3000));
+                                      // studentParentTeacherController
+                                      //     .setExamStartDate(
+                                      //     dateTime: dateTime);
+                                      // studentParentTeacherController.setExamEndDate(dateTime: dateTime);
                                     },
+                                    child: Container(
+                                      height: 60,
+                                      width:
+                                      MediaQuery.sizeOf(context).width,
+                                      padding:
+                                      const EdgeInsets.only(left: 20),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(10),
+                                          color: AppColors.secondary
+                                              .withOpacity(0.06)),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          // DateFormat("dd-MM-yyyy").format(
+                                          //     studentParentTeacherController
+                                          //         .examStartDate),
+                                          "",
+                                          textAlign: TextAlign.left,
+                                          style: AppTextStyle.getOutfit400(
+                                              textSize: 18,
+                                              textColor:
+                                              AppColors.secondary),
+                                        ),
+                                      ),
+                                    ),
                                   )
                                 ],
                               ),

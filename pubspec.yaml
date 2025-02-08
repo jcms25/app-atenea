@@ -61,6 +61,7 @@ dependencies:
   flutter_localization:
   path_provider:
   flutter_inappwebview:
+  webview_flutter:
 dev_dependencies:
   flutter_test:
     sdk: flutter

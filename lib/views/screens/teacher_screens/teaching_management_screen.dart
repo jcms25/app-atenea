@@ -1,12 +1,14 @@
-import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../controllers/student_parent_teacher_controller.dart';
 class TeachingManagementScreen extends StatefulWidget {
   const TeachingManagementScreen({super.key});
 
@@ -54,10 +56,10 @@ class _TeachingManagementScreenState extends State<TeachingManagementScreen> {
   void onTeachingManagementOptionClick(int index) {
     switch(index){
       case 0:
-        Get.to(() => TimeTable());
+        Get.to(() => TeacherScheduleScreen());
         break;
       case 1:
-        Get.to(() => ExamListScreen());
+        Get.to(() => ExamListScreen(), arguments: {"role": RoleType.teacher});
         break;
       case 2:
         Get.to(() => TeacherAddEditMarksScreen());

@@ -209,7 +209,7 @@ class AppConstants {
     {"name": "drawerOption2".tr},
     {"name": 'subMenuDrawer2'.tr},
     {"name": 'subMenuDrawer4'.tr},
-    {"name": 'subMenuDrawer1'.tr}
+    {"name": 'subMenuDrawer24'.tr}
   ];
 
   //teacher sub menu list 2

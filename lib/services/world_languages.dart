@@ -470,6 +470,7 @@ class WorldLanguage extends Translations {
           'subMenuDrawer11' : 'Gestionar Servicio',
           'subMenuDrawer12' : 'Mi Horario',
           'subMenuDrawer13' : 'Seguimiento',
+          'subMenuDrawer24' : 'Horarios',
 
 
           //store submenu option

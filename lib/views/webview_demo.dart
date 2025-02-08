@@ -3,10 +3,9 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 
 import '../utils/app_colors.dart';
@@ -43,24 +42,33 @@ class _WebViewState extends State<WebView> {
                   "Authorization" : "Bearer ${studentParentTeacherController.userdata?.tiendaToken}"
                 };
 
-                return InAppWebView(
-                  onLoadStart: (ter,ctx){
+                // return InAppWebView(
+                //
+                //   onLoadStart: (ter,ctx){
+                //
+                //   },
+                //   onLoadStop: (ter,ctx){
+                //
+                //   },
+                //   onCloseWindow: (inApp){
+                //     closeInAppWebView();
+                //   },
+                //   initialUrlRequest: URLRequest(
+                //     url: WebUri(widget.loadURL),
+                //     headers: header,
+                //     method: 'GET'
+                //   ),
+                //
+                // );
+                
+                
+                return WebViewWidget(
+              controller: WebViewController()
+                  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                  ..loadRequest(Uri.parse(widget.loadURL),headers: header),
 
-                  },
-                  onLoadStop: (ter,ctx){
 
-                  },
-                  onCloseWindow: (inApp){
-                    closeInAppWebView();
-                  },
-                  initialUrlRequest: URLRequest(
-                    url: WebUri(widget.loadURL),
-                    headers: header,
-                    method: 'GET',
-
-                  ),
                 );
-
 
                 // return Container();
 

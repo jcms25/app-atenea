@@ -17,6 +17,7 @@ import 'package:colegia_atenea/models/student_details_model.dart';
 import 'package:colegia_atenea/models/subject_list_model.dart';
 import 'package:colegia_atenea/models/teacher/parent_list_model.dart';
 import 'package:colegia_atenea/models/teacher/teacher_marks_list_model.dart';
+import 'package:colegia_atenea/models/teacher/teacher_schedule_model.dart';
 import 'package:colegia_atenea/models/teacher_list_model.dart';
 import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
@@ -35,8 +36,6 @@ import '../models/teacher/teacher_class_model.dart';
 import '../services/api.dart';
 
 enum RoleType { student, parent, teacher, assistant }
-
-
 
 class StudentParentTeacherController extends ChangeNotifier {
   //Loader visibility handler
@@ -91,8 +90,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
   List<EventItem> dashboardExamList = [];
   List<EventItem> dashboardEvents = [];
   List<EventItem> dashboardHoliday = [];
@@ -124,22 +121,17 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
   void setDashboardEvents({required int dashboardActivitiesToShow}) {
     Map<DateTime, List<EventItemDetail>> eventMap = {};
     DateFormat df = DateFormat("yyyy-MM-dd");
 
     if (dashboardActivitiesToShow == 1) {
-
       for (EventItem e in dashboardEvents) {
         if (eventMap.keys.contains(DateTime.parse(df.format(e.startDate)))) {
           eventMap[DateTime.parse(df.format(e.startDate))]?.addAll(e.list);
-        }
-        else {
+        } else {
           eventMap[DateTime.parse(df.format(e.startDate))] = e.list;
         }
-        break;
       }
     } else if (dashboardActivitiesToShow == 2) {
       for (EventItem e in dashboardExamList) {
@@ -158,30 +150,26 @@ class StudentParentTeacherController extends ChangeNotifier {
         }
       }
     }
+
     setDashboardEventsMap(eventMap: eventMap);
   }
 
   //get events for dashboard
   List<EventItemDetail> getDashboardEvents(DateTime date) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-      // List<EventItemDetail>? events =
-      //     dashboardEventMap[DateTime.parse(dateFormat.format(date))]
-      //                 .runtimeType ==
-      //             EventItemDetail
-      //         ? dashboardEventMap[DateTime.parse(dateFormat.format(date))]
-      //         : dashboardEventMap[DateTime.parse(dateFormat.format(date))];
+    List<EventItemDetail>? events =
+        dashboardEventMap[DateTime.parse(dateFormat.format(date))]
+                    .runtimeType ==
+                EventItemDetail
+            ? dashboardEventMap[DateTime.parse(dateFormat.format(date))]
+            : dashboardEventMap[DateTime.parse(dateFormat.format(date))];
 
-
-
-
-    List<EventItemDetail> events = dashboardEventMap[DateTime.parse(dateFormat.format(date))] ?? [];
-    return events;
+    // List<EventItemDetail> events = dashboardEventMap[DateTime.parse(dateFormat.format(date))] ?? [];
+    return events ?? [];
   }
-
 
   //get dashboard data
   void getDashboardData({required bool showLoader}) async {
-
     try {
       setIsLoading(isLoading: showLoader);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -201,7 +189,8 @@ class StudentParentTeacherController extends ChangeNotifier {
           setExamList(examList: dashboard.eventList.exams);
           setEventList(events: dashboard.eventList.events);
           setHolidayList(holiday: dashboard.eventList.holiday);
-          setDashboardEvents(dashboardActivitiesToShow: dashboardActivitiesToShow);
+          setDashboardEvents(
+              dashboardActivitiesToShow: dashboardActivitiesToShow);
         }
         setIsLoading(isLoading: false);
       });
@@ -245,8 +234,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     this.dashboardActivitiesToShow = dashboardActivitiesToShow;
     notifyListeners();
   }
-
-
 
   //Communication Section :
   ListOfMessagesModel? listOfMessagesModel;
@@ -461,11 +448,13 @@ class StudentParentTeacherController extends ChangeNotifier {
   //whom to send radio button : parent,student (choice for teacher)
   MessageSendCategoryForTeacher? currentSendingMessageCategory;
 
-  void setCurrentSendingMessageCategory({required MessageSendCategoryForTeacher? messageSendingCategoryForTeacher}) {
-    if(currentSelectedStudentForSendMessage != null){
+  void setCurrentSendingMessageCategory(
+      {required MessageSendCategoryForTeacher?
+          messageSendingCategoryForTeacher}) {
+    if (currentSelectedStudentForSendMessage != null) {
       setCurrentSelectedStudentForSendMessage(studentItem: null);
     }
-    if(currentSelectedParentForSendMessage != null){
+    if (currentSelectedParentForSendMessage != null) {
       setCurrentSelectedParentForSendMessage(parentItem: null);
     }
     currentSendingMessageCategory = messageSendingCategoryForTeacher;
@@ -490,7 +479,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-
   //send message to teacher
   Future<Map<String, dynamic>> sendMessage(
       {required String messageSubject,
@@ -498,8 +486,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       required int whomToSend,
       String? classId,
       String? toAllParent,
-      String? toAllStudent
-      }) async {
+      String? toAllStudent}) async {
     //0 : to Teacher (Logged in with student,parent)
     //1 : to Parent (Logged in with teacher)
     //2 : to Student (Logged in with teacher)
@@ -517,9 +504,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
       if (selectedFilePath?.isEmpty ?? true) {
         request.fields['attachment'] = "";
-      }
-
-      else {
+      } else {
         request.files.add(
             await MultipartFile.fromPath('attachment', selectedFilePath ?? ""));
       }
@@ -528,17 +513,16 @@ class StudentParentTeacherController extends ChangeNotifier {
           ? userdata?.parentWpUsrId ?? ""
           : userdata?.wpUsrId ?? "";
 
-      if(classId != null){
+      if (classId != null) {
         request.fields['classid'] = classId;
         request.fields['studentall'] = toAllStudent ?? "";
         request.fields['parentall'] = toAllParent ?? "";
-      }
-      else{
+      } else {
         request.fields['reciever_id[0]'] = whomToSend == 0
             ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
             : whomToSend == 1
-            ? currentSelectedParentForSendMessage?.parentWpUsrId ?? ""
-            : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
+                ? currentSelectedParentForSendMessage?.parentWpUsrId ?? ""
+                : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
       }
 
       request.fields['subject'] = messageSubject;
@@ -556,20 +540,16 @@ class StudentParentTeacherController extends ChangeNotifier {
           "status": data['status'],
           "message": data['Message'] ?? data['message'] ?? ""
         };
-      }
-      else{
+      } else {
         setIsLoading(isLoading: false);
-        AppConstants.showCustomToast(status: false, message: "${response.statusCode}");
-        return {
-          "status" :  false,
-          "message" : "Please try again."
-        };
+        AppConstants.showCustomToast(
+            status: false, message: "${response.statusCode}");
+        return {"status": false, "message": "Please try again."};
       }
     } catch (exception) {
       setIsLoading(isLoading: false);
       return {"status": false, "message": "Please try again."};
     }
-
   }
 
   /*
@@ -839,40 +819,45 @@ class StudentParentTeacherController extends ChangeNotifier {
         : "";
   }
 
-
   //Evaluation parent and student side;
   List<EvaluationItem> evaluationItem = [];
-  void setEvaluationItem({required List<EvaluationItem> evaluationItem}){
+
+  void setEvaluationItem({required List<EvaluationItem> evaluationItem}) {
     this.evaluationItem = evaluationItem;
     notifyListeners();
   }
 
   //get evaluation
-  void getEvaluation({required String classId,required String studentWpUserId}) async{
-    try{
+  void getEvaluation(
+      {required String classId, required String studentWpUserId}) async {
+    try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
-          requestType: RequestType.get,
-          header: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': "${userdata?.cookies}"
-          },
-          endPoint: "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId").then((res){
-        AppConstants.showCustomToast(status: res['status'], message: res['Message'] ?? res['message'] ?? "");
-        if(res['status']){
+              requestType: RequestType.get,
+              header: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': "${userdata?.cookies}"
+              },
+              endPoint:
+                  "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId")
+          .then((res) {
+        AppConstants.showCustomToast(
+            status: res['status'],
+            message: res['Message'] ?? res['message'] ?? "");
+        if (res['status']) {
           Evaluation evaluation = Evaluation.fromJson(res);
           setEvaluationItem(evaluationItem: evaluation.data);
         }
         setIsLoading(isLoading: false);
       });
-    }catch(exception){
+    } catch (exception) {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
   }
-
 
   //get list of professor
   List<TeacherItem> listOfTeachers = [];
@@ -1169,9 +1154,7 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   void getListOfClassesAssignToTeacher(
-      {required bool showLoader, int? fromWhere,
-       String? classId
-      }) async {
+      {required bool showLoader, int? fromWhere, String? classId}) async {
     //8 means exam list screen
     //9 edit exam screen
 
@@ -1241,8 +1224,7 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (res['status']) {
           ParentListModel parentListModel = ParentListModel.fromJson(res);
           List<ParentItem> parentList = parentListModel.data ?? [];
-          parentList
-              .sort((a, b) => a.pLname?.compareTo(b.pLname ?? "") ?? 0);
+          parentList.sort((a, b) => a.pLname?.compareTo(b.pLname ?? "") ?? 0);
 
           setListOfParents(listOfParents: parentListModel.data ?? []);
         }
@@ -1333,6 +1315,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     //type means start date or end date
     //when user select start date then startDate value will come
     DateTime? dateTime = await showDatePicker(
+        locale: Locale('es', 'ES'),
         context: Get.context!,
         firstDate: DateTime.now(),
         lastDate: DateTime(3000));
@@ -1533,10 +1516,10 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           FollowedUpModel followedUpModel = FollowedUpModel.fromJson(response);
           List<FollowedUpItem> followUpList = followedUpModel.data ?? [];
-          followUpList.sort((a,b) => a.list?[0].date?.compareTo(b.list?[0].date ?? "") ?? 1);
+          followUpList.sort(
+              (a, b) => a.list?[0].date?.compareTo(b.list?[0].date ?? "") ?? 1);
           followUpList = followUpList.reversed.toList();
-          setListOfStudentFollowedUp(
-              listOfStudentFollowedUp: followUpList);
+          setListOfStudentFollowedUp(listOfStudentFollowedUp: followUpList);
         }
 
         setIsLoading(isLoading: false);
@@ -1566,8 +1549,9 @@ class StudentParentTeacherController extends ChangeNotifier {
               followedUpItemDetail!.examName!
                   .toLowerCase()
                   .contains(value?.toLowerCase() ?? "") ||
-          followedUpItemDetail.date!.toLowerCase().contains(value?.toLowerCase() ?? "")
-      ) {
+              followedUpItemDetail.date!
+                  .toLowerCase()
+                  .contains(value?.toLowerCase() ?? "")) {
         searchData.add(item);
       }
     }
@@ -1892,11 +1876,11 @@ class StudentParentTeacherController extends ChangeNotifier {
   //current view or add-edit marks : for 0 it means only want to see marks so it will be in table form
   // for 1 means want to add-edit marks so it will be in list form which contains marks enter text fields
   int? viewOrAddEditMarks;
-  void setViewOrAddEditMarks({required int? viewOrAddEditMarks}){
+
+  void setViewOrAddEditMarks({required int? viewOrAddEditMarks}) {
     this.viewOrAddEditMarks = viewOrAddEditMarks;
     notifyListeners();
   }
-
 
   //add-edit marks
   Future<void> addEditMarks(
@@ -1953,177 +1937,243 @@ class StudentParentTeacherController extends ChangeNotifier {
     setListOfObserverController(listOfObserverController: []);
   }
 
-
   //Dinning Screen :
   DinningMenuData? dinningMenuResponse;
-  void setDinningMenuResponse({required DinningMenuData? dinningMenuResponse}){
+
+  void setDinningMenuResponse({required DinningMenuData? dinningMenuResponse}) {
     this.dinningMenuResponse = dinningMenuResponse;
     notifyListeners();
   }
 
   //get dinning menu
-  void getDinningMenu() async{
-    try{
+  void getDinningMenu() async {
+    try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
-          requestType: RequestType.get,
-          header: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': userdata?.cookies ?? ""
-          },
-          endPoint: Api.dinningSectionEndPoint).then((response){
-        if(response['status']){
-          DinningMenuResponse dinningMenuResponse = DinningMenuResponse.fromJson(response);
+              requestType: RequestType.get,
+              header: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': userdata?.cookies ?? ""
+              },
+              endPoint: Api.dinningSectionEndPoint)
+          .then((response) {
+        if (response['status']) {
+          DinningMenuResponse dinningMenuResponse =
+              DinningMenuResponse.fromJson(response);
           setDinningMenuResponse(dinningMenuResponse: dinningMenuResponse.data);
-        }else{
-          AppConstants.showCustomToast(status: false, message: response['message'] ?? response['Message'] ?? "");
+        } else {
+          AppConstants.showCustomToast(
+              status: false,
+              message: response['message'] ?? response['Message'] ?? "");
         }
         setIsLoading(isLoading: false);
       });
-
-    }catch(exception){
+    } catch (exception) {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
-
     }
   }
 
   //selected dinning month
   MonthModel? selectedDinningMonth;
-  void setCurrentSelectedDinningMonth({required MonthModel? dinningMonth}){
+
+  void setCurrentSelectedDinningMonth({required MonthModel? dinningMonth}) {
     selectedDinningMonth = dinningMonth;
     notifyListeners();
   }
 
   List<DinningStudentItem> dinningStudentList = [];
-  void setDinningStudentList({required List<DinningStudentItem> dinningStudentList}){
+
+  void setDinningStudentList(
+      {required List<DinningStudentItem> dinningStudentList}) {
     this.dinningStudentList = dinningStudentList;
     notifyListeners();
   }
 
   List<String?> listOfStatusOfStudentDinning = [];
-  void setListOfStatusOfStudentDinning({required List<String?> listOfStatusOfStudentDinning}){
+
+  void setListOfStatusOfStudentDinning(
+      {required List<String?> listOfStatusOfStudentDinning}) {
     this.listOfStatusOfStudentDinning = listOfStatusOfStudentDinning;
     notifyListeners();
   }
 
   //student id : status
-  Map<String,int> mapOfStatusOfStudentDinning = {};
-  void setMapOfStatusOfStudentDinning({required Map<String,int> mapOfStatusOfStudentDinning}){
+  Map<String, int> mapOfStatusOfStudentDinning = {};
+
+  void setMapOfStatusOfStudentDinning(
+      {required Map<String, int> mapOfStatusOfStudentDinning}) {
     this.mapOfStatusOfStudentDinning = mapOfStatusOfStudentDinning;
     notifyListeners();
   }
 
-  void addDinningStatusData({required String keyName,required,required int status}){
+  void addDinningStatusData(
+      {required String keyName, required, required int status}) {
     mapOfStatusOfStudentDinning[keyName] = status;
     notifyListeners();
-}
+  }
 
-  //selected day
+//selected day
   int? currentSelectedDinningDay;
-  void setCurrentSelectedDinningDay({required int? selectedDinningDay}){
+
+  void setCurrentSelectedDinningDay({required int? selectedDinningDay}) {
     currentSelectedDinningDay = selectedDinningDay;
     notifyListeners();
   }
 
-
-  //dinning settings
+//dinning settings
   DinningSettings? dinningSettings;
-  void setDinningSettings({required DinningSettings? dinningSettings}){
+
+  void setDinningSettings({required DinningSettings? dinningSettings}) {
     this.dinningSettings = dinningSettings;
     notifyListeners();
   }
 
-  //get dinning student list
-    Future<void> getDinningStudentList({required String classId,required int month,required int day}) async{
-    try{
+//get dinning student list
+  Future<void> getDinningStudentList(
+      {required String classId, required int month, required int day}) async {
+    try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
-      await Api.httpRequest(requestType: RequestType.get,
-
-          header: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': userdata?.cookies ?? ""
-          },
-          endPoint: "${Api.dinningStudentListEndPoint}?class_id=$classId&month=$month&day=$day&current_role=${currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher"}").then((response){
-        if(response['status']){
-          DinningStudentListResponse dinningStudentListResponse = DinningStudentListResponse.fromJson(response);
-          List<DinningStudentItem> dinningStudentList = dinningStudentListResponse.data ?? [];
+      await Api.httpRequest(
+              requestType: RequestType.get,
+              header: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': userdata?.cookies ?? ""
+              },
+              endPoint:
+                  "${Api.dinningStudentListEndPoint}?class_id=$classId&month=$month&day=$day&current_role=${currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher"}")
+          .then((response) {
+        if (response['status']) {
+          DinningStudentListResponse dinningStudentListResponse =
+              DinningStudentListResponse.fromJson(response);
+          List<DinningStudentItem> dinningStudentList =
+              dinningStudentListResponse.data ?? [];
           setDinningStudentList(dinningStudentList: dinningStudentList);
-          Map<String,int> studentDinningStatus = {};
+          Map<String, int> studentDinningStatus = {};
           for (var e in dinningStudentList) {
             studentDinningStatus[e.wpUsrId ?? ""] = e.atten == "1" ? 1 : 0;
           }
-          setDinningSettings(dinningSettings: dinningStudentListResponse.diningSettings);
-          setMapOfStatusOfStudentDinning(mapOfStatusOfStudentDinning: studentDinningStatus);
-        }else{
-          AppConstants.showCustomToast(status: false, message: response['Message'] ?? response['message'] ?? "");
+          setDinningSettings(
+              dinningSettings: dinningStudentListResponse.diningSettings);
+          setMapOfStatusOfStudentDinning(
+              mapOfStatusOfStudentDinning: studentDinningStatus);
+        } else {
+          AppConstants.showCustomToast(
+              status: false,
+              message: response['Message'] ?? response['message'] ?? "");
         }
       });
-
       setIsLoading(isLoading: false);
-
-    }catch(exception){
+    } catch (exception) {
       setIsLoading(isLoading: false);
       AppConstants.showCustomToast(status: false, message: "$exception");
     }
   }
 
-
-
-  //add edit dinning at teacher side
-  Future<void> addEditDinningStatus({required int monthNumber,required int day}) async{
-
-    try{
-
+//add edit dinning at teacher side
+  Future<void> addEditDinningStatus(
+      {required int monthNumber, required int day}) async {
+    try {
       setIsLoading(isLoading: true);
-      Map<String,dynamic> bodyData = {
-        "Month" : "$monthNumber",
-        "Day" : "$day"
-      };
+      Map<String, dynamic> bodyData = {"Month": "$monthNumber", "Day": "$day"};
 
       List<int> listOfStatus = mapOfStatusOfStudentDinning.values.toList();
-      for(int i = 0;  i < listOfStatus.length ; i++) {
+      for (int i = 0; i < listOfStatus.length; i++) {
         bodyData["atten[$i]"] = "${listOfStatus[i]}";
       }
 
       List<String> listOfStudentId = mapOfStatusOfStudentDinning.keys.toList();
-      for(int i = 0;  i < listOfStatus.length ; i++) {
+      for (int i = 0; i < listOfStatus.length; i++) {
         bodyData["student_id[$i]"] = listOfStudentId[i];
       }
 
       //all class id  of student
-      for(int i = 0; i< dinningStudentList.length; i++){
+      for (int i = 0; i < dinningStudentList.length; i++) {
         bodyData["class_id[$i]"] = dinningStudentList[i].wpUsrId ?? "";
       }
 
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
-      await Api.httpRequest(requestType: RequestType.post, endPoint: Api.addEditDinningTeacherSide,
-
-          header: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': userdata?.cookies ?? ""
-          },
-          body : bodyData
-      ).then((response) async{
-        AppConstants.showCustomToast(status: response['status'], message: response['Message'] ?? response['message'] ?? "");
-        if(response['status']){
+      await Api.httpRequest(
+              requestType: RequestType.post,
+              endPoint: Api.addEditDinningTeacherSide,
+              header: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': userdata?.cookies ?? ""
+              },
+              body: bodyData)
+          .then((response) async {
+        AppConstants.showCustomToast(
+            status: response['status'],
+            message: response['Message'] ?? response['message'] ?? "");
+        setMapOfStatusOfStudentDinning(mapOfStatusOfStudentDinning: {});
+        if (response['status']) {
           setDinningStudentList(dinningStudentList: []);
-          await getDinningStudentList(classId: currentLoggedInUserRole == RoleType.parent ? ""  : currentSelectedClass?.cid ?? "", month: monthNumber, day: day);
+          await getDinningStudentList(
+              classId: currentLoggedInUserRole == RoleType.parent
+                  ? ""
+                  : currentSelectedClass?.cid ?? "",
+              month: monthNumber,
+              day: day);
+          setIsLoading(isLoading: false);
         }
       });
-    }catch(exception){
+    } catch (exception) {
       setIsLoading(isLoading: false);
       AppConstants.showCustomToast(status: false, message: "$exception");
     }
-
   }
 
-  //Logged out function : clear all controller data
+ //teacher's time table screen(Mi Horario)
+  List<TeacherScheduleItem> teacherScheduleList = [];
+
+  void setTeacherScheduleList(
+      {required List<TeacherScheduleItem> teacherScheduleList}) {
+    this.teacherScheduleList = teacherScheduleList;
+    notifyListeners();
+  }
+
+
+  //Selected Time Table Item
+  TeacherScheduleItem? selectedTeacherScheduleItem;
+  void setSelectedTeacherScheduleItem({required TeacherScheduleItem? teacherScheduleItem}){
+    selectedTeacherScheduleItem = teacherScheduleItem;
+    notifyListeners();
+  }
+
+
+  void getTeacherScheduleList({required String teacherWpUserId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      int day = getCurrentDay() - 1;
+      setCurrentSelectedDay(currentSelectedDay: day);
+      await Api.httpRequest(
+              requestType: RequestType.get,
+              endPoint:
+                  "${Api.teacherMyScheduleEndPoint}?teacher_id=$teacherWpUserId")
+          .then((res) {
+        if (res['status']) {
+          TeacherScheduleModel teacherScheduleModel = TeacherScheduleModel.fromJson(res);
+          setTeacherScheduleList(teacherScheduleList: teacherScheduleModel.sessionList ?? []);
+          setSelectedTeacherScheduleItem(teacherScheduleItem: teacherScheduleList[day]);
+        }
+      });
+
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
+
+//Logged out function : clear all controller data
   void loggedOutClearData() {
     currentLoggedInUserRole = null;
     userdata = null;

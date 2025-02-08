@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class OrderDetailModel {
   bool? status;
   String? message;

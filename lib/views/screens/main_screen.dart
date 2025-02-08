@@ -116,6 +116,7 @@ class _MainScreenState extends State<MainScreen> {
                 showSelectedLabels: false,
                 elevation: 0,
                 onTap: (index) {
+                  appController.setIsLoading(isLoading: false);
                   appController.setCurrentBottomIndexSelected(index: index);
                 },
                 unselectedItemColor: AppColors.greyColor,

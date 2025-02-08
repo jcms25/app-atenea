@@ -269,7 +269,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     return TableCalendar(
                                       firstDay: DateTime(1990),
                                       focusedDay: studentParentTeacherController
-                                          .eventScreenFocusDay,
+                                          .dashboardCalendarFocusDay,
                                       lastDay: DateTime(2050),
                                       calendarFormat: CalendarFormat.month,
                                       onFormatChanged: null,
@@ -280,36 +280,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       //day changed
                                       onDaySelected: (DateTime selectDay,
                                           DateTime focusDay) {
-                                        studentParentTeacherController
-                                            .setDashboardCalendarFocusDay(
-                                                focusDay: focusDay);
+                                        DateFormat dateFormat =
+                                            DateFormat("yyyy-MM-dd");
                                         studentParentTeacherController
                                             .setDashboardCalendarSelectedDay(
                                                 selectedDay: selectDay);
-
+                                        studentParentTeacherController
+                                            .setDashboardCalendarFocusDay(
+                                                focusDay: focusDay);
                                         showModalBottomSheet(
                                             context: context,
-                                            isDismissible: true,
-                                            isScrollControlled: false,
-                                            enableDrag: false,
-                                            backgroundColor:
-                                                AppColors.transparent,
                                             builder: (context) {
-                                              List<EventItemDetail>? events =
-                                                  studentParentTeacherController
-                                                          .dashboardEventMap[
-                                                      DateTime.parse(DateFormat(
-                                                              "yyyy-MM-dd")
-                                                          .format(selectDay))];
                                               return ShowEventsBottomSheets(
-                                                  eventList: events ?? []);
+                                                eventList: studentParentTeacherController
+                                                            .dashboardEventMap[
+                                                        DateTime.parse(
+                                                            dateFormat.format(
+                                                                selectDay))] ??
+                                                    [],
+                                                color: studentParentTeacherController
+                                                            .dashboardActivitiesToShow ==
+                                                        1
+                                                    ? AppColors.darkPurple
+                                                    : studentParentTeacherController
+                                                                .dashboardActivitiesToShow ==
+                                                            2
+                                                        ? AppColors.red
+                                                        : AppColors.green,
+                                              );
                                             });
                                       },
                                       locale: Get.locale!.languageCode,
                                       selectedDayPredicate: (DateTime date) {
                                         return isSameDay(
                                             studentParentTeacherController
-                                                .eventScreenSelectedDay,
+                                                .dashboardCalendarSelectedDay,
                                             date);
                                       },
                                       eventLoader:
@@ -349,14 +354,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 .withOpacity(0.5)),
                                         todayTextStyle: const TextStyle(
                                             color: AppColors.white),
-                                        markerDecoration: const BoxDecoration(
+                                        markerDecoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: AppColors.secondary,
+                                          color: studentParentTeacherController
+                                                      .dashboardActivitiesToShow ==
+                                                  1
+                                              ? AppColors.darkPurple
+                                              : studentParentTeacherController
+                                                          .dashboardActivitiesToShow ==
+                                                      2
+                                                  ? AppColors.red
+                                                  : AppColors.green,
                                           // borderRadius: BorderRadius.circular(
                                           //     8.0)
                                         ),
                                         markersMaxCount: 3,
-                                        outsideDaysVisible: false,
+                                        outsideDaysVisible: true,
                                       ),
                                       onDayLongPressed: (DateTime selectDay,
                                           DateTime focusDay) {},

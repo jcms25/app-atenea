@@ -6,9 +6,9 @@ enum RequestType { post, get }
 
 class Api {
 
-  static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
+  // static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
 
-  // static const String _baseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
+  static const String _baseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
   static String get localBaseURL => _baseURL;
 
   static const String _loginEndpoint = "login";
@@ -113,13 +113,14 @@ class Api {
   static const String _teacherEditExamEndPoint = "exam";
   static String get teacherEditExam => _teacherEditExamEndPoint;
 
-
   static const String _teacherMarksListEndPoint = "teacher/markslist";
   static String get teacherMarksListEndPoint => _teacherMarksListEndPoint;
 
-
   static const String _teacherMarksAddEditListEndPoint = "marks";
   static String get teacherMarksAddEditList => _teacherMarksAddEditListEndPoint;
+
+  static const String _teacherMyScheduleEndPoint = "teacher/timetable";
+  static String get teacherMyScheduleEndPoint => _teacherMyScheduleEndPoint;
 
 
 

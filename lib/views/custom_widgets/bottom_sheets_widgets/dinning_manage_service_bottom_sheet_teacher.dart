@@ -210,7 +210,7 @@ class _DinningManageServiceBottomSheetTeacherState
                                                     ?.cid ??
                                                 "",
                                     month: studentParentTeacherController
-                                            .currentSelectedDinningDay ??
+                                            .selectedDinningMonth?.id ??
                                         0,
                                     day: studentParentTeacherController
                                             .currentSelectedDinningDay ??

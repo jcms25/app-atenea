@@ -81,61 +81,61 @@ class TimeTable extends State<TimeTableScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                    height: 90,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
-                        color: AppColors.primary),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Consumer<StudentParentTeacherController>(
-                                builder: (context, appController, child) {
-                                  return TextField(
-                                    autofocus: false,
-                                    decoration: InputDecoration(
-                                        prefixIcon: IconButton(
-                                          icon: const Icon(
-                                            Icons.search,
-                                            color: AppColors.searchIcon,
-                                          ),
-                                          onPressed: () {},
-                                        ),
-                                        hintText: 'searchInList'.tr,
-                                        hintStyle: AppTextStyle.getOutfit400(
-                                            textSize: 16,
+                Visibility(
+                    visible: false,
+                    child:  Container(
+                        height: 90,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20)),
+                            color: AppColors.primary),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Consumer<StudentParentTeacherController>(
+                                    builder: (context, appController, child) {
+                                      return TextField(
+                                        autofocus: false,
+                                        decoration: InputDecoration(
+                                            prefixIcon: IconButton(
+                                              icon: const Icon(
+                                                Icons.search,
+                                                color: AppColors.searchIcon,
+                                              ),
+                                              onPressed: () {},
+                                            ),
+                                            hintText: 'searchInList'.tr,
+                                            hintStyle: AppTextStyle.getOutfit400(
+                                                textSize: 16,
+                                                textColor: AppColors.secondary),
+                                            border: InputBorder.none),
+                                        cursorColor: AppColors.primary,
+                                        style: AppTextStyle.getOutfit400(
+                                            textSize: 18,
                                             textColor: AppColors.secondary),
-                                        border: InputBorder.none),
-                                    cursorColor: AppColors.primary,
-                                    style: AppTextStyle.getOutfit400(
-                                        textSize: 18,
-                                        textColor: AppColors.secondary),
-                                    keyboardType: TextInputType.text,
-                                    textInputAction: TextInputAction.done,
-                                    onChanged:
+                                        keyboardType: TextInputType.text,
+                                        textInputAction: TextInputAction.done,
+                                        onChanged:
                                         appController.searchInTimeTableData,
-                                  );
-                                },
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
-                const SizedBox(
-                  height: 20,
-                ),
+                        ))),
+                const SizedBox(height: 20,),
                 Container(
                     width: MediaQuery.sizeOf(context).width,
                     height: 60,

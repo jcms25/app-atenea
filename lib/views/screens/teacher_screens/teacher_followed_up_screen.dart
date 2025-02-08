@@ -101,7 +101,7 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                       color: AppColors.orange),
                   child: Center(
                     child: Text(
-                      "Ver datos",
+                      "Gestionar",
                       style: AppTextStyle.getOutfit400(
                           textSize: 16, textColor: AppColors.white),
                     ),
@@ -149,17 +149,19 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                             child: Consumer<StudentParentTeacherController>(
                               builder: (context, studentParentTeacherController,
                                   child) {
-                                return studentParentTeacherController
-                                        .tempListOfStudentFollowedUp.isEmpty
-                                    ? Center(
-                                        child: Text(
-                                          'No se encontraron datos',
-                                          style: AppTextStyle.getOutfit500(
-                                              textSize: 16,
-                                              textColor: AppColors.secondary),
-                                        ),
-                                      )
-                                    : ListView.separated(
+                                // return studentParentTeacherController
+                                //         .tempListOfStudentFollowedUp.isEmpty
+                                //     ? Center(
+                                //         child: Text(
+                                //           'No se encontraron datos',
+                                //           style: AppTextStyle.getOutfit500(
+                                //               textSize: 16,
+                                //               textColor: AppColors.secondary),
+                                //         ),
+                                //       )
+                                //     :
+
+                                return ListView.separated(
                                         separatorBuilder: (context, index) {
                                           return SizedBox(
                                             height: 10,

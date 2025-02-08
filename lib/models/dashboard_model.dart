@@ -111,7 +111,7 @@ class EventItem {
 
   factory EventItem.fromJson(Map<String, dynamic> json) => EventItem(
         startDate: DateTime.parse(json["StartDate"]),
-        list: json["list"] == null
+        list: json["list"] != null
             ? List<EventItemDetail>.from(
                 json["list"].map((x) => EventItemDetail.fromJson(x))).toList()
             : [],
@@ -131,8 +131,8 @@ class EventItemDetail {
     required this.title,
   });
 
-  DateTime? startDate;
-  DateTime? endDate;
+  String? startDate;
+  String? endDate;
   String title;
 
   factory EventItemDetail.fromJson(Map<String, dynamic> json) =>

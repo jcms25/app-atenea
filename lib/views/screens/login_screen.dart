@@ -69,7 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: const BorderRadius.all(Radius.circular(160)),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.5),
+                // color: AppColors.primary.withOpacity(0.5),
+                color: AppColors.primary.withValues(alpha: 0.5),
                 spreadRadius: 0,
                 blurRadius: 25,
                 offset: const Offset(0, 0), // changes position of shadow
@@ -225,7 +226,8 @@ class _LoginScreenState extends State<LoginScreen> {
             padding:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
             decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.06),
+              // color: AppColors.secondary.withOpacity(0.06),
+              color: AppColors.secondary.withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(12.0),
             ),
             child: Consumer<SplashLoginController>(

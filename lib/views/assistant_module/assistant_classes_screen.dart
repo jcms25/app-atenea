@@ -77,7 +77,8 @@ class ChildScreenState extends State<ChildScreen> {
                     height: 100,
                     margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.05),
+                        // color: AppColors.primary.withOpacity(0.05),
+                        color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(15)),
                     child: Row(
                       children: [

@@ -55,7 +55,9 @@ class TeacherClassMenuScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: AppColors.greyColor.withOpacity(0.2)),
+                      // color: AppColors.greyColor.withOpacity(0.2)
+                    color: AppColors.greyColor.withValues(alpha: 0.2)
+                  ),
                   child: Row(
                     children: [
                       Expanded(

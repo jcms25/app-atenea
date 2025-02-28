@@ -103,7 +103,9 @@ class _MainScreenState extends State<MainScreen> {
             color: AppColors.white,
             boxShadow: [
               BoxShadow(
-                  color: AppColors.secondary.withOpacity(0.10), blurRadius: 10)
+                  // color: AppColors.secondary.withOpacity(0.10),
+                  color: AppColors.secondary.withValues(alpha: 0.10),
+                  blurRadius: 10)
             ],
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30), topRight: Radius.circular(30))),

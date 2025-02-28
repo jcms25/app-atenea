@@ -80,8 +80,10 @@ class MessageListScreen extends State<MessageScreen> {
                                       hintText: 'searchInList'.tr,
                                       hintStyle: AppTextStyle.getOutfit400(
                                           textSize: 16,
-                                          textColor: AppColors.secondary
-                                              .withOpacity(0.5)),
+                                          // textColor: AppColors.secondary
+                                          //     .withOpacity(0.5)
+                                          textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                      ),
                                       contentPadding: const EdgeInsets.all(10),
                                       border: InputBorder.none),
                                   style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),

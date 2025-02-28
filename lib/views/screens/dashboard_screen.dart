@@ -170,7 +170,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 borderRadius: const BorderRadius.only(
                                     bottomRight: Radius.circular(15),
                                     bottomLeft: Radius.circular(15)),
-                                color: AppColors.dashBack.withOpacity(0.06)),
+                                // color: AppColors.dashBack.withOpacity(0.06)
+                              color: AppColors.dashBack.withValues(alpha: 0.06)
+                            ),
                             child: Center(
                               child: Text("live".tr,
                                   style: AppTextStyle.getOutfit400(
@@ -350,8 +352,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             shape: BoxShape.circle,
                                             // borderRadius: BorderRadius.all(
                                             //     Radius.circular(10)),
-                                            color: AppColors.primary
-                                                .withOpacity(0.5)),
+                                            // color: AppColors.primary
+                                            //     .withOpacity(0.5)
+                                          color: AppColors.primary.withValues(alpha: 0.5)
+                                        ),
                                         todayTextStyle: const TextStyle(
                                             color: AppColors.white),
                                         markerDecoration: BoxDecoration(
@@ -397,174 +401,168 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                           textColor: AppColors
                                                               .secondary)),
                                             ),
-                                            Consumer<
-                                                StudentParentTeacherController>(
-                                              builder: (context,
-                                                  studentParentTeacherController,
-                                                  child) {
-                                                return GestureDetector(
-                                                  onTap: () {
-                                                    // if (userDatas != null) {
-                                                    //   goToExamScreen(userDatas!.classId!,
-                                                    //       userDatas!.wpUsrId!);
-                                                    // }
-                                                    // else if (studentData != null) {
-                                                    //   showBottomSheet(
-                                                    //       context: context,
-                                                    //       backgroundColor: AppColors
-                                                    //           .primary,
-                                                    //       shape:
-                                                    //       const RoundedRectangleBorder(
-                                                    //           borderRadius:
-                                                    //           BorderRadius.only(
-                                                    //               topLeft: Radius
-                                                    //                   .circular(
-                                                    //                   20),
-                                                    //               topRight: Radius
-                                                    //                   .circular(
-                                                    //                   20))),
-                                                    //       builder: (context) {
-                                                    //         return SizedBox(
-                                                    //           width:
-                                                    //           MediaQuery.of(context)
-                                                    //               .size
-                                                    //               .width,
-                                                    //           height: 200,
-                                                    //           child: ScrollConfiguration(
-                                                    //             behavior:
-                                                    //             const ScrollBehavior()
-                                                    //                 .copyWith(
-                                                    //                 overscroll:
-                                                    //                 false),
-                                                    //             child:
-                                                    //             SingleChildScrollView(
-                                                    //               child: Column(
-                                                    //                 crossAxisAlignment:
-                                                    //                 CrossAxisAlignment
-                                                    //                     .start,
-                                                    //                 children: [
-                                                    //                   const SizedBox(height: 10,),
-                                                    //                   Padding(
-                                                    //                       padding:
-                                                    //                       const EdgeInsets
-                                                    //                           .only(
-                                                    //                           left:
-                                                    //                           20),
-                                                    //                       child: Row(
-                                                    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    //                         children: [
-                                                    //                           Text(
-                                                    //                             "exam".tr,
-                                                    //                             style: const TextStyle(
-                                                    //                                 fontSize:
-                                                    //                                 24,
-                                                    //                                 fontFamily:
-                                                    //                                 "OutfitMedium",
-                                                    //                                 fontWeight:
-                                                    //                                 FontWeight
-                                                    //                                     .w500,
-                                                    //                                 color: AppColors
-                                                    //                                     .white),
-                                                    //                           ),
-                                                    //                           IconButton(onPressed: (){
-                                                    //                             Navigator.pop(context);
-                                                    //                           }, icon: const Icon(Icons.close,color: AppColors.white,))
-                                                    //                         ],
-                                                    //                       )),
-                                                    //                   ...studentData!
-                                                    //                       .map((e) {
-                                                    //                     return GestureDetector(
-                                                    //                         onTap: () {
-                                                    //                           Navigator.pop(
-                                                    //                               context);
-                                                    //                           goToExamScreen(
-                                                    //                               e.classId!,
-                                                    //                               e.wpUsrId!);
-                                                    //                         },
-                                                    //                         child:
-                                                    //                         Container(
-                                                    //                           height: 60,
-                                                    //                           decoration: BoxDecoration(
-                                                    //                               color: AppColors
-                                                    //                                   .white,
-                                                    //                               borderRadius:
-                                                    //                               BorderRadius.circular(10)),
-                                                    //                           margin:
-                                                    //                           const EdgeInsets.all(
-                                                    //                               10),
-                                                    //                           padding: const EdgeInsets
-                                                    //                               .only(
-                                                    //                               left:
-                                                    //                               20),
-                                                    //                           width: MediaQuery.of(
-                                                    //                               context)
-                                                    //                               .size
-                                                    //                               .width,
-                                                    //                           child:
-                                                    //                           Column(
-                                                    //                             crossAxisAlignment:
-                                                    //                             CrossAxisAlignment
-                                                    //                                 .start,
-                                                    //                             mainAxisAlignment:
-                                                    //                             MainAxisAlignment
-                                                    //                                 .center,
-                                                    //                             children: [
-                                                    //                               Text(
-                                                    //                                 "${e.sFname}\t${e.sLname}",
-                                                    //                                 style: const TextStyle(
-                                                    //                                     fontSize: 16,
-                                                    //                                     fontFamily: "OutfitMedium",
-                                                    //                                     fontWeight: FontWeight.w500,
-                                                    //                                     color: AppColors.primary),
-                                                    //                               ),
-                                                    //                               Text(
-                                                    //                                 "${e.className}",
-                                                    //                                 style: const TextStyle(
-                                                    //                                     fontSize: 16,
-                                                    //                                     fontFamily: "OutfitMedium",
-                                                    //                                     fontWeight: FontWeight.w500,
-                                                    //                                     color: AppColors.primary),
-                                                    //                               ),
-                                                    //                             ],
-                                                    //                           ),
-                                                    //                         ));
-                                                    //                   }).toList()
-                                                    //                 ],
-                                                    //               ),
-                                                    //             ),
-                                                    //           ),
-                                                    //         );
-                                                    //       });
-                                                    // }
-                                                    // else {
-                                                    //   setUserInfo();
-                                                    //   Fluttertoast.showToast(
-                                                    //       msg: "tryAgain".tr);
-                                                    // }
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Text("viewall".tr,
-                                                          style: AppTextStyle
-                                                              .getOutfit400(
-                                                                  textSize: 16,
-                                                                  textColor:
-                                                                      AppColors
-                                                                          .primary)),
-                                                      const SizedBox(width: 2),
-                                                      SvgPicture.asset(
-                                                          AppImages.loginArrow,
-                                                          colorFilter:
-                                                              const ColorFilter
-                                                                  .mode(
-                                                                  AppColors
-                                                                      .primary,
-                                                                  BlendMode
-                                                                      .srcIn)),
-                                                    ],
-                                                  ),
-                                                );
+                                            GestureDetector(
+                                              onTap: () {
+
+                                                // if (userDatas != null) {
+                                                //   goToExamScreen(userDatas!.classId!,
+                                                //       userDatas!.wpUsrId!);
+                                                // }
+                                                // else if (studentData != null) {
+                                                //   showBottomSheet(
+                                                //       context: context,
+                                                //       backgroundColor: AppColors
+                                                //           .primary,
+                                                //       shape:
+                                                //       const RoundedRectangleBorder(
+                                                //           borderRadius:
+                                                //           BorderRadius.only(
+                                                //               topLeft: Radius
+                                                //                   .circular(
+                                                //                   20),
+                                                //               topRight: Radius
+                                                //                   .circular(
+                                                //                   20))),
+                                                //       builder: (context) {
+                                                //         return SizedBox(
+                                                //           width:
+                                                //           MediaQuery.of(context)
+                                                //               .size
+                                                //               .width,
+                                                //           height: 200,
+                                                //           child: ScrollConfiguration(
+                                                //             behavior:
+                                                //             const ScrollBehavior()
+                                                //                 .copyWith(
+                                                //                 overscroll:
+                                                //                 false),
+                                                //             child:
+                                                //             SingleChildScrollView(
+                                                //               child: Column(
+                                                //                 crossAxisAlignment:
+                                                //                 CrossAxisAlignment
+                                                //                     .start,
+                                                //                 children: [
+                                                //                   const SizedBox(height: 10,),
+                                                //                   Padding(
+                                                //                       padding:
+                                                //                       const EdgeInsets
+                                                //                           .only(
+                                                //                           left:
+                                                //                           20),
+                                                //                       child: Row(
+                                                //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                //                         children: [
+                                                //                           Text(
+                                                //                             "exam".tr,
+                                                //                             style: const TextStyle(
+                                                //                                 fontSize:
+                                                //                                 24,
+                                                //                                 fontFamily:
+                                                //                                 "OutfitMedium",
+                                                //                                 fontWeight:
+                                                //                                 FontWeight
+                                                //                                     .w500,
+                                                //                                 color: AppColors
+                                                //                                     .white),
+                                                //                           ),
+                                                //                           IconButton(onPressed: (){
+                                                //                             Navigator.pop(context);
+                                                //                           }, icon: const Icon(Icons.close,color: AppColors.white,))
+                                                //                         ],
+                                                //                       )),
+                                                //                   ...studentData!
+                                                //                       .map((e) {
+                                                //                     return GestureDetector(
+                                                //                         onTap: () {
+                                                //                           Navigator.pop(
+                                                //                               context);
+                                                //                           goToExamScreen(
+                                                //                               e.classId!,
+                                                //                               e.wpUsrId!);
+                                                //                         },
+                                                //                         child:
+                                                //                         Container(
+                                                //                           height: 60,
+                                                //                           decoration: BoxDecoration(
+                                                //                               color: AppColors
+                                                //                                   .white,
+                                                //                               borderRadius:
+                                                //                               BorderRadius.circular(10)),
+                                                //                           margin:
+                                                //                           const EdgeInsets.all(
+                                                //                               10),
+                                                //                           padding: const EdgeInsets
+                                                //                               .only(
+                                                //                               left:
+                                                //                               20),
+                                                //                           width: MediaQuery.of(
+                                                //                               context)
+                                                //                               .size
+                                                //                               .width,
+                                                //                           child:
+                                                //                           Column(
+                                                //                             crossAxisAlignment:
+                                                //                             CrossAxisAlignment
+                                                //                                 .start,
+                                                //                             mainAxisAlignment:
+                                                //                             MainAxisAlignment
+                                                //                                 .center,
+                                                //                             children: [
+                                                //                               Text(
+                                                //                                 "${e.sFname}\t${e.sLname}",
+                                                //                                 style: const TextStyle(
+                                                //                                     fontSize: 16,
+                                                //                                     fontFamily: "OutfitMedium",
+                                                //                                     fontWeight: FontWeight.w500,
+                                                //                                     color: AppColors.primary),
+                                                //                               ),
+                                                //                               Text(
+                                                //                                 "${e.className}",
+                                                //                                 style: const TextStyle(
+                                                //                                     fontSize: 16,
+                                                //                                     fontFamily: "OutfitMedium",
+                                                //                                     fontWeight: FontWeight.w500,
+                                                //                                     color: AppColors.primary),
+                                                //                               ),
+                                                //                             ],
+                                                //                           ),
+                                                //                         ));
+                                                //                   }).toList()
+                                                //                 ],
+                                                //               ),
+                                                //             ),
+                                                //           ),
+                                                //         );
+                                                //       });
+                                                // }
+                                                // else {
+                                                //   setUserInfo();
+                                                //   Fluttertoast.showToast(
+                                                //       msg: "tryAgain".tr);
+                                                // }
                                               },
+                                              child: Row(
+                                                children: [
+                                                  Text("viewall".tr,
+                                                      style: AppTextStyle
+                                                          .getOutfit400(
+                                                          textSize: 16,
+                                                          textColor:
+                                                          AppColors
+                                                              .primary)),
+                                                  const SizedBox(width: 2),
+                                                  SvgPicture.asset(
+                                                      AppImages.loginArrow,
+                                                      colorFilter:
+                                                      const ColorFilter
+                                                          .mode(
+                                                          AppColors
+                                                              .primary,
+                                                          BlendMode
+                                                              .srcIn)),
+                                                ],
+                                              ),
                                             )
                                           ],
                                         ),
@@ -607,10 +605,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                         margin: const EdgeInsets
                                                             .only(top: 10),
                                                         decoration: BoxDecoration(
-                                                            color: AppColors
-                                                                .primary
-                                                                .withOpacity(
-                                                                    0.05),
+                                                            // color: AppColors
+                                                            //     .primary
+                                                            //     .withOpacity(
+                                                            //         0.05),
+                                                            color: AppColors.primary.withValues(alpha: 0.05),
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
@@ -678,7 +677,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                         Padding(
                                                                             padding:
                                                                                 const EdgeInsets.only(top: 10),
-                                                                            child: Text(examList[index].date, style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.white)))
+                                                                            child: Text(examList[index].date, style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary)))
                                                                       ],
                                                                     )),
                                                               )
@@ -802,7 +801,8 @@ class DashboardWidget2 extends StatelessWidget {
             height: 30,
             decoration: BoxDecoration(
               color: currentSelected == id
-                  ? color.withOpacity(0.5)
+                  // ? color.withOpacity(0.5)
+                  ? color.withValues(alpha: 0.5)
                   : AppColors.white,
               border: Border.all(
                   color: currentSelected == id ? color : AppColors.white,

@@ -83,7 +83,8 @@ class _ExamDetailScreenChildState extends State<ExamDetailScreen> {
                           margin: const EdgeInsets.all(20),
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.05),
+                              // color: AppColors.primary.withOpacity(0.05),
+                              color: AppColors.primary.withValues(alpha: 0.05),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(15))),
                           child: Padding(

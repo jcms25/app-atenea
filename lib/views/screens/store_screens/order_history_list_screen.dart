@@ -1,5 +1,6 @@
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
@@ -8,18 +9,19 @@ import 'package:colegia_atenea/views/screens/store_screens/order_detail_page.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/store_model/order_list_model.dart';
 import '../../../utils/app_colors.dart';
 
-class OrderHistoryScreen extends StatefulWidget {
-  const OrderHistoryScreen({super.key});
+class OrderHistoryListScreen extends StatefulWidget {
+  const OrderHistoryListScreen({super.key});
 
   @override
-  State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
+  State<OrderHistoryListScreen> createState() => _OrderHistoryListScreenState();
 }
 
-class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
+class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   StoreController? storeController;
   StudentParentTeacherController? studentParentTeacherController;
 
@@ -170,13 +172,27 @@ class OrderHistoryWidget extends StatelessWidget {
                 children: [
                   Expanded(
                       child: CustomButtonWidget(
-                          buttonTitle: 'Invoice', onPressed: () {})),
+                          buttonTitle: 'Packing slip', onPressed: () async{
+                            try{
+                              
+                              Uri invoiceUri = Uri.parse("https://colegioatenea.es/wp-admin/admin-ajax.php?action=generate_wpo_wcpdf&template_type=packing-slip&order_ids=${orderItem.orderId ?? ""}&my-account&_wpnonce=1c24a4b35c");
+                              
+                              if(await canLaunchUrl(invoiceUri)){
+                                await launchUrl(invoiceUri);
+                              }else{
+                                AppConstants.showCustomToast(status: false, message: "please try again");
+                              }
+                              
+                            }catch(exception){
+                              AppConstants.showCustomToast(status: false, message: "$exception");
+                            }
+                      })),
                   const SizedBox(
                     width: 10,
                   ),
                   Expanded(
                       child: CustomButtonWidget(
-                          buttonTitle: 'View', onPressed: () {
+                          buttonTitle: 'Ver', onPressed: () {
                             Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
                       })),
                 ],

@@ -155,8 +155,10 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          color: AppColors.primary
-                                              .withOpacity(0.05)),
+                                          // color: AppColors.primary
+                                          //     .withOpacity(0.05)
+                                         color: AppColors.primary.withValues(alpha: 0.05)
+                                      ),
                                       child: Consumer<
                                           StudentParentTeacherController>(
                                         builder: (context,
@@ -181,10 +183,12 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                     style: AppTextStyle
                                                         .getOutfit400(
                                                             textSize: 18,
-                                                            textColor: AppColors
-                                                                .secondary
-                                                                .withOpacity(
-                                                                    0.5))),
+                                                            // textColor: AppColors
+                                                            //     .secondary
+                                                            //     .withOpacity(
+                                                            //         0.5)
+                                                            textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                    )),
                                               );
                                             }).toList(),
                                             onChanged:
@@ -208,8 +212,9 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                   children: [
                                     TeacherClassListDropdown(
                                       fromWhichScreen: 7,
-                                      backgroundColor:
-                                          AppColors.secondary.withOpacity(0.06),
+                                      // backgroundColor:
+                                      //     AppColors.secondary.withOpacity(0.06),
+                                      backgroundColor: AppColors.secondary.withValues(alpha: 0.06),
                                       height: 60,
                                     ),
                                     const SizedBox(
@@ -242,8 +247,11 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
-                                                  color: AppColors.primary
-                                                      .withOpacity(0.05)),
+                                                  // color: AppColors.primary
+                                                  //     .withOpacity(0.05)
+                                                color: AppColors.primary.withValues(alpha: 0.05)
+
+                                              ),
                                               child: DropdownButton<
                                                   MessageSendCategoryForTeacher>(
                                                 isExpanded: true,
@@ -255,10 +263,12 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                   style:
                                                       AppTextStyle.getOutfit500(
                                                           textSize: 16,
-                                                          textColor: AppColors
-                                                              .secondary
-                                                              .withOpacity(
-                                                                  0.5)),
+                                                          // textColor: AppColors
+                                                          //     .secondary
+                                                          //     .withOpacity(
+                                                          //         0.5)
+                                                        textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                      ),
                                                 ),
                                                 icon: const Icon(Icons
                                                     .arrow_drop_down_sharp),
@@ -287,10 +297,12 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                         style: AppTextStyle
                                                             .getOutfit400(
                                                                 textSize: 18,
-                                                                textColor: AppColors
-                                                                    .secondary
-                                                                    .withOpacity(
-                                                                        0.5))),
+                                                                // textColor: AppColors
+                                                                //     .secondary
+                                                                //     .withOpacity(
+                                                                //         0.5)
+                                                              textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                        )),
                                                   );
                                                 }).toList(),
                                                 onChanged:
@@ -354,8 +366,10 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10),
-                                                      color: AppColors.primary
-                                                          .withOpacity(0.05)),
+                                                      // color: AppColors.primary
+                                                      //     .withOpacity(0.05)
+                                                      color: AppColors.primary.withValues(alpha: 0.05)
+                                                  ),
                                                   child: Consumer<
                                                       StudentParentTeacherController>(
                                                     builder: (context,
@@ -377,10 +391,12 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                                 style: AppTextStyle.getOutfit500(
                                                                     textSize:
                                                                         16,
-                                                                    textColor: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                            0.5)),
+                                                                    // textColor: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //         0.5)
+                                                                    textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                                ),
                                                               ),
                                                               icon: const Icon(Icons
                                                                   .arrow_drop_down_sharp),
@@ -397,9 +413,11 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                                       style: AppTextStyle.getOutfit400(
                                                                           textSize:
                                                                               18,
-                                                                          textColor: AppColors
-                                                                              .secondary
-                                                                              .withOpacity(0.5))),
+                                                                          // textColor: AppColors
+                                                                          //     .secondary
+                                                                          //     .withOpacity(0.5)
+                                                                        textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                                      )),
                                                                 );
                                                               }).toList(),
                                                               onChanged:
@@ -423,10 +441,12 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                                 style: AppTextStyle.getOutfit500(
                                                                     textSize:
                                                                         16,
-                                                                    textColor: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                            0.5)),
+                                                                    // textColor: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //         0.5)
+                                                                  textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                                ),
                                                               ),
                                                               icon: const Icon(Icons
                                                                   .arrow_drop_down_sharp),
@@ -443,9 +463,11 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                                       style: AppTextStyle.getOutfit400(
                                                                           textSize:
                                                                               18,
-                                                                          textColor: AppColors
-                                                                              .secondary
-                                                                              .withOpacity(0.5))),
+                                                                          // textColor: AppColors
+                                                                          //     .secondary
+                                                                          //     .withOpacity(0.5)
+                                                                          textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                                      )),
                                                                 );
                                                               }).toList(),
                                                               onChanged:
@@ -526,8 +548,10 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                     padding: const EdgeInsets.only(left: 10),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
-                                        color: AppColors.secondary
-                                            .withOpacity(0.06)),
+                                        // color: AppColors.secondary
+                                        //     .withOpacity(0.06)
+                                        color: AppColors.secondary.withValues(alpha: 0.06)
+                                    ),
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(

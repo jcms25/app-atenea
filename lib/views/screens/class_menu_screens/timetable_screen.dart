@@ -174,8 +174,10 @@ class TimeTable extends State<TimeTableScreen> {
                                       color: appController.currentSelectedDay ==
                                               position
                                           ? AppColors.primary
-                                          : AppColors.primary
-                                              .withOpacity(0.05)),
+                                          // : AppColors.primary
+                                          //     .withOpacity(0.05)
+                                         : AppColors.primary.withValues(alpha: 0.05)
+                                  ),
                                   child: Center(
                                     child: Text(
                                       AppConstants.daysInSpanish[position],
@@ -239,8 +241,10 @@ class TimeTable extends State<TimeTableScreen> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              color: AppColors.primary
-                                                  .withOpacity(0.05)),
+                                              // color: AppColors.primary
+                                              //     .withOpacity(0.05)
+                                              color: AppColors.primary.withValues(alpha: 0.05)
+                                          ),
                                           constraints: const BoxConstraints(
                                               minHeight: 50),
                                           padding: const EdgeInsets.only(

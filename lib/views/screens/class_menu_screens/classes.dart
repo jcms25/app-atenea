@@ -75,7 +75,8 @@ class ClassWidget extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10).copyWith(bottom: 10),
         decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.06),
+            // color: AppColors.secondary.withOpacity(0.06),
+            color: AppColors.secondary.withValues(alpha: 0.06),
             borderRadius: const BorderRadius.all(Radius.circular(5))),
         padding: const EdgeInsets.all(15),
         child: (Row(

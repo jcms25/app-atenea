@@ -17,6 +17,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'controllers/store_controller.dart';
 
 FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -80,7 +82,11 @@ void main() async {
       translations: WorldLanguage(),
       //Language class from world_languages.dart
       locale: const Locale('es', 'ES'),
-      localizationsDelegates: [],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       // translations will be displayed in that locale
       fallbackLocale: const Locale('es', 'ES'),
       initialRoute: AppRoutes.initialRoute,
@@ -129,4 +135,6 @@ MaterialColor createMaterialColor(Color color) {
     );
   }
   return MaterialColor(color.value, swatch);
+
+
 }

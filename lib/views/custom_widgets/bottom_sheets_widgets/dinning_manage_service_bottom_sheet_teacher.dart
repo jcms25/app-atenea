@@ -32,8 +32,6 @@ class _DinningManageServiceBottomSheetTeacherState
           Provider.of<StudentParentTeacherController>(context, listen: false);
       if (studentParentTeacherController?.currentSelectedDinningDay == null &&
           studentParentTeacherController?.selectedDinningMonth == null) {
-        studentParentTeacherController?.setCurrentSelectedDinningDay(
-            selectedDinningDay: DateTime.now().day);
         MonthModel? currentMonthModel = AppConstants.monthInSpanish
             .firstWhereOrNull((e) => e.id == DateTime.now().month);
         studentParentTeacherController?.setCurrentSelectedDinningMonth(
@@ -75,7 +73,8 @@ class _DinningManageServiceBottomSheetTeacherState
                       TeacherClassListDropdown(
                         fromWhichScreen: 9,
                         height: 60,
-                        backgroundColor: AppColors.secondary.withOpacity(0.06),
+                        // backgroundColor: AppColors.secondary.withOpacity(0.06),
+                        backgroundColor: AppColors.secondary.withValues(alpha: 0.06),
                       )
                     ],
                   ),
@@ -98,7 +97,9 @@ class _DinningManageServiceBottomSheetTeacherState
                     width: MediaQuery.sizeOf(context).width,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: AppColors.secondary.withOpacity(0.06)),
+                        // color: AppColors.secondary.withOpacity(0.06)
+                        color: AppColors.secondary.withValues(alpha: 0.06)
+                    ),
                     padding: const EdgeInsets.all(5),
                     child: DropdownButton<MonthModel>(
                         isExpanded: true,
@@ -119,7 +120,9 @@ class _DinningManageServiceBottomSheetTeacherState
                           'Seleccione mes',
                           style: AppTextStyle.getOutfit500(
                               textSize: 16,
-                              textColor: AppColors.secondary.withOpacity(0.5)),
+                              // textColor: AppColors.secondary.withOpacity(0.5)
+                              textColor: AppColors.secondary.withValues(alpha: 0.5)
+                          ),
                         ),
                         onChanged: (MonthModel? value) {
                           studentParentTeacherController
@@ -142,32 +145,49 @@ class _DinningManageServiceBottomSheetTeacherState
               ),
               Consumer<StudentParentTeacherController>(
                 builder: (context, studentParentTeacherController, child) {
-                  return Container(
+                  return studentParentTeacherController.isBottomLoader ? SizedBox(
+                    height: 60,
+                    child: Center(
+                      child: CircularProgressIndicator(color: AppColors.primary,),
+                    ),
+                  ) : Container(
                     height: 60,
                     width: MediaQuery.sizeOf(context).width,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: AppColors.secondary.withOpacity(0.06)),
+                        // color: AppColors.secondary.withOpacity(0.06)
+                        color: AppColors.secondary.withValues(alpha: 0.06)
+                    ),
                     padding: const EdgeInsets.all(5),
-                    child: DropdownButton<int>(
+                    child: DropdownButton<String>(
                         isExpanded: true,
                         underline: SizedBox.shrink(),
                         value: studentParentTeacherController
                             .currentSelectedDinningDay,
-                        items: List.generate(31, (index) {
-                          return DropdownMenuItem<int>(
-                              value: index + 1, child: Text("${index + 1}"));
-                        }),
+                        items: studentParentTeacherController.daysList
+                            .map((e) {
+                          return DropdownMenuItem<String>(
+                              value: e,
+                              child: Text(
+                                e,
+                                style: AppTextStyle.getOutfit400(
+                                    textSize: 16,
+                                    textColor: AppColors.secondary),
+                              ));
+                        }).toList(),
                         hint: Text(
-                          'Seleccione mes',
+                          'Seleccione Día',
                           style: AppTextStyle.getOutfit500(
                               textSize: 16,
-                              textColor: AppColors.secondary.withOpacity(0.5)),
+                              // textColor:
+                              // AppColors.secondary.withOpacity(0.5)
+                              textColor: AppColors.secondary.withValues(alpha: 0.5)
+                          ),
                         ),
-                        onChanged: (int? value) {
+                        onChanged: (String? value) {
                           studentParentTeacherController
                               .setCurrentSelectedDinningDay(
-                                  selectedDinningDay: value);
+                              selectedDinningDay: value);
                         }),
                   );
                 },
@@ -214,7 +234,7 @@ class _DinningManageServiceBottomSheetTeacherState
                                         0,
                                     day: studentParentTeacherController
                                             .currentSelectedDinningDay ??
-                                        0);
+                                        "0");
                           }
                         }
                       });

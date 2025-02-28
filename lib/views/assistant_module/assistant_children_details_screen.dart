@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/models/assistant/assistant_child_detail_temp_model.dart';
+import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,17 +19,17 @@ class ChildDetail extends StatefulWidget {
 }
 
 class ChildDetailScreen extends State<ChildDetail> {
-
-  TextStyle txtLabelStyle = TextStyle(
-      color: AppColors.secondary.withOpacity(0.75),
-      fontFamily: 'Outfit',
-      fontWeight: FontWeight.w400,
-      fontSize: 18);
-  TextStyle txtValueStyle = const TextStyle(
-        color: AppColors.secondary,
-      fontFamily: 'Outfit',
-      fontWeight: FontWeight.w500,
-      fontSize: 18);
+  //
+  // TextStyle txtLabelStyle = TextStyle(
+  //     color: AppColors.secondary.withOpacity(0.75),
+  //     fontFamily: 'Outfit',
+  //     fontWeight: FontWeight.w400,
+  //     fontSize: 18);
+  // TextStyle txtValueStyle = const TextStyle(
+  //       color: AppColors.secondary,
+  //     fontFamily: 'Outfit',
+  //     fontWeight: FontWeight.w500,
+  //     fontSize: 18);
 
   String imagePath = "";
 
@@ -45,11 +46,12 @@ class ChildDetailScreen extends State<ChildDetail> {
         backgroundColor: AppColors.primary,
         title: Text(
           'asChildDet'.tr,
-          style: const TextStyle(
-            fontFamily: "Outfit",
-            fontSize: 19,
-            fontWeight: FontWeight.w500,
-          ),
+          // style: const TextStyle(
+          //   fontFamily: "Outfit",
+          //   fontSize: 19,
+          //   fontWeight: FontWeight.w500,
+          // ),
+          style: AppTextStyle.getOutfit500(textSize: 19, textColor: AppColors.white),
         ),
       ),
       body: Stack(
@@ -95,11 +97,12 @@ class ChildDetailScreen extends State<ChildDetail> {
                         child: Text(
                           widget.tempChildModel.name,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 32,
-                              color: AppColors.secondary),
+                          // style: const TextStyle(
+                          //     fontFamily: 'Outfit',
+                          //     fontWeight: FontWeight.w600,
+                          //     fontSize: 32,
+                          //     color: AppColors.secondary),
+                          style: AppTextStyle.getOutfit600(textSize: 32, textColor: AppColors.secondary),
                         ),
                       ),
                       const SizedBox(
@@ -109,11 +112,15 @@ class ChildDetailScreen extends State<ChildDetail> {
                       const SizedBox(height: 10,),
                       // LabelValueLayout(label: "workingHours".tr, value: "12-00"),
                       // const SizedBox(height: 10,),
-                      Text("parent".tr,style: TextStyle(
-                          color: AppColors.secondary.withOpacity(0.75),
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18),),
+                      Text("parent".tr,
+                        // style: TextStyle(
+                        //   // color: AppColors.secondary.withOpacity(0.75),
+                        //   color: AppColors.secondary.withValues(alpha: 0.75),
+                        //   fontFamily: 'Outfit',
+                        //   fontWeight: FontWeight.w400,
+                        //   fontSize: 18),
+                        style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary.withValues(alpha: 0.75)),
+                      ),
                       const SizedBox(height: 10,),
                       // Row(
                       //   children: [
@@ -155,13 +162,15 @@ class ChildDetailScreen extends State<ChildDetail> {
                                 padding: const EdgeInsets.symmetric(horizontal: 15),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
-                                  color: AppColors.secondary.withOpacity(0.06),
+                                  // color: AppColors.secondary.withOpacity(0.06),
+                                  color: AppColors.secondary.withValues(alpha: 0.06),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 margin: const EdgeInsets.only(left: 5),
                                 child: AutoSizeText(
                                   e.name,
-                                  style: txtValueStyle,
+                                  style: AppTextStyle.getOutfit500(textSize: 18, textColor: AppColors.secondary),
+                                  // style: txtValueStyle,
                                 ),
                               ),
                           );
@@ -188,7 +197,8 @@ class ChildDetailScreen extends State<ChildDetail> {
                     const BorderRadius.all(Radius.circular(160)),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.5),
+                        // color: AppColors.primary.withOpacity(0.5),
+                        color: AppColors.primary.withValues(alpha: 0.5),
                         spreadRadius: 0,
                         blurRadius: 25,
                         offset: const Offset(

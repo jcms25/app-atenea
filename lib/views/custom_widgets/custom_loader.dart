@@ -9,14 +9,16 @@ class LoadingLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.1),
+      // color: Colors.black.withOpacity(0.1),
+      color: AppColors.black.withValues(alpha: 0.1),
       padding: const EdgeInsets.all(130),
       child: Center(
         child: LoadingIndicator(
           indicatorType: Indicator.ballRotateChase,
           colors: AppColors.rainbowColors,
           strokeWidth: 4.0,
-          pathBackgroundColor: Colors.black.withOpacity(0.05),
+          // pathBackgroundColor: Colors.black.withOpacity(0.05),
+          pathBackgroundColor: AppColors.black.withValues(alpha: 0.05),
         ),
       ),
     );

@@ -117,9 +117,11 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
                                               hintStyle:
                                               AppTextStyle.getOutfit400(
                                                   textSize: 16,
-                                                  textColor: AppColors
-                                                      .secondary
-                                                      .withOpacity(0.5)),
+                                                  // textColor: AppColors
+                                                  //     .secondary
+                                                  //     .withOpacity(0.5)
+                                                  textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                              ),
                                               border: InputBorder.none),
                                           cursorColor: AppColors.primary,
                                           keyboardType: TextInputType.text,
@@ -178,7 +180,8 @@ class _SubjectListScreenChild extends State<SubjectListScreen> {
                       return Visibility(
                           visible: appController.isLoading,
                           child: Container(
-                            color: Colors.black.withOpacity(0.5),
+                            // color: Colors.black.withOpacity(0.5),
+                            color: AppColors.black.withValues(alpha: 0.5),
                             height: MediaQuery.of(context).size.height,
                             width: MediaQuery.of(context).size.width,
                             child: const Center(
@@ -212,7 +215,9 @@ class SubjectItemWidget extends StatelessWidget {
         padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: AppColors.primary.withOpacity(0.05)),
+            // color: AppColors.primary.withOpacity(0.05)
+            color: AppColors.primary.withValues(alpha: 0.05)
+        ),
         child: Row(
           children: [
             Container(

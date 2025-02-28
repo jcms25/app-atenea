@@ -121,8 +121,10 @@ class _StudentScreenChild extends State<StudentListScreen> {
                                     hintText: 'searchInList'.tr,
                                     hintStyle: AppTextStyle.getOutfit400(
                                         textSize: 16,
-                                        textColor: AppColors.secondary
-                                            .withOpacity(0.5)),
+                                        // textColor: AppColors.secondary
+                                        //     .withOpacity(0.5)
+                                        textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                    ),
                                     border: InputBorder.none),
                                 cursorHeight: 25,
                                 cursorColor: AppColors.primary,
@@ -199,7 +201,8 @@ class StudentItemWidget extends StatelessWidget {
             // height: 120,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.05),
+                // color: AppColors.primary.withOpacity(0.05),
+                color: AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: const BorderRadius.all(Radius.circular(15))),
             child: Row(
               children: [

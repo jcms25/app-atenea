@@ -125,8 +125,10 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color: AppColors.secondary
-                                                  .withOpacity(0.06)),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
+                                              color: AppColors.secondary.withValues(alpha: 0.06)
+                                          ),
                                           child: Center(
                                             child: Text(
                                               studentParentTeacherController
@@ -186,8 +188,10 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color: AppColors.secondary
-                                                  .withOpacity(0.06)),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
+                                            color: AppColors.secondary.withValues(alpha: 0.06)
+                                          ),
                                           child: Center(
                                             child: Text(
                                               studentParentTeacherController
@@ -248,11 +252,13 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color: AppColors.secondary
-                                                  .withOpacity(0.06)),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
+                                            color: AppColors.secondary.withValues(alpha: 0.06)
+                                          ),
                                           child: Center(
                                             child: Text(
-                                              "${studentParentTeacherController.startTime?.hour ?? "--"}\t\t:\t\t${studentParentTeacherController.startTime?.minute ?? "--"}",
+                                              studentParentTeacherController.startTime == null ? "00:00" : getTimeInFormat(studentParentTeacherController.startTime!),
                                               style: AppTextStyle.getOutfit400(
                                                   textSize: 16,
                                                   textColor:
@@ -298,11 +304,14 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color: AppColors.secondary
-                                                  .withOpacity(0.06)),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
+                                            color: AppColors.secondary.withValues(alpha: 0.06)
+                                          ),
                                           child: Center(
                                             child: Text(
-                                              "${studentParentTeacherController.endTime?.hour ?? "--"}\t\t:\t\t${studentParentTeacherController.endTime?.minute ?? "--"}",
+                                              // "${studentParentTeacherController.endTime?.hour ?? "--"}\t\t:\t\t${studentParentTeacherController.endTime?.minute ?? "--"}",
+                                              studentParentTeacherController.endTime == null ? "00:00" : getTimeInFormat(studentParentTeacherController.endTime!),
                                               style: AppTextStyle.getOutfit400(
                                                   textSize: 16,
                                                   textColor:
@@ -395,7 +404,9 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: AppColors.secondary.withOpacity(0.06)),
+                                // color: AppColors.secondary.withOpacity(0.06)
+                              color: AppColors.secondary.withValues(alpha: 0.06)
+                            ),
                             child: Consumer<StudentParentTeacherController>(
                               builder: (context, studentParentTeacherController,
                                   child) {
@@ -441,7 +452,9 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: AppColors.secondary.withOpacity(0.06)),
+                                // color: AppColors.secondary.withOpacity(0.06)
+                                color: AppColors.secondary.withValues(alpha: 0.06)
+                            ),
                             child: Consumer<StudentParentTeacherController>(
                               builder: (context, studentParentTeacherController,
                                   child) {
@@ -567,5 +580,20 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
       descriptionController?.dispose();
     }
     super.dispose();
+  }
+
+
+  //get time in 00:00 format
+
+  String getTimeInFormat(TimeOfDay startTime) {
+
+    int hour = startTime.hour;
+    int minutes = startTime.minute;
+
+    String hourInString = hour < 10 ? "0$hour" : "$hour";
+    String minuteInString = minutes < 10 ? "0$minutes" : "$minutes";
+
+    return "$hourInString:$minuteInString";
+
   }
 }

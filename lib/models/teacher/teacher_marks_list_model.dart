@@ -36,6 +36,8 @@ class MarksItem {
   String? mark;
   String? remarks;
   String? attendance;
+  String? studentFirstName;
+  String? studentLastName;
   String? studentName;
   String? studentRollNo;
   String? studentImage;
@@ -49,6 +51,8 @@ class MarksItem {
         this.mark,
         this.remarks,
         this.attendance,
+        this.studentFirstName,
+        this.studentLastName,
         this.studentName,
         this.studentImage,
         this.studentRollNo});
@@ -63,6 +67,8 @@ class MarksItem {
     remarks = json['remarks'];
     attendance = json['attendance'];
     studentName = json['student_name'];
+    studentFirstName = json["student_firstname"];
+    studentLastName = json["student_lastname"];
     studentRollNo = json['student_roll_no'];
     studentImage = json['stud_image'];
   }
@@ -80,6 +86,8 @@ class MarksItem {
     data['student_name'] = studentName;
     data['student_roll_no'] = studentRollNo;
     data['stud_image'] = studentImage;
+    data['student_firstname'] = studentFirstName;
+    data['student_lastname'] = studentLastName;
     return data;
   }
 }

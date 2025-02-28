@@ -57,7 +57,9 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
       fontFamily: "Outfit",
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: AppColors.secondary.withOpacity(0.5));
+      // color: AppColors.secondary.withOpacity(0.5)
+      color: AppColors.secondary.withValues(alpha: 0.5)
+  );
 
   List<String> tempList = [
     "He had a very good breakfast",
@@ -143,7 +145,9 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: AppColors.primary.withOpacity(0.06)),
+                            // color: AppColors.primary.withOpacity(0.06)
+                            color: AppColors.primary.withValues(alpha: 0.06)
+                        ),
                         child: Column(
                           children: [
                             Padding(
@@ -374,7 +378,9 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: AppColors.primary.withOpacity(0.05)),
+                            // color: AppColors.primary.withOpacity(0.05)
+                          color: AppColors.primary.withValues(alpha: 0.05)
+                        ),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: AutoSizeText(
@@ -414,8 +420,10 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color:
-                                          AppColors.primary.withOpacity(0.05)),
+                                      // color:
+                                      //     AppColors.primary.withOpacity(0.05)
+                                      color: AppColors.primary.withValues(alpha: 0.05)
+                                  ),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: AutoSizeText(
@@ -647,7 +655,10 @@ class CustomTableRow extends StatelessWidget {
                 height: 60,
                 decoration: BoxDecoration(
                     border: Border.all(
-                        width: 1, color: Colors.grey.withOpacity(0.05)),
+                        width: 1,
+                        // color: Colors.grey.withOpacity(0.05)
+                        color: AppColors.greyColor.withValues(alpha: 0.05)
+                    ),
                     color: _backColor),
                 padding: const EdgeInsets.only(left: 20),
                 child: Align(
@@ -668,7 +679,10 @@ class CustomTableRow extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 20),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      width: 1, color: Colors.grey.withOpacity(0.05)),
+                      width: 1,
+                      // color: Colors.grey.withOpacity(0.05)
+                      color: AppColors.greyColor.withValues(alpha: 0.05)
+                  ),
                   color: _backColor,
                 ),
                 child: Align(

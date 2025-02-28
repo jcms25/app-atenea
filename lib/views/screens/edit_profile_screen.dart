@@ -158,8 +158,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               : userData?.lastName ?? "",
                                       style: AppTextStyle.getOutfit500(
                                           textSize: 16,
-                                          textColor: AppColors.secondary
-                                              .withOpacity(0.5)),
+                                          // textColor: AppColors.secondary
+                                          //     .withOpacity(0.5)
+                                          textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                      ),
                                     ),
                                   ],
                                 );

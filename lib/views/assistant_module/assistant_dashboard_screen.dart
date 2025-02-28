@@ -17,7 +17,6 @@ class AssistantDashboard extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return AssistantDashboardChild();
   }
 }
@@ -98,7 +97,8 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               height: 100,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
-                  color: AppColors.dashBack.withOpacity(0.06)
+                  // color: AppColors.dashBack.withOpacity(0.06)
+                  color: AppColors.dashBack.withValues(alpha: 0.06)
               ),
               child: Text(
                 "live".tr,
@@ -257,7 +257,8 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Colors.orange.withOpacity(0.10),
+                // color: Colors.orange.withOpacity(0.10),
+                color: AppColors.orange.withValues(alpha: 0.10)
               ),
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -344,7 +345,10 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
     // SessionManagement sessionManagement = SessionManagement();
     // Assistant assistant = await sessionManagement.getAssistantDetail();
     Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-    dynamic dashboardData = await ApiClass().getAsDashboard(assistant?.basicAuthToken ?? "",assistant?.userdata.data.cookie ?? "");
+
+    dynamic dashboardData = await ApiClass().getAsDashboard(
+        assistant?.basicAuthToken ?? "",
+        assistant?.userdata.data.cookie ?? "");
     if(dashboardData['status']){
       AssistantDashboardModel assistantDashboard = AssistantDashboardModel.fromJson(dashboardData);
       String tempClassCount = assistantDashboard.count.classCount;

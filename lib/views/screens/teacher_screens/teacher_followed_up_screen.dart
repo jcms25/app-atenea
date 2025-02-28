@@ -288,7 +288,10 @@ class CustomFollowedUpRow extends StatelessWidget {
         Text(
           label,
           style: AppTextStyle.getOutfit400(
-              textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+              textSize: 16,
+              // textColor: AppColors.secondary.withOpacity(0.5)
+              textColor: AppColors.secondary.withValues(alpha: 0.5)
+          ),
         ),
         const SizedBox(
           width: 10,

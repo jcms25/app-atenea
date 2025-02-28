@@ -37,7 +37,8 @@ class _TeachingManagementScreenState extends State<TeachingManagementScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius:  BorderRadius.circular(10),
-                      color: AppColors.primary.withOpacity(0.06)
+                      // color: AppColors.primary.withOpacity(0.06)
+                      color: AppColors.primary.withValues(alpha: 0.06)
                   ),
                   padding: const EdgeInsets.all(10),
                   child: Center(

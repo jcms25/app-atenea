@@ -17,14 +17,9 @@ enum RequestType{post,get}
 
 
 class ApiClass{
-  // String embedBaseUrl =
-  //     "http://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
+
   String liveBaseUrl = "https://colegioatenea.es/wp-json/scl-api/v1/";
-
-  // String liveBaseUrl = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
-  // String BASEURL = "https://colegioatenea.embedinfosoft.com/wp-json/scl-api/v1/";
-
-  // String cookieExample = "wordpress_logged_in_61445afb8ff4b73feb642dafdd90e08b=juancarlos_wp%7C1701511434%7C5Y998t1VBoCLtpP94m5gCWaHK5Kl540DVE71U97AL4u%7C5411cdad7e1fdd1e1badffe2184ecc10519119a0518a3b73f64104acba2ccd5b";
+  // String liveBaseUrl = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
 
   String sendMessage = "message";
   String login = "login";

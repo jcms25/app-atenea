@@ -297,7 +297,8 @@ class _StudentDetailsChild extends State<StudentDetails> {
                               const BorderRadius.all(Radius.circular(160)),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.5),
+                              // color: AppColors.primary.withOpacity(0.5),
+                              color: AppColors.primary.withValues(alpha: 0.5),
                               spreadRadius: 0,
                               blurRadius: 25,
                               offset: const Offset(
@@ -357,7 +358,10 @@ class CustomStudentDetailRow extends StatelessWidget {
         Text(
           label,
           style: AppTextStyle.getOutfit400(
-              textSize: 18, textColor: AppColors.secondary.withOpacity(0.75)),
+              textSize: 18,
+              // textColor: AppColors.secondary.withOpacity(0.75)
+              textColor: AppColors.secondary.withValues(alpha: 0.75)
+          ),
         ),
         const SizedBox(
           height: 10,
@@ -368,7 +372,9 @@ class CustomStudentDetailRow extends StatelessWidget {
           padding: const EdgeInsets.only(left: 20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: AppColors.secondary.withOpacity(0.06)),
+              // color: AppColors.secondary.withOpacity(0.06)
+              color: AppColors.secondary.withValues(alpha: 0.06)
+          ),
           child: Align(
             alignment: alignment ?? Alignment.centerLeft,
             child: Text(

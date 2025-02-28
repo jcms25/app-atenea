@@ -71,8 +71,12 @@ class CustomTextField extends StatelessWidget {
               hintText: hintText,
               hintStyle: AppTextStyle.getOutfit500(
                   textSize: 18,
-                  textColor: AppColors.secondary.withOpacity(0.4)),
-              fillColor: filledColor ?? AppColors.secondary.withOpacity(0.06)),
+                  // textColor: AppColors.secondary.withOpacity(0.4)
+                  textColor: AppColors.secondary.withValues(alpha: 0.4)
+              ),
+              // fillColor: filledColor ?? AppColors.secondary.withOpacity(0.06)
+              fillColor: filledColor ?? AppColors.secondary.withValues(alpha: 0.06)
+          ),
           minLines: minLine,
           obscureText: isObscure != null ? !isObscure! : false,
           maxLines: maxLine ?? minLine ?? 0 + 1,

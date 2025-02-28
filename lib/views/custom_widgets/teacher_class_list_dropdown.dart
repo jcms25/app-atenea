@@ -122,7 +122,6 @@ class TeacherClassListDropdown extends StatelessWidget {
                     studentParentTeacherController.setDinningSettings(
                         dinningSettings: null);
                     if(studentParentTeacherController.currentSelectedDinningDay == null && studentParentTeacherController.selectedDinningMonth == null){
-                      studentParentTeacherController.setCurrentSelectedDinningDay(selectedDinningDay: DateTime.now().day);
                       MonthModel? currentMonthModel = AppConstants.monthInSpanish.firstWhereOrNull((e) => e.id == DateTime.now().month);
                       studentParentTeacherController.setCurrentSelectedDinningMonth(dinningMonth: currentMonthModel);
                     }

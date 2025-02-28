@@ -48,10 +48,7 @@ class _TransportScreenChild extends State<TransportationScreen> {
                 backgroundColor: AppColors.primary,
                 title: Text(
                   "trans".tr,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      fontFamily: 'Outfit'),
+                  style: AppTextStyle.getOutfit500(textSize: 20, textColor: AppColors.white),
                 ),
                 leading: Container(
                   margin: const EdgeInsets.all(10),
@@ -98,8 +95,11 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                   hintText: 'searchInList'.tr,
                                   hintStyle: AppTextStyle.getOutfit400(
                                       textSize: 16,
-                                      textColor:
-                                          AppColors.secondary.withOpacity(0.5)),
+                                      // textColor:
+                                      //     AppColors.secondary.withOpacity(0.5)
+                                      // textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                      textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                  ),
                                   border: InputBorder.none),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.done,
@@ -142,8 +142,10 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                 decoration: BoxDecoration(
                                     borderRadius:
                                     BorderRadius.circular(10),
-                                    color: AppColors.primary
-                                        .withOpacity(0.05)),
+                                    // color: AppColors.primary
+                                    //     .withOpacity(0.05)
+                                    color: AppColors.primary.withValues(alpha: 0.05)
+                                ),
                                 child: Column(
                                   crossAxisAlignment:
                                   CrossAxisAlignment.start,
@@ -157,11 +159,12 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                           BorderRadius.circular(5)),
                                       child: Text(
                                         item.routeName,
-                                        style: const TextStyle(
-                                            color: AppColors.white,
-                                            fontFamily: "Outfit",
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 15),
+                                        style: AppTextStyle.getOutfit400(textSize: 15, textColor: AppColors.white),
+                                        // style: const TextStyle(
+                                        //     color: AppColors.white,
+                                        //     fontFamily: "Outfit",
+                                        //     fontWeight: FontWeight.w400,
+                                        //     fontSize: 15),
                                       ),
                                     ),
                                     const SizedBox(
@@ -211,8 +214,10 @@ class _TransportScreenChild extends State<TransportationScreen> {
                                       'vroute'.tr,
                                       style: AppTextStyle.getOutfit400(
                                           textSize: 16,
-                                          textColor: AppColors.secondary
-                                              .withOpacity(0.5)),
+                                          // textColor: AppColors.secondary
+                                          //     .withOpacity(0.5)
+                                          textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -242,7 +247,8 @@ class _TransportScreenChild extends State<TransportationScreen> {
                     return Visibility(
                         visible: appController.isLoading,
                         child: Container(
-                          color: Colors.black.withOpacity(0.5),
+                          // color: Colors.black.withOpacity(0.5),
+                          color: AppColors.black.withValues(alpha: 0.5),
                           height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
                           child: const Center(
@@ -276,7 +282,10 @@ class CustomTransportRow extends StatelessWidget {
             child: Text(
           label,
           style: AppTextStyle.getOutfit400(
-              textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+              textSize: 16,
+              // textColor: AppColors.secondary.withOpacity(0.5)
+              textColor: AppColors.secondary.withValues(alpha: 0.5)
+          ),
         )),
         const SizedBox(
           width: 10,

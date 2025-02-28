@@ -85,9 +85,11 @@ class _EvaluationReportScreenChild extends State<EvaluationReportScreen> {
                     child: Container(
                       margin: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.05),
+                        // color: AppColors.primary.withOpacity(0.05),
+                        color: AppColors.primary.withValues(alpha: 0.05),
                         border: Border.all(
-                          color: AppColors.primary.withOpacity(0.05),
+                          // color: AppColors.primary.withOpacity(0.05),
+                          color: AppColors.primary.withValues(alpha: 0.05),
                           width: 2,
                         ),
                         borderRadius:

@@ -79,7 +79,8 @@ class _Circular extends State<CircularScreen> {
                                         fontFamily: "Outfit",
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
-                                        color: AppColors.secondary.withOpacity(0.5)
+                                        // color: AppColors.secondary.withOpacity(0.5)
+                                      color: AppColors.secondary.withValues(alpha: 0.5)
                                     ),
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
@@ -123,17 +124,18 @@ class _Circular extends State<CircularScreen> {
                                   height: 200,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: AppColors.primary
-                                          .withOpacity(0.06)),
+                                      // color: AppColors.primary
+                                      //     .withOpacity(0.06)
+                                    color: AppColors.primary.withValues(alpha: 0.06)
+                                  ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: MediaQuery.of(context).size.width,
-                                        height: 100,
                                         margin: const EdgeInsets.all(10),
                                         padding: data.image == null ? const EdgeInsets.all(5) : null,
-                                        child: data.image == null || data.image!.isEmpty ? Image.asset(AppImages.document,fit: BoxFit.contain,) : AspectRatio(aspectRatio: 16/9, child: Image.network(data.image!,fit: BoxFit.contain,),),
+                                        child: data.image == null || data.image!.isEmpty ? Image.asset(AppImages.document,fit: BoxFit.fill,) : AspectRatio(aspectRatio: 16/9, child: Image.network(data.image ?? "",fit: BoxFit.contain,filterQuality: FilterQuality.high,),),
                                       ),
                                       data.title.length > 15 ? Text("${data.title.substring(0,14)}${".."}",style: title,) : Text(data.title,style: title,),
                                       Text(data.date,style: title.copyWith(fontSize: 14),)
@@ -149,7 +151,8 @@ class _Circular extends State<CircularScreen> {
             Visibility(
                 visible: isLoading,
                 child: Container(
-                  color: Colors.black.withOpacity(0.5),
+                  // color: Colors.black.withOpacity(0.5),
+                  color: AppColors.black.withValues(alpha: 0.5),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: const Center(

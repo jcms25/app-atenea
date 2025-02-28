@@ -160,7 +160,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 Container(
                                   width: MediaQuery.sizeOf(context).width,
                                   decoration: BoxDecoration(
-                                      color: AppColors.primary.withOpacity(0.05),
+                                      // color: AppColors.primary.withOpacity(0.05),
+                                      color: AppColors.primary.withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(5),),
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -186,8 +187,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   width: MediaQuery.sizeOf(context).width,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color:
-                                          AppColors.primary.withOpacity(0.06)),
+                                      // color:
+                                      //     AppColors.primary.withOpacity(0.06)
+                                      color: AppColors.primary.withValues(alpha: 0.06)
+                                  ),
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 10),
                                   padding: const EdgeInsets.all(10),

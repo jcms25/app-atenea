@@ -85,7 +85,9 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
                           studentParentTeacherController.teacherDetail?.lastName ?? "-",
                           style: CustomStyle.login.copyWith(
                               fontSize: 16,
-                              color: AppColors.secondary.withOpacity(0.5)),
+                              // color: AppColors.secondary.withOpacity(0.5)
+                              color: AppColors.secondary.withValues(alpha: 0.5)
+                          ),
                         )
                       ],
                     );
@@ -167,7 +169,8 @@ class _TeacherDetailsChild extends State<TeacherDetails> {
               borderRadius: const BorderRadius.all(Radius.circular(160)),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.5),
+                  // color: AppColors.primary.withOpacity(0.5),
+                  color: AppColors.primary.withValues(alpha: 0.5),
                   spreadRadius: 0,
                   blurRadius: 25,
                   offset: const Offset(0, 0), // changes position of shadow
@@ -224,7 +227,10 @@ class TeacherDetailsWidget extends StatelessWidget {
         Text(
           label,
           style: AppTextStyle.getOutfit500(
-              textSize: 18, textColor: AppColors.secondary.withOpacity(0.75)),
+              textSize: 18,
+              // textColor: AppColors.secondary.withOpacity(0.75)
+              textColor: AppColors.secondary.withValues(alpha: 0.75)
+          ),
         ),
         const SizedBox(
           height: 10,
@@ -236,7 +242,9 @@ class TeacherDetailsWidget extends StatelessWidget {
             width: MediaQuery.sizeOf(context).width,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: AppColors.secondary.withOpacity(0.06)),
+                // color: AppColors.secondary.withOpacity(0.06)
+                color: AppColors.secondary.withValues(alpha: 0.06)
+            ),
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Text(

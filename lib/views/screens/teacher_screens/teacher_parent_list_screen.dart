@@ -111,9 +111,13 @@ class _TeacherParentListScreenState extends State<TeacherParentListScreen> {
                                                 hintStyle:
                                                 AppTextStyle.getOutfit400(
                                                     textSize: 16,
+                                                    // textColor: AppColors
+                                                    //     .secondary
+                                                    //     .withOpacity(0.5)
                                                     textColor: AppColors
-                                                        .secondary
-                                                        .withOpacity(0.5)),
+                                                              .secondary
+                                                              .withValues(alpha: 0.5)
+                                                ),
                                                 contentPadding:
                                                 const EdgeInsets.all(10),
                                                 border: InputBorder.none),
@@ -200,7 +204,8 @@ class ParentItemWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.05),
+          // color: AppColors.primary.withOpacity(0.05),
+          color: AppColors.primary.withValues(alpha: 0.05),
           borderRadius: const BorderRadius.all(Radius.circular(15))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

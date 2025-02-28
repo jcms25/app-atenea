@@ -40,7 +40,9 @@ class _AssistantMessageReceivedDetailScreenState
       fontFamily: "Outfit",
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: AppColors.secondary.withOpacity(0.5));
+      // color: AppColors.secondary.withOpacity(0.5)
+    color: AppColors.secondary.withValues(alpha: 0.5)
+  );
 
   @override
   void initState() {
@@ -81,7 +83,9 @@ class _AssistantMessageReceivedDetailScreenState
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: AppColors.primary.withOpacity(0.06)),
+                      // color: AppColors.primary.withOpacity(0.06)
+                      color: AppColors.primary.withValues(alpha: 0.06)
+                  ),
                   child: Column(
                     children: [
                       Padding(
@@ -165,7 +169,9 @@ class _AssistantMessageReceivedDetailScreenState
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: AppColors.primary.withOpacity(0.05)),
+                      // color: AppColors.primary.withOpacity(0.05)
+                      color: AppColors.primary.withValues(alpha: 0.05)
+                  ),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: AutoSizeText(
@@ -204,7 +210,9 @@ class _AssistantMessageReceivedDetailScreenState
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: AppColors.primary.withOpacity(0.05)),
+                                // color: AppColors.primary.withOpacity(0.05)
+                              color: AppColors.primary.withValues(alpha: 0.05)
+                            ),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: AutoSizeText(

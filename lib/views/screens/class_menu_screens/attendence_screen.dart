@@ -152,10 +152,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                 style: CustomStyle
                                                                     .textValue
                                                                     .copyWith(
-                                                                    color: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                        0.75)),
+                                                                    // color: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //     0.75)
+                                                                    color: AppColors.secondary.withValues(alpha: 0.75)
+                                                                ),
                                                               )),
                                                           const SizedBox(
                                                             width: 20,
@@ -166,10 +168,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                 style: CustomStyle
                                                                     .textValue
                                                                     .copyWith(
-                                                                    color: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                        0.75)),
+                                                                    // color: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //     0.75)
+                                                                  color: AppColors.secondary.withValues(alpha: 0.75)
+                                                                ),
                                                               ))
                                                         ],
                                                       ),
@@ -185,10 +189,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(
                                                                           12),
-                                                                      color: AppColors
-                                                                          .secondary
-                                                                          .withOpacity(
-                                                                          0.06)),
+                                                                      // color: AppColors
+                                                                      //     .secondary
+                                                                      //     .withOpacity(
+                                                                      //     0.06)
+                                                                      color: AppColors.secondary.withValues(alpha: 0.06)
+                                                                  ),
                                                                   child:
                                                                   Padding(
                                                                     padding:
@@ -215,10 +221,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(
                                                                           12),
-                                                                      color: AppColors
-                                                                          .secondary
-                                                                          .withOpacity(
-                                                                          0.06)),
+                                                                      // color: AppColors
+                                                                      //     .secondary
+                                                                      //     .withOpacity(
+                                                                      //     0.06)
+                                                                        color: AppColors.secondary.withValues(alpha: 0.06)
+                                                                  ),
                                                                   child:
                                                                   Padding(
                                                                     padding:
@@ -248,10 +256,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                 style: CustomStyle
                                                                     .textValue
                                                                     .copyWith(
-                                                                    color: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                        0.75)),
+                                                                    // color: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //     0.75)
+                                                                    color: AppColors.secondary.withValues(alpha: 0.75)
+                                                                ),
                                                               )),
                                                           const SizedBox(
                                                             width: 20,
@@ -262,10 +272,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                 style: CustomStyle
                                                                     .textValue
                                                                     .copyWith(
-                                                                    color: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                        0.75)),
+                                                                    // color: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //     0.75)
+                                                                    color: AppColors.secondary.withValues(alpha: 0.75)
+                                                                ),
                                                               ))
                                                         ],
                                                       ),
@@ -281,10 +293,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(
                                                                           12),
-                                                                      color: AppColors
-                                                                          .secondary
-                                                                          .withOpacity(
-                                                                          0.06)),
+                                                                      // color: AppColors
+                                                                      //     .secondary
+                                                                      //     .withOpacity(
+                                                                      //     0.06)
+                                                                      color: AppColors.secondary.withValues(alpha: 0.06)
+                                                                  ),
                                                                   child:
                                                                   Padding(
                                                                     padding:
@@ -311,10 +325,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(
                                                                           12),
-                                                                      color: AppColors
-                                                                          .secondary
-                                                                          .withOpacity(
-                                                                          0.06)),
+                                                                      // color: AppColors
+                                                                      //     .secondary
+                                                                      //     .withOpacity(
+                                                                      //     0.06)
+                                                                      color: AppColors.secondary.withValues(alpha: 0.06)
+                                                                  ),
                                                                   child:
                                                                   Padding(
                                                                     padding:
@@ -344,10 +360,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                 style: CustomStyle
                                                                     .textValue
                                                                     .copyWith(
-                                                                    color: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                        0.75)),
+                                                                    // color: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //     0.75)
+                                                                    color: AppColors.secondary.withValues(alpha: 0.75)
+                                                                ),
                                                               )),
                                                           const SizedBox(
                                                             width: 20,
@@ -358,10 +376,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                 style: CustomStyle
                                                                     .textValue
                                                                     .copyWith(
-                                                                    color: AppColors
-                                                                        .secondary
-                                                                        .withOpacity(
-                                                                        0.75)),
+                                                                    // color: AppColors
+                                                                    //     .secondary
+                                                                    //     .withOpacity(
+                                                                    //     0.75)
+                                                                  color: AppColors.secondary.withValues(alpha: 0.75)
+                                                                ),
                                                               ))
                                                         ],
                                                       ),
@@ -377,10 +397,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(
                                                                           12),
-                                                                      color: AppColors
-                                                                          .secondary
-                                                                          .withOpacity(
-                                                                          0.06)),
+                                                                      // color: AppColors
+                                                                      //     .secondary
+                                                                      //     .withOpacity(
+                                                                      //     0.06)
+                                                                      color: AppColors.secondary.withValues(alpha: 0.06)
+                                                                  ),
                                                                   child:
                                                                   Padding(
                                                                     padding:
@@ -407,10 +429,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(
                                                                           12),
-                                                                      color: AppColors
-                                                                          .secondary
-                                                                          .withOpacity(
-                                                                          0.06)),
+                                                                      // color: AppColors
+                                                                      //     .secondary
+                                                                      //     .withOpacity(
+                                                                      //     0.06)
+                                                                    color: AppColors.secondary.withValues(alpha: 0.06)
+                                                                  ),
                                                                   child:
                                                                   Padding(
                                                                     padding:
@@ -437,10 +461,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                         style: CustomStyle
                                                             .textValue
                                                             .copyWith(
-                                                            color: AppColors
-                                                                .secondary
-                                                                .withOpacity(
-                                                                0.75)),
+                                                            // color: AppColors
+                                                            //     .secondary
+                                                            //     .withOpacity(
+                                                            //     0.75)
+                                                            color: AppColors.secondary.withValues(alpha: 0.75)
+                                                        ),
                                                       ),
                                                       const SizedBox(
                                                         height: 10,
@@ -454,10 +480,12 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                                                               BorderRadius
                                                                   .circular(
                                                                   12),
-                                                              color: AppColors
-                                                                  .secondary
-                                                                  .withOpacity(
-                                                                  0.06)),
+                                                              // color: AppColors
+                                                              //     .secondary
+                                                              //     .withOpacity(
+                                                              //     0.06)
+                                                              color: AppColors.secondary.withValues(alpha: 0.06)
+                                                          ),
                                                           child: Padding(
                                                             padding:
                                                             const EdgeInsets
@@ -502,7 +530,8 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
                               const BorderRadius.all(Radius.circular(160)),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.5),
+                                  // color: AppColors.primary.withOpacity(0.5),
+                                  color: AppColors.primary.withValues(alpha: 0.5),
                                   spreadRadius: 0,
                                   blurRadius: 25,
                                   offset: const Offset(
@@ -527,7 +556,8 @@ class _AttendanceScreenChild extends State<AttendanceScreen> {
             Visibility(
                 visible: isLoading,
                 child: Container(
-                  color: Colors.black.withOpacity(0.1),
+                  // color: Colors.black.withOpacity(0.1),
+                  color: AppColors.black.withValues(alpha: 0.1),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: const Center(

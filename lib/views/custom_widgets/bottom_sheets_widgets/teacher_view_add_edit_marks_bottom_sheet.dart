@@ -43,7 +43,8 @@ class TeacherViewMarksBottomSheet extends StatelessWidget {
                       child: TeacherClassListDropdown(
                         fromWhereStudentListCalled: false,
                         fromWhichScreen: 8,
-                        backgroundColor: AppColors.secondary.withOpacity(0.06),
+                        // backgroundColor: AppColors.secondary.withOpacity(0.06),
+                        backgroundColor: AppColors.secondary.withValues(alpha: 0.06),
                       ),
                     ),
                     const SizedBox(
@@ -64,7 +65,9 @@ class TeacherViewMarksBottomSheet extends StatelessWidget {
                         height: 60,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: AppColors.secondary.withOpacity(0.06)),
+                            // color: AppColors.secondary.withOpacity(0.06)
+                            color: AppColors.secondary.withValues(alpha: 0.06)
+                        ),
                         padding: const EdgeInsets.only(left: 10),
                         child: studentParentTeacherController
                                 .listOfSubject.isNotEmpty
@@ -77,8 +80,10 @@ class TeacherViewMarksBottomSheet extends StatelessWidget {
                                   "Seleccionar asignaturas",
                                   style: AppTextStyle.getOutfit400(
                                       textSize: 16,
-                                      textColor:
-                                          AppColors.secondary.withOpacity(0.6)),
+                                      // textColor:
+                                      //     AppColors.secondary.withOpacity(0.6)
+                                    textColor: AppColors.secondary.withValues(alpha: 0.6)
+                                  ),
                                 ),
                                 items: studentParentTeacherController
                                     .listOfSubject
@@ -127,8 +132,10 @@ class TeacherViewMarksBottomSheet extends StatelessWidget {
                                   height: 60,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: AppColors.secondary
-                                          .withOpacity(0.06)),
+                                      // color: AppColors.secondary
+                                      //     .withOpacity(0.06)
+                                      color: AppColors.secondary.withValues(alpha: 0.06)
+                                  ),
                                   padding: const EdgeInsets.only(left: 10),
                                   child: studentParentTeacherController
                                           .listOfExamBasedOnSubjects.isNotEmpty
@@ -141,8 +148,10 @@ class TeacherViewMarksBottomSheet extends StatelessWidget {
                                             "Seleccionar examen",
                                             style: AppTextStyle.getOutfit400(
                                                 textSize: 16,
-                                                textColor: AppColors.secondary
-                                                    .withOpacity(0.6)),
+                                                // textColor: AppColors.secondary
+                                                //     .withOpacity(0.6)
+                                              textColor: AppColors.secondary.withValues(alpha: 0.6)
+                                            ),
                                           ),
                                           items: studentParentTeacherController
                                               .listOfExamBasedOnSubjects

@@ -85,7 +85,8 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                 return Padding(padding: const EdgeInsets.symmetric(horizontal: 10),child: Container(
                   height: 100,
                   decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.05),
+                      // color: AppColors.primary.withOpacity(0.05),
+                      color: AppColors.primary.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(15)),
                   child: Row(
                     children: [
@@ -153,8 +154,10 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                                       style: textStyle.copyWith(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
-                                          color: AppColors.secondary
-                                              .withOpacity(0.7)),
+                                          // color: AppColors.secondary
+                                          //     .withOpacity(0.7)
+                                          color: AppColors.secondary.withValues(alpha: 0.7)
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(
@@ -175,7 +178,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>NewCommunication(isCommonMessageOrStudentReport: 1,classId: widget.classId,studentId: studentId,listOfParent: parent,)));
                             },
                             child: SvgPicture.asset(
-                              "Assets/compose_icon.svg",
+                              "assets/images/compose_icon.svg",
                               width: 18,
                               height: 18,
                             ),

@@ -5,7 +5,8 @@ import '../../utils/app_colors.dart';
 class LabelValueLayout extends StatelessWidget {
   final String label, value;
   final TextStyle txtLabelStyle = TextStyle(
-      color: AppColors.secondary.withOpacity(0.75),
+      // color: AppColors.secondary.withOpacity(0.75),
+      color: AppColors.secondary.withValues(alpha: 0.75),
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w400,
       fontSize: 18);
@@ -32,7 +33,8 @@ class LabelValueLayout extends StatelessWidget {
           const EdgeInsets.symmetric(vertical: 18, horizontal: 15),
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.06),
+            // color: AppColors.secondary.withOpacity(0.06),
+            color: AppColors.secondary.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -45,7 +47,8 @@ class LabelValueLayout extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.06),
+            color: AppColors.secondary.withValues(alpha: 0.06),
+            // color: AppColors.secondary.withOpacity(0.06),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(

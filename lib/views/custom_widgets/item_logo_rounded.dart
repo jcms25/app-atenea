@@ -94,7 +94,8 @@ class _ItemWhiteOpacityCircleState extends State<ItemWhiteOpacityCircle> with Ti
             width: 320,
             height: 320,
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.03),
+              // color: AppColors.white.withOpacity(0.03),
+              color: AppColors.white.withValues(alpha: 0.03),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(160),
                 topRight: Radius.circular(160),
@@ -110,7 +111,8 @@ class _ItemWhiteOpacityCircleState extends State<ItemWhiteOpacityCircle> with Ti
             width: 230,
             height: 230,
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.1),
+              // color: AppColors.white.withOpacity(0.1),
+              color: AppColors.white.withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(115),
                 topRight: Radius.circular(115),

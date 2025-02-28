@@ -135,8 +135,10 @@ class ExamListScreenState extends State<ExamListScreen> {
                                     "No se encontraron exámenes",
                                     style: AppTextStyle.getOutfit400(
                                         textSize: 18,
-                                        textColor: AppColors.secondary
-                                            .withOpacity(0.5)),
+                                        // textColor: AppColors.secondary
+                                        //     .withOpacity(0.5)
+                                        textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                    ),
                                   ),
                                 )
                               : ListView.separated(
@@ -201,7 +203,9 @@ class ExamItemWidget extends StatelessWidget {
       width: MediaQuery.sizeOf(context).width,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: AppColors.primary.withOpacity(0.05)),
+          // color: AppColors.primary.withOpacity(0.05)
+          color: AppColors.primary.withValues(alpha: 0.05)
+      ),
       padding: const EdgeInsets.all(15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +303,8 @@ class ExamItemWidget extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       Get.to(() => TeacherAddEditExamScreen(),
-                          arguments: {"reason": "edit-exam",
+                          arguments: {
+                          "reason": "edit-exam",
                           "exam-data" : examListItem
                           });
                     },

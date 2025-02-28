@@ -16,6 +16,7 @@ import 'package:colegia_atenea/models/single_teacher_details_model.dart';
 import 'package:colegia_atenea/models/student_details_model.dart';
 import 'package:colegia_atenea/models/subject_list_model.dart';
 import 'package:colegia_atenea/models/teacher/parent_list_model.dart';
+import 'package:colegia_atenea/models/teacher/teacher_dinning_month_list_model.dart';
 import 'package:colegia_atenea/models/teacher/teacher_marks_list_model.dart';
 import 'package:colegia_atenea/models/teacher/teacher_schedule_model.dart';
 import 'package:colegia_atenea/models/teacher_list_model.dart';
@@ -43,6 +44,16 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   void setIsLoading({required bool isLoading}) {
     this.isLoading = isLoading;
+    notifyListeners();
+  }
+
+
+
+  //is bottom sheet loader
+  bool isBottomLoader = false;
+
+  void setIsBottomLoader({required bool isBottomLoader}){
+    this.isBottomLoader = isBottomLoader;
     notifyListeners();
   }
 
@@ -197,6 +208,8 @@ class StudentParentTeacherController extends ChangeNotifier {
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
+
+
   }
 
   //calendar handler
@@ -1656,6 +1669,7 @@ class StudentParentTeacherController extends ChangeNotifier {
               message: response['message'] ?? response['Message'] ?? "");
           ExamDetailsModel examDetailsModel =
               ExamDetailsModel.fromJson(response);
+
           setExamDetailItem(examDetailItem: examDetailsModel.data);
         }
         setIsLoading(isLoading: false);
@@ -1688,34 +1702,42 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isAllSubjectSelected = false;
+  // bool isAllSubjectSelected = false;
+  //
+  // void setIsAllSubjectSelected({required bool isAllSubjectSelected}) {
+  //   this.isAllSubjectSelected = isAllSubjectSelected;
+  //   // setListOfSelectedSubjectsId(listOfSelectedSubjectsId: tempListOfSubject.map((e){return e;}).toList());
+  //   selectedSubjects.clear();
+  //   for(SubjectItem i in tempListOfSubject){
+  //     selectedSubjects[i.id ?? ""] = i.subName ?? "";
+  //   }
+  //   notifyListeners();
+  // }
+  //
+  //
+  // //selected subject id for add-edit exam
+  // Map<String,String> selectedSubjects = {};
+  // void setSelectedSubjects({required Map<String,String> selectedSubjects}){
+  //   this.selectedSubjects = selectedSubjects;
+  //   notifyListeners();
+  // }
+  //
+  // void addSelectedSubject({required SubjectItem subjectItem}){
+  //   selectedSubjects[subjectItem.id ?? ""] = subjectItem.subName ?? "";
+  //   notifyListeners();
+  // }
+  //
+  // void removeSelectedSubjects({required SubjectItem subjectItem}){
+  //   selectedSubjects.remove(subjectItem.id ?? "");
+  //   notifyListeners();
+  // }
 
-  void setIsAllSubjectSelected({required bool isAllSubjectSelected}) {
-    this.isAllSubjectSelected = isAllSubjectSelected;
-    setListOfSelectedSubjectsId(listOfSelectedSubjectsId: tempListOfSubject);
+
+  //selected subjects for exam
+  String? selectedSubjectIdOfExam;
+  void setSelectedSubjectOfExam({required String? selectedSubjectIdOfExam}){
+    this.selectedSubjectIdOfExam = selectedSubjectIdOfExam;
     notifyListeners();
-  }
-
-  List<SubjectItem> listOfSelectedSubjectsId = [];
-
-  void setListOfSelectedSubjectsId(
-      {required List<SubjectItem> listOfSelectedSubjectsId}) {
-    this.listOfSelectedSubjectsId = listOfSelectedSubjectsId;
-    notifyListeners();
-  }
-
-  void addSelectedSubject({required SubjectItem subject}) {
-    if (!listOfSelectedSubjectsId.contains(subject)) {
-      listOfSelectedSubjectsId.add(subject);
-      notifyListeners();
-    }
-  }
-
-  void removeSelectedSubject({required SubjectItem subject}) {
-    if (listOfSelectedSubjectsId.contains(subject)) {
-      listOfSelectedSubjectsId.remove(subject);
-      notifyListeners();
-    }
   }
 
   //add-edit exam function
@@ -1727,7 +1749,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       required String endDateOfExam,
       required String examTime,
       required String comments,
-      required List<SubjectItem> subjects}) async {
+      required List<String> subjects}) async {
     try {
       setIsLoading(isLoading: true);
 
@@ -1741,7 +1763,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       };
 
       for (int i = 0; i < subjects.length; i++) {
-        bodyData["subject_id[$i]"] = subjects[i].id ?? "";
+        bodyData["subject_id[$i]"] = subjects[i];
       }
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
@@ -1777,8 +1799,9 @@ class StudentParentTeacherController extends ChangeNotifier {
     examStartDate = DateTime.now();
     examEndDate = DateTime.now();
     examTime = TimeOfDay.now();
-    listOfSelectedSubjectsId = [];
-    isAllSubjectSelected = false;
+    selectedSubjectIdOfExam = null;
+    // selectedSubjects = {};
+    // isAllSubjectSelected = false;
     notifyListeners();
   }
 
@@ -1845,7 +1868,6 @@ class StudentParentTeacherController extends ChangeNotifier {
       required String examId}) async {
     try {
       setIsLoading(isLoading: true);
-
       await Api.httpRequest(
               requestType: RequestType.get,
               endPoint:
@@ -1860,7 +1882,9 @@ class StudentParentTeacherController extends ChangeNotifier {
               listOfObserverController: List.generate(
                   marksList.data?.length ?? 0,
                   (index) => TextEditingController()));
-          setListOfMarks(listOfMarksItem: marksList.data ?? []);
+          List<MarksItem> listOfMarks = marksList.data ?? [];
+          listOfMarks.sort((a, b) => a.studentLastName?.compareTo(b.studentLastName ?? "") ?? 0);
+          setListOfMarks(listOfMarksItem: listOfMarks);
         } else {
           AppConstants.showCustomToast(
               status: false,
@@ -1977,11 +2001,23 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
+  //selected day
+  String? currentSelectedDinningDay;
+
+  void setCurrentSelectedDinningDay({required String? selectedDinningDay}) {
+    currentSelectedDinningDay = selectedDinningDay;
+    notifyListeners();
+  }
+
   //selected dinning month
   MonthModel? selectedDinningMonth;
 
   void setCurrentSelectedDinningMonth({required MonthModel? dinningMonth}) {
     selectedDinningMonth = dinningMonth;
+    if(dinningMonth != null){
+      setCurrentSelectedDinningDay(selectedDinningDay: null);
+      getDaysOfMonthFromDinningTable(selectedMonth: dinningMonth.id);
+    }
     notifyListeners();
   }
 
@@ -2016,15 +2052,48 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-//selected day
-  int? currentSelectedDinningDay;
 
-  void setCurrentSelectedDinningDay({required int? selectedDinningDay}) {
-    currentSelectedDinningDay = selectedDinningDay;
+  //get list of days for dinning month
+  List<String> daysList = [];
+  void setDaysList({required List<String> daysList}){
+    this.daysList = daysList;
     notifyListeners();
   }
 
-//dinning settings
+
+  //get Dinning Days of months
+  Future<void> getDaysOfMonthFromDinningTable({required int selectedMonth}) async{
+      try{
+
+        setIsBottomLoader(isBottomLoader: true);
+        await Api.httpRequest(
+            requestType: RequestType.get,
+            endPoint: "${Api.dinningDaysList}?month=$selectedMonth").then((res){
+              if(res['status']){
+                DinningMonthListResponse dinningMonthListResponse = DinningMonthListResponse.fromJson(res);
+                List<String> days = dinningMonthListResponse.data?.days ?? [];
+                setDaysList(daysList: days);
+
+                int currentDay = DateTime.now().day;
+                for(int i = currentDay; i <= 31 ; i++){
+                  if(days.contains("$i")){
+                    setCurrentSelectedDinningDay(selectedDinningDay: "$i");
+                    break;
+                  }
+                }
+              }
+              setIsBottomLoader(isBottomLoader: false);
+        });
+
+
+      }catch(exception){
+        setIsBottomLoader(isBottomLoader: false);
+        notifyListeners();
+      }
+  }
+
+
+ //dinning settings
   DinningSettings? dinningSettings;
 
   void setDinningSettings({required DinningSettings? dinningSettings}) {
@@ -2034,7 +2103,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
 //get dinning student list
   Future<void> getDinningStudentList(
-      {required String classId, required int month, required int day}) async {
+      {required String classId, required int month, required String day}) async {
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -2078,10 +2147,10 @@ class StudentParentTeacherController extends ChangeNotifier {
 
 //add edit dinning at teacher side
   Future<void> addEditDinningStatus(
-      {required int monthNumber, required int day}) async {
+      {required int monthNumber, required String day}) async {
     try {
       setIsLoading(isLoading: true);
-      Map<String, dynamic> bodyData = {"Month": "$monthNumber", "Day": "$day"};
+      Map<String, dynamic> bodyData = {"Month": "$monthNumber", "Day": day};
 
       List<int> listOfStatus = mapOfStatusOfStudentDinning.values.toList();
       for (int i = 0; i < listOfStatus.length; i++) {
@@ -2195,7 +2264,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     tempListOfTeachers = [];
     dashboardExamList = [];
     todayEvent = [];
-    listOfSelectedSubjectsId = [];
+    // selectedSubjects = {};
     listOfStudentFollowedUp = [];
     tempListOfStudentFollowedUp = [];
     notifyListeners();

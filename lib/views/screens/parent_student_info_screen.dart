@@ -111,7 +111,9 @@ class CustomRow extends StatelessWidget {
             Text(label,
                 style: AppTextStyle.getOutfit400(
                     textSize: 16,
-                    textColor: AppColors.secondary.withOpacity(0.6))),
+                    // textColor: AppColors.secondary.withOpacity(0.6)
+                    textColor: AppColors.secondary.withValues(alpha: 0.6)
+                )),
             const Spacer(),
             Text(
               value,
@@ -148,7 +150,8 @@ class DetailWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         border: Border.all(
-          color: AppColors.secondary.withOpacity(0.06),
+          // color: AppColors.secondary.withOpacity(0.06),
+          color: AppColors.secondary.withValues(alpha: 0.06),
           width: 2,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(5)),

@@ -125,56 +125,60 @@ class StoreController extends ChangeNotifier {
       required String billingEmail,
       required String billingAlumnosName,
       required List<String> billingAlumnosClass}) async {
-    try {
-      setIsLoading(isLoading: true);
 
-      String token = AppSharedPreferences.getBasicAthToken() ?? "";
-      String cookies = AppSharedPreferences.getUserData()?.cookies ?? "";
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
+    String cookies = AppSharedPreferences.getUserData()?.cookies ?? "";
 
-      Map<String, dynamic> bodyData = {
-        "billing_first_name": billingName,
-        "billing_last_name": billingLastName,
-        "billing_myfield3": billingNIF,
-        "billing_vat": billingNIFOptional,
-        "billing_phone": billingPhoneNumber,
-        "billing_address_1": billingAddress,
-        "billing_postcode": billingPostCode,
-        "billing_city": billingCity,
-        "billing_state": billingState,
-        "billing_email": billingEmail,
-        "billing_wooccm10": billingAlumnosName
-      };
+    Map<String, dynamic> bodyData = {
+      "billing_first_name": billingName,
+      "billing_last_name": billingLastName,
+      "billing_myfield3": billingNIF,
+      "billing_vat": billingNIFOptional,
+      "billing_phone": billingPhoneNumber,
+      "billing_address_1": billingAddress,
+      "billing_postcode": billingPostCode,
+      "billing_city": billingCity,
+      "billing_state": billingState,
+      "billing_email": billingEmail,
+      "billing_wooccm10": billingAlumnosName
+    };
 
-      if (selectedClassItem.isNotEmpty) {
-        for (int i = 0; i < selectedClassItem.length; i++) {
-          bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
-        }
-      } else {
-        bodyData['billing_wooccm12'] = "";
+    if (selectedClassItem.isNotEmpty) {
+      for (int i = 0; i < selectedClassItem.length; i++) {
+        bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
       }
-      await Api.httpRequest(
-              requestType: RequestType.post,
-              body: bodyData,
-              header: {
-                'Content-Type':
-                    'application/x-www-form-urlencoded; charset=UTF-8',
-                'Authorization': "Basic $token",
-                'Cookie': cookies
-              },
-              endPoint: "${Api.billingEditDetailEndPoint}?user_id=$wpUserId")
-          .then((res) {
-        setIsLoading(isLoading: false);
-        AppConstants.showCustomToast(
-            status: res['status'],
-            message: res['message'] ?? res['Message'] ?? "");
-        if (res['status']) {
-          Get.back();
-        }
-      });
-    } catch (exception) {
-      AppConstants.showCustomToast(status: false, message: "$exception");
-      setIsLoading(isLoading: false);
     }
+    else {
+      bodyData['billing_wooccm12'] = "";
+    }
+    await Api.httpRequest(
+        requestType: RequestType.post,
+        body: bodyData,
+        header: {
+          'Content-Type':
+          'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': cookies
+        },
+        endPoint: "${Api.billingEditDetailEndPoint}?user_id=$wpUserId")
+        .then((res) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(
+          status: res['status'],
+          message: res['message'] ?? res['Message'] ?? "");
+      if (res['status']) {
+        Get.back();
+      }
+    });
+
+    // try {
+    //   setIsLoading(isLoading: true);
+    //
+    //
+    // } catch (exception) {
+    //   AppConstants.showCustomToast(status: false, message: "$exception");
+    //   setIsLoading(isLoading: false);
+    // }
   }
 
   //list of orders

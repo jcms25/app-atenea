@@ -12,7 +12,6 @@ class AssistantController extends ChangeNotifier{
     notifyListeners();
   }
 
-
   //current bottom index selected
   int currentBottomIndexSelected = 0;
   void setCurrentBottomIndexSelected({required int currentBottomIndexSelected}){

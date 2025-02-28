@@ -38,7 +38,10 @@ class CustomButtonWidget extends StatelessWidget {
                 horizontal: padding ?? 0, vertical: padding ?? 0),
         height: buttonHeight ?? 60,
         decoration: BoxDecoration(boxShadow: [
-          BoxShadow(blurRadius: 10, color: AppColors.primary.withOpacity(0.1))
+          BoxShadow(blurRadius: 10,
+              // color: AppColors.primary.withOpacity(0.1)
+            color: AppColors.primary.withValues(alpha: 0.1)
+          )
         ], borderRadius: BorderRadius.circular(10), color: AppColors.primary),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

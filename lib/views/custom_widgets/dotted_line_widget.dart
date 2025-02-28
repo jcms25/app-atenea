@@ -12,7 +12,8 @@ class CustomDottedLineWidget extends StatelessWidget {
       dashLength: 5,
       dashGapLength: 1,
       lineThickness: 1,
-      dashColor: AppColors.secondary.withOpacity(0.05),
+      // dashColor: AppColors.secondary.withOpacity(0.05),
+      dashColor: AppColors.secondary.withValues(alpha: 0.05),
       direction: Axis.horizontal,
     );
   }

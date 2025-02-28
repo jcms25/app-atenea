@@ -30,7 +30,6 @@ class _ReportListScreenState extends State<ReportListScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getStudentReportList();
   }
@@ -129,7 +128,6 @@ class ReportList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(overscroll: false),
         child: ListView.separated(
@@ -153,7 +151,9 @@ class ReportList extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: AppColors.primary.withOpacity(0.05)),
+                    // color: AppColors.primary.withOpacity(0.05)
+                    color: AppColors.primary.withValues(alpha: 0.05)
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,

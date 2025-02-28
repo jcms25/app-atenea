@@ -21,7 +21,8 @@ class AssistantParentDetails extends StatefulWidget{
 class AssistantParentDetailsChild extends State<AssistantParentDetails> {
   // bool _isLoading = false;
   TextStyle txtLabelStyle = TextStyle(
-      color: AppColors.secondary.withOpacity(0.75),
+      // color: AppColors.secondary.withOpacity(0.75),
+      color: AppColors.secondary.withValues(alpha: 0.75),
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w400,
       fontSize: 18);
@@ -35,7 +36,6 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -121,7 +121,8 @@ class AssistantParentDetailsChild extends State<AssistantParentDetails> {
                     const BorderRadius.all(Radius.circular(160)),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.5),
+                        // color: AppColors.primary.withOpacity(0.5),
+                        color: AppColors.primary.withValues(alpha: 0.5),
                         spreadRadius: 0,
                         blurRadius: 25,
                         offset: const Offset(

@@ -6,15 +6,18 @@ import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
+import 'package:colegia_atenea/views/screens/child_communication_list_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/evaluation_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/student_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/subject_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/teacher_list_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/transportation_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/manage_service_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.dart';
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/my_data_screen.dart';
-import 'package:colegia_atenea/views/screens/store_screens/order_history_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/order_history_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
@@ -26,6 +29,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_images.dart';
+import '../screens/class_menu_screens/grade_screen.dart';
 import '../screens/class_menu_screens/timetable_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
@@ -491,6 +495,9 @@ class CustomDrawerWidget extends StatelessWidget {
               index: 1);
         }
         break;
+      case "Envíos del Profesor":
+        Get.to(() => ChildCommunicationListScreen(studentWpUserId: "${drawerMenuOption.wpUserId}"));
+        break;
       case "Alumnos":
         Get.to(() => StudentListScreen(),
             arguments: roleType == RoleType.teacher
@@ -551,7 +558,8 @@ class CustomDrawerWidget extends StatelessWidget {
       case "Exámenes/Trabajos":
         if (roleType == RoleType.teacher) {
           Get.to(() => ExamListScreen(), arguments: {"role": RoleType.teacher});
-        } else {
+        }
+        else {
           Get.to(() => ExamListScreen(), arguments: {
             "role": roleType,
             "wpUserId": drawerMenuOption.wpUserId,
@@ -565,15 +573,17 @@ class CustomDrawerWidget extends StatelessWidget {
         if (roleType == RoleType.teacher) {
           Get.to(() => TeacherAddEditMarksScreen());
         } else {
-          // Get.to(() => GradeScreen(cid, wpId))
+          Get.to(() => GradeScreen(drawerMenuOption.classId ?? "", drawerMenuOption.wpUserId ?? ""));
         }
         break;
       case "Evaluaciones":
+        Get.to(() => EvaluationScreen(studentName: drawerMenuOption.studentName ?? "", cid: drawerMenuOption.classId ?? "", wpId: drawerMenuOption.wpUserId ?? ""));
         break;
       case "Ausencias":
         break;
       case "Transporte":
         // if(roleType == RoleType.)
+        Get.to(() => TransportationScreen());
         break;
       case "Menu":
         Get.to(() => MenuScreen());
@@ -599,38 +609,29 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(() => TeacherFollowedUpScreen());
         break;
       case "Mis Datos":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => MyDataScreen());
         break;
       case "Mis Compras Atenea":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
-        Get.to(() => OrderHistoryScreen());
+        Get.to(() => OrderHistoryListScreen());
         break;
       case "Libros":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/tienda-de-libros-app/', label: 'Libros',));
       case "Uniformes":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/product-category/uniformes/', label: 'Uniformes',));
         break;
       case "Material":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/tienda-de-material-app/', label: 'Material',));
         break;
       case "Cuadernos":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/product-category/cuadernos/', label: 'Cuadernos',));
         break;
       case "Agenda":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/product-category/agenda/', label: 'Agenda',));
         break;
       case "Carrito":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/carrito2/', label: 'Carrito',));
         break;
       case "Cupones":
-        AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => WebView(loadURL: 'https://colegioatenea.es/mi-cuenta/wc-smart-coupons/', label: 'Cupones',));
         break;
       default:

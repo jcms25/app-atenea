@@ -150,8 +150,11 @@ class MessageDetailScreenChild extends State<MessageDetailScreen> {
                                                 : "",
                                             style: AppTextStyle.getOutfit400(
                                                 textSize: 14,
-                                                textColor: AppColors.secondary
-                                                    .withOpacity(0.5)),
+                                                // textColor: AppColors.secondary
+                                                //     .withOpacity(0.5)
+                                              textColor: AppColors.secondary.withValues(alpha: 0.5)
+
+                                            ),
                                           );
                                         },
                                       )
@@ -173,8 +176,10 @@ class MessageDetailScreenChild extends State<MessageDetailScreen> {
                                             : "",
                                         style: AppTextStyle.getOutfit400(
                                             textSize: 14,
-                                            textColor: AppColors.secondary
-                                                .withOpacity(0.5)),
+                                            // textColor: AppColors.secondary
+                                            //     .withOpacity(0.5)
+                                          textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                        ),
                                       );
                                     },
                                   )
@@ -215,8 +220,10 @@ class MessageDetailScreenChild extends State<MessageDetailScreen> {
                                   "",
                               style: AppTextStyle.getOutfit400(
                                   textSize: 18,
-                                  textColor:
-                                      AppColors.secondary.withOpacity(0.5)));
+                                  // textColor:
+                                  //     AppColors.secondary.withOpacity(0.5)
+                                textColor: AppColors.secondary.withValues(alpha: 0.5)
+                              ));
                         },
                       ),
                       Consumer<StudentParentTeacherController>(
@@ -257,8 +264,10 @@ class MessageDetailScreenChild extends State<MessageDetailScreen> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(5),
-                                          color: AppColors.secondary
-                                              .withOpacity(0.05)),
+                                          // color: AppColors.secondary
+                                          //     .withOpacity(0.05)
+                                        color: AppColors.secondary.withValues(alpha: 0.05)
+                                      ),
                                       width: MediaQuery.of(context).size.width,
                                       padding: const EdgeInsets.all(10),
                                       child: Text(

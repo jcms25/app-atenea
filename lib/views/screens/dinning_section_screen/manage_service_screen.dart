@@ -23,10 +23,36 @@ class _ManageServiceScreenState extends State<ManageServiceScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((res) {});
-    studentParentTeacherController =
-        Provider.of<StudentParentTeacherController>(context, listen: false);
+    Future.delayed(Duration(seconds: 1),(){
+      if(!(Get.isBottomSheetOpen ?? false)){
+        Get.bottomSheet(
+            DinningManageServiceBottomSheetTeacher(
+              currentLoggedInRole: studentParentTeacherController?.currentLoggedInUserRole == RoleType.parent
+                  ? "parent"
+                  : "teacher",
+            )
+
+        );
+      }
+    });
+    WidgetsBinding.instance.addPostFrameCallback((res) {
+      studentParentTeacherController =
+          Provider.of<StudentParentTeacherController>(context, listen: false);
+    });
+    // showModalBottomSheet(
+    //     context: context,
+    //     backgroundColor: AppColors.transparent,
+    //     builder: (context) {
+    //       return DinningManageServiceBottomSheetTeacher(
+    //         currentLoggedInRole: studentParentTeacherController?.currentLoggedInUserRole == RoleType.parent
+    //             ? "parent"
+    //             : "teacher",
+    //       );
+    //     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +181,9 @@ class _ManageServiceScreenState extends State<ManageServiceScreen> {
                                                     MediaQuery.sizeOf(context)
                                                         .width,
                                                 decoration: BoxDecoration(
-                                                    color: AppColors.secondary
-                                                        .withOpacity(0.06),
+                                                    // color: AppColors.secondary
+                                                    //     .withOpacity(0.06),
+                                                    color: AppColors.secondary.withValues(alpha: 0.06),
                                                     borderRadius:
                                                         BorderRadius.only(
                                                             bottomLeft: Radius
@@ -195,8 +222,9 @@ class _ManageServiceScreenState extends State<ManageServiceScreen> {
                                           Expanded(
                                               child: Container(
                                             decoration: BoxDecoration(
-                                                color: AppColors.secondary
-                                                    .withOpacity(0.06),
+                                                // color: AppColors.secondary
+                                                //     .withOpacity(0.06),
+                                                color: AppColors.secondary.withValues(alpha: 0.06),
                                                 borderRadius:
                                                     BorderRadius.circular(5)),
                                             constraints:
@@ -418,7 +446,7 @@ class DinningRoomAttendanceButton extends StatelessWidget {
                               0,
                           day: studentParentTeacherController
                                   .currentSelectedDinningDay ??
-                              0);
+                              "0");
                     }
                   : null,
               child: Container(
@@ -430,7 +458,8 @@ class DinningRoomAttendanceButton extends StatelessWidget {
                                 .dinningSettings?.checkClosingTime ==
                             "open"
                         ? AppColors.orange
-                        : AppColors.orange.withOpacity(0.5),
+                        // : AppColors.orange.withOpacity(0.5),
+                        : AppColors.orange.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(5)),
                 child: Center(
                   child: Text(
@@ -441,7 +470,10 @@ class DinningRoomAttendanceButton extends StatelessWidget {
                                     .dinningSettings?.checkClosingTime ==
                                 "open"
                             ? AppColors.primary
-                            : AppColors.primary.withOpacity(0.5)),
+                            // : AppColors.primary.withOpacity(0.5)
+                            : AppColors.primary.withValues(alpha: 0.5)
+
+                    ),
                   ),
                 ),
               ),

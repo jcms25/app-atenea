@@ -86,8 +86,10 @@ class _GradeScreenChild extends State<GradeScreen> {
                                         fontFamily: "Outfit",
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
-                                        color: AppColors.secondary
-                                            .withOpacity(0.5)),
+                                        // color: AppColors.secondary
+                                        //     .withOpacity(0.5)
+                                        color: AppColors.secondary.withValues(alpha: 0.5)
+                                    ),
                                     contentPadding: const EdgeInsets.all(10),
                                     border: InputBorder.none),
                                 cursorColor: AppColors.primary,
@@ -132,8 +134,9 @@ class _GradeScreenChild extends State<GradeScreen> {
                                                 horizontal: 20),
                                             padding: const EdgeInsets.all(15),
                                             decoration: BoxDecoration(
-                                                color: AppColors.primary
-                                                    .withOpacity(0.05),
+                                                // color: AppColors.primary
+                                                //     .withOpacity(0.05),
+                                                color : AppColors.primary.withValues(alpha: 0.05),
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(15))),
@@ -171,10 +174,12 @@ class _GradeScreenChild extends State<GradeScreen> {
                                                           style: AppTextStyle
                                                               .getOutfit400(
                                                                   textSize: 16,
-                                                                  textColor: AppColors
-                                                                      .secondary
-                                                                      .withOpacity(
-                                                                          0.5))),
+                                                                  // textColor: AppColors
+                                                                  //     .secondary
+                                                                  //     .withOpacity(
+                                                                  //         0.5)
+                                                            textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                          )),
                                                     ),
                                                     Expanded(
                                                         child: Text(
@@ -200,7 +205,10 @@ class _GradeScreenChild extends State<GradeScreen> {
                                                     Expanded(
                                                       child: Text(
                                                          "examname".tr,
-                                                         style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+                                                         style: AppTextStyle.getOutfit400(textSize: 16,
+                                                             // textColor: AppColors.secondary.withOpacity(0.5)
+                                                           textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                         ),
                                                       ),
                                                     ),
                                                     Expanded(
@@ -223,7 +231,11 @@ class _GradeScreenChild extends State<GradeScreen> {
                                                     Expanded(
                                                       child: Text("grade".tr,
 
-                                                          style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+                                                          style: AppTextStyle.getOutfit400(textSize: 16,
+                                                              // textColor: AppColors.secondary.withOpacity(0.5)
+                                                              textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                          )
+                                                        ,
                                                           ),
                                                     ),
                                                     Expanded(
@@ -257,7 +269,10 @@ class _GradeScreenChild extends State<GradeScreen> {
                                                             Expanded(
                                                               child: Text(
                                                                   "obser".tr,
-                                                                  style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.5)),
+                                                                  style: AppTextStyle.getOutfit400(textSize: 16,
+                                                                      // textColor: AppColors.secondary.withOpacity(0.5)
+                                                                      textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                                    ),
 
                                                                  ),
                                                             ),
@@ -299,7 +314,8 @@ class _GradeScreenChild extends State<GradeScreen> {
             Visibility(
                 visible: isLoading,
                 child: Container(
-                  color: Colors.black.withOpacity(0.5),
+                  // color: Colors.black.withOpacity(0.5),
+                  color: AppColors.black.withValues(alpha: 0.5),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: const Center(

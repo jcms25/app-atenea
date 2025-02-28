@@ -487,6 +487,48 @@ class WorldLanguage extends Translations {
           'subMenuDrawer22' : 'Cuadernos',
           'subMenuDrawer23' : 'Agenda',
 
+          // //drawer option
+          // 'drawerOption1' : 'Desk',
+          // 'drawerOption2' : 'Parents',
+          // 'drawerOption3' : 'Class Name',
+          // 'drawerOption4' : 'Events',
+          // 'drawerOption5' : 'Circulars',
+          // 'drawerOption6' : 'Message',
+          // 'drawerOption7' : 'Students',
+          // 'drawerOption8' : 'Classes',
+          // 'drawerOption9' : 'Teaching Management',
+          // 'drawerOption10' : 'Dining Room',
+          // 'drawerOption11' : 'Store',
+          //
+          // //sub menu option
+          // 'subMenuDrawer1' : 'Time Table',
+          // 'subMenuDrawer2' : 'Teachers',
+          // 'subMenuDrawer3' : 'Students',
+          // 'subMenuDrawer4' : 'Subject',
+          // 'subMenuDrawer5' : 'Exam',
+          // 'subMenuDrawer6' : 'Marks',
+          // 'subMenuDrawer7' : 'Evaluation',
+          // 'subMenuDrawer8' : 'Attendance',
+          // 'subMenuDrawer9' : 'Tranportation',
+          // 'subMenuDrawer10' : 'Menu',
+          // 'subMenuDrawer11' : 'Manage Service',
+          // 'subMenuDrawer12' : 'My Schedule',
+          // 'subMenuDrawer13' : 'Follow-up',
+          //
+          // //store submenu option
+          // 'subMenuDrawer14' : 'My Data',
+          // 'subMenuDrawer15' : 'My Purchase Atenea',
+          // 'subMenuDrawer16' : 'Online Store',
+          // 'subMenuDrawer17' : 'Cart',
+          // 'subMenuDrawer18' : 'Coupons',
+          //
+          // //product sub menu
+          // 'subMenuDrawer19' : 'Books',
+          // 'subMenuDrawer20' : 'Uniforms',
+          // 'subMenuDrawer21' : 'Material',
+          // 'subMenuDrawer22' : 'Notebooks',
+          // 'subMenuDrawer23' : 'Diary',
+
           //
           'as1' : 'Niños',
           'as2' : '',

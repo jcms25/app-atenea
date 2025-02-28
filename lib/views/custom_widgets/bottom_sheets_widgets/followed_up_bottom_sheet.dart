@@ -39,7 +39,8 @@ class FollowedUpBottomSheet extends StatelessWidget {
                       child: TeacherClassListDropdown(
                         fromWhereStudentListCalled: false,
                         fromWhichScreen: 1,
-                        backgroundColor: AppColors.secondary.withOpacity(0.06),
+                        // backgroundColor: AppColors.secondary.withOpacity(0.06),
+                        backgroundColor: AppColors.secondary.withValues(alpha: 0.06),
                       ),
                     ),
                     const SizedBox(
@@ -63,7 +64,9 @@ class FollowedUpBottomSheet extends StatelessWidget {
                                 height: 60,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: AppColors.secondary.withOpacity(0.06)),
+                                    // color: AppColors.secondary.withOpacity(0.06)
+                                    color: AppColors.secondary.withValues(alpha: 0.06)
+                                ),
                                 padding: const EdgeInsets.only(left: 10),
                                 child: studentParentTeacherController
                                     .listOfStudents.isNotEmpty

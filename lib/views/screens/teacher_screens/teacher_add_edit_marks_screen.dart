@@ -343,7 +343,7 @@ class MarksEditViewWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  marksItem?.studentName ?? "-",
+                  "${marksItem?.studentLastName ?? ""}\t${marksItem?.studentFirstName ?? ""}",
                   textAlign: TextAlign.left,
                   style: AppTextStyle.getOutfit500(
                       textSize: 18, textColor: AppColors.secondary),
@@ -460,7 +460,7 @@ class _TabularViewOfMarksState extends State<TabularViewOfMarks> {
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Text(
-                            e.studentName ?? "",
+                            "${e.studentLastName ?? ""}\t${e.studentFirstName ?? ""}",
                             style: AppTextStyle.getOutfit500(
                                 textSize: 16, textColor: AppColors.secondary),
                           ),

@@ -5,7 +5,6 @@ import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
-import 'package:colegia_atenea/views/custom_widgets/dialog_boxes_widgets/subject_list_dialog.dart';
 import 'package:colegia_atenea/views/custom_widgets/teacher_class_list_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,13 +37,25 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
     super.initState();
     initializeDateFormatting(Get.locale!.countryCode, null);
     arguments = Get.arguments;
-    examListItem = arguments?['edit-exam'];
+    examListItem = arguments?['exam-data'];
     nameOfExamController = TextEditingController(text: examListItem?.eName);
     comments = TextEditingController(text: examListItem?.comments);
     initializeDateFormatting(Get.locale!.languageCode, null);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
+      studentParentTeacherController?.setExamStartDate(
+          dateTime: DateTime.tryParse(examListItem?.eSDate ?? ""));
+      studentParentTeacherController?.setExamEndDate(
+          dateTime: DateTime.tryParse(examListItem?.eEDate ?? ""));
+      List<String> time = examListItem?.time?.split(":") ?? [];
+      if (time.isNotEmpty) {
+        TimeOfDay timeOfDay =
+            TimeOfDay(hour: int.parse(time[0]), minute: int.parse(time[1]));
+        studentParentTeacherController?.setExamTime(examTime: timeOfDay);
+      }
+
+      studentParentTeacherController?.setSelectedSubjectOfExam(selectedSubjectIdOfExam: examListItem?.sid);
 
       if (studentParentTeacherController
               ?.listOfClassAssignToTeacher.isNotEmpty ??
@@ -60,9 +71,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
             roleType: RoleType.teacher);
       } else {
         studentParentTeacherController?.getListOfClassesAssignToTeacher(
-            showLoader: true,
-            fromWhere: examListItem == null ? null : 9
-        );
+            showLoader: true, fromWhere: examListItem == null ? null : 9);
       }
     });
   }
@@ -115,8 +124,10 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                               TeacherClassListDropdown(
                                 fromWhichScreen: 4,
                                 height: 60,
+                                // backgroundColor:
+                                //     AppColors.secondary.withOpacity(0.06),
                                 backgroundColor:
-                                    AppColors.secondary.withOpacity(0.06),
+                                    AppColors.secondary.withValues(alpha: 0.06),
                               ),
                               const SizedBox(
                                 height: 15,
@@ -158,89 +169,55 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  // Consumer<StudentParentTeacherController>(
-                                  //   builder: (context,
-                                  //       studentParentTeacherController, child) {
-                                  //     return GestureDetector(
-                                  //       onTap: () async {
-                                  //         DateTime? dateTime =
-                                  //         await showDatePicker(
-                                  //             locale: Locale('es','ES'),
-                                  //             context: Get.context!,
-                                  //             firstDate: DateTime.now(),
-                                  //             lastDate: DateTime(3000));
-                                  //         studentParentTeacherController
-                                  //             .setExamStartDate(
-                                  //                 dateTime: dateTime);
-                                  //         studentParentTeacherController.setExamEndDate(dateTime: dateTime);
-                                  //       },
-                                  //       child: Container(
-                                  //         height: 60,
-                                  //         width:
-                                  //             MediaQuery.sizeOf(context).width,
-                                  //         padding:
-                                  //             const EdgeInsets.only(left: 20),
-                                  //         decoration: BoxDecoration(
-                                  //             borderRadius:
-                                  //                 BorderRadius.circular(10),
-                                  //             color: AppColors.secondary
-                                  //                 .withOpacity(0.06)),
-                                  //         child: Align(
-                                  //           alignment: Alignment.centerLeft,
-                                  //           child: Text(
-                                  //             DateFormat("dd-MM-yyyy").format(
-                                  //                 studentParentTeacherController
-                                  //                     .examStartDate),
-                                  //             textAlign: TextAlign.left,
-                                  //             style: AppTextStyle.getOutfit400(
-                                  //                 textSize: 18,
-                                  //                 textColor:
-                                  //                     AppColors.secondary),
-                                  //           ),
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  // )
-                                  GestureDetector(
-                                    onTap: () async {
-                                      // DateTime? dateTime =
-                                      // await showDatePicker(
-                                      //     locale: Locale('es','ES'),
-                                      //     context: Get.context!,
-                                      //     firstDate: DateTime.now(),
-                                      //     lastDate: DateTime(3000));
-                                      // studentParentTeacherController
-                                      //     .setExamStartDate(
-                                      //     dateTime: dateTime);
-                                      // studentParentTeacherController.setExamEndDate(dateTime: dateTime);
-                                    },
-                                    child: Container(
-                                      height: 60,
-                                      width:
-                                      MediaQuery.sizeOf(context).width,
-                                      padding:
-                                      const EdgeInsets.only(left: 20),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          color: AppColors.secondary
-                                              .withOpacity(0.06)),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          // DateFormat("dd-MM-yyyy").format(
-                                          //     studentParentTeacherController
-                                          //         .examStartDate),
-                                          "",
-                                          textAlign: TextAlign.left,
-                                          style: AppTextStyle.getOutfit400(
-                                              textSize: 18,
-                                              textColor:
-                                              AppColors.secondary),
+                                  Consumer<StudentParentTeacherController>(
+                                    builder: (context,
+                                        studentParentTeacherController, child) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          DateTime? dateTime =
+                                              await showDatePicker(
+                                                  locale: Locale('es', 'ES'),
+                                                  context: Get.context!,
+                                                  firstDate: DateTime.now(),
+                                                  lastDate: DateTime(3000));
+                                          if (dateTime != null) {
+                                            studentParentTeacherController
+                                                .setExamStartDate(
+                                                    dateTime: dateTime);
+                                            studentParentTeacherController
+                                                .setExamEndDate(
+                                                    dateTime: dateTime);
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 60,
+                                          width:
+                                              MediaQuery.sizeOf(context).width,
+                                          padding:
+                                              const EdgeInsets.only(left: 20),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
+                                              color: AppColors.secondary
+                                                  .withValues(alpha: 0.06)),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              DateFormat("dd-MM-yyyy").format(
+                                                  studentParentTeacherController
+                                                      .examStartDate),
+                                              textAlign: TextAlign.left,
+                                              style: AppTextStyle.getOutfit400(
+                                                  textSize: 18,
+                                                  textColor:
+                                                      AppColors.secondary),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   )
                                 ],
                               ),
@@ -265,11 +242,19 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                       return GestureDetector(
                                         onTap: () async {
                                           DateTime? dateTime =
-                                              await studentParentTeacherController
-                                                  .pickDate(startDate: studentParentTeacherController.examStartDate);
-                                          studentParentTeacherController
-                                              .setExamEndDate(
-                                                  dateTime: dateTime);
+                                              await showDatePicker(
+                                            locale: Locale('es', 'ES'),
+                                            context: Get.context!,
+                                            firstDate:
+                                                studentParentTeacherController
+                                                    .examStartDate,
+                                            lastDate: DateTime(3000),
+                                          );
+                                          if (dateTime != null) {
+                                            studentParentTeacherController
+                                                .setExamEndDate(
+                                                    dateTime: dateTime);
+                                          }
                                         },
                                         child: Container(
                                           height: 60,
@@ -280,8 +265,10 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(10),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
                                               color: AppColors.secondary
-                                                  .withOpacity(0.06)),
+                                                  .withValues(alpha: 0.06)),
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
@@ -324,8 +311,20 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                           TimeOfDay? time =
                                               await studentParentTeacherController
                                                   .pickTime();
-                                          studentParentTeacherController
-                                              .setExamTime(examTime: time);
+
+                                          // "reason": "edit-exam"
+                                          if (arguments?['reason'] ==
+                                                  'edit-exam' &&
+                                              time != null) {
+                                            studentParentTeacherController
+                                                .setExamTime(examTime: time);
+                                          }
+
+                                          if (arguments?['reason'] ==
+                                              'add-exam') {
+                                            studentParentTeacherController
+                                                .setExamTime(examTime: time);
+                                          }
                                         },
                                         child: Container(
                                           height: 60,
@@ -336,8 +335,10 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(10),
+                                              // color: AppColors.secondary
+                                              //     .withOpacity(0.06)
                                               color: AppColors.secondary
-                                                  .withOpacity(0.06)),
+                                                  .withValues(alpha: 0.06)),
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
@@ -367,56 +368,71 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
+                              // Consumer<StudentParentTeacherController>(
+                              //   builder: (context,
+                              //       studentParentTeacherController, child) {
+                              //     return GestureDetector(
+                              //       onTap: () {
+                              //         // showDialog(
+                              //         //     context: context,
+                              //         //     builder: (context) {
+                              //         //       return SubjectListDialog();
+                              //         //     });
+                              //       },
+                              //       child: Container(
+                              //         height: 60,
+                              //         width: MediaQuery.sizeOf(context).width,
+                              //         decoration: BoxDecoration(
+                              //             borderRadius:
+                              //                 BorderRadius.circular(10),
+                              //             color: AppColors.secondary
+                              //                 .withValues(alpha: 0.06)),
+                              //         padding: const EdgeInsets.only(left: 20),
+                              //         child: Align(
+                              //           alignment: Alignment.centerLeft,
+                              //           child: Text(
+                              //             studentParentTeacherController
+                              //                     .selectedSubjects.isEmpty
+                              //                 ? 'Seleccionar Asignatura'
+                              //                 : studentParentTeacherController
+                              //                     .selectedSubjects.values
+                              //                     .map((e) {
+                              //                       return e;
+                              //                     })
+                              //                     .toList()
+                              //                     .join(","),
+                              //             style: AppTextStyle.getOutfit400(
+                              //                 textSize: 18,
+                              //                 textColor: AppColors.secondary),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     );
+                              //   },
+                              // ),
                               Consumer<StudentParentTeacherController>(
-                                builder: (context,
-                                    studentParentTeacherController, child) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return SubjectListDialog();
-                                          });
-                                    },
-                                    child: Container(
-                                      height: 60,
-                                      width: MediaQuery.sizeOf(context).width,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: AppColors.secondary
-                                              .withOpacity(0.06)),
-                                      padding: const EdgeInsets.only(left: 20),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          'Seleccionar Asignaturas',
-                                          style: AppTextStyle.getOutfit400(
-                                              textSize: 18,
-                                              textColor: AppColors.secondary),
-                                        ),
-                                      ),
+                                builder: (context,studentParentTeacherController,child){
+                                  return Container(
+                                    width: MediaQuery.sizeOf(context).width,
+                                    height: 60,
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.secondary.withValues(alpha: 0.06)
                                     ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Consumer<StudentParentTeacherController>(
-                                builder: (context,
-                                    studentParentTeacherController, child) {
-                                  return Text(
-                                    studentParentTeacherController
-                                        .listOfSelectedSubjectsId
-                                        .map((e) {
-                                          return e.subName ?? "";
-                                        })
-                                        .toList()
-                                        .join(","),
-                                    style: AppTextStyle.getOutfit400(
-                                        textSize: 14,
-                                        textColor: AppColors.secondary),
+                                    child: DropdownButton<String>(
+                                        isExpanded: true,
+                                        underline: SizedBox.shrink(),
+                                        value: studentParentTeacherController.selectedSubjectIdOfExam,
+                                        items: studentParentTeacherController.tempListOfSubject.map((e){
+                                          return DropdownMenuItem<String>(
+                                              value: e.id,
+                                              child: Text(
+                                                e.subName ?? "",
+                                                style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary),
+                                              ));
+                                        }).toList(),
+                                        onChanged: (String? value){}),
                                   );
                                 },
                               ),
@@ -456,34 +472,39 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                               arguments?['reason'] == "add-exam"
                                                   ? 'Agregar'
                                                   : 'Editar',
-                                          onPressed: () async{
+                                          onPressed: () async {
                                             if (_addEditExamFormKey.currentState
                                                     ?.validate() ??
                                                 false) {
                                               if (studentParentTeacherController
-                                                  .listOfSelectedSubjectsId
-                                                  .isNotEmpty) {
-                                               await studentParentTeacherController.addEditExam(
-                                                    classId: studentParentTeacherController.currentSelectedClass?.cid ??
-                                                        "",
-                                                    examName: nameOfExamController?.text ?? "",
-                                                    startDateOfExam:
-                                                        studentParentTeacherController
-                                                            .examStartDate
-                                                            .toString(),
-                                                    endDateOfExam:
-                                                        studentParentTeacherController
-                                                            .examEndDate
-                                                            .toString(),
-                                                    examTime: studentParentTeacherController
-                                                                .examTime
-                                                                .minute <
-                                                            10
-                                                        ? "${studentParentTeacherController.examTime.hour}:0${studentParentTeacherController.examTime.minute}"
-                                                        : "${studentParentTeacherController.examTime.hour}:${studentParentTeacherController.examTime.minute}",
-                                                    comments:
-                                                        comments?.text ?? "",
-                                                    subjects: studentParentTeacherController.listOfSelectedSubjectsId);
+                                                  .selectedSubjectIdOfExam != null) {
+                                                await studentParentTeacherController
+                                                    .addEditExam(
+                                                        classId: studentParentTeacherController
+                                                                .currentSelectedClass
+                                                                ?.cid ??
+                                                            "",
+                                                        examName:
+                                                            nameOfExamController?.text ??
+                                                                "",
+                                                        startDateOfExam:
+                                                            studentParentTeacherController
+                                                                .examStartDate
+                                                                .toString(),
+                                                        endDateOfExam:
+                                                            studentParentTeacherController
+                                                                .examEndDate
+                                                                .toString(),
+                                                        examTime: studentParentTeacherController
+                                                                    .examTime
+                                                                    .minute <
+                                                                10
+                                                            ? "${studentParentTeacherController.examTime.hour}:0${studentParentTeacherController.examTime.minute}"
+                                                            : "${studentParentTeacherController.examTime.hour}:${studentParentTeacherController.examTime.minute}",
+                                                        comments:
+                                                            comments?.text ??
+                                                                "",
+                                                        subjects: studentParentTeacherController.selectedSubjectIdOfExam != null ? ["${studentParentTeacherController.selectedSubjectIdOfExam}"] : []);
                                               } else {
                                                 AppConstants.showCustomToast(
                                                     status: false,

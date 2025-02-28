@@ -257,7 +257,9 @@ class BuildListWidget extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: AppColors.primary.withOpacity(0.05)),
+                // color: AppColors.primary.withOpacity(0.05)
+                color: AppColors.primary.withValues(alpha: 0.05)
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,

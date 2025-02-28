@@ -126,7 +126,10 @@ class _EventScreenChildState extends State<EventScreen> {
                                   shape: BoxShape.circle,
                                   // borderRadius: BorderRadius.all(
                                   //     Radius.circular(10)),
-                                  color: AppColors.primary.withOpacity(0.5)),
+
+                                  // color: AppColors.primary.withOpacity(0.5)
+                                  color: AppColors.primary.withValues(alpha: 0.5)
+                              ),
                               todayTextStyle:
                                   const TextStyle(color: AppColors.white),
                               markerDecoration: const BoxDecoration(
@@ -222,7 +225,8 @@ class EventWidget extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          color: color.withOpacity(0.05),
+          // color: color.withOpacity(0.05),
+          color: color.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 10),

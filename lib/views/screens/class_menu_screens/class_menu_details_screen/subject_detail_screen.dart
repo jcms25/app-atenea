@@ -85,7 +85,9 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: AppColors.secondary.withOpacity(0.06)),
+                      // color: AppColors.secondary.withOpacity(0.06)
+                      color: AppColors.secondary.withValues(alpha: 0.06)
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,8 +142,10 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
                             'nameofthebook'.tr,
                             style: AppTextStyle.getOutfit400(
                                 textSize: 18,
-                                textColor:
-                                    AppColors.secondary.withOpacity(0.75)),
+                                // textColor:
+                                //     AppColors.secondary.withOpacity(0.75)
+                                textColor: AppColors.secondary.withValues(alpha: 0.75)
+                            ),
                           ),
                           const SizedBox(
                             height: 5,
@@ -219,7 +223,8 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
                   borderRadius: const BorderRadius.all(Radius.circular(160)),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.5),
+                      // color: AppColors.primary.withOpacity(0.5),
+                      color: AppColors.primary.withValues(alpha: 0.5),
                       spreadRadius: 0,
                       blurRadius: 25,
                       offset: const Offset(0, 0), // changes position of shadow
@@ -263,7 +268,10 @@ class CustomSubjectDetailRow extends StatelessWidget {
             child: Text(
           label,
           style: AppTextStyle.getOutfit400(
-              textSize: 18, textColor: AppColors.secondary.withOpacity(0.75)),
+              textSize: 18,
+              // textColor: AppColors.secondary.withOpacity(0.75)
+             textColor: AppColors.secondary.withValues(alpha: 0.75)
+          ),
         )),
         Expanded(
             child: Text(value,

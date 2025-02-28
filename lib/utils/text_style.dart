@@ -60,7 +60,8 @@ class CustomStyle {
       fontWeight: FontWeight.w400,
       fontSize: 18);
   static TextStyle textHintValue = TextStyle(
-      color: AppColors.secondary.withOpacity(0.4),
+      // color: AppColors.secondary.withOpacity(0.4),
+      color: AppColors.secondary.withValues(alpha: 0.4),
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w500,
       fontSize: 18);
@@ -85,7 +86,8 @@ class CustomStyle {
       fontSize: 18);
 
   static TextStyle txtvalue3_1 = TextStyle(
-      color: AppColors.secondary.withOpacity(0.5),
+      // color: AppColors.secondary.withOpacity(0.5),
+      color: AppColors.secondary.withValues(alpha: 0.5),
       fontFamily: 'Outfit',
       fontWeight: FontWeight.w400,
       fontSize: 18);
@@ -99,7 +101,8 @@ class CustomStyle {
     dashLength: 5,
     dashGapLength: 1,
     lineThickness: 1,
-    dashColor: AppColors.secondary.withOpacity(0.05),
+    // dashColor: AppColors.secondary.withOpacity(0.05),
+    dashColor: AppColors.secondary.withValues(alpha: 0.05),
     direction: Axis.horizontal,
   );
 
@@ -114,7 +117,8 @@ class CustomStyle {
       fontFamily: "Outfit",
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: AppColors.secondary.withOpacity(0.5)
+      // color: AppColors.secondary.withOpacity(0.5)
+      color: AppColors.secondary.withValues(alpha: 0.5)
   );
 
 }

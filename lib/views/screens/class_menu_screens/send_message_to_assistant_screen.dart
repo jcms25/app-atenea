@@ -32,7 +32,6 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     selectedAssistant = listOfAssistant[0];
     getAssistantList();
@@ -75,7 +74,8 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: AppColors.primary.withOpacity(0.05)
+                          // color: AppColors.primary.withOpacity(0.05)
+                        color: AppColors.primary.withValues(alpha: 0.05)
                       ),
                       child: DropdownButton<AssistantData>(
                         isExpanded: true,
@@ -83,7 +83,12 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
                         underline: const SizedBox(),
                         icon: const Icon(Icons.arrow_drop_down_sharp),
                         items: listOfAssistant.map((AssistantData e){
-                          return DropdownMenuItem<AssistantData>(value: e,child: Text("${e.firstName} ${e.lastName}",style: TextStyle(fontFamily: "Outfit",fontWeight: FontWeight.w400,color: AppColors.secondary.withOpacity(0.5),fontSize: 18)),);
+                          return DropdownMenuItem<AssistantData>(value: e,child: Text("${e.firstName} ${e.lastName}",style: TextStyle(
+                              fontFamily: "Outfit",fontWeight: FontWeight.w400,
+                              // color: AppColors.secondary.withOpacity(0.5)
+                              color: AppColors.secondary.withValues(alpha: 0.5),
+                              fontSize: 18)
+                          ),);
                         }).toList(), onChanged: (AssistantData? value) {
                         setState(() {
                           selectedAssistant = value!;
@@ -107,7 +112,8 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: AppColors.secondary.withOpacity(0.06)
+                          // color: AppColors.secondary.withOpacity(0.06)
+                          color: AppColors.secondary.withValues(alpha: 0.06)
                       ),
                       child: TextField(
                         controller: _affairController,
@@ -139,7 +145,8 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: AppColors.secondary.withOpacity(0.06)
+                          // color: AppColors.secondary.withOpacity(0.06)
+                          color: AppColors.secondary.withValues(alpha: 0.06)
                       ),
                       child: TextField(
                         controller: _messageController,
@@ -176,10 +183,17 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
                         padding: const EdgeInsets.only(left: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: AppColors.secondary.withOpacity(0.06)),
+                            // color: AppColors.secondary.withOpacity(0.06)
+                            color: AppColors.secondary.withValues(alpha: 0.06)
+                        ),
                         child:Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(fileName.split("/").last,style: TextStyle(fontFamily: "Outfit",fontWeight: FontWeight.w400,color: AppColors.secondary.withOpacity(0.5),fontSize: 18)),),
+                          child: Text(fileName.split("/").last,style: TextStyle(
+                              fontFamily: "Outfit",fontWeight: FontWeight.w400,
+                              // color: AppColors.secondary.withOpacity(0.5),
+                              color: AppColors.secondary.withValues(alpha: 0.5),
+                              fontSize: 18)
+                          ),),
                       ),),
                     const SizedBox(
                       height: 10,
@@ -224,7 +238,8 @@ class _SendMessageToAssistantState extends State<SendMessageToAssistant> {
           Visibility(
               visible: isLoading,
               child:Container(
-                color: AppColors.black.withOpacity(0.5),
+                // color: AppColors.black.withOpacity(0.5),
+                color: AppColors.black.withValues(alpha: 0.5),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: const Center(

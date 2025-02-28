@@ -184,8 +184,9 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                 height: 60,
                                 width: MediaQuery.sizeOf(context).width,
                                 decoration: BoxDecoration(
-                                    color:
-                                    AppColors.secondary.withOpacity(0.05),
+                                    // color:
+                                    // AppColors.secondary.withOpacity(0.05),
+                                    color: AppColors.secondary.withValues(alpha: 0.05),
                                     borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
                                 padding: const EdgeInsets.symmetric(
@@ -199,8 +200,10 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                             'Seleccionar Provincia',
                                             style: AppTextStyle.getOutfit400(
                                                 textSize: 16,
-                                                textColor: AppColors.secondary
-                                                    .withOpacity(0.4)),
+                                                // textColor: AppColors.secondary
+                                                //     .withOpacity(0.4)
+                                                textColor: AppColors.secondary.withValues(alpha: 0.4)
+                                            ),
                                           ),
                                           items: AppConstants.spainProvince
                                               .map((e) {
@@ -241,8 +244,10 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10),
                                     ),
-                                    color:
-                                        AppColors.secondary.withOpacity(0.1)),
+                                    // color:
+                                    //     AppColors.secondary.withOpacity(0.1)
+                                  color: AppColors.secondary.withValues(alpha: 0.1)
+                                ),
                                 padding: const EdgeInsets.only(left: 10),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
@@ -282,8 +287,8 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                 height: 60,
                                 width: MediaQuery.sizeOf(context).width,
                                 decoration: BoxDecoration(
-                                    color:
-                                        AppColors.secondary.withOpacity(0.05),
+                                    // color:
+                                    //     AppColors.secondary.withOpacity(0.05),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 padding: const EdgeInsets.symmetric(
@@ -297,8 +302,10 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                             'Seleccionar clase',
                                             style: AppTextStyle.getOutfit400(
                                                 textSize: 16,
-                                                textColor: AppColors.secondary
-                                                    .withOpacity(0.4)),
+                                                // textColor: AppColors.secondary
+                                                //     .withOpacity(0.4)
+                                              textColor: AppColors.secondary.withValues(alpha: 0.4)
+                                            ),
                                           ),
                                           items: storeController.classList
                                               .map((e) {
@@ -356,7 +363,10 @@ class _MyDataScreenState extends State<MyDataScreen> {
                               ),
                               const SizedBox(height: 10,),
                               Text( storeController?.selectedClassItem.join(",") ?? "",
-                              style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withOpacity(0.4))
+                              style: AppTextStyle.getOutfit400(textSize: 16,
+                                  // textColor: AppColors.secondary.withOpacity(0.4)
+                                  textColor: AppColors.secondary.withValues(alpha: 0.4)
+                              )
                               ),
 
                               const SizedBox(

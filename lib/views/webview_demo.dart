@@ -38,10 +38,13 @@ class _WebViewState extends State<WebView> {
         children: [
           Consumer<StudentParentTeacherController>(
               builder : (context,studentParentTeacherController,child){
+                String token = studentParentTeacherController.userdata?.tiendaToken ?? "";
                 Map<String,String> header = {
-                  "Authorization" : "Bearer ${studentParentTeacherController.userdata?.tiendaToken}"
+                  "Authorization" : "Bearer $token",
+                  "Cache-Control": "no-cache, no-store, must-revalidate",
+                  "Pragma": "no-cache",
+                  "Expires": "0",
                 };
-
                 // return InAppWebView(
                 //
                 //   onLoadStart: (ter,ctx){
@@ -63,11 +66,14 @@ class _WebViewState extends State<WebView> {
                 
                 
                 return WebViewWidget(
-              controller: WebViewController()
-                  ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                  ..loadRequest(Uri.parse(widget.loadURL),headers: header),
-
-
+                    controller: WebViewController()
+                      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                      ..loadRequest(
+                          // Uri.parse("https://colegioatenea.es/carrito2/"),
+                          Uri.parse(widget.loadURL),
+                          headers: header,
+                          method: LoadRequestMethod.get
+                      )
                 );
 
                 // return Container();

@@ -57,7 +57,8 @@ class SlotListChild extends State<SlotList> {
                     height: 100,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: AppColors.primary.withOpacity(0.05)
+                        // color: AppColors.primary.withOpacity(0.05)
+                        color: AppColors.primary.withValues(alpha: 0.05)
                     ),
                     child: Row(
                       children: [

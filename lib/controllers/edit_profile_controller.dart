@@ -61,6 +61,7 @@ class EditProfileController extends ChangeNotifier {
   }) async {
     try {
       setIsLoading(isLoading: true);
+
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
       Map<String, String> header = {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -115,8 +116,8 @@ class EditProfileController extends ChangeNotifier {
             endPoint: role == RoleType.teacher
                 ? "${Api.updateTeacherProfile}/$wpUserId"
                 : role == RoleType.parent
-                    ? "${Api.updateParentProfile}/$wpUserId"
-                    : "${Api.updateStudentProfile}/$wpUserId",
+                ? "${Api.updateParentProfile}/$wpUserId"
+                : "${Api.updateStudentProfile}/$wpUserId",
             header: header,
             body: {
               "fname": "",
@@ -132,12 +133,12 @@ class EditProfileController extends ChangeNotifier {
               "bloodgroup": "",
               "qualification": "",
               "email": email ?? "",
-              "nif" : nif,
+              "nif" : nif ?? "",
             }).then((res) {
           if (res['status']) {
-             Userdata userdata = Userdata.fromJson(res['userdata']);
-             AppSharedPreferences.saveUserData(userdata: userdata);
-             studentParentTeacherController.setLoginModel(userdata: userdata);
+            Userdata userdata = Userdata.fromJson(res['userdata']);
+            AppSharedPreferences.saveUserData(userdata: userdata);
+            studentParentTeacherController.setLoginModel(userdata: userdata);
           }
           AppConstants.showCustomToast(
               status: res['status'],
@@ -150,5 +151,8 @@ class EditProfileController extends ChangeNotifier {
       setIsLoading(isLoading: false);
       AppConstants.showCustomToast(status: false, message: "$exception");
     }
+
+
+
   }
 }

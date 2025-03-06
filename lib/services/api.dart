@@ -158,6 +158,7 @@ class Api {
       Map<String, dynamic>? body}) async {
 
     try {
+
       Response response;
       if (requestType == RequestType.get) {
         response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header);
@@ -181,5 +182,7 @@ class Api {
     } catch (exception) {
       return {"status": false, "message": '$exception'};
     }
+
+
   }
 }

@@ -347,7 +347,7 @@ class ExamItem {
   factory ExamItem.fromJson(Map<String, dynamic> json) => ExamItem(
     date: json["date"],
     name: json["name"],
-    className: json["class_name"],
+    className: json["class_name"] ?? "-",
     subjects: json["subjects"] is List
         ? List<String>.from(json["subjects"].map((x) => x.toString()))
         : [],

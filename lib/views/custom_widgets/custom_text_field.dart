@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final TextInputType? textInputType;
   final List<TextInputFormatter>? inputFormatter;
-  final Function validateFunction;
+  final Function? validateFunction;
   final Function(String?)? onTextChanged;
   final int? minLine;
   final int? maxLine;
@@ -85,7 +85,7 @@ class CustomTextField extends StatelessWidget {
           inputFormatters: inputFormatter,
           autofocus: false,
           textInputAction: textInputAction,
-          validator: (value) => validateFunction(value),
+          validator: (value) => validateFunction!(value),
         )
       ],
     );

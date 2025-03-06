@@ -181,7 +181,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                  CustomTextField(
                                    controller: nifController,
                                    label: 'NIF',
-                                   validateFunction: AppValidations.valueEmptyOrNot,
+                                   validateFunction: (value){},
                                  )
                                ],
                              ));
@@ -206,7 +206,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ],
                             label: 'Número de teléfono',
                             textInputType: TextInputType.number,
-                            validateFunction: AppValidations.valueEmptyOrNot,
+                            validateFunction: (value){},
                           ),
                           const SizedBox(
                             height: 20,

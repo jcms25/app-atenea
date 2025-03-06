@@ -161,7 +161,6 @@ class StudentParentTeacherController extends ChangeNotifier {
         }
       }
     }
-
     setDashboardEventsMap(eventMap: eventMap);
   }
 
@@ -187,7 +186,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       String userRole = userdata?.userRole ?? "";
       await Api.httpRequest(
         requestType: RequestType.get,
-        endPoint: "${Api.dashboardEndpoint}?role=$userRole",
+        endPoint: "${Api.dashboardEndpoint}?current_role=$userRole",
         header: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",
@@ -200,6 +199,7 @@ class StudentParentTeacherController extends ChangeNotifier {
           setExamList(examList: dashboard.eventList.exams);
           setEventList(events: dashboard.eventList.events);
           setHolidayList(holiday: dashboard.eventList.holiday);
+
           setDashboardEvents(
               dashboardActivitiesToShow: dashboardActivitiesToShow);
         }
@@ -208,7 +208,6 @@ class StudentParentTeacherController extends ChangeNotifier {
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
-
 
   }
 

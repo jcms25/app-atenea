@@ -172,7 +172,7 @@ class OrderHistoryWidget extends StatelessWidget {
                 children: [
                   Expanded(
                       child: CustomButtonWidget(
-                          buttonTitle: 'Packing slip', onPressed: () async{
+                          buttonTitle: 'factura', onPressed: () async{
                             try{
                               
                               Uri invoiceUri = Uri.parse("https://colegioatenea.es/wp-admin/admin-ajax.php?action=generate_wpo_wcpdf&template_type=packing-slip&order_ids=${orderItem.orderId ?? ""}&my-account&_wpnonce=1c24a4b35c");

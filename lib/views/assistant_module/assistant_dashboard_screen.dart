@@ -1,5 +1,6 @@
 import 'package:colegia_atenea/models/assistant/assistant_dashboard_model.dart';
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
+import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_classes_screen.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
@@ -70,19 +71,11 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                       children: [
                         Text(
                           "hello".tr,
-                          style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 16,
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w300),
+                          style: AppTextStyle.getOutfit300(textSize: 16, textColor: AppColors.white),
                         ),
                          Text(
                           username,
-                          style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 20,
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w600),
+                          style: AppTextStyle.getOutfit600(textSize: 20, textColor: AppColors.white)
                         )
                       ],
                     ),

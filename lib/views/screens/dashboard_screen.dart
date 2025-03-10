@@ -8,6 +8,7 @@ import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/show_events_bottom_sheets.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -401,168 +402,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                           textColor: AppColors
                                                               .secondary)),
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
+                                            Consumer<StudentParentTeacherController>(
+                                              builder: (context,studentParentTeacherController,child){
+                                                return GestureDetector(
+                                                  onTap: () {
 
-                                                // if (userDatas != null) {
-                                                //   goToExamScreen(userDatas!.classId!,
-                                                //       userDatas!.wpUsrId!);
-                                                // }
-                                                // else if (studentData != null) {
-                                                //   showBottomSheet(
-                                                //       context: context,
-                                                //       backgroundColor: AppColors
-                                                //           .primary,
-                                                //       shape:
-                                                //       const RoundedRectangleBorder(
-                                                //           borderRadius:
-                                                //           BorderRadius.only(
-                                                //               topLeft: Radius
-                                                //                   .circular(
-                                                //                   20),
-                                                //               topRight: Radius
-                                                //                   .circular(
-                                                //                   20))),
-                                                //       builder: (context) {
-                                                //         return SizedBox(
-                                                //           width:
-                                                //           MediaQuery.of(context)
-                                                //               .size
-                                                //               .width,
-                                                //           height: 200,
-                                                //           child: ScrollConfiguration(
-                                                //             behavior:
-                                                //             const ScrollBehavior()
-                                                //                 .copyWith(
-                                                //                 overscroll:
-                                                //                 false),
-                                                //             child:
-                                                //             SingleChildScrollView(
-                                                //               child: Column(
-                                                //                 crossAxisAlignment:
-                                                //                 CrossAxisAlignment
-                                                //                     .start,
-                                                //                 children: [
-                                                //                   const SizedBox(height: 10,),
-                                                //                   Padding(
-                                                //                       padding:
-                                                //                       const EdgeInsets
-                                                //                           .only(
-                                                //                           left:
-                                                //                           20),
-                                                //                       child: Row(
-                                                //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                //                         children: [
-                                                //                           Text(
-                                                //                             "exam".tr,
-                                                //                             style: const TextStyle(
-                                                //                                 fontSize:
-                                                //                                 24,
-                                                //                                 fontFamily:
-                                                //                                 "OutfitMedium",
-                                                //                                 fontWeight:
-                                                //                                 FontWeight
-                                                //                                     .w500,
-                                                //                                 color: AppColors
-                                                //                                     .white),
-                                                //                           ),
-                                                //                           IconButton(onPressed: (){
-                                                //                             Navigator.pop(context);
-                                                //                           }, icon: const Icon(Icons.close,color: AppColors.white,))
-                                                //                         ],
-                                                //                       )),
-                                                //                   ...studentData!
-                                                //                       .map((e) {
-                                                //                     return GestureDetector(
-                                                //                         onTap: () {
-                                                //                           Navigator.pop(
-                                                //                               context);
-                                                //                           goToExamScreen(
-                                                //                               e.classId!,
-                                                //                               e.wpUsrId!);
-                                                //                         },
-                                                //                         child:
-                                                //                         Container(
-                                                //                           height: 60,
-                                                //                           decoration: BoxDecoration(
-                                                //                               color: AppColors
-                                                //                                   .white,
-                                                //                               borderRadius:
-                                                //                               BorderRadius.circular(10)),
-                                                //                           margin:
-                                                //                           const EdgeInsets.all(
-                                                //                               10),
-                                                //                           padding: const EdgeInsets
-                                                //                               .only(
-                                                //                               left:
-                                                //                               20),
-                                                //                           width: MediaQuery.of(
-                                                //                               context)
-                                                //                               .size
-                                                //                               .width,
-                                                //                           child:
-                                                //                           Column(
-                                                //                             crossAxisAlignment:
-                                                //                             CrossAxisAlignment
-                                                //                                 .start,
-                                                //                             mainAxisAlignment:
-                                                //                             MainAxisAlignment
-                                                //                                 .center,
-                                                //                             children: [
-                                                //                               Text(
-                                                //                                 "${e.sFname}\t${e.sLname}",
-                                                //                                 style: const TextStyle(
-                                                //                                     fontSize: 16,
-                                                //                                     fontFamily: "OutfitMedium",
-                                                //                                     fontWeight: FontWeight.w500,
-                                                //                                     color: AppColors.primary),
-                                                //                               ),
-                                                //                               Text(
-                                                //                                 "${e.className}",
-                                                //                                 style: const TextStyle(
-                                                //                                     fontSize: 16,
-                                                //                                     fontFamily: "OutfitMedium",
-                                                //                                     fontWeight: FontWeight.w500,
-                                                //                                     color: AppColors.primary),
-                                                //                               ),
-                                                //                             ],
-                                                //                           ),
-                                                //                         ));
-                                                //                   }).toList()
-                                                //                 ],
-                                                //               ),
-                                                //             ),
-                                                //           ),
-                                                //         );
-                                                //       });
-                                                // }
-                                                // else {
-                                                //   setUserInfo();
-                                                //   Fluttertoast.showToast(
-                                                //       msg: "tryAgain".tr);
-                                                // }
+
+
+                                                    Userdata? userdata = studentParentTeacherController.userdata;
+
+                                                    if(studentParentTeacherController.currentLoggedInUserRole == RoleType.student){
+
+                                                      Get.to(() => ExamListScreen(), arguments: {
+                                                        "role": RoleType.student,
+                                                        "wpUserId": userdata?.wpUsrId,
+                                                        "classId": userdata?.classId,
+                                                        "className": userdata?.className,
+                                                        "studentName": "${userdata?.firstName} ${userdata?.lastName}"
+                                                      });
+
+                                                    }else{
+                                                      Get.bottomSheet(
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(20),
+                                                              topRight: Radius.circular(20)
+                                                            ),
+                                                            color: AppColors.white
+                                                          ),
+                                                          padding: const EdgeInsets.all(10),
+                                                          child: Wrap(
+                                                            children: userdata?.studentData?.map((e){
+                                                              return GestureDetector(
+                                                                onTap: (){
+                                                                  Get.to(() => ExamListScreen(), arguments: {
+                                                                    "role": RoleType.student,
+                                                                    "wpUserId": e.wpUsrId,
+                                                                    "classId": e.classId,
+                                                                    "className": e.className,
+                                                                    "studentName": "${e.sFname} ${e.sLname}"
+                                                                  }
+                                                                  );
+                                                                },
+                                                                child: Container(
+                                                                  width: MediaQuery.sizeOf(context).width,
+                                                                  margin: EdgeInsets.only(bottom: 10),
+                                                                  decoration: BoxDecoration(
+                                                                      color: AppColors.white,
+                                                                      border: Border.all(
+                                                                          color: AppColors.primary,
+                                                                          width: 1
+                                                                      ),
+
+                                                                      borderRadius:BorderRadius.circular(10)
+                                                                  ),
+                                                                  padding: const EdgeInsets.all(10),
+                                                                  child: Row(
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      Expanded(child: Text("${e.sFname}\t${e.sLname}\t(${e.className})")),
+                                                                      IconButton(onPressed: (){}, icon: Icon(Icons.arrow_forward))
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }).toList() ?? [],
+                                                          ),
+                                                        )
+                                                      );
+                                                    }
+
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text("viewall".tr,
+                                                          style: AppTextStyle
+                                                              .getOutfit400(
+                                                              textSize: 16,
+                                                              textColor:
+                                                              AppColors
+                                                                  .primary)),
+                                                      const SizedBox(width: 2),
+                                                      SvgPicture.asset(
+                                                          AppImages.loginArrow,
+                                                          colorFilter:
+                                                          const ColorFilter
+                                                              .mode(
+                                                              AppColors
+                                                                  .primary,
+                                                              BlendMode
+                                                                  .srcIn)),
+                                                    ],
+                                                  ),
+                                                );
                                               },
-                                              child: Row(
-                                                children: [
-                                                  Text("viewall".tr,
-                                                      style: AppTextStyle
-                                                          .getOutfit400(
-                                                          textSize: 16,
-                                                          textColor:
-                                                          AppColors
-                                                              .primary)),
-                                                  const SizedBox(width: 2),
-                                                  SvgPicture.asset(
-                                                      AppImages.loginArrow,
-                                                      colorFilter:
-                                                      const ColorFilter
-                                                          .mode(
-                                                          AppColors
-                                                              .primary,
-                                                          BlendMode
-                                                              .srcIn)),
-                                                ],
-                                              ),
                                             )
                                           ],
                                         ),

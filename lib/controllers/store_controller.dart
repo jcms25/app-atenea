@@ -76,26 +76,29 @@ class StoreController extends ChangeNotifier {
   Future<void> getBillingDetails({required String parentWpUserId}) async {
     try {
       setIsLoading(isLoading: true);
+
       await Api.httpRequest(
-              requestType: RequestType.get,
-              // endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId"
-              endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId")
+          requestType: RequestType.get,
+          // endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId"
+          endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId")
           .then((res) {
         if (res['status']) {
           BillingDetailModel billingDetailModel =
-              BillingDetailModel.fromJson(res);
+          BillingDetailModel.fromJson(res);
           setBillingDetailModel(billingDetail: billingDetailModel.data);
           setListOfClass(classList: billingDetailModel.classlist ?? []);
 
           dynamic selectedClass = billingDetail?.billingAlumnosClassName;
-          if (selectedClass != null && selectedClass.runtimeType == List) {
-            setSelectedClassItem(selectedClassItem: selectedClass);
+
+          if (selectedClass != null && selectedClass.runtimeType == List<String>) {
+            selectedClassItem = selectedClass;
+            notifyListeners();
           }
 
-          String city = billingDetailModel.data?.billingCity ?? "";
-          if (city.isNotEmpty) {
-            if (AppConstants.spainProvince.contains(city)) {
-              setSelectedProvince(selectedProvince: city);
+          String billingState = billingDetailModel.data?.billingState?.trim() ?? "";
+          if (billingState.isNotEmpty) {
+            if (AppConstants.spainProvince.contains(billingState)) {
+              setSelectedProvince(selectedProvince: billingState);
             }
           }
         }
@@ -108,6 +111,7 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
+
   }
 
   //edit billing details
@@ -195,8 +199,8 @@ class StoreController extends ChangeNotifier {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
-              requestType: RequestType.get,
-              endPoint: "${Api.orderListEndPoint}=$wpUserId")
+          requestType: RequestType.get,
+          endPoint: "${Api.orderListEndPoint}=$wpUserId")
           .then((res) {
         if (res['status']) {
           OrderList orderList = OrderList.fromJson(res);
@@ -208,6 +212,7 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
+
   }
 
   //order details
@@ -220,23 +225,23 @@ class StoreController extends ChangeNotifier {
 
   //details of order
   void getOrderDetails({required String orderId}) async {
-    // try {
-    //   setIsLoading(isLoading: true);
-    //
-    // } catch (exception) {
-    //   AppConstants.showCustomToast(status: false, message: "$exception");
-    //   setIsLoading(isLoading: false);
-    // }
-    await Api.httpRequest(
-        requestType: RequestType.get,
-        endPoint: "${Api.orderDetailEndPoint}=$orderId")
-        .then((res) {
-      if (res['status']) {
-        OrderDetailModel orderDetailModel = OrderDetailModel.fromJson(res);
-        setOrderDetailModel(orderDetailModel: orderDetailModel);
-      }
+    try {
+      setIsLoading(isLoading: true);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.orderDetailEndPoint}=$orderId")
+          .then((res) {
+        if (res['status']) {
+          OrderDetailModel orderDetailModel = OrderDetailModel.fromJson(res);
+          setOrderDetailModel(orderDetailModel: orderDetailModel);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
-    });
+    }
+
   }
 
 

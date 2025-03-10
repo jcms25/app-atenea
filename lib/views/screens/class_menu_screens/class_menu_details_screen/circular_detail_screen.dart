@@ -108,7 +108,6 @@ class CircularData extends State<CircularDetail> {
                                     height: 200,
                                     width: MediaQuery.of(context).size.width,) :
                                   SizedBox(
-                                    height: 200,
                                     width: MediaQuery.of(context).size.width,
                                   //   decoration: BoxDecoration(
                                   //   // image: DecorationImage(
@@ -116,7 +115,8 @@ class CircularData extends State<CircularDetail> {
                                   //   //   fit: BoxFit.fill
                                   //   // )
                                   // ),
-                                    child: AspectRatio(aspectRatio: 16/9, child: Image.network(imagePath,fit: BoxFit.contain,),),
+                                  //   child: AspectRatio(aspectRatio: 16/9, child: ,),
+                                    child: Image.network(imagePath,fit: BoxFit.fill,),
                                   ),
                                   const SizedBox(height: 20,),
                                   HtmlWidget(description,onTapUrl: (url) async{

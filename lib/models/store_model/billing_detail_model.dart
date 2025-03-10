@@ -43,6 +43,7 @@ class BillingDetail {
   String? billingEmail;
   String? billingAlumnosName;
   String? billingPhoneNumber;
+  String? billingState;
   dynamic billingAlumnosClassName;
 
   BillingDetail(
@@ -56,6 +57,7 @@ class BillingDetail {
         this.billingEmail,
         this.billingAlumnosName,
         this.billingPhoneNumber,
+        this.billingState,
         this.billingAlumnosClassName});
 
   BillingDetail.fromJson(Map<String, dynamic> json) {
@@ -69,6 +71,7 @@ class BillingDetail {
     billingEmail = json['billing_email'];
     billingAlumnosName = json['billing_wooccm10'];
     billingPhoneNumber = json['billing_phone'];
+    billingState = json['billing_state'];
 
     if(json['billing_wooccm12'] != null && json['billing_wooccm12'].runtimeType == List){
       billingAlumnosClassName = List<String>.from(json['billing_wooccm12'].map((e) => e));
@@ -92,6 +95,7 @@ class BillingDetail {
     data['billing_wooccm10'] = billingAlumnosName;
     data['billing_wooccm12'] = billingAlumnosClassName;
     data['billing_phone'] = billingPhoneNumber;
+    data['billing_state'] = billingState;
     return data;
   }
 }

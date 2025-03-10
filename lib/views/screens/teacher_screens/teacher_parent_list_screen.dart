@@ -244,6 +244,7 @@ class ParentItemWidget extends StatelessWidget {
                               children: [
                                 Text(
                                   "${parentItem.pFname?.isEmpty ?? false ? "-" : "${parentItem.pFname}"} ${parentItem.pLname?.isEmpty ?? false ? "-" : "${parentItem.pLname}"}",
+                                  // "${parentItem.pLname}",
                                   style: AppTextStyle.getOutfit600(
                                       textSize: 20,
                                       textColor: AppColors.secondary),

@@ -203,9 +203,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     return GestureDetector(
                       onTap: () async {
                         await appController.openUrl(
-                            url:
-                                "http://colegioatenea.es/solicitud-de-credenciales-de-acceso/");
-                      },
+                            url: "http://colegioatenea.es/solicitud-de-credenciales-de-acceso/");
+                       },
                       child: Text(
                         "forgot".tr,
                         style: AppTextStyle.getOutfit400(

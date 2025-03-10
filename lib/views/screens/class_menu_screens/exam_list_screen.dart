@@ -36,7 +36,6 @@ class ExamListScreenState extends State<ExamListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
-
       if (arguments?['role'] == RoleType.teacher) {
         if (studentParentTeacherController
                 ?.listOfClassAssignToTeacher.isNotEmpty ??
@@ -300,21 +299,86 @@ class ExamItemWidget extends StatelessWidget {
                           RoleType.teacher &&
                       examListItem.createdBy ==
                           studentParentController.userdata?.wpUsrId,
-                  child: GestureDetector(
-                    onTap: () {
-                      Get.to(() => TeacherAddEditExamScreen(),
-                          arguments: {
-                          "reason": "edit-exam",
-                          "exam-data" : examListItem
-                          });
-                    },
-                    child: SvgPicture.asset(
-                      AppImages.edit,
-                      colorFilter:
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => TeacherAddEditExamScreen(),
+                              arguments: {
+                                "reason": "edit-exam",
+                                "exam-data" : examListItem
+                              });
+                        },
+                        child: SvgPicture.asset(
+                          AppImages.edit,
+                          colorFilter:
                           ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
-                      width: 20,
-                      height: 20,
-                    ),
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+
+                      const SizedBox(width: 10,),
+
+                      GestureDetector(
+                        onTap: () {
+                            Get.dialog(
+                                AlertDialog(
+                                  actionsAlignment: MainAxisAlignment.spaceBetween,
+                                  actionsOverflowDirection: VerticalDirection.up,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  actions: [
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.start,
+                                     children: [
+                                       GestureDetector(
+                                         child: Container(
+                                           decoration: BoxDecoration(
+                                             borderRadius: BorderRadius.circular(5),
+                                             color: AppColors.primary
+                                           ),
+                                           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                           child: Text('Yes'),
+                                         ),
+                                       )
+                                     ],
+                                   )
+                                  ],
+                                  title: Text('Delete Exam!!!',style: AppTextStyle.getOutfit600(textSize: 18, textColor: AppColors.black),),
+                                  // content: Text("Are you sure want to delete ${examListItem.eName} ?"),
+                                  content: RichText(text: TextSpan(
+                                    text: "Are you sure want to delete\t",
+                                    style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.black),
+                                    children: [
+                                      TextSpan(
+                                        text: '${examListItem.eName}',
+                                        style: AppTextStyle.getOutfit600(textSize: 18, textColor: AppColors.black),
+                                        children: [
+                                          TextSpan(
+                                            text: "?"
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )),
+                                )
+                            );
+                        },
+                        // child: SvgPicture.asset(
+                        //   App,
+                        //   colorFilter:
+                        //   ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                        //   width: 20,
+                        //   height: 20,
+                        // ),
+                        child: Icon(
+                          Icons.delete,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
                   ));
             },
           )

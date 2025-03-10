@@ -32,14 +32,16 @@ class OrderItem {
   String? date;
   String? total;
   String? status;
+  String? invoiceLink;
 
-  OrderItem({this.orderId, this.date, this.total, this.status});
+  OrderItem({this.orderId, this.date, this.total, this.status,this.invoiceLink});
 
   OrderItem.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
     date = json['date'];
     total = json['total'];
     status = json['status'];
+    invoiceLink = json["packing_slip"];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +50,7 @@ class OrderItem {
     data['date'] = date;
     data['total'] = total;
     data['status'] = status;
+    data["packing_slip"] = invoiceLink;
     return data;
   }
 }

@@ -41,15 +41,17 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 "Expires": "0",
               },
             );
-            return NavigationDecision.prevent;
+            return NavigationDecision.navigate;
           },
-          onPageFinished: (String url) {
+          onPageStarted: (String url){
           },
+          onPageFinished: (String url) {},
         ),
 
       )
       ..loadRequest(
         Uri.parse(widget.loadURL),
+        // Uri.parse("https://colegioatenea.es/tienda-online/"),
         headers: {
           "Authorization": "Bearer $token",
           "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -94,3 +96,4 @@ class _WebViewScreenState extends State<WebViewScreen> {
     );
   }
 }
+

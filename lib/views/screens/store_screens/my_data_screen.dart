@@ -289,6 +289,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                 decoration: BoxDecoration(
                                     // color:
                                     //     AppColors.secondary.withOpacity(0.05),
+                                    color: AppColors.secondary.withValues(alpha: 0.05),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 padding: const EdgeInsets.symmetric(
@@ -299,7 +300,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                       return DropdownButton<String>(
                                           value: null,
                                           hint: Text(
-                                            'Seleccionar clase',
+                                            storeController.selectedClassItem.isEmpty ? 'Seleccionar clase' : storeController.selectedClassItem.join(","),
                                             style: AppTextStyle.getOutfit400(
                                                 textSize: 16,
                                                 // textColor: AppColors.secondary
@@ -361,14 +362,6 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 10,),
-                              Text( storeController?.selectedClassItem.join(",") ?? "",
-                              style: AppTextStyle.getOutfit400(textSize: 16,
-                                  // textColor: AppColors.secondary.withOpacity(0.4)
-                                  textColor: AppColors.secondary.withValues(alpha: 0.4)
-                              )
-                              ),
-
                               const SizedBox(
                                 height: 20,
                               ),

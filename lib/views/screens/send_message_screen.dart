@@ -516,6 +516,7 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                             CustomTextField(
                                 controller: _messageController,
                                 maxLine: 5,
+                                textInputAction: TextInputAction.done,
                                 validateFunction: (String? value) {}),
                             const SizedBox(
                               height: 20,
@@ -586,40 +587,58 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                     return CustomButtonWidget(
                                         buttonTitle: "sendTitle".tr,
                                         onPressed: () async {
-                                          await studentParentTeacherController
-                                              .sendMessage(
-                                                  messageSubject:
-                                                      _subjectController.text,
-                                                  description:
-                                                      _messageController.text,
-                                                  whomToSend: studentParentTeacherController
-                                                              .currentLoggedInUserRole ==
-                                                          RoleType.teacher
-                                                      ? 0
-                                                      : studentParentTeacherController.currentLoggedInUserRole ==
-                                                              RoleType.student
-                                                          ? 2
-                                                          : 1,
-                                                  classId: studentParentTeacherController.currentSendingMessageCategory ==
-                                                              MessageSendCategoryForTeacher
-                                                                  .toAllStudent ||
-                                                          studentParentTeacherController.currentSendingMessageCategory ==
-                                                              MessageSendCategoryForTeacher
-                                                                  .toAllParent
-                                                      ? studentParentTeacherController
-                                                              .currentSelectedClass
-                                                              ?.cid ??
-                                                          ""
-                                                      : null,
-                                                  toAllParent:
-                                                      studentParentTeacherController
-                                                                  .currentSendingMessageCategory ==
-                                                              MessageSendCategoryForTeacher.toAllParent
-                                                          ? "1"
-                                                          : null,
-                                                  toAllStudent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ? "1" : null)
-                                              .then((res) {
-                                            if (res['status']) {
+                                          // await studentParentTeacherController
+                                          //     .sendMessage(
+                                          //         messageSubject:
+                                          //             _subjectController.text,
+                                          //         description:
+                                          //             _messageController.text,
+                                          //         whomToSend: studentParentTeacherController
+                                          //                     .currentLoggedInUserRole ==
+                                          //                 RoleType.teacher
+                                          //             ? 0
+                                          //             : studentParentTeacherController.currentLoggedInUserRole ==
+                                          //                     RoleType.student
+                                          //                 ? 2
+                                          //                 : 1,
+                                          //         classId: studentParentTeacherController.currentSendingMessageCategory ==
+                                          //                     MessageSendCategoryForTeacher
+                                          //                         .toAllStudent ||
+                                          //                 studentParentTeacherController.currentSendingMessageCategory ==
+                                          //                     MessageSendCategoryForTeacher
+                                          //                         .toAllParent
+                                          //             ? studentParentTeacherController
+                                          //                     .currentSelectedClass
+                                          //                     ?.cid ??
+                                          //                 ""
+                                          //             : null,
+                                          //         toAllParent:
+                                          //             studentParentTeacherController
+                                          //                         .currentSendingMessageCategory ==
+                                          //                     MessageSendCategoryForTeacher.toAllParent
+                                          //                 ? "1"
+                                          //                 : null,
+                                          //         toAllStudent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ? "1" : null)
+                                          //     .then((res) {
+                                          //   // if (res['status']) {
+                                          //   //   Get.back();
+                                          //   // }
+                                          // });
+
+
+
+                                          await studentParentTeacherController.sendMessage(
+                                              messageSubject: _subjectController.text,
+                                              description: _messageController.text,
+                                              classId: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ||
+                                                       studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllParent
+                                                       ? studentParentTeacherController.currentSelectedClass?.cid ?? "" : null,
+                                              receiverId: studentParentTeacherController.currentLoggedInUserRole == RoleType.parent || studentParentTeacherController.currentLoggedInUserRole == RoleType.student ? studentParentTeacherController.currentSelectedTeacherForMessageSend?.wpUsrId : studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.student ? studentParentTeacherController.currentSelectedStudentForSendMessage?.wpUsrId : studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.parent ? studentParentTeacherController.currentSelectedParentForSendMessage?.parentWpUsrId : null,
+                                              toAllParent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllParent ? "1" : null,
+                                              toAllStudent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ? "1" : null
+                                          ).then((res){
+                                            if(res['status']){
+                                              studentParentTeacherController.getMessageList(showLoader: true);
                                               Get.back();
                                             }
                                           });
@@ -643,7 +662,10 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                           //      Get.back();
                                           //    }
                                           // });
-                                        });
+
+                                          }
+
+                                        );
                                   },
                                 ),
                               ),

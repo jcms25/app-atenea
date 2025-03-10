@@ -32,7 +32,7 @@ class MessageListScreen extends State<MessageScreen> {
       appController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
       appController?.getMessageList(
-          showLoader: !(appController?.listOfMessagesModel != null));
+          showLoader: !(appController?.listOfMessagesModel == null));
     });
   }
 

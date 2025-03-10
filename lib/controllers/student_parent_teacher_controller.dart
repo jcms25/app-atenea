@@ -205,6 +205,7 @@ class StudentParentTeacherController extends ChangeNotifier {
         }
         setIsLoading(isLoading: false);
       });
+
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
@@ -492,16 +493,13 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //send message to teacher
-  Future<Map<String, dynamic>> sendMessage(
+  Future<Map<String, dynamic>>  sendMessage(
       {required String messageSubject,
       required String description,
-      required int whomToSend,
       String? classId,
+      String? receiverId,
       String? toAllParent,
       String? toAllStudent}) async {
-    //0 : to Teacher (Logged in with student,parent)
-    //1 : to Parent (Logged in with teacher)
-    //2 : to Student (Logged in with teacher)
 
     try {
       setIsLoading(isLoading: true);
@@ -516,7 +514,8 @@ class StudentParentTeacherController extends ChangeNotifier {
 
       if (selectedFilePath?.isEmpty ?? true) {
         request.fields['attachment'] = "";
-      } else {
+      }
+      else {
         request.files.add(
             await MultipartFile.fromPath('attachment', selectedFilePath ?? ""));
       }
@@ -529,16 +528,15 @@ class StudentParentTeacherController extends ChangeNotifier {
         request.fields['classid'] = classId;
         request.fields['studentall'] = toAllStudent ?? "";
         request.fields['parentall'] = toAllParent ?? "";
-      } else {
-        request.fields['reciever_id[0]'] = whomToSend == 0
-            ? currentSelectedTeacherForMessageSend?.wpUsrId ?? ""
-            : whomToSend == 1
-                ? currentSelectedParentForSendMessage?.parentWpUsrId ?? ""
-                : currentSelectedStudentForSendMessage?.wpUsrId ?? "";
+      }
+      else {
+        request.fields['reciever_id[0]'] = receiverId ?? "";
       }
 
       request.fields['subject'] = messageSubject;
       request.fields['msg'] = description;
+
+
 
       StreamedResponse streamResponse = await request.send();
       var response = await Response.fromStream(streamResponse);
@@ -552,7 +550,8 @@ class StudentParentTeacherController extends ChangeNotifier {
           "status": data['status'],
           "message": data['Message'] ?? data['message'] ?? ""
         };
-      } else {
+      }
+      else {
         setIsLoading(isLoading: false);
         AppConstants.showCustomToast(
             status: false, message: "${response.statusCode}");
@@ -971,6 +970,20 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
+
+
+  // Function to normalize and sort Spanish names manually
+  String normalizeSpanish(String input) {
+    return input
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ñ', 'n');
+  }
+
   //Student List Screen :
   List<StudentItem> listOfStudents = [];
   List<StudentItem> tempListOfStudents = [];
@@ -1004,8 +1017,10 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           StudentListModel student = StudentListModel.fromJson(response);
           List<StudentItem> studentItemList = student.studentlist ?? [];
-          studentItemList
-              .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
+          // studentItemList
+          //     .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
+          studentItemList.sort((a,b) => normalizeSpanish(a.sLname ?? "").compareTo(normalizeSpanish(b.sLname ?? "")));
+
           setListOfStudents(listOfStudents: student.studentlist ?? []);
           setSelectedStudentForFollowUp(studentItem: studentItemList[0]);
         }
@@ -1236,8 +1251,8 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (res['status']) {
           ParentListModel parentListModel = ParentListModel.fromJson(res);
           List<ParentItem> parentList = parentListModel.data ?? [];
-          parentList.sort((a, b) => a.pLname?.compareTo(b.pLname ?? "") ?? 0);
-
+          // parentList.sort((a, b) => a.pLname?.compareTo(b.pLname ?? "") ?? 0);
+          parentList.sort((a,b) => normalizeSpanish(a.pLname ?? "").compareTo(normalizeSpanish(b.pLname ?? "")));
           setListOfParents(listOfParents: parentListModel.data ?? []);
         }
         setIsLoading(isLoading: false);
@@ -1603,6 +1618,7 @@ class StudentParentTeacherController extends ChangeNotifier {
       required RoleType roleType}) async {
     try {
       setIsLoading(isLoading: true);
+
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
       await Api.httpRequest(
           requestType: RequestType.get,
@@ -1620,10 +1636,15 @@ class StudentParentTeacherController extends ChangeNotifier {
         }
       });
 
+
+
+
       setIsLoading(isLoading: false);
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
+
+
   }
 
   //search in exam list
@@ -1868,21 +1889,22 @@ class StudentParentTeacherController extends ChangeNotifier {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
-              requestType: RequestType.get,
-              endPoint:
-                  "${Api.teacherMarksListEndPoint}?class_id=$classId&subject_id=$subjectId&exam_id=$examId")
+          requestType: RequestType.get,
+          endPoint:
+          "${Api.teacherMarksListEndPoint}?class_id=$classId&subject_id=$subjectId&exam_id=$examId")
           .then((response) {
         if (response['status']) {
           MarksList marksList = MarksList.fromJson(response);
           setListOfMarksController(
               listOfMarksController: List.generate(marksList.data?.length ?? 0,
-                  (index) => TextEditingController()));
+                      (index) => TextEditingController()));
           setListOfObserverController(
               listOfObserverController: List.generate(
                   marksList.data?.length ?? 0,
-                  (index) => TextEditingController()));
+                      (index) => TextEditingController()));
           List<MarksItem> listOfMarks = marksList.data ?? [];
-          listOfMarks.sort((a, b) => a.studentLastName?.compareTo(b.studentLastName ?? "") ?? 0);
+          // listOfMarks.sort((a, b) => a.studentLastName?.compareTo(b.studentLastName ?? "") ?? 0);
+          listOfMarks.sort((a,b) => normalizeSpanish(a.studentLastName ?? "").compareTo(normalizeSpanish(b.studentLastName ?? "")));
           setListOfMarks(listOfMarksItem: listOfMarks);
         } else {
           AppConstants.showCustomToast(
@@ -1894,6 +1916,7 @@ class StudentParentTeacherController extends ChangeNotifier {
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
+
   }
 
   //current view or add-edit marks : for 0 it means only want to see marks so it will be in table form
@@ -2247,6 +2270,13 @@ class StudentParentTeacherController extends ChangeNotifier {
     userdata = null;
     dashboard = null;
     setCurrentBottomIndexSelected(index: 0);
+    setDashboardActivitiesToShow(dashboardActivitiesToShow: 1);
+    dashboardExamList = [];
+    dashboardHoliday = [];
+    dashboardEvents = [];
+    tempMessageList = [];
+    receivedMessageList = [];
+    sendMessageList = [];
     timeTableList = [];
     particularDayTimeTableData = [];
     tempParticularDayTimeTableData = [];

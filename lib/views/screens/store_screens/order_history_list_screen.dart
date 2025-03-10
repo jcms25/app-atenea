@@ -8,6 +8,7 @@ import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/screens/store_screens/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -141,7 +142,7 @@ class OrderHistoryWidget extends StatelessWidget {
                     textSize: 18, textColor: AppColors.white),
               )),
               Text(
-                orderItem.date ?? "",
+                DateFormat("dd-MM-yyyy").format(DateTime.parse(orderItem.date ?? "")),
                 style: AppTextStyle.getOutfit400(
                     textSize: 18, textColor: AppColors.white),
               )
@@ -172,17 +173,14 @@ class OrderHistoryWidget extends StatelessWidget {
                 children: [
                   Expanded(
                       child: CustomButtonWidget(
-                          buttonTitle: 'factura', onPressed: () async{
-                            try{
-                              
-                              Uri invoiceUri = Uri.parse("https://colegioatenea.es/wp-admin/admin-ajax.php?action=generate_wpo_wcpdf&template_type=packing-slip&order_ids=${orderItem.orderId ?? ""}&my-account&_wpnonce=1c24a4b35c");
-                              
-                              if(await canLaunchUrl(invoiceUri)){
-                                await launchUrl(invoiceUri);
+                          buttonTitle: 'Albarán', onPressed: () async{
+
+                        try{
+                          if(await canLaunchUrl(Uri.parse(orderItem.invoiceLink ?? ""))){
+                                await launchUrl(Uri.parse(orderItem.invoiceLink ?? ""));
                               }else{
-                                AppConstants.showCustomToast(status: false, message: "please try again");
+                                AppConstants.showCustomToast(status: false, message: "Please Try Again.");
                               }
-                              
                             }catch(exception){
                               AppConstants.showCustomToast(status: false, message: "$exception");
                             }

@@ -80,8 +80,8 @@ class Others {
   String? total;
   String? paymentMethod;
   String? status;
-  String? nIF;
-  String? student;
+  dynamic nIF;
+  dynamic student;
   dynamic courso;
 
   Others(

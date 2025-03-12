@@ -1,8 +1,8 @@
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
-import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/screens/webview_screen/webview_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -21,12 +21,15 @@ class WebViewScreen extends StatefulWidget {
 
 class _WebViewScreenState extends State<WebViewScreen> {
   late WebViewController webViewController;
+  late WebViewProvider webViewProvider;
+
 
 
   @override
   void initState() {
     super.initState();
     String token = AppSharedPreferences.getUserData()?.tiendaToken ?? "";
+    webViewProvider = Provider.of<WebViewProvider>(context, listen: false);
     webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -41,59 +44,110 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 "Expires": "0",
               },
             );
-            return NavigationDecision.navigate;
+            return NavigationDecision.prevent;
           },
-          onPageStarted: (String url){
+          onPageStarted: (String url) {
+            webViewProvider.updateProgress(0);
           },
-          onPageFinished: (String url) {},
-        ),
+          onPageFinished: (String url){
+            webViewProvider.updateProgress(100);
 
+          },
+          onProgress: (progress){
+              webViewProvider.updateProgress(progress);
+          },
+          onHttpError: (httpResponseError){
+            if (kDebugMode) {
+              print(httpResponseError);
+            }
+          },
+          onWebResourceError: (webRequestError){
+            if (kDebugMode) {
+              print(webRequestError);
+            }
+      }
+        ),
       )
       ..loadRequest(
-        Uri.parse(widget.loadURL),
-        // Uri.parse("https://colegioatenea.es/tienda-online/"),
-        headers: {
-          "Authorization": "Bearer $token",
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          "Pragma": "no-cache",
-          "Expires": "0",
-        }
-      );
+          Uri.parse(widget.loadURL),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          }
+          );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: CustomAppBarWidget(
         title: Text(
           widget.label,
           style: AppTextStyle.getOutfit500(
-            textSize: 20,
+            textSize: 28,
             textColor: AppColors.white,
           ),
         ),
-        onLeadingIconClicked: () {
-          Get.back();
-        },
+        showLeadingIcon: false,
+        // onLeadingIconClicked: () {
+        //   Get.back();
+        // },
+        actionIcons: [
+          IconButton(onPressed: () async{
+            if(await webViewController.canGoBack()){
+              webViewController.goBack();
+            }else{
+              webViewController.clearCache();
+              await WebViewCookieManager().clearCookies();
+              Get.back();
+            }
+          }, icon: Icon(Icons.arrow_back,color: AppColors.white,)),
+          IconButton(
+              onPressed: () async {
+                webViewController.reload();
+              },
+              icon: Icon(
+                Icons.refresh,
+                color: AppColors.white,
+              ))
+        ],
       ),
       body: Stack(
         children: [
-          WebViewWidget(
-              controller: webViewController
-          ),
+          SizedBox(height: MediaQuery.sizeOf(context).height,child:
+          WebViewWidget(controller: webViewController),),
           Consumer<WebViewProvider>(
             builder: (context, webViewProvider, child) {
-              return Visibility(
-                visible: false, // Add logic if you want to show a loader
-                child: LoadingLayout(),
-              );
+              return webViewProvider.progress < 100
+                  ? LinearProgressIndicator(
+                value: webViewProvider.progress / 100.0,
+                backgroundColor: Colors.grey.shade300,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              )
+                  : SizedBox.shrink();
             },
           ),
         ],
       ),
+      // body: InAppWebView(
+      //   initialUrlRequest: URLRequest(url: WebUri(widget.loadURL)),
+      //   onWebViewCreated: (controller) {
+      //     inAppWebViewController = controller;
+      //   },
+      //   onLoadStart: (controller,url){
+      //     print("WebView loaded: $url");
+      //   },
+      //   onLoadStop: (controller, url) {
+      //     print("WebView loaded: $url");
+      //   },
+      //   onReceivedError: (controller, request, error) {
+      //     print("WebView Error: ${error.description}");
+      //   },
+      // ),
     );
   }
 }
-

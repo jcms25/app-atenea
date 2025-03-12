@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-enum RequestType { post, get }
+enum RequestType { post, get , delete}
 
 class Api {
 
@@ -122,6 +122,8 @@ class Api {
   static const String _teacherMyScheduleEndPoint = "teacher/timetable";
   static String get teacherMyScheduleEndPoint => _teacherMyScheduleEndPoint;
 
+  static const String _teacherDeleteExam = "exam";
+  static String get teacherDeleteExam => _teacherDeleteExam;
 
 
   //store api :
@@ -160,7 +162,9 @@ class Api {
     try {
       Response response;
       if (requestType == RequestType.get) {
-        response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header);
+        response = await get(Uri.parse("$_baseURL/$endPoint"), headers: header,);
+      } else if (requestType == RequestType.delete){
+        response = await delete(Uri.parse("$_baseURL/$endPoint"),headers: header);
       }
       else {
         response = await post(Uri.parse("$_baseURL/$endPoint"),

@@ -60,8 +60,8 @@ dependencies:
   flutter_multi_select_items:
   flutter_localization:
   path_provider:
-  flutter_inappwebview:
   webview_flutter:
+  flutter_inappwebview:
 dev_dependencies:
   flutter_test:
     sdk: flutter

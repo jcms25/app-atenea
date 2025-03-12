@@ -24,6 +24,7 @@ import 'package:colegia_atenea/models/timetable_model.dart';
 import 'package:colegia_atenea/models/transport_list_model.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
+import 'package:colegia_atenea/utils/native_sorter.dart';
 import 'package:colegia_atenea/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, Response;
@@ -1001,6 +1002,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   Future<void> getListOfStudents(
       {required String classId, required RoleType roleType}) async {
+
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -1013,16 +1015,22 @@ class StudentParentTeacherController extends ChangeNotifier {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
             'Cookie': "${userdata?.cookies}"
-          }).then((response) {
+          }).then((response) async{
         if (response['status']) {
-          StudentListModel student = StudentListModel.fromJson(response);
-          List<StudentItem> studentItemList = student.studentlist ?? [];
+          // StudentListModel student = StudentListModel.fromJson(response);
+          // List<StudentItem> studentItemList = student.studentlist ?? [];
           // studentItemList
           //     .sort((a, b) => a.sLname?.compareTo(b.sLname ?? "") ?? 0);
-          studentItemList.sort((a,b) => normalizeSpanish(a.sLname ?? "").compareTo(normalizeSpanish(b.sLname ?? "")));
+          // studentItemList.sort((a,b) => normalizeSpanish(a.sLname ?? "").compareTo(normalizeSpanish(b.sLname ?? "")));
+          List<Map<String,dynamic>> list = List<Map<String,dynamic>>.from(response['studentlist'].map((e) => Map<String, dynamic>.from(e)));
+          List<Map<String, dynamic>> sortedList = await NativeSorter.sortSpanish(list, 's_lname');
+          List<StudentItem> studentList = [];
+          for (var v in sortedList) {
+            studentList.add(StudentItem.fromJson(v));
+          }
 
-          setListOfStudents(listOfStudents: student.studentlist ?? []);
-          setSelectedStudentForFollowUp(studentItem: studentItemList[0]);
+          setListOfStudents(listOfStudents: studentList);
+          setSelectedStudentForFollowUp(studentItem: studentList[0]);
         }
 
         setIsLoading(isLoading: false);
@@ -1247,13 +1255,20 @@ class StudentParentTeacherController extends ChangeNotifier {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
             'Cookie': userdata?.cookies ?? ""
-          }).then((res) {
-        if (res['status']) {
-          ParentListModel parentListModel = ParentListModel.fromJson(res);
-          List<ParentItem> parentList = parentListModel.data ?? [];
+          }).then((res) async{
+        if (res['status']){
+
+          List<Map<String,dynamic>> list = List<Map<String,dynamic>>.from(res['Data'].map((e) => Map<String, dynamic>.from(e)));
+          List<Map<String, dynamic>> sortedList = await NativeSorter.sortSpanish(list, 'p_lname');
+          List<ParentItem> parentList = [];
+          for (var v in sortedList) {
+            parentList.add(ParentItem.fromJson(v));
+          }
+          // ParentListModel parentListModel = ParentListModel.fromJson(res);
+          // List<ParentItem> parentList = parentListModel.data ?? [];
           // parentList.sort((a, b) => a.pLname?.compareTo(b.pLname ?? "") ?? 0);
-          parentList.sort((a,b) => normalizeSpanish(a.pLname ?? "").compareTo(normalizeSpanish(b.pLname ?? "")));
-          setListOfParents(listOfParents: parentListModel.data ?? []);
+          // parentList.sort((a,b) => normalizeSpanish(a.pLname ?? "").compareTo(normalizeSpanish(b.pLname ?? "")));
+          setListOfParents(listOfParents: parentList);
         }
         setIsLoading(isLoading: false);
       });

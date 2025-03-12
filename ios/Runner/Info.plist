@@ -43,7 +43,11 @@
     <dict>
         <key>NSAllowsArbitraryLoads</key>
         <true/>
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true/>
     </dict>
+    <key>WebKitDeveloperExtrasEnabled</key>
+    <true/>
     <key>io.flutter.embedded_views_preview</key>
     <true/>
 	<key>UILaunchStoryboardName</key>

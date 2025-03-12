@@ -15,6 +15,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../services/api.dart';
+
 class ExamListScreen extends StatefulWidget {
   const ExamListScreen({
     super.key,
@@ -331,18 +333,53 @@ class ExamItemWidget extends StatelessWidget {
                                   ),
                                   actions: [
                                    Row(
-                                     mainAxisAlignment: MainAxisAlignment.start,
+                                     mainAxisAlignment: MainAxisAlignment.end,
                                      children: [
                                        GestureDetector(
+                                         onTap:(){
+                                           Get.back();
+                                         },
                                          child: Container(
                                            decoration: BoxDecoration(
                                              borderRadius: BorderRadius.circular(5),
                                              color: AppColors.primary
                                            ),
-                                           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                                           child: Text('Yes'),
+                                           padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                                           child: Text('No',style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.white),),
                                          ),
-                                       )
+                                       ),
+                                       const SizedBox(width: 10,),
+                                       Consumer<StudentParentTeacherController>(
+                                           builder: (context,studentParentTeacherController,child){
+                                              return  GestureDetector(
+                                           onTap: () async{
+                                             try{
+                                               studentParentTeacherController.setIsLoading(isLoading: true);
+                                               Get.back();
+                                               await Api.httpRequest(requestType: RequestType.delete, endPoint: "${Api.teacherDeleteExam}/${examListItem.eid}").then((res){
+                                                 if(res['status']){
+
+                                                  studentParentTeacherController.getListOfExams(classId: studentParentTeacherController.currentSelectedClass?.cid ??
+                                                      "", wpUserId: "", roleType: RoleType.teacher);
+                                                 }
+                                                 AppConstants.showCustomToast(status: false, message: res['message'] ?? res['Message'] ?? "");
+                                               });
+
+                                                }catch(exception){
+                                              studentParentTeacherController.setIsLoading(isLoading: false);
+                                              AppConstants.showCustomToast(status: false, message: "$exception");
+                                             }
+                                           },
+                                           child: Container(
+                                             decoration: BoxDecoration(
+                                                 borderRadius: BorderRadius.circular(5),
+                                                 color: AppColors.primary
+                                             ),
+                                             padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                                             child: Text('Yes',style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.white),),
+                                           ),
+                                         );
+                                       })
                                      ],
                                    )
                                   ],
@@ -363,7 +400,8 @@ class ExamItemWidget extends StatelessWidget {
                                       )
                                     ]
                                   )),
-                                )
+                                ),
+                                barrierDismissible: false
                             );
                         },
                         // child: SvgPicture.asset(

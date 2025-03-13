@@ -63,6 +63,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
         studentParentTeacherController?.setCurrentSelectedClass(
             teacherClass:
                 studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+        print("Assign Class Subject List");
         studentParentTeacherController?.getListOfSubjects(
             classId: studentParentTeacherController
                     ?.listOfClassAssignToTeacher[0].cid ??

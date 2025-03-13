@@ -4,6 +4,7 @@ import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/screens/webview_screen/webview_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -22,13 +23,13 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   late WebViewController webViewController;
   late WebViewProvider webViewProvider;
-
+  String? token;
 
 
   @override
   void initState() {
     super.initState();
-    String token = AppSharedPreferences.getUserData()?.tiendaToken ?? "";
+    token = AppSharedPreferences.getUserData()?.tiendaToken ?? "";
     webViewProvider = Provider.of<WebViewProvider>(context, listen: false);
     webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -118,8 +119,21 @@ class _WebViewScreenState extends State<WebViewScreen> {
       ),
       body: Stack(
         children: [
-          SizedBox(height: MediaQuery.sizeOf(context).height,child:
-          WebViewWidget(controller: webViewController),),
+          SizedBox(height: MediaQuery.sizeOf(context).height,
+
+            child: WebViewWidget(controller: webViewController),
+            // child: InAppWebView(
+            //   initialUrlRequest: URLRequest(
+            //     headers:   {
+            //       "Authorization": "Bearer $token",
+            //       "Cache-Control": "no-cache, no-store, must-revalidate",
+            //       "Pragma": "no-cache",
+            //       "Expires": "0",
+            //     }
+            //   ),
+            //   onWebViewCreated: (controller){},
+            // ),
+          ),
           Consumer<WebViewProvider>(
             builder: (context, webViewProvider, child) {
               return webViewProvider.progress < 100

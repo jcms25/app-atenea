@@ -618,28 +618,32 @@ class StudentParentTeacherController extends ChangeNotifier {
       {required String classId,
       required String? wpId,
       required RoleType roleType}) async {
-    try {
-      setIsLoading(isLoading: true);
-      String token = AppSharedPreferences.getBasicAthToken() ?? "";
-      await Api.httpRequest(
-          requestType: RequestType.get,
-          endPoint: roleType == RoleType.teacher
-              ? "${Api.teacherSubjectList}?class_id=$classId"
-              : "${Api.subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
-          header: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': "${userdata?.cookies}"
-          }).then((response) {
-        if (response['status']) {
-          SubjectListModel subjectList = SubjectListModel.fromJson(response);
-          setListOfSubject(listOfSubject: subjectList.subjectlist ?? []);
-        }
-        setIsLoading(isLoading: false);
-      });
-    } catch (exception) {
+    // try {
+    //   setIsLoading(isLoading: true);
+    //
+    // } catch (exception) {
+    //   setIsLoading(isLoading: false);
+    // }
+    print(classId);
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
+    await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: roleType == RoleType.teacher
+            ? "${Api.teacherSubjectList}?class_id=$classId"
+            : "${Api.subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': "${userdata?.cookies}"
+        }).then((response) {
+          print(response);
+      if (response['status']) {
+        SubjectListModel subjectList = SubjectListModel.fromJson(response);
+        print("subject list is : ${subjectList.subjectlist}");
+        setListOfSubject(listOfSubject: subjectList.subjectlist ?? []);
+      }
       setIsLoading(isLoading: false);
-    }
+    });
   }
 
   //search subject in list

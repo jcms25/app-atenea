@@ -1,5 +1,6 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/exam_list_model.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
@@ -354,9 +355,15 @@ class ExamItemWidget extends StatelessWidget {
                                               return  GestureDetector(
                                            onTap: () async{
                                              try{
+                                               String? token = AppSharedPreferences.getBasicAthToken();
                                                studentParentTeacherController.setIsLoading(isLoading: true);
                                                Get.back();
-                                               await Api.httpRequest(requestType: RequestType.delete, endPoint: "${Api.teacherDeleteExam}/${examListItem.eid}").then((res){
+                                               await Api.httpRequest(requestType: RequestType.delete,
+                                                   endPoint: "${Api.teacherDeleteExam}/${examListItem.eid}",
+                                                    header: {
+                                                        "Authorization" : "Basic $token"
+                                                    }
+                                               ).then((res){
                                                  if(res['status']){
 
                                                   studentParentTeacherController.getListOfExams(classId: studentParentTeacherController.currentSelectedClass?.cid ??

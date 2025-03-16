@@ -1,13 +1,20 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
 import 'package:colegia_atenea/models/store_model/order_details_model.dart';
+import 'package:colegia_atenea/models/store_model/product_item_model.dart';
+import 'package:colegia_atenea/models/store_model/subcategory_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response;
+import 'package:http/http.dart';
 
 import '../models/store_model/order_list_model.dart';
 import '../services/api.dart';
 import '../services/app_shared_preferences.dart';
+import '../services/store_api.dart';
 
 class StoreController extends ChangeNotifier {
   //check box on billing address screen regarding subscribe to email
@@ -78,24 +85,26 @@ class StoreController extends ChangeNotifier {
       setIsLoading(isLoading: true);
 
       await Api.httpRequest(
-          requestType: RequestType.get,
-          // endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId"
-          endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId")
+              requestType: RequestType.get,
+              // endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId"
+              endPoint: "${Api.billingDetailEndPoint}?user_id=$parentWpUserId")
           .then((res) {
         if (res['status']) {
           BillingDetailModel billingDetailModel =
-          BillingDetailModel.fromJson(res);
+              BillingDetailModel.fromJson(res);
           setBillingDetailModel(billingDetail: billingDetailModel.data);
           setListOfClass(classList: billingDetailModel.classlist ?? []);
 
           dynamic selectedClass = billingDetail?.billingAlumnosClassName;
 
-          if (selectedClass != null && selectedClass.runtimeType == List<String>) {
+          if (selectedClass != null &&
+              selectedClass.runtimeType == List<String>) {
             selectedClassItem = selectedClass;
             notifyListeners();
           }
 
-          String billingState = billingDetailModel.data?.billingState?.trim() ?? "";
+          String billingState =
+              billingDetailModel.data?.billingState?.trim() ?? "";
           if (billingState.isNotEmpty) {
             if (AppConstants.spainProvince.contains(billingState)) {
               setSelectedProvince(selectedProvince: billingState);
@@ -111,7 +120,6 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
-
   }
 
   //edit billing details
@@ -129,9 +137,6 @@ class StoreController extends ChangeNotifier {
       required String billingEmail,
       required String billingAlumnosName,
       required List<String> billingAlumnosClass}) async {
-
-
-
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -155,22 +160,20 @@ class StoreController extends ChangeNotifier {
         for (int i = 0; i < selectedClassItem.length; i++) {
           bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
         }
-      }
-      else {
+      } else {
         bodyData['billing_wooccm12'] = "";
       }
       await Api.httpRequest(
-          requestType: RequestType.post,
-          body: bodyData,
-          header: {
-            'Content-Type':
-            'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': "Basic $token",
-            'Cookie': cookies
-          },
-          endPoint: "${Api.billingEditDetailEndPoint}?user_id=$wpUserId")
+              requestType: RequestType.post,
+              body: bodyData,
+              header: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': cookies
+              },
+              endPoint: "${Api.billingEditDetailEndPoint}?user_id=$wpUserId")
           .then((res) {
-
         setIsLoading(isLoading: false);
         AppConstants.showCustomToast(
             status: res['status'],
@@ -179,7 +182,6 @@ class StoreController extends ChangeNotifier {
           Get.back();
         }
       });
-
     } catch (exception) {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
@@ -199,8 +201,8 @@ class StoreController extends ChangeNotifier {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
-          requestType: RequestType.get,
-          endPoint: "${Api.orderListEndPoint}=$wpUserId")
+              requestType: RequestType.get,
+              endPoint: "${Api.orderListEndPoint}=$wpUserId")
           .then((res) {
         if (res['status']) {
           OrderList orderList = OrderList.fromJson(res);
@@ -212,7 +214,6 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
-
   }
 
   //order details
@@ -228,8 +229,8 @@ class StoreController extends ChangeNotifier {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
-          requestType: RequestType.get,
-          endPoint: "${Api.orderDetailEndPoint}=$orderId")
+              requestType: RequestType.get,
+              endPoint: "${Api.orderDetailEndPoint}=$orderId")
           .then((res) {
         if (res['status']) {
           OrderDetailModel orderDetailModel = OrderDetailModel.fromJson(res);
@@ -241,8 +242,170 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
-
   }
 
+  //Stores Category API :
 
+  //list of subcategory for Libros and Material
+  List<SubCategoryItemModel> filteredData = [];
+
+  void setFilteredData({required List<SubCategoryItemModel> filteredData}) {
+    this.filteredData = filteredData;
+    notifyListeners();
+  }
+
+  List<SubCategoryItemModel> listOfSubCategory = [];
+
+  void setListOfSubCategory(
+      {required List<SubCategoryItemModel> listOfSubCategory}) {
+    this.listOfSubCategory = listOfSubCategory;
+    filteredData = listOfSubCategory;
+    notifyListeners();
+  }
+
+  //get subcategories of parent category : Libros and Material both have subcategories
+  Future<void> getSubCategoriesOfCategory(
+      {required String categoryName, required String tiendaToken}) async {
+    try {
+      setIsLoading(isLoading: true);
+      var url = Uri.parse('${StoreApi.localBaseURL}/products/categories');
+
+      var body = categoryName == "Libros"
+          ? jsonEncode({
+              "include":
+                  "464,465,466,1001,467,468,469,470,471,472,473,474,475,476,477,478,479",
+              "order": "asc"
+            })
+          : jsonEncode({
+              "include": "855,856,857,858,859,860,861,862,863,864",
+              "order": "asc"
+            });
+
+      var response = Request('GET', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = body;
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+
+      if (responseData.statusCode == 200) {
+        print(responseData.statusCode);
+        print('Response: ${responseData.body}');
+        print(response.body.runtimeType);
+        dynamic data = jsonDecode(responseData.body);
+        if (data.isNotEmpty) {
+          List<SubCategoryItemModel> listOfSubCategoryItemModel =
+              List<SubCategoryItemModel>.from(
+                  data.map((e) => SubCategoryItemModel.fromJson(e)).toList());
+          setListOfSubCategory(listOfSubCategory: listOfSubCategoryItemModel);
+        }
+        print(data.length);
+      } else {
+        print('Failed with status code: ${responseData.statusCode}');
+      }
+
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
+
+  //searching in sub category using debouncing technique to reduce search time and optimize performance
+  Timer? _debounceTime;
+
+  void searchInSubCategoryList(String query) {
+    if (_debounceTime?.isActive ?? false) _debounceTime?.cancel();
+
+    _debounceTime = Timer(const Duration(milliseconds: 300), () {
+      final normalizeQuery = query.toLowerCase();
+
+      setFilteredData(
+          filteredData: normalizeQuery.isEmpty
+              ? listOfSubCategory
+              : listOfSubCategory.where((e) {
+                  return e.name
+                          ?.toLowerCase()
+                          .replaceAll(" ", "")
+                          .contains(query.toLowerCase().replaceAll(" ", "")) ??
+                      false;
+                }).toList());
+    });
+  }
+
+  //List of products
+  List<ProductItem> listOfProducts = [];
+  List<ProductItem> filterProducts = [];
+
+  void setProductList({required List<ProductItem> listOfProducts}) {
+    this.listOfProducts = listOfProducts;
+    filterProducts = listOfProducts;
+    notifyListeners();
+  }
+
+  void setFilterProductList({required List<ProductItem> tempProductList}) {
+    filterProducts = tempProductList;
+    notifyListeners();
+  }
+
+  //get product list from categories
+  Future<void> getProductList(
+      {required String categoryId, required String tiendaToken}) async {
+    try {
+      setIsLoading(isLoading: true);
+      var url =
+          Uri.parse('${StoreApi.localBaseURL}/products?category=$categoryId');
+
+      var response = Request('GET', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        });
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+
+      if (responseData.statusCode == 200) {
+        print(responseData.statusCode);
+        print('Response: ${responseData.body}');
+        print(response.body.runtimeType);
+        dynamic data = jsonDecode(responseData.body);
+        if (data.isNotEmpty) {
+          List<ProductItem> listOfProducts = List<ProductItem>.from(
+              data.map((e) => ProductItem.fromJson(e)).toList());
+          setProductList(listOfProducts: listOfProducts);
+        }
+        print(data.length);
+      } else {
+        print('Failed with status code: ${responseData.statusCode}');
+      }
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
+
+  //search in product list
+  void searchInProductList(String query) {
+    if (_debounceTime?.isActive ?? false) _debounceTime?.cancel();
+
+    _debounceTime = Timer(const Duration(milliseconds: 300), () {
+      final normalizeQuery = query.toLowerCase();
+
+      setFilterProductList(
+          tempProductList: normalizeQuery.isEmpty
+              ? listOfProducts
+              : listOfProducts.where((e) {
+                  return e.name
+                          ?.toLowerCase()
+                          .replaceAll(" ", "")
+                          .contains(query.toLowerCase().replaceAll(" ", "")) ??
+                      false;
+                }).toList());
+    });
+  }
 }

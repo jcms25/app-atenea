@@ -18,6 +18,8 @@ import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/my_data_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/order_history_list_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/products/product_list_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/products/sub_category_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
@@ -618,23 +620,28 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(() => OrderHistoryListScreen());
         break;
       case "Libros":
-        String url = 'https://colegioatenea.es/tienda-de-libros-app/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Libros',));
+        // String url = 'https://colegioatenea.es/tienda-de-libros-app/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Libros',));
+        Get.to(() => SubCategoryListScreen(categoryName: 'Libros'));
       case "Uniformes":
-        String url = 'https://colegioatenea.es/product-category/uniformes/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Uniformes',));
+        // String url = 'https://colegioatenea.es/product-category/uniformes/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Uniformes',));
+        Get.to(() => ProductListScreen(categoryId: '724', categoryName: 'Uniformes'));
         break;
       case "Material":
-        String url = 'https://colegioatenea.es/tienda-de-material-app/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Material',));
+        Get.to(() => SubCategoryListScreen(categoryName: 'Material'));
+        // String url = 'https://colegioatenea.es/tienda-de-material-app/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Material',));
         break;
       case "Cuadernos":
-        String url = 'https://colegioatenea.es/product-category/cuadernos/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Cuadernos',));
+        // String url = 'https://colegioatenea.es/product-category/cuadernos/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Cuadernos',));
+        Get.to(() => ProductListScreen(categoryId: '713', categoryName: 'Cuadernos'));
         break;
       case "Agenda":
-        String url = 'https://colegioatenea.es/product-category/agenda/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Agenda',));
+        // String url = 'https://colegioatenea.es/product-category/agenda/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Agenda',));
+        Get.to(() => ProductListScreen(categoryId: '723', categoryName: 'Agenda'));
         break;
       case "Carrito":
         String url = 'https://colegioatenea.es/carrito2/';

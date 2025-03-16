@@ -1,0 +1,2 @@
+F:/myProjects/colegio-atenea/android/app/.cxx/Debug/35451ok3/arm64-v8a/CMakeFiles/edit_cache.dir
+F:/myProjects/colegio-atenea/android/app/.cxx/Debug/35451ok3/arm64-v8a/CMakeFiles/rebuild_cache.dir

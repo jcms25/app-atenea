@@ -16,6 +16,7 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/transportation_s
 import 'package:colegia_atenea/views/screens/dinning_section_screen/manage_service_screen.dart';
 import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_screen.dart';
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/cart_page_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/my_data_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/order_history_list_screen.dart';
 import 'package:colegia_atenea/views/screens/store_screens/products/product_list_screen.dart';
@@ -644,12 +645,13 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(() => ProductListScreen(categoryId: '723', categoryName: 'Agenda'));
         break;
       case "Carrito":
-        String url = 'https://colegioatenea.es/carrito2/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Carrito',));
+        // String url = 'https://colegioatenea.es/carrito2/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Carrito',));
+        Get.to(() =>CartPageScreen());
         break;
       case "Cupones":
-        String url = 'https://colegioatenea.es/mi-cuenta/wc-smart-coupons/';
-        Get.to(() => WebViewScreen(loadURL: url, label: 'Cupones',));
+        // String url = 'https://colegioatenea.es/mi-cuenta/wc-smart-coupons/';
+        // Get.to(() => WebViewScreen(loadURL: url, label: 'Cupones',));
         break;
       default:
         break;

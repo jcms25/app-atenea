@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 class LoadingLayout extends StatelessWidget {
-  const LoadingLayout({super.key});
+  final Color? backgroundColor;
+  const LoadingLayout({super.key, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       // color: Colors.black.withOpacity(0.1),
-      color: AppColors.black.withValues(alpha: 0.1),
+      color: backgroundColor ?? AppColors.black.withValues(alpha: 0.1),
       padding: const EdgeInsets.all(130),
       child: Center(
         child: LoadingIndicator(

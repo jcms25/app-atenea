@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
+import 'package:colegia_atenea/models/store_model/cart_response_model.dart';
+import 'package:colegia_atenea/models/store_model/checkout_model.dart' hide BillingAddress,ShippingAddress;
 import 'package:colegia_atenea/models/store_model/order_details_model.dart';
 import 'package:colegia_atenea/models/store_model/product_item_model.dart';
 import 'package:colegia_atenea/models/store_model/subcategory_list_model.dart';
@@ -292,9 +294,6 @@ class StoreController extends ChangeNotifier {
       var responseData = await Response.fromStream(streamedResponse);
 
       if (responseData.statusCode == 200) {
-        print(responseData.statusCode);
-        print('Response: ${responseData.body}');
-        print(response.body.runtimeType);
         dynamic data = jsonDecode(responseData.body);
         if (data.isNotEmpty) {
           List<SubCategoryItemModel> listOfSubCategoryItemModel =
@@ -302,9 +301,10 @@ class StoreController extends ChangeNotifier {
                   data.map((e) => SubCategoryItemModel.fromJson(e)).toList());
           setListOfSubCategory(listOfSubCategory: listOfSubCategoryItemModel);
         }
-        print(data.length);
       } else {
-        print('Failed with status code: ${responseData.statusCode}');
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
       }
 
       setIsLoading(isLoading: false);
@@ -356,8 +356,8 @@ class StoreController extends ChangeNotifier {
       {required String categoryId, required String tiendaToken}) async {
     try {
       setIsLoading(isLoading: true);
-      var url =
-          Uri.parse('${StoreApi.localBaseURL}/products?category=$categoryId');
+      var url = Uri.parse(
+          '${StoreApi.localBaseURL}/products?category=$categoryId&per_page=100');
 
       var response = Request('GET', url)
         ..headers.addAll({
@@ -369,18 +369,16 @@ class StoreController extends ChangeNotifier {
       var responseData = await Response.fromStream(streamedResponse);
 
       if (responseData.statusCode == 200) {
-        print(responseData.statusCode);
-        print('Response: ${responseData.body}');
-        print(response.body.runtimeType);
         dynamic data = jsonDecode(responseData.body);
         if (data.isNotEmpty) {
           List<ProductItem> listOfProducts = List<ProductItem>.from(
               data.map((e) => ProductItem.fromJson(e)).toList());
           setProductList(listOfProducts: listOfProducts);
         }
-        print(data.length);
       } else {
-        print('Failed with status code: ${responseData.statusCode}');
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
       }
       setIsLoading(isLoading: false);
     } catch (exception) {
@@ -407,5 +405,399 @@ class StoreController extends ChangeNotifier {
                       false;
                 }).toList());
     });
+  }
+
+  //product item detail
+  ProductItem? productItem;
+
+  void setProductItem({required ProductItem? productItem}) {
+    this.productItem = productItem;
+    notifyListeners();
+  }
+
+  //List of variations attributes
+  List<Variations> listOfVariations = [];
+
+  void setListOfVariationAttributes(
+      {required List<Variations> listOfVariations}) {
+    this.listOfVariations = listOfVariations;
+    notifyListeners();
+  }
+
+  //current selected variations
+  Variations? selectedVariations;
+
+  void setSelectedVariations({Variations? selectedVariations}) {
+    this.selectedVariations = selectedVariations;
+    notifyListeners();
+  }
+
+  //Variation Detail
+  ProductItem? variationProduct;
+
+  void setSelectedVariationDetail({required ProductItem? productItem}) {
+    variationProduct = productItem;
+    notifyListeners();
+  }
+
+  Future<void> getProductDetail(
+      {required String productId,
+      required String tiendaToken,
+      bool? variationProductDetail}) async {
+    try {
+      setIsLoading(isLoading: true);
+      var url = Uri.parse('${StoreApi.localBaseURL}/products/$productId');
+
+      var response = Request('GET', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        });
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+
+      if (responseData.statusCode == 200) {
+        dynamic data = jsonDecode(responseData.body);
+        ProductItem productItem = ProductItem.fromJson(data);
+        if (variationProductDetail != null) {
+          setSelectedVariationDetail(productItem: productItem);
+        } else {
+          setProductItem(productItem: productItem);
+          setListOfVariationAttributes(
+              listOfVariations: productItem.variations ?? []);
+        }
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  int quantity = 1; // Default quantity
+
+  /// Set the quantity
+  void setQuantity(int newQuantity) {
+    if (newQuantity > 0) {
+      quantity = newQuantity;
+      notifyListeners();
+    }
+  }
+
+  /// Increase the quantity
+  void increaseQuantity() {
+    quantity++;
+    notifyListeners();
+  }
+
+  /// Decrease the quantity (minimum: 1)
+  void decreaseQuantity() {
+    if (quantity > 1) {
+      quantity--;
+      notifyListeners();
+    }
+  }
+
+  //handling add to cart into product list
+  final Set<String> _loadingProducts = {};
+
+  //is set contain product
+  bool isProductLoading(String productId) {
+    return _loadingProducts.contains(productId);
+  }
+
+  //add to cart API
+  Future<void> addToCart(
+      {required int fromProductListOrFromDetails,
+      required int noOfItems,
+      required String tiendaToken,
+      Variations? variation,
+      String? productId,
+      String? variationProductId}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      //this will tell that we are adding product from product list screen
+      if (fromProductListOrFromDetails == 1) {
+        _loadingProducts.add(productId ?? "");
+        notifyListeners(); // Notify UI about loading state change
+      }
+
+      var url = Uri.parse('${StoreApi.localBaseURL}/v1/cart/add-item');
+
+      var body = jsonEncode({
+        "id": productId ?? variationProductId ?? "",
+        "quantity": noOfItems,
+      });
+
+      var response = Request('POST', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = body;
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        AppConstants.showCustomToast(
+            status: true, message: "Item added into cart");
+        setQuantity(1);
+        setSelectedVariations(selectedVariations: null);
+        setSelectedVariationDetail(productItem: null);
+        _loadingProducts.remove(productId);
+        notifyListeners(); // Notify UI that loading has finished
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+        _loadingProducts.remove(productId);
+        notifyListeners(); // Notify UI that loading has finished
+      }
+
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
+
+  //cart response
+  CartResponse? cartResponse;
+
+  void setCartResponse({CartResponse? cartResponse}) {
+    this.cartResponse = cartResponse;
+    notifyListeners();
+  }
+
+  //get cart details
+  void getCartDetails({required String tiendaToken}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      var url = Uri.parse('${StoreApi.localBaseURL}/cart');
+
+      var response = Request('GET', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        });
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic data = jsonDecode(responseData.body);
+        CartResponse cartResponse = CartResponse.fromJson(data);
+        setCartResponse(cartResponse: cartResponse);
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //update cart Item
+  Future<void> updateCartItem(
+      {required int increaseOrDecrease,
+      required String itemKey,
+      required int noOfItem,
+      required String tiendaToken}) async {
+    //0 means increase quantity
+    //1 means decrease quantity
+
+    try {
+      setIsLoading(isLoading: true);
+
+      var url = Uri.parse('${StoreApi.localBaseURL}/cart/update-item');
+
+      var response = Request('POST', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = jsonEncode({
+          "key": itemKey,
+          "quantity":
+              increaseOrDecrease == 0 ? "${noOfItem + 1}" : "${noOfItem - 1}"
+        });
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic data = jsonDecode(responseData.body);
+        CartResponse cartResponse = CartResponse.fromJson(data);
+        setCartResponse(cartResponse: cartResponse);
+        AppConstants.showCustomToast(
+            status: true, message: "Item Updated Successfully.");
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //remove cart item
+  Future<void> removeCartItem(
+      {required String itemKey, required String tiendaToken}) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      var url = Uri.parse('${StoreApi.localBaseURL}/cart/remove-item');
+
+      var response = Request('POST', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = jsonEncode({"key": itemKey});
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic data = jsonDecode(responseData.body);
+        CartResponse cartResponse = CartResponse.fromJson(data);
+        setCartResponse(cartResponse: cartResponse);
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
+
+  //bottom sheet loader
+  bool isBottomSheetLoader = false;
+
+  void setIsBottomSheetLoader({required bool isBottomSheetLoader}) {
+    this.isBottomSheetLoader = isBottomSheetLoader;
+    notifyListeners();
+  }
+
+  //Apply Coupons
+  Future<void> applyOrRemoveCoupon(
+      {required int applyOrRemove,
+      required String couponCode,
+      required String tiendaToken}) async {
+    try {
+      setIsBottomSheetLoader(isBottomSheetLoader: true);
+
+      var url = applyOrRemove == 0
+          ? Uri.parse('${StoreApi.localBaseURL}/cart/apply-coupon')
+          : Uri.parse('${StoreApi.localBaseURL}/cart/remove-coupon');
+
+      var response = Request('POST', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = jsonEncode({"code": couponCode});
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic data = jsonDecode(responseData.body);
+        CartResponse cartResponse = CartResponse.fromJson(data);
+        setCartResponse(cartResponse: cartResponse);
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    }
+  }
+
+  //selected payment option
+  PaymentOptionModel selectedPaymentOption =
+      AppConstants.listOfPaymentsMethod[0];
+
+  void setSelectedPaymentOption(
+      {required PaymentOptionModel? selectedPaymentOption}) {
+    this.selectedPaymentOption =
+        selectedPaymentOption ?? AppConstants.listOfPaymentsMethod[0];
+    notifyListeners();
+  }
+
+  //paypal payment function
+  Future<void> checkout({required String tiendaToken}) async {
+    try {
+      setIsBottomSheetLoader(isBottomSheetLoader: true);
+
+      var url =  Uri.parse('${StoreApi.localBaseURL}/v1/checkout');
+
+      BillingAddress? billingAddress = cartResponse?.billingAddress;
+      ShippingAddress? shippingAddress = cartResponse?.shippingAddress;
+
+
+      var response = Request('POST', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = jsonEncode({
+          {
+            "billing_address": {
+              "first_name": billingAddress?.firstName ?? "",
+              "last_name": billingAddress?.lastName ?? "",
+              "email": billingAddress?.email ?? "",
+              "city": billingAddress?.city ?? "",
+              "postcode": billingAddress?.postcode ?? "",
+              "country": billingAddress?.country ?? ""
+            },
+            "shipping_address": {
+              "first_name": shippingAddress?.firstName ?? "",
+              "last_name": shippingAddress?.lastName ?? "",
+              "address_1": shippingAddress?.address1 ?? "",
+              "city": shippingAddress?.city ?? "",
+              "postcode": shippingAddress?.postcode ?? "",
+              "country": shippingAddress?.country ?? ""
+            },
+            "payment_method": selectedPaymentOption.optionName
+          }
+        });
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic data = jsonDecode(responseData.body);
+        CheckoutResponse checkoutResponse = CheckoutResponse.fromJson(data);
+
+
+      } else {
+        dynamic data = jsonDecode(responseData.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    }
   }
 }

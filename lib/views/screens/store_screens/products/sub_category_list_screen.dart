@@ -42,7 +42,6 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
         canPop: true,
         onPopInvokedWithResult: (res,ctx){
           storeController?.setListOfSubCategory(listOfSubCategory: []);
-          Get.back();
         },
         child: Scaffold(
         appBar: CustomAppBarWidget(
@@ -86,35 +85,33 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
               SizedBox(height: 16),
 
               // Loading indicator
-              ScrollConfiguration(behavior: ScrollBehavior().copyWith(overscroll: false), child: Consumer<StoreController>(
+              ScrollConfiguration(behavior: ScrollBehavior().copyWith(overscroll: false), child: Expanded(child: Consumer<StoreController>(
                 builder: (context,storeController,child){
                   return storeController.isLoading
                       ? Center(child: CircularProgressIndicator())
-                      : Expanded(
-                    child: GridView.builder(
-                      itemCount: storeController.filteredData.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.75,
-                      ),
-                      itemBuilder: (context, index) {
-                        final subCategoryItem = storeController.filteredData[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(() => ProductListScreen(categoryId: "${subCategoryItem.id ?? ""}", categoryName: subCategoryItem.name ?? "",));
-                          },
-                          child: SubCategoryItem(
-                            image: subCategoryItem.image?.src ?? "",
-                            title: "${subCategoryItem.name ?? ""}t(${subCategoryItem.count ?? 0})",
-                          ),
-                        );
-                      },
+                      : GridView.builder(
+                    itemCount: storeController.filteredData.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.75,
                     ),
+                    itemBuilder: (context, index) {
+                      final subCategoryItem = storeController.filteredData[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Get.to(() => ProductListScreen(categoryId: "${subCategoryItem.id ?? ""}", categoryName: subCategoryItem.name ?? "",));
+                        },
+                        child: SubCategoryItem(
+                          image: subCategoryItem.image?.src ?? "",
+                          title: "${subCategoryItem.name ?? ""}t(${subCategoryItem.count ?? 0})",
+                        ),
+                      );
+                    },
                   );
                 },
-              )),
+              ))),
             ],
           ),
         )
@@ -170,8 +167,8 @@ class SubCategoryItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+          // maxLines: 2,
+          // overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 5),
 

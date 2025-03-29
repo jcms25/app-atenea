@@ -12,6 +12,8 @@ class CustomButtonWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final double? margin;
   final double? padding;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   const CustomButtonWidget(
       {super.key,
@@ -21,6 +23,8 @@ class CustomButtonWidget extends StatelessWidget {
       this.buttonHeight,
       this.padding,
       required this.onPressed,
+      this.backgroundColor,
+      this.textColor,
       this.margin});
 
   @override
@@ -42,7 +46,7 @@ class CustomButtonWidget extends StatelessWidget {
               // color: AppColors.primary.withOpacity(0.1)
             color: AppColors.primary.withValues(alpha: 0.1)
           )
-        ], borderRadius: BorderRadius.circular(10), color: AppColors.primary),
+        ], borderRadius: BorderRadius.circular(10), color:backgroundColor ?? AppColors.primary),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -59,7 +63,7 @@ class CustomButtonWidget extends StatelessWidget {
             Text(
               buttonTitle,
               style: AppTextStyle.getOutfit500(
-                  textSize: 18, textColor: AppColors.white),
+                  textSize: 18, textColor: textColor ?? AppColors.white),
             ),
             SizedBox(
               width: suffixIcon != null ? 5 : 0,

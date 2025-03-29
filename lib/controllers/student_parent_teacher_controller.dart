@@ -618,32 +618,29 @@ class StudentParentTeacherController extends ChangeNotifier {
       {required String classId,
       required String? wpId,
       required RoleType roleType}) async {
-    // try {
-    //   setIsLoading(isLoading: true);
-    //
-    // } catch (exception) {
-    //   setIsLoading(isLoading: false);
-    // }
-    print(classId);
-    String token = AppSharedPreferences.getBasicAthToken() ?? "";
-    await Api.httpRequest(
-        requestType: RequestType.get,
-        endPoint: roleType == RoleType.teacher
-            ? "${Api.teacherSubjectList}?class_id=$classId"
-            : "${Api.subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
-        header: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': "Basic $token",
-          'Cookie': "${userdata?.cookies}"
-        }).then((response) {
-          print(response);
-      if (response['status']) {
-        SubjectListModel subjectList = SubjectListModel.fromJson(response);
-        print("subject list is : ${subjectList.subjectlist}");
-        setListOfSubject(listOfSubject: subjectList.subjectlist ?? []);
-      }
+    try {
+      setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: roleType == RoleType.teacher
+              ? "${Api.teacherSubjectList}?class_id=$classId"
+              : "${Api.subjectEndpoint}?student_id=$wpId${'&class_id=$classId'}",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': "${userdata?.cookies}"
+          }).then((response) {
+        if (response['status']) {
+          SubjectListModel subjectList = SubjectListModel.fromJson(response);
+          setListOfSubject(listOfSubject: subjectList.subjectlist ?? []);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
       setIsLoading(isLoading: false);
-    });
+    }
+
   }
 
   //search subject in list
@@ -1884,21 +1881,63 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<TextEditingController> listOfMarksController = [];
+  // List<TextEditingController> listOfMarksController = [];
+  //
+  // void setListOfMarksController(
+  //     {required List<TextEditingController> listOfMarksController}) {
+  //   this.listOfMarksController = listOfMarksController;
+  //   notifyListeners();
+  // }
+  //
+  // List<TextEditingController> listOfObserverController = [];
+  //
+  // void setListOfObserverController(
+  //     {required List<TextEditingController> listOfObserverController}) {
+  //   this.listOfObserverController = listOfObserverController;
+  //   notifyListeners();
+  // }
 
-  void setListOfMarksController(
-      {required List<TextEditingController> listOfMarksController}) {
-    this.listOfMarksController = listOfMarksController;
-    notifyListeners();
+
+  //THIS WILL STORE MARKS CONTROLLER AND OBSERVATION CONTROLLER FOR MARKS ADD-EDIT
+  final Map<int, TextEditingController> _marksControllers = {};
+  final Map<int, TextEditingController> _observedControllers = {};
+
+  TextEditingController getMarksController(int index, String initialValue) {
+    if (!_marksControllers.containsKey(index)) {
+      _marksControllers[index] = TextEditingController(text: initialValue);
+    }
+    return _marksControllers[index]!;
   }
 
-  List<TextEditingController> listOfObserverController = [];
-
-  void setListOfObserverController(
-      {required List<TextEditingController> listOfObserverController}) {
-    this.listOfObserverController = listOfObserverController;
-    notifyListeners();
+  TextEditingController getObservedController(int index, String initialValue) {
+    if (!_observedControllers.containsKey(index)) {
+      _observedControllers[index] = TextEditingController(text: initialValue);
+    }
+    return _observedControllers[index]!;
   }
+
+  void updateMarks(int index, String newValue) {
+    if (_marksControllers.containsKey(index)) {
+      _marksControllers[index]!.text = newValue;
+      notifyListeners();
+    }
+  }
+
+  void updateRemarks(int index, String newValue) {
+    if (_observedControllers.containsKey(index)) {
+      _observedControllers[index]!.text = newValue;
+      notifyListeners();
+    }
+  }
+
+  void saveValues(List<MarksItem> marksList) {
+    for (int i = 0; i < marksList.length; i++) {
+      marksList[i].mark = _marksControllers[i]?.text ?? "";
+      marksList[i].remarks = _observedControllers[i]?.text ?? "";
+    }
+  }
+
+
 
   //list of marks of students
   Future<void> getListOfMarks(
@@ -1906,6 +1945,8 @@ class StudentParentTeacherController extends ChangeNotifier {
       required String subjectId,
       required String examId}) async {
     try {
+
+
       setIsLoading(isLoading: true);
       await Api.httpRequest(
           requestType: RequestType.get,
@@ -1914,13 +1955,13 @@ class StudentParentTeacherController extends ChangeNotifier {
           .then((response) {
         if (response['status']) {
           MarksList marksList = MarksList.fromJson(response);
-          setListOfMarksController(
-              listOfMarksController: List.generate(marksList.data?.length ?? 0,
-                      (index) => TextEditingController()));
-          setListOfObserverController(
-              listOfObserverController: List.generate(
-                  marksList.data?.length ?? 0,
-                      (index) => TextEditingController()));
+          // setListOfMarksController(
+          //     listOfMarksController: List.generate(marksList.data?.length ?? 0,
+          //             (index) => TextEditingController()));
+          // setListOfObserverController(
+          //     listOfObserverController: List.generate(
+          //         marksList.data?.length ?? 0,
+          //             (index) => TextEditingController()));
           List<MarksItem> listOfMarks = marksList.data ?? [];
           // listOfMarks.sort((a, b) => a.studentLastName?.compareTo(b.studentLastName ?? "") ?? 0);
           listOfMarks.sort((a,b) => normalizeSpanish(a.studentLastName ?? "").compareTo(normalizeSpanish(b.studentLastName ?? "")));
@@ -1961,13 +2002,18 @@ class StudentParentTeacherController extends ChangeNotifier {
         "ExamID": examId,
       };
 
+      List<TextEditingController> remarksController = _observedControllers.values.toList();
+      List<TextEditingController> marksController = _marksControllers.values.toList();
+
       if (listOfMarksItem.isNotEmpty) {
         for (int i = 0; i < listOfMarksItem.length; i++) {
           bodyData["sid[$i]"] = listOfMarksItem[i].studentId ?? "";
-          bodyData["mark[$i]"] = listOfMarksController[i].text;
-          bodyData["remark[$i]"] = listOfObserverController[i].text;
+          bodyData["mark[$i]"] = marksController[i].text;
+          bodyData["remark[$i]"] = remarksController[i].text;
         }
       }
+
+
 
       await Api.httpRequest(
               requestType: RequestType.post, endPoint: "marks", body: bodyData)
@@ -1998,8 +2044,8 @@ class StudentParentTeacherController extends ChangeNotifier {
   //clear screen after operation
   void clearMarkScreen() {
     setListOfMarks(listOfMarksItem: []);
-    setListOfMarksController(listOfMarksController: []);
-    setListOfObserverController(listOfObserverController: []);
+    _marksControllers.clear();
+    _observedControllers.clear();
   }
 
   //Dinning Screen :

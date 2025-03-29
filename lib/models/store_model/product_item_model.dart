@@ -23,7 +23,7 @@ class ProductItem {
   bool? isPurchasable;
   bool? isInStock;
   bool? isOnBackorder;
-  bool? lowStockRemaining;
+  dynamic lowStockRemaining;
   bool? soldIndividually;
   AddToCart? addToCart;
 

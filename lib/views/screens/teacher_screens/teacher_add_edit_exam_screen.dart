@@ -63,7 +63,6 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
         studentParentTeacherController?.setCurrentSelectedClass(
             teacherClass:
                 studentParentTeacherController?.listOfClassAssignToTeacher[0]);
-        print("Assign Class Subject List");
         studentParentTeacherController?.getListOfSubjects(
             classId: studentParentTeacherController
                     ?.listOfClassAssignToTeacher[0].cid ??
@@ -433,7 +432,9 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                                 style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary),
                                               ));
                                         }).toList(),
-                                        onChanged: (String? value){}),
+                                        onChanged: (String? value){
+                                          studentParentTeacherController.setSelectedSubjectOfExam(selectedSubjectIdOfExam: value);
+                                        }),
                                   );
                                 },
                               ),

@@ -58,10 +58,11 @@ class _TeacherAddEditMarksScreenState extends State<TeacherAddEditMarksScreen> {
         onPopInvokedWithResult: (ctx, res) {
           studentParentTeacherController?.setIsLoading(isLoading: false);
           studentParentTeacherController?.setListOfMarks(listOfMarksItem: []);
-          studentParentTeacherController
-              ?.setListOfMarksController(listOfMarksController: []);
-          studentParentTeacherController
-              ?.setListOfObserverController(listOfObserverController: []);
+          // studentParentTeacherController
+          //     ?.setListOfMarksController(listOfMarksController: []);
+          // studentParentTeacherController
+          //     ?.setListOfObserverController(listOfObserverController: []);
+          studentParentTeacherController?.clearMarkScreen();
           studentParentTeacherController?.setListOfExams(listOfExams: []);
           studentParentTeacherController?.setListOfSubject(listOfSubject: []);
           studentParentTeacherController?.setViewMarkSubjectSelected(
@@ -128,10 +129,11 @@ class _TeacherAddEditMarksScreenState extends State<TeacherAddEditMarksScreen> {
               studentParentTeacherController?.setIsLoading(isLoading: false);
               studentParentTeacherController
                   ?.setListOfMarks(listOfMarksItem: []);
-              studentParentTeacherController
-                  ?.setListOfMarksController(listOfMarksController: []);
-              studentParentTeacherController
-                  ?.setListOfObserverController(listOfObserverController: []);
+              // studentParentTeacherController
+              //     ?.setListOfMarksController(listOfMarksController: []);
+              // studentParentTeacherController
+              //     ?.setListOfObserverController(listOfObserverController: []);
+              studentParentTeacherController?.clearMarkScreen();
               studentParentTeacherController?.setListOfExams(listOfExams: []);
               studentParentTeacherController
                   ?.setListOfSubject(listOfSubject: []);
@@ -273,19 +275,17 @@ class _TeacherAddEditMarksScreenState extends State<TeacherAddEditMarksScreen> {
                                             MarksItem marksItem =
                                                 studentParentTeacherController
                                                     .listOfMarksItem[index];
-                                            return MarksEditViewWidget(
-                                              marksItem: marksItem,
-                                              marksController:
-                                                  studentParentTeacherController
-                                                          .listOfMarksController[
-                                                      index],
-                                              observedController:
-                                                  studentParentTeacherController
-                                                          .listOfObserverController[
-                                                      index],
-                                            );
+                                            return ChangeNotifierProvider.value(
+                                              value: studentParentTeacherController,
+                                              child: MarksEditViewWidget(itemIndex: index,
+
+                                                marksItem: marksItem,
+                                                studentParentTeacherController: studentParentTeacherController,
+
+                                            ),);
                                           });
-                        },
+
+                            },
                       ),
                     ),
                   ))
@@ -306,19 +306,25 @@ class _TeacherAddEditMarksScreenState extends State<TeacherAddEditMarksScreen> {
 
 class MarksEditViewWidget extends StatelessWidget {
   final MarksItem? marksItem;
-  final TextEditingController? marksController;
-  final TextEditingController? observedController;
+  final int itemIndex;
+  // final TextEditingController? marksController;
+  // final TextEditingController? observedController;
+  final StudentParentTeacherController? studentParentTeacherController;
 
   const MarksEditViewWidget(
       {super.key,
       this.marksItem,
-      this.marksController,
-      this.observedController});
+      // this.marksController,
+      // this.observedController,
+      this.studentParentTeacherController, required this.itemIndex,
+      });
 
   @override
   Widget build(BuildContext context) {
-    marksController?.text = marksItem?.mark ?? "";
-    observedController?.text = marksItem?.remarks ?? "";
+
+
+    final observedController = studentParentTeacherController?.getObservedController( itemIndex, marksItem?.remarks ?? "");
+    final  marksController = studentParentTeacherController?.getMarksController(itemIndex, marksItem?.mark ?? "");
 
     return Container(
       width: MediaQuery.sizeOf(context).width,
@@ -372,6 +378,7 @@ class MarksEditViewWidget extends StatelessWidget {
                   ),
                   CustomTextField(
                       controller: marksController,
+                      onTextChanged: (value) => studentParentTeacherController?.updateMarks(itemIndex, value ?? ""),
                       validateFunction: (String? value) {})
                 ],
               )),
@@ -394,6 +401,7 @@ class MarksEditViewWidget extends StatelessWidget {
                       ),
                       CustomTextField(
                           controller: observedController,
+                          onTextChanged: (value) => studentParentTeacherController?.updateRemarks(itemIndex, value ?? ""),
                           validateFunction: (String? value) {})
                     ],
                   ))

@@ -60,8 +60,8 @@ dependencies:
   flutter_multi_select_items:
   flutter_localization:
   path_provider:
-  webview_flutter:
-  flutter_inappwebview:
+  shimmer:
+  flutter_paypal:
 dev_dependencies:
   flutter_test:
     sdk: flutter

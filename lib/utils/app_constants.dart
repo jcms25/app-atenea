@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'app_colors.dart';
 import 'app_images.dart';
 
 enum MessageSendCategoryForTeacher{student,parent,toAllParent,toAllStudent}
 
+enum TypesOfPaymentMethod{cash,paypal,bizum,servired}
+
 class AppConstants {
   static const List<String> daysInSpanish = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
 
-
+// Helper function to format price
+  static String formatPrice(double price) {
+    double priceFormat = price / 100; // Convert cents to euros
+    final formatter = NumberFormat.currency(locale: 'de_DE', symbol: '€');
+    return formatter.format(priceFormat); // Example: 2514 -> "25,14 €"
+  }
   static const List<MessageSendCategoryForTeacher> listOfCategoryToTeacherSendMessage = [
     MessageSendCategoryForTeacher.student,
     MessageSendCategoryForTeacher.parent,
@@ -271,6 +279,15 @@ class AppConstants {
   ];
 
 
+  //payment options list
+  static List<PaymentOptionModel> listOfPaymentsMethod = [
+    PaymentOptionModel(id: 1, paymentOptionName: TypesOfPaymentMethod.servired, optionName: 'Servired/RedSys', ),
+    PaymentOptionModel(id: 2, paymentOptionName: TypesOfPaymentMethod.bizum, optionName: 'Bizum'),
+    PaymentOptionModel(id: 3, paymentOptionName: TypesOfPaymentMethod.paypal, optionName: 'PayPal'),
+    PaymentOptionModel(id: 4, paymentOptionName: TypesOfPaymentMethod.cash, optionName: 'Dinero en efectivo'),
+  ];
+
+
   //spain province
   static List<String> spainProvince = [
     "La Coruña",
@@ -444,8 +461,12 @@ class MonthModel{
   const MonthModel({required this.id,required this.monthName});
 }
 
+class PaymentOptionModel{
+  final int id;
+  final TypesOfPaymentMethod paymentOptionName;
+  final String optionName;
+
+  const PaymentOptionModel({required this.id,required this.paymentOptionName,required this.optionName,});
 
 
-
-
-
+}

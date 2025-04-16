@@ -13,7 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_inappwebview/flutter_inappwebview.dart' show InAppWebViewController;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart' show InAppWebViewController;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -34,9 +34,9 @@ void main() async {
     statusBarColor: Colors.grey,
   ));
 
-  // if (Platform.isAndroid) {
-  //   InAppWebViewController.setWebContentsDebuggingEnabled(true);
-  // }
+  if (Platform.isAndroid) {
+    InAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
   await Firebase.initializeApp();
   await NotificationService.initialize();
   AndroidInitializationSettings androidInitializationSettings =
@@ -140,7 +140,7 @@ MaterialColor createMaterialColor(Color color) {
       1,
     );
   }
-  return MaterialColor(color.value, swatch);
+  return MaterialColor(color. value, swatch);
 
 
 }

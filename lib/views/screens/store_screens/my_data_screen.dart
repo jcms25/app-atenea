@@ -82,7 +82,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
           storeController?.setIsOptional(isOptional: false);
           storeController?.setBillingDetailModel(billingDetail: null);
           storeController?.setListOfClass(classList: []);
-          storeController?.setSelectedClassItem(selectedClassItem: []);
+          storeController?.setSelectedClassItem(selectedClassItem: null);
           storeController?.setSelectedProvince(selectedProvince: null);
         },
         child: Scaffold(
@@ -91,7 +91,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                 storeController?.setIsOptional(isOptional: false);
                 storeController?.setBillingDetailModel(billingDetail: null);
                 storeController?.setListOfClass(classList: []);
-                storeController?.setSelectedClassItem(selectedClassItem: []);
+                storeController?.setSelectedClassItem(selectedClassItem: null);
                 storeController?.setSelectedProvince(selectedProvince: null);
                 Get.back();
               },
@@ -298,9 +298,9 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                   child: Consumer<StoreController>(
                                     builder: (context, storeController, child) {
                                       return DropdownButton<String>(
-                                          value: null,
+                                          value: storeController.selectedClassItem,
                                           hint: Text(
-                                            storeController.selectedClassItem.isEmpty ? 'Seleccionar clase' : storeController.selectedClassItem.join(","),
+                                                storeController.selectedClassItem?.isEmpty ?? false ? 'Seleccionar clase' : storeController.selectedClassItem ?? "",
                                             style: AppTextStyle.getOutfit400(
                                                 textSize: 16,
                                                 // textColor: AppColors.secondary
@@ -312,52 +312,53 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                               .map((e) {
                                             return DropdownMenuItem<String>(
                                                 value: e.cName ?? "",
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Consumer<StoreController>(
-                                                      builder: (context,
-                                                          storeController,
-                                                          child) {
-                                                        return Checkbox(
-                                                            value: storeController
-                                                                .selectedClassItem
-                                                                .contains(
-                                                                    e.cName),
-                                                            onChanged:
-                                                                (bool? status) {
-                                                              if (status ??
-                                                                  false) {
-                                                                storeController
-                                                                    .addToSelectedClassItem(
-                                                                        className:
-                                                                            e.cName ??
-                                                                                "");
-                                                              } else {
-                                                                storeController
-                                                                    .removeSelectedClassItem(
-                                                                        className:
-                                                                            e.cName ??
-                                                                                "");
-                                                              }
-                                                            });
-                                                      },
-                                                    ),
-                                                    Text(
-                                                      "${e.cName}",
-                                                      style: AppTextStyle
-                                                          .getOutfit400(
-                                                              textSize: 18,
-                                                              textColor: AppColors
-                                                                  .secondary),
-                                                    )
-                                                  ],
-                                                ));
+                                                child: Text(
+                                                  "${e.cName}",
+                                                  style: AppTextStyle
+                                                      .getOutfit400(
+                                                      textSize: 18,
+                                                      textColor: AppColors
+                                                          .secondary),
+                                                ),
+                                                // child: Row(
+                                                //   mainAxisAlignment:
+                                                //       MainAxisAlignment.start,
+                                                //   children: [
+                                                //     Consumer<StoreController>(
+                                                //       builder: (context,
+                                                //           storeController,
+                                                //           child) {
+                                                //         return Checkbox(
+                                                //             value: s,
+                                                //             onChanged:
+                                                //                 (bool? status) {
+                                                //               if (status ??
+                                                //                   false) {
+                                                //                 storeController
+                                                //                     .addToSelectedClassItem(
+                                                //                         className:
+                                                //                             e.cName ??
+                                                //                                 "");
+                                                //               } else {
+                                                //                 storeController
+                                                //                     .removeSelectedClassItem(
+                                                //                         className:
+                                                //                             e.cName ??
+                                                //                                 "");
+                                                //               }
+                                                //             });
+                                                //       },
+                                                //     ),
+                                                //
+                                                //   ],
+                                                // ));
+                                            );
                                           }).toList(),
                                           underline: const SizedBox.shrink(),
                                           isExpanded: true,
-                                          onChanged: (String? value) {});
+                                          onChanged: (String? value) {
+                                            storeController.setSelectedClassItem(selectedClassItem: value);
+                                          });
                                     },
                                   ),
                                 ),
@@ -386,7 +387,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                               billingState: storeController.selectedProvince ?? "",
                                               billingEmail: emailController?.text ?? "",
                                               billingAlumnosName: studentNameController?.text ?? "",
-                                              billingAlumnosClass: storeController.selectedClassItem);
+                                              billingAlumnosClass: storeController.selectedClassItem ?? "");
                                         }
                                       });
                                 },

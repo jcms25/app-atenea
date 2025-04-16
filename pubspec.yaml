@@ -62,6 +62,8 @@ dependencies:
   path_provider:
   shimmer:
   flutter_paypal:
+  webview_flutter:
+  flutter_inappwebview:
 dev_dependencies:
   flutter_test:
     sdk: flutter

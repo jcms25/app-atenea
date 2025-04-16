@@ -24,10 +24,10 @@ class CheckoutResponse {
     orderNumber = json['order_number'];
     customerNote = json['customer_note'];
     customerId = json['customer_id'];
-    billingAddress = json['billing_address'] != null ? new BillingAddress.fromJson(json['billing_address']) : null;
-    shippingAddress = json['shipping_address'] != null ? new ShippingAddress.fromJson(json['shipping_address']) : null;
+    billingAddress = json['billing_address'] != null ? BillingAddress.fromJson(json['billing_address']) : null;
+    shippingAddress = json['shipping_address'] != null ? ShippingAddress.fromJson(json['shipping_address']) : null;
     paymentMethod = json['payment_method'];
-    paymentResult = json['payment_result'] != null ? new PaymentResult.fromJson(json['payment_result']) : null;
+    paymentResult = json['payment_result'] != null ? PaymentResult.fromJson(json['payment_result']) : null;
     // if (json['additional_fields'] != null) {
     //   additionalFields = <Null>[];
     //   json['additional_fields'].forEach((v) { additionalFields!.add(new Null.fromJson(v)); });

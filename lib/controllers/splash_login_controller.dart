@@ -61,10 +61,10 @@ class SplashLoginController extends ChangeNotifier {
       String roleOfUser = userRole == AppConstants.roleDropDown[1]
           ? "student"
           : userRole == AppConstants.roleDropDown[2]
-              ? "parent"
-              : userRole == AppConstants.roleDropDown[3]
-                  ? "teacher"
-                  : "assistant";
+          ? "parent"
+          : userRole == AppConstants.roleDropDown[3]
+          ? "teacher"
+          : "assistant";
 
       dynamic response = await Api.httpRequest(
           requestType: RequestType.post,
@@ -99,15 +99,15 @@ class SplashLoginController extends ChangeNotifier {
             roleOfUser == "teacher") {
           LoginModel loginModel = LoginModel.fromJson(response);
           await AppSharedPreferences.saveUserData(
-            basicAuthToken: loginModel.basicAuthToken,
+              basicAuthToken: loginModel.basicAuthToken,
               userdata: loginModel.userdata, role: roleOfUser);
           studentParentTeacherController.setLoginModel(userdata: loginModel.userdata);
           studentParentTeacherController.setRole(
               role: roleOfUser == "student"
                   ? RoleType.student
                   : roleOfUser == "parent"
-                      ? RoleType.parent
-                      : RoleType.teacher);
+                  ? RoleType.parent
+                  : RoleType.teacher);
           setIsLoading(isLoading: false);
           Get.offNamedUntil(
               AppRoutes.studentParentTeacherMainScreen, (route) => false);
@@ -129,6 +129,9 @@ class SplashLoginController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
+
+
+
   }
 
   //checked if user already logged in or not

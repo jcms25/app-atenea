@@ -520,7 +520,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   // ),
 
                   /// Quantity Selector
-                  Row(
+                  Visibility(
+                      visible:  storeController.productItem?.type != "yith_bundle" ,
+                      child: Row(
                     children: [
                       IconButton(
                         icon: Icon(Icons.remove_circle,
@@ -539,7 +541,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         onPressed: storeController.increaseQuantity,
                       ),
                     ],
-                  ),
+                  )),
 
                   /// Add to Cart Button
                   Expanded(
@@ -556,7 +558,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ? null
                             : () async{
                           await storeController.addToCart(
-                              noOfItems: storeController.quantity,
+                              noOfItems: storeController.productItem?.type == "yith_bundle" ? 1 : storeController.quantity,
                               tiendaToken: studentParentTeacherController
                                   ?.userdata?.tiendaToken ?? "",
                               productId: storeController.selectedVariations == null ? widget.productId : null,
@@ -565,7 +567,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           );
                         },
                         child: Text(
-                          "Add to Cart",
+                          "Añadir al carrito",
                           style: AppTextStyle.getOutfit600(
                               textSize: 18, textColor: Colors.white),
                         ),

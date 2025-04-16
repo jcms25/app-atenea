@@ -617,7 +617,9 @@ class StudentParentTeacherController extends ChangeNotifier {
   Future<void> getListOfSubjects(
       {required String classId,
       required String? wpId,
-      required RoleType roleType}) async {
+      required RoleType roleType,
+      String? selectedSubjectIdFromEditExam
+      }) async {
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -634,6 +636,14 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           SubjectListModel subjectList = SubjectListModel.fromJson(response);
           setListOfSubject(listOfSubject: subjectList.subjectlist ?? []);
+          if(selectedSubjectIdFromEditExam != null || selectedSubjectIdFromEditExam != "" ){
+            //why i am putting this thing because : some time from list of subject for a particular class, subject removed and if you created exam with that subject than in edit screen subject dropdown will show error.
+            SubjectItem? isItemPresent = tempListOfSubject.firstWhereOrNull((e) => e.id == selectedSubjectIdFromEditExam);
+            if(isItemPresent != null){
+              setSelectedSubjectOfExam(selectedSubjectIdOfExam: selectedSubjectIdFromEditExam);
+            }
+
+          }
         }
         setIsLoading(isLoading: false);
       });
@@ -1650,12 +1660,13 @@ class StudentParentTeacherController extends ChangeNotifier {
           ExamListModel examListModel = ExamListModel.fromJson(response);
           setListOfExams(listOfExams: examListModel.data ?? []);
         }
+
+        setIsLoading(isLoading: false);
       });
 
 
 
 
-      setIsLoading(isLoading: false);
     } catch (exception) {
       setIsLoading(isLoading: false);
     }
@@ -1820,8 +1831,8 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (response['status']) {
           setListOfExams(listOfExams: []);
           resetExamData();
-          Get.offUntil(MaterialPageRoute(builder: (context) => MainScreen()),
-              (route) => false);
+          Get.offAll(() => MainScreen());
+
         }
       });
     } catch (exception) {

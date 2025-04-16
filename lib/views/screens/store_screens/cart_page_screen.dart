@@ -209,7 +209,7 @@ class CartPageScreen extends StatefulWidget {
   State<CartPageScreen> createState() => _CartPageScreenState();
 }
 
-class _CartPageScreenState extends State<CartPageScreen> {
+class _CartPageScreenState extends State<CartPageScreen> with WidgetsBindingObserver {
   StudentParentTeacherController? studentParentTeacherController;
   StoreController? storeController;
 
@@ -226,6 +226,15 @@ class _CartPageScreenState extends State<CartPageScreen> {
             studentParentTeacherController?.userdata?.tiendaToken ?? "",
       );
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state == AppLifecycleState.resumed){
+      storeController?.getCartDetails(tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
+    }
+
   }
 
   @override
@@ -254,14 +263,16 @@ class _CartPageScreenState extends State<CartPageScreen> {
                           storeController.cartResponse?.items?.isNotEmpty ??
                               false,
                       child: GestureDetector(
-                        onTap: () {
-                          Get.bottomSheet(TotalBottomSheet(),
+                        onTap: (){
+                           Get.bottomSheet(TotalBottomSheet(),
                               isDismissible: true,
                               isScrollControlled: true,
-                              backgroundColor: AppColors.transparent);
+                              backgroundColor: AppColors.transparent).then((res){
+                                storeController.setCouponListResponse(couponListResponse: null);
+                          });
                         },
                         child: Text(
-                          'Próximo',
+                          'Comprar',
                           style: AppTextStyle.getOutfit600(
                               textSize: 20, textColor: AppColors.white),
                         ),

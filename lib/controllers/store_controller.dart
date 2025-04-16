@@ -3,15 +3,19 @@ import 'dart:convert';
 
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
 import 'package:colegia_atenea/models/store_model/cart_response_model.dart';
-import 'package:colegia_atenea/models/store_model/checkout_model.dart' hide BillingAddress,ShippingAddress;
+import 'package:colegia_atenea/models/store_model/checkout_model.dart'
+    hide BillingAddress, ShippingAddress;
+import 'package:colegia_atenea/models/store_model/coupon_response.dart';
 import 'package:colegia_atenea/models/store_model/order_details_model.dart';
 import 'package:colegia_atenea/models/store_model/product_item_model.dart';
 import 'package:colegia_atenea/models/store_model/subcategory_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
+import 'package:colegia_atenea/views/screens/webview_screen/webview_demo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:http/http.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/store_model/order_list_model.dart';
 import '../services/api.dart';
@@ -19,6 +23,18 @@ import '../services/app_shared_preferences.dart';
 import '../services/store_api.dart';
 
 class StoreController extends ChangeNotifier {
+  // Function to normalize and sort Spanish names manually
+  String normalizeSpanish(String input) {
+    return input
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ñ', 'n');
+  }
+
   //check box on billing address screen regarding subscribe to email
   bool isOptional = false;
 
@@ -52,26 +68,33 @@ class StoreController extends ChangeNotifier {
   }
 
   //selected class of student in parent billing address
-  List<String> selectedClassItem = [];
+  String? selectedClassItem;
 
-  void setSelectedClassItem({required List<String> selectedClassItem}) {
+  void setSelectedClassItem({required String? selectedClassItem}) {
     this.selectedClassItem = selectedClassItem;
     notifyListeners();
   }
 
-  void addToSelectedClassItem({required String className}) {
-    if (!selectedClassItem.contains(className)) {
-      selectedClassItem.add(className);
-    }
-    notifyListeners();
-  }
-
-  void removeSelectedClassItem({required String className}) {
-    if (selectedClassItem.contains(className)) {
-      selectedClassItem.remove(className);
-    }
-    notifyListeners();
-  }
+  // List<String> selectedClassItem = [];
+  //
+  // void setSelectedClassItem({required List<String> selectedClassItem}) {
+  //   this.selectedClassItem = selectedClassItem;
+  //   notifyListeners();
+  // }
+  //
+  // void addToSelectedClassItem({required String className}) {
+  //   if (!selectedClassItem.contains(className)) {
+  //     selectedClassItem.add(className);
+  //   }
+  //   notifyListeners();
+  // }
+  //
+  // void removeSelectedClassItem({required String className}) {
+  //   if (selectedClassItem.contains(className)) {
+  //     selectedClassItem.remove(className);
+  //   }
+  //   notifyListeners();
+  // }
 
   //selected province
   String? selectedProvince;
@@ -101,6 +124,10 @@ class StoreController extends ChangeNotifier {
 
           if (selectedClass != null &&
               selectedClass.runtimeType == List<String>) {
+            selectedClassItem = selectedClass[0];
+            notifyListeners();
+          } else if (selectedClass.runtimeType == String &&
+              selectedClass != "") {
             selectedClassItem = selectedClass;
             notifyListeners();
           }
@@ -138,7 +165,9 @@ class StoreController extends ChangeNotifier {
       required String billingState,
       required String billingEmail,
       required String billingAlumnosName,
-      required List<String> billingAlumnosClass}) async {
+      required String billingAlumnosClass
+      // required List<String> billingAlumnosClass
+      }) async {
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -158,10 +187,12 @@ class StoreController extends ChangeNotifier {
         "billing_wooccm10": billingAlumnosName
       };
 
-      if (selectedClassItem.isNotEmpty) {
-        for (int i = 0; i < selectedClassItem.length; i++) {
-          bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
-        }
+      // if (selectedClassItem.isNotEmpty) {
+      // for (int i = 0; i < selectedClassItem.length; i++) {
+      //   bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
+      // }
+      if (selectedClassItem != null) {
+        bodyData['billing_wooccm12'] = billingAlumnosClass;
       } else {
         bodyData['billing_wooccm12'] = "";
       }
@@ -179,8 +210,10 @@ class StoreController extends ChangeNotifier {
         setIsLoading(isLoading: false);
         AppConstants.showCustomToast(
             status: res['status'],
-            message: res['message'] ?? res['Message'] ?? "");
+            // message: res['message'] ?? res['Message'] ?? "",
+            message: 'Perfil actualizado correctamente!!');
         if (res['status']) {
+          resetBillingDetails();
           Get.back();
         }
       });
@@ -188,6 +221,13 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
+  }
+
+  void resetBillingDetails() {
+    setBillingDetailModel(billingDetail: null);
+    setListOfClass(classList: []);
+    setSelectedClassItem(selectedClassItem: null);
+    setSelectedProvince(selectedProvince: null);
   }
 
   //list of orders
@@ -199,7 +239,7 @@ class StoreController extends ChangeNotifier {
   }
 
   //list of orders
-  void getListOfOrders({required String wpUserId}) async {
+  Future<void> getListOfOrders({required String wpUserId}) async {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
@@ -227,7 +267,7 @@ class StoreController extends ChangeNotifier {
   }
 
   //details of order
-  void getOrderDetails({required String orderId}) async {
+  Future<void> getOrderDetails({required String orderId}) async {
     try {
       setIsLoading(isLoading: true);
       await Api.httpRequest(
@@ -276,11 +316,15 @@ class StoreController extends ChangeNotifier {
           ? jsonEncode({
               "include":
                   "464,465,466,1001,467,468,469,470,471,472,473,474,475,476,477,478,479",
-              "order": "asc"
+              "order": "asc",
+              "orderby": "slug",
+              "per_page": 100
             })
           : jsonEncode({
               "include": "855,856,857,858,859,860,861,862,863,864",
-              "order": "asc"
+              "order": "asc",
+              "orderby": "slug",
+              "per_page": 100
             });
 
       var response = Request('GET', url)
@@ -392,17 +436,16 @@ class StoreController extends ChangeNotifier {
     if (_debounceTime?.isActive ?? false) _debounceTime?.cancel();
 
     _debounceTime = Timer(const Duration(milliseconds: 300), () {
-      final normalizeQuery = query.toLowerCase();
+      final normalizeQuery = normalizeSpanish(query.toLowerCase());
 
       setFilterProductList(
           tempProductList: normalizeQuery.isEmpty
               ? listOfProducts
               : listOfProducts.where((e) {
-                  return e.name
-                          ?.toLowerCase()
-                          .replaceAll(" ", "")
-                          .contains(query.toLowerCase().replaceAll(" ", "")) ??
-                      false;
+                  return normalizeSpanish(e.name ?? "")
+                      .toLowerCase()
+                      .replaceAll(" ", "")
+                      .contains(normalizeQuery.replaceAll(" ", ""));
                 }).toList());
     });
   }
@@ -546,7 +589,7 @@ class StoreController extends ChangeNotifier {
       var responseData = await Response.fromStream(streamedResponse);
       if (responseData.statusCode == 200 || responseData.statusCode == 201) {
         AppConstants.showCustomToast(
-            status: true, message: "Item added into cart");
+            status: true, message: " Producto añadido al carrito");
         setQuantity(1);
         setSelectedVariations(selectedVariations: null);
         setSelectedVariationDetail(productItem: null);
@@ -733,61 +776,76 @@ class StoreController extends ChangeNotifier {
   }
 
   //selected payment option
-  PaymentOptionModel selectedPaymentOption =
-      AppConstants.listOfPaymentsMethod[0];
+  // PaymentOptionModel selectedPaymentOption =
+  //     AppConstants.listOfPaymentsMethod[0];
+  //
+  // void setSelectedPaymentOption(
+  //     {required PaymentOptionModel? selectedPaymentOption}) {
+  //   this.selectedPaymentOption =
+  //       selectedPaymentOption ?? AppConstants.listOfPaymentsMethod[0];
+  //   notifyListeners();
+  // }
 
-  void setSelectedPaymentOption(
-      {required PaymentOptionModel? selectedPaymentOption}) {
-    this.selectedPaymentOption =
-        selectedPaymentOption ?? AppConstants.listOfPaymentsMethod[0];
+  String? selectedPaymentMethod;
+
+  void setSelectedPaymentMethod({required String? selectedPaymentMethod}) {
+    this.selectedPaymentMethod = selectedPaymentMethod;
     notifyListeners();
   }
 
   //paypal payment function
-  Future<void> checkout({required String tiendaToken}) async {
+  Future<void> checkout(
+      {required String tiendaToken, String? additionalOrderComment}) async {
     try {
       setIsBottomSheetLoader(isBottomSheetLoader: true);
 
-      var url =  Uri.parse('${StoreApi.localBaseURL}/v1/checkout');
+      var url = Uri.parse('${StoreApi.localBaseURL}/v1/checkout');
 
       BillingAddress? billingAddress = cartResponse?.billingAddress;
       ShippingAddress? shippingAddress = cartResponse?.shippingAddress;
 
+      Map<String, dynamic> bodyData = {
+        "billing_address": {
+          "first_name": billingAddress?.firstName ?? "",
+          "last_name": billingAddress?.lastName ?? "",
+          "email": billingAddress?.email ?? "",
+          "city": billingAddress?.city ?? "",
+          "postcode": billingAddress?.postcode ?? "",
+          "country": billingAddress?.country ?? ""
+        },
+        "shipping_address": {
+          "first_name": shippingAddress?.firstName ?? "",
+          "last_name": shippingAddress?.lastName ?? "",
+          "address_1": shippingAddress?.address1 ?? "",
+          "city": shippingAddress?.city ?? "",
+          "postcode": shippingAddress?.postcode ?? "",
+          "country": shippingAddress?.country ?? ""
+        },
+        "payment_method": selectedPaymentMethod
+      };
 
       var response = Request('POST', url)
         ..headers.addAll({
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $tiendaToken'
         })
-        ..body = jsonEncode({
-          {
-            "billing_address": {
-              "first_name": billingAddress?.firstName ?? "",
-              "last_name": billingAddress?.lastName ?? "",
-              "email": billingAddress?.email ?? "",
-              "city": billingAddress?.city ?? "",
-              "postcode": billingAddress?.postcode ?? "",
-              "country": billingAddress?.country ?? ""
-            },
-            "shipping_address": {
-              "first_name": shippingAddress?.firstName ?? "",
-              "last_name": shippingAddress?.lastName ?? "",
-              "address_1": shippingAddress?.address1 ?? "",
-              "city": shippingAddress?.city ?? "",
-              "postcode": shippingAddress?.postcode ?? "",
-              "country": shippingAddress?.country ?? ""
-            },
-            "payment_method": selectedPaymentOption.optionName
-          }
-        });
+        ..body = jsonEncode(bodyData);
 
       var streamedResponse = await response.send();
       var responseData = await Response.fromStream(streamedResponse);
       if (responseData.statusCode == 200 || responseData.statusCode == 201) {
         dynamic data = jsonDecode(responseData.body);
         CheckoutResponse checkoutResponse = CheckoutResponse.fromJson(data);
+        if (checkoutResponse.orderId != null) {
+          String orderId = "${checkoutResponse.orderId}";
 
+          if (additionalOrderComment != null || additionalOrderComment != "") {
+            await addOrderComment(
+                orderId: orderId, comment: additionalOrderComment ?? "");
+          }
 
+          await updateOrderStatusFromProcessingToPending(orderId: orderId);
+        }
       } else {
         dynamic data = jsonDecode(responseData.body);
         AppConstants.showCustomToast(
@@ -800,4 +858,188 @@ class StoreController extends ChangeNotifier {
       setIsBottomSheetLoader(isBottomSheetLoader: false);
     }
   }
+
+  //update order status from processing to pending
+  Future<void> updateOrderStatusFromProcessingToPending(
+      {required String orderId}) async {
+    try {
+      final updateOrderUrl = Uri.parse(
+        'https://colegioatenea.es/wp-json/wc/v3/orders/$orderId?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276',
+      );
+
+      final response = await put(
+        updateOrderUrl,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'status': 'pending'}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        await getPaymentLinkForOrder(orderId: orderId);
+      } else {
+        dynamic data = jsonDecode(response.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: '$exception');
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    }
+  }
+
+  //get payment link for the order
+  Future<void> getPaymentLinkForOrder(
+      {required String orderId, bool? isLoading}) async {
+    try {
+      setIsLoading(isLoading: isLoading ?? false);
+
+      var getPaymentLinkUrl = Uri.parse(
+          'https://colegioatenea.es/wp-json/wc/v3/orders/$orderId?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
+      var response = Request('GET', getPaymentLinkUrl)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          // 'Authorization': 'Bearer $tiendaToken'
+        });
+
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic paymentResponse = jsonDecode(responseData.body);
+
+        if (paymentResponse['payment_url'] != null) {
+          if (paymentResponse['payment_url'] != "") {
+            if (isLoading != null) {
+              setIsLoading(isLoading: false);
+            }
+
+            setIsBottomSheetLoader(isBottomSheetLoader: false);
+            Get.to(() => WebViewScreen(
+                  // loadURL: paymentResponse['payment_url'], label: "",
+                  loadURL: paymentResponse['payment_url'],
+                  label: 'pago',
+                ));
+
+            // Uri uri = Uri.parse(paymentResponse['payment_url']);
+            // if(await canLaunchUrl(uri)){
+            //   print("this is executed");
+            //   await launchUrl(uri,mode: LaunchMode.externalApplication,);
+            // }else{
+            //   AppConstants.showCustomToast(status: false, message: '¡Error! Inténtalo de nuevo.');
+            // }
+          }
+        }
+      } else {
+        dynamic data = jsonDecode(response.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: '$exception');
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    }
+  }
+
+  CouponListResponse? couponListResponse;
+
+  void setCouponListResponse(
+      {required CouponListResponse? couponListResponse}) {
+    this.couponListResponse = couponListResponse;
+    notifyListeners();
+  }
+
+  //get coupon list for coupon screen
+  void getCoupons() async {
+    try {
+      //check whether user is included into ampa or not
+      List<String> userRoles =
+          AppSharedPreferences.getUserData()?.userRoles ?? [];
+
+      if (userRoles.contains('ampa')) {
+        setIsBottomSheetLoader(isBottomSheetLoader: true);
+
+        var getCouponURL = Uri.parse(
+            'https://colegioatenea.es/wp-json/wc/v3/coupons/16818?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
+        var response = Request('GET', getCouponURL)
+          ..headers.addAll({
+            'Content-Type': 'application/json',
+            // 'Authorization': 'Bearer $tiendaToken'
+          });
+
+        var streamedResponse = await response.send();
+        var responseData = await Response.fromStream(streamedResponse);
+
+        if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+          dynamic body = jsonDecode(responseData.body);
+          CouponListResponse couponListResponse =
+              CouponListResponse.fromJson(body);
+          setCouponListResponse(couponListResponse: couponListResponse);
+        } else {
+          dynamic data = jsonDecode(response.body);
+          AppConstants.showCustomToast(
+              status: false, message: '${data['message'] ?? ""}');
+        }
+
+        setIsBottomSheetLoader(isBottomSheetLoader: false);
+      }
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+    }
+  }
+
+  //add additional comment to order
+  Future<void> addOrderComment(
+      {required String orderId, required String comment}) async {
+    try {
+      await Api.httpRequest(
+              requestType: RequestType.post,
+              endPoint: 'updateordernote?order_id=$orderId&order_note=$comment')
+          .then((res) {
+        if (res['status']) {}
+      });
+    } catch (exception) {
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+      notifyListeners();
+    }
+  }
+
+  //Change order status
+  Future<void> changeOrderStatus(
+      {required String orderId,
+      required String statusToChanged,
+      required String wpUserId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      final updateOrderUrl = Uri.parse(
+        'https://colegioatenea.es/wp-json/wc/v3/orders/$orderId?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276',
+      );
+
+      final response = await put(
+        updateOrderUrl,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'status': statusToChanged}),
+      );
+      dynamic data = jsonDecode(response.body);
+      AppConstants.showCustomToast(
+          status: false, message: '${data['message'] ?? ""}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        await getOrderDetails(orderId: orderId);
+        getListOfOrders(wpUserId: wpUserId);
+        setIsLoading(isLoading: false);
+      }
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: '$exception');
+      setIsLoading(isLoading: false);
+    }
+  }
+
+
 }

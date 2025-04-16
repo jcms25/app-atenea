@@ -2,7 +2,9 @@ class LoginModel {
   bool? status;
   String? message;
   String? basicAuthToken;
+
   Userdata? userdata;
+
 
   LoginModel({this.status, this.message, this.basicAuthToken, this.userdata});
 
@@ -20,6 +22,7 @@ class LoginModel {
     data['status'] = status;
     data['Message'] = message;
     data['basicAuthToken'] = basicAuthToken;
+
     if (userdata != null) {
       data['userdata'] = userdata!.toJson();
     }
@@ -89,6 +92,7 @@ class Userdata {
   String? teacherImage;
   String? teacherEmail;
   String? tiendaToken;
+  List<String>? userRoles;
 
   Userdata(
       {this.sid,
@@ -151,7 +155,8 @@ class Userdata {
         this.familyCareHour,
         this.teacherImage,
         this.teacherEmail,
-        this.tiendaToken
+        this.tiendaToken,
+        this.userRoles
       });
 
   Userdata.fromJson(Map<String, dynamic> json) {
@@ -174,6 +179,7 @@ class Userdata {
     classDate = json['class_date'];
     stuImage = json['stu_image'];
     stuEmail = json['stu_email'];
+    userRoles = json['user_roles'] != null ?  userRoles = json['user_roles'].cast<String>() : null;
     if (json['parentData'] != null) {
       parentData = <ParentData>[];
       json['parentData'].forEach((v) {
@@ -298,6 +304,7 @@ class Userdata {
     data['teacher_image'] = teacherImage;
     data['teacher_email'] = teacherEmail;
     data['tiendaToken'] = tiendaToken;
+    data['user_roles'] = userRoles;
     return data;
   }
 }
@@ -491,3 +498,4 @@ class StudentData {
     return data;
   }
 }
+

@@ -1,12 +1,13 @@
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
-import 'package:colegia_atenea/views/screens/store_screens/checkout/checkout_screen.dart';
+import 'package:colegia_atenea/views/screens/store_screens/checkout/checkout_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/store_model/coupon_response.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_constants.dart';
 import '../../../utils/app_textstyle.dart';
@@ -32,13 +33,16 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
     studentParentTeacherController =
         Provider.of<StudentParentTeacherController>(context, listen: false);
     couponController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((res){
+      storeController?.getCoupons();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
         canPop: !(storeController?.isBottomSheetLoader ?? false),
-        child: Consumer<StoreController>(
+        child:  SingleChildScrollView(child: Consumer<StoreController>(
             builder: (context, storeController, child) {
               return Container(
                 height: MediaQuery.sizeOf(context).height * 0.75,
@@ -73,7 +77,6 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                         ),
                         _buildTotalRow(
                             'Subtotal',
-
                             // '${storeController.cartResponse?.totals?.totalPrice ?? 0}'
                             AppConstants.formatPrice((double.tryParse(
                                 "${storeController.cartResponse?.totals?.totalItems}") ??
@@ -131,6 +134,70 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                               return "${AppConstants.formatPrice(double.tryParse(item.price ?? "0") ?? 0)}\t${item.name}";
                             }).toList().join(",")})" : ""}"),
                         const Spacer(),
+                        Consumer2<StoreController,StudentParentTeacherController>(
+                          builder: (context,storeController,studentParentTeacherController,child){
+                            CouponListResponse? couponListResponse = storeController.couponListResponse;
+                            return Visibility(
+                              visible: couponListResponse != null,
+                              child: GestureDetector(
+                                onTap: (){
+                                  couponController?.text = couponListResponse?.code ?? "";
+                                },
+                                child:  Container(
+                                  padding: const EdgeInsets.all(10),
+                                  width: MediaQuery.sizeOf(context).width,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.primary
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text("€${couponListResponse?.amount ?? ""}",style: AppTextStyle.getOutfit600(textSize: 30, textColor: AppColors.orange),),
+                                              SizedBox(height: 5,),
+                                              Text('DESCUENTO',style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.white),)
+                                            ],
+                                          ),
+                                          Expanded(child: Text(
+                                            "Coupen de prueba",
+                                            textAlign: TextAlign.center,
+                                            style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.orange),))
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20,),
+                                      Row(
+                                        children: [
+                                          Expanded(child: Row(
+                                            children: [
+                                              Icon(Icons.discount,color: AppColors.orange,),
+                                              SizedBox(width: 5,),
+                                              Text("${couponListResponse?.code}",style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.orange),)
+                                            ],
+                                          )),
+                                          const SizedBox(width: 5,),
+                                          Expanded(child: Row(
+                                            children: [
+                                              Icon(Icons.watch_later_outlined,color: AppColors.orange,),
+                                              SizedBox(width: 5,),
+                                              Text("Nunca caduca",style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.orange),)
+                                            ],
+                                          ))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20,),
                         Row(
                           children: [
                             // TextField inside Expanded to take available space
@@ -168,7 +235,7 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                                         tiendaToken: studentParentTeacherController
                                             ?.userdata?.tiendaToken ??
                                             "").then((res){
-                                              couponController?.clear();
+                                      couponController?.clear();
                                     });
                                   }else{
                                     AppConstants.showCustomToast(status: false, message: "Por favor ingrese el código de cupón válido");
@@ -198,10 +265,16 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                           builder: (context, storeController, child) {
                             return CustomButtonWidget(
                               buttonTitle: 'Finalizar compra',
-                              onPressed: () {
-                                Get.bottomSheet(CheckOutBottomSheet(),
-                                  backgroundColor: AppColors.transparent
-                                  );
+                              onPressed: storeController.isBottomSheetLoader ? null : (){
+                                Get.back();
+                                Get.bottomSheet(
+                                    isScrollControlled: true,
+                                    isDismissible: !(storeController.isLoading),
+                                    CheckOutBottomSheet(),
+                                    backgroundColor: AppColors.transparent
+                                ).then((res){
+                                  storeController.setSelectedPaymentMethod(selectedPaymentMethod: null);
+                                });
                               },
                               backgroundColor: AppColors.orange,
                               textColor: AppColors.secondary,
@@ -218,7 +291,7 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                   ],
                 ),
               );
-            }),);
+            }),),);
   }
 
   Widget _buildTotalRow(String label, String value) {

@@ -55,20 +55,18 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
         studentParentTeacherController?.setExamTime(examTime: timeOfDay);
       }
 
-      studentParentTeacherController?.setSelectedSubjectOfExam(selectedSubjectIdOfExam: examListItem?.sid);
-
       if (studentParentTeacherController
               ?.listOfClassAssignToTeacher.isNotEmpty ??
           false) {
-        studentParentTeacherController?.setCurrentSelectedClass(
-            teacherClass:
-                studentParentTeacherController?.listOfClassAssignToTeacher[0]);
+        // studentParentTeacherController?.setCurrentSelectedClass(
+        //     teacherClass:
+        //         studentParentTeacherController?.listOfClassAssignToTeacher[0]);
         studentParentTeacherController?.getListOfSubjects(
-            classId: studentParentTeacherController
-                    ?.listOfClassAssignToTeacher[0].cid ??
-                "",
+            classId: studentParentTeacherController?.currentSelectedClass?.cid ?? "",
             wpId: null,
-            roleType: RoleType.teacher);
+            roleType: RoleType.teacher,
+            selectedSubjectIdFromEditExam: examListItem?.sid
+        );
       } else {
         studentParentTeacherController?.getListOfClassesAssignToTeacher(
             showLoader: true, fromWhere: examListItem == null ? null : 9);
@@ -121,6 +119,28 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
+
+
+                              arguments?['reason'] == "edit-exam" ? Consumer<StudentParentTeacherController>(
+                                builder: (context,studentParentTeacherController,child){
+                                  return Container(
+                                    height: 60,
+                                    width: MediaQuery.sizeOf(context).width,
+                                    padding: const EdgeInsets.only(left: 10),
+                                    decoration: BoxDecoration(
+                                     color: AppColors.secondary
+                                        .withValues(alpha: 0.06),
+                                      borderRadius: BorderRadius.circular(10)
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(studentParentTeacherController.currentSelectedClass?.cName ?? "-",
+                                      style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ) :
                               TeacherClassListDropdown(
                                 fromWhichScreen: 4,
                                 height: 60,
@@ -422,7 +442,8 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                     ),
                                     child: DropdownButton<String>(
                                         isExpanded: true,
-                                        underline: SizedBox.shrink(),
+                                        hint: Text('seleccionar asignaturas',style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary.withValues(alpha: 0.4)),),
+                                        underline: const SizedBox.shrink(),
                                         value: studentParentTeacherController.selectedSubjectIdOfExam,
                                         items: studentParentTeacherController.tempListOfSubject.map((e){
                                           return DropdownMenuItem<String>(
@@ -482,6 +503,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                                   .selectedSubjectIdOfExam != null) {
                                                 await studentParentTeacherController
                                                     .addEditExam(
+                                                        examId: examListItem?.eid,
                                                         classId: studentParentTeacherController
                                                                 .currentSelectedClass
                                                                 ?.cid ??

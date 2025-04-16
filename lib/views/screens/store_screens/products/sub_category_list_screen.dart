@@ -31,7 +31,6 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp){
       storeController?.getSubCategoriesOfCategory(categoryName: widget.categoryName, tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
-
     });
   }
 
@@ -42,6 +41,7 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
         canPop: true,
         onPopInvokedWithResult: (res,ctx){
           storeController?.setListOfSubCategory(listOfSubCategory: []);
+          storeController?.setIsLoading(isLoading: false);
         },
         child: Scaffold(
         appBar: CustomAppBarWidget(
@@ -52,6 +52,7 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
           ),
           onLeadingIconClicked: () {
             storeController?.setListOfSubCategory(listOfSubCategory: []);
+            storeController?.setIsLoading(isLoading: false);
             Get.back();
           },
         ),
@@ -76,7 +77,7 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
                 child: TextField(
                   onChanged: storeController?.searchInSubCategoryList,
                   decoration: InputDecoration(
-                    hintText: 'Buscar Productors',
+                    hintText: 'Buscar Productos',
                     border: InputBorder.none,
                     icon: Icon(Icons.search, color: Colors.grey),
                   ),
@@ -105,7 +106,7 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
                         },
                         child: SubCategoryItem(
                           image: subCategoryItem.image?.src ?? "",
-                          title: "${subCategoryItem.name ?? ""}t(${subCategoryItem.count ?? 0})",
+                          title: "${subCategoryItem.name ?? ""}\t(${subCategoryItem.count ?? 0})",
                         ),
                       );
                     },

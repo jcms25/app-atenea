@@ -6,9 +6,9 @@ enum RequestType { post, get , delete}
 
 class Api {
 
-  static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
+  // static const String _baseURL = "https://colegioatenea.es/wp-json/scl-api/v1";
 
-  // static const String _baseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
+  static const String _baseURL = "http://192.168.1.22/colegiaLive/wp-json/scl-api/v1";
   static String get localBaseURL => _baseURL;
 
   static const String _loginEndpoint = "login";

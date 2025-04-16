@@ -139,8 +139,8 @@ class ExamListScreenState extends State<ExamListScreen> {
                                         textSize: 18,
                                         // textColor: AppColors.secondary
                                         //     .withOpacity(0.5)
-                                        textColor: AppColors.secondary.withValues(alpha: 0.5)
-                                    ),
+                                        textColor: AppColors.secondary
+                                            .withValues(alpha: 0.5)),
                                   ),
                                 )
                               : ListView.separated(
@@ -179,15 +179,17 @@ class ExamListScreenState extends State<ExamListScreen> {
           floatingActionButton: Consumer<StudentParentTeacherController>(
             builder: (context, studentParentTeacherController, child) {
               return Visibility(
-                  visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher,
+                  visible:
+                      studentParentTeacherController.currentLoggedInUserRole ==
+                          RoleType.teacher,
                   child: FloatingActionButton(
-                onPressed: () {
-                  Get.to(() => TeacherAddEditExamScreen(),
-                      arguments: {"reason": "add-exam"});
-                },
-                elevation: 0,
-                child: Icon(Icons.add),
-              ));
+                    onPressed: () {
+                      Get.to(() => TeacherAddEditExamScreen(),
+                          arguments: {"reason": "add-exam"});
+                    },
+                    elevation: 0,
+                    child: Icon(Icons.add),
+                  ));
             },
           ),
         ));
@@ -206,8 +208,7 @@ class ExamItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           // color: AppColors.primary.withOpacity(0.05)
-          color: AppColors.primary.withValues(alpha: 0.05)
-      ),
+          color: AppColors.primary.withValues(alpha: 0.05)),
       padding: const EdgeInsets.all(15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,110 +307,148 @@ class ExamItemWidget extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => TeacherAddEditExamScreen(),
-                              arguments: {
-                                "reason": "edit-exam",
-                                "exam-data" : examListItem
-                              });
+                          Get.to(() => TeacherAddEditExamScreen(), arguments: {
+                            "reason": "edit-exam",
+                            "exam-data": examListItem
+                          });
                         },
                         child: SvgPicture.asset(
                           AppImages.edit,
-                          colorFilter:
-                          ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              AppColors.primary, BlendMode.srcIn),
                           width: 20,
                           height: 20,
                         ),
                       ),
-
-                      const SizedBox(width: 10,),
-
+                      const SizedBox(
+                        width: 10,
+                      ),
                       GestureDetector(
                         onTap: () {
-                            Get.dialog(
-                                AlertDialog(
-                                  actionsAlignment: MainAxisAlignment.spaceBetween,
-                                  actionsOverflowDirection: VerticalDirection.up,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
-                                  ),
-                                  actions: [
-                                   Row(
-                                     mainAxisAlignment: MainAxisAlignment.end,
-                                     children: [
-                                       GestureDetector(
-                                         onTap:(){
-                                           Get.back();
-                                         },
-                                         child: Container(
-                                           decoration: BoxDecoration(
-                                             borderRadius: BorderRadius.circular(5),
-                                             color: AppColors.primary
-                                           ),
-                                           padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                                           child: Text('No',style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.white),),
-                                         ),
-                                       ),
-                                       const SizedBox(width: 10,),
-                                       Consumer<StudentParentTeacherController>(
-                                           builder: (context,studentParentTeacherController,child){
-                                              return  GestureDetector(
-                                           onTap: () async{
-                                             try{
-                                               String? token = AppSharedPreferences.getBasicAthToken();
-                                               studentParentTeacherController.setIsLoading(isLoading: true);
-                                               Get.back();
-                                               await Api.httpRequest(requestType: RequestType.delete,
-                                                   endPoint: "${Api.teacherDeleteExam}/${examListItem.eid}",
-                                                    header: {
-                                                        "Authorization" : "Basic $token"
-                                                    }
-                                               ).then((res){
-                                                 if(res['status']){
-
-                                                  studentParentTeacherController.getListOfExams(classId: studentParentTeacherController.currentSelectedClass?.cid ??
-                                                      "", wpUserId: "", roleType: RoleType.teacher);
-                                                 }
-                                                 AppConstants.showCustomToast(status: false, message: res['message'] ?? res['Message'] ?? "");
-                                               });
-
-                                                }catch(exception){
-                                              studentParentTeacherController.setIsLoading(isLoading: false);
-                                              AppConstants.showCustomToast(status: false, message: "$exception");
-                                             }
-                                           },
-                                           child: Container(
-                                             decoration: BoxDecoration(
-                                                 borderRadius: BorderRadius.circular(5),
-                                                 color: AppColors.primary
-                                             ),
-                                             padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                                             child: Text('Yes',style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.white),),
-                                           ),
-                                         );
-                                       })
-                                     ],
-                                   )
-                                  ],
-                                  title: Text('Delete Exam!!!',style: AppTextStyle.getOutfit600(textSize: 18, textColor: AppColors.black),),
-                                  // content: Text("Are you sure want to delete ${examListItem.eName} ?"),
-                                  content: RichText(text: TextSpan(
-                                    text: "Are you sure want to delete\t",
-                                    style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.black),
+                          Get.dialog(
+                              AlertDialog(
+                                actionsAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                actionsOverflowDirection: VerticalDirection.up,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      TextSpan(
-                                        text: '${examListItem.eName}',
-                                        style: AppTextStyle.getOutfit600(textSize: 18, textColor: AppColors.black),
-                                        children: [
-                                          TextSpan(
-                                            text: "?"
-                                          )
-                                        ]
-                                      )
-                                    ]
-                                  )),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.back();
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.primary),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 10),
+                                          child: Text(
+                                            'No',
+                                            style: AppTextStyle.getOutfit400(
+                                                textSize: 18,
+                                                textColor: AppColors.white),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Consumer<StudentParentTeacherController>(
+                                          builder: (context,
+                                              studentParentTeacherController,
+                                              child) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            try {
+                                              String? token =
+                                                  AppSharedPreferences
+                                                      .getBasicAthToken();
+                                              studentParentTeacherController
+                                                  .setIsLoading(
+                                                      isLoading: true);
+                                              Get.back();
+                                              await Api.httpRequest(
+                                                  requestType:
+                                                      RequestType.delete,
+                                                  endPoint:
+                                                      "${Api.teacherDeleteExam}/${examListItem.eid}",
+                                                  header: {
+                                                    "Authorization":
+                                                        "Basic $token"
+                                                  }).then((res) async {
+                                                if (res['status']) {
+                                                  await studentParentTeacherController
+                                                      .getListOfExams(
+                                                          classId:
+                                                              studentParentTeacherController
+                                                                      .currentSelectedClass
+                                                                      ?.cid ??
+                                                                  "",
+                                                          wpUserId: "",
+                                                          roleType:
+                                                              RoleType.teacher);
+                                                }
+                                                AppConstants.showCustomToast(
+                                                    status: res['status'],
+                                                    message: res['message'] ??
+                                                        res['Message'] ??
+                                                        "");
+                                              });
+                                            } catch (exception) {
+                                              studentParentTeacherController
+                                                  .setIsLoading(
+                                                      isLoading: false);
+                                              AppConstants.showCustomToast(
+                                                  status: false,
+                                                  message: "$exception");
+                                            }
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: AppColors.primary),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 10),
+                                            child: Text(
+                                              'SI',
+                                              style: AppTextStyle.getOutfit400(
+                                                  textSize: 18,
+                                                  textColor: AppColors.white),
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                    ],
+                                  )
+                                ],
+                                title: Text(
+                                  'Eliminar Examen/Trabajo',
+                                  style: AppTextStyle.getOutfit600(
+                                      textSize: 18, textColor: AppColors.black),
                                 ),
-                                barrierDismissible: false
-                            );
+                                // content: Text("Are you sure want to delete ${examListItem.eName} ?"),
+                                content: RichText(
+                                    text: TextSpan(
+                                        text: "¿Estás seguro de eliminar ${examListItem.eName}? ",
+                                        style: AppTextStyle.getOutfit400(
+                                            textSize: 16,
+                                            textColor: AppColors.black),
+                                        children: [
+                                      TextSpan(
+                                          text: '${examListItem.eName}',
+                                          style: AppTextStyle.getOutfit600(
+                                              textSize: 18,
+                                              textColor: AppColors.black),
+                                          children: [TextSpan(text: "?")])
+                                    ])),
+                              ),
+                              barrierDismissible: false);
                         },
                         // child: SvgPicture.asset(
                         //   App,

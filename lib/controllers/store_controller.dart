@@ -11,11 +11,10 @@ import 'package:colegia_atenea/models/store_model/product_item_model.dart';
 import 'package:colegia_atenea/models/store_model/subcategory_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/screens/webview_screen/webview_demo.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:http/http.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/store_model/order_list_model.dart';
 import '../services/api.dart';
@@ -483,6 +482,7 @@ class StoreController extends ChangeNotifier {
     notifyListeners();
   }
 
+  //get product details
   Future<void> getProductDetail(
       {required String productId,
       required String tiendaToken,
@@ -793,7 +793,7 @@ class StoreController extends ChangeNotifier {
     notifyListeners();
   }
 
-  //paypal payment function
+  //checkout function which will generate OrderId
   Future<void> checkout(
       {required String tiendaToken, String? additionalOrderComment}) async {
     try {
@@ -887,7 +887,7 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: '$exception');
       setIsBottomSheetLoader(isBottomSheetLoader: false);
     }
-  }
+  } 
 
   //get payment link for the order
   Future<void> getPaymentLinkForOrder(
@@ -944,6 +944,7 @@ class StoreController extends ChangeNotifier {
     }
   }
 
+  //List of Coupons Response
   CouponListResponse? couponListResponse;
 
   void setCouponListResponse(
@@ -956,36 +957,39 @@ class StoreController extends ChangeNotifier {
   void getCoupons() async {
     try {
       //check whether user is included into ampa or not
-      List<String> userRoles =
-          AppSharedPreferences.getUserData()?.userRoles ?? [];
+      // List<String> userRoles =
+      //     AppSharedPreferences.getUserData()?.userRoles ?? [];
 
-      if (userRoles.contains('ampa')) {
-        setIsBottomSheetLoader(isBottomSheetLoader: true);
+      setIsBottomSheetLoader(isBottomSheetLoader: true);
 
-        var getCouponURL = Uri.parse(
-            'https://colegioatenea.es/wp-json/wc/v3/coupons/16818?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
-        var response = Request('GET', getCouponURL)
-          ..headers.addAll({
-            'Content-Type': 'application/json',
-            // 'Authorization': 'Bearer $tiendaToken'
-          });
+      var getCouponURL = Uri.parse(
+          'https://colegioatenea.es/wp-json/wc/v3/coupons/16818?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
+      var response = Request('GET', getCouponURL)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          // 'Authorization': 'Bearer $tiendaToken'
+        });
 
-        var streamedResponse = await response.send();
-        var responseData = await Response.fromStream(streamedResponse);
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
 
-        if (responseData.statusCode == 200 || responseData.statusCode == 201) {
-          dynamic body = jsonDecode(responseData.body);
-          CouponListResponse couponListResponse =
-              CouponListResponse.fromJson(body);
-          setCouponListResponse(couponListResponse: couponListResponse);
-        } else {
-          dynamic data = jsonDecode(response.body);
-          AppConstants.showCustomToast(
-              status: false, message: '${data['message'] ?? ""}');
-        }
-
-        setIsBottomSheetLoader(isBottomSheetLoader: false);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic body = jsonDecode(responseData.body);
+        CouponListResponse couponListResponse =
+        CouponListResponse.fromJson(body);
+        setCouponListResponse(couponListResponse: couponListResponse);
       }
+      else {
+        dynamic data = jsonDecode(response.body);
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+      }
+
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+
+      // if (userRoles.contains('ampa')) {
+      //
+      // }
     } catch (exception) {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsBottomSheetLoader(isBottomSheetLoader: false);
@@ -1041,5 +1045,99 @@ class StoreController extends ChangeNotifier {
     }
   }
 
+
+
+  //Paypal checkout for paypal method selected
+  Future<void> payUsingPaypal({required String orderId,required BuildContext context,required String wpUserId,OrderDetailModel? orderData,CartResponse? cartData}) async{
+
+    try {
+      setIsLoading(
+          isLoading: true);
+       await Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  UsePaypal(
+                    sandboxMode: true,
+                    // Set to false for Live Mode
+                    //test 14 credentials clientId id and secret key
+                    clientId: "AS0W6aKI2ei2j6RIXF-PAHYeJUIVSn9ghhSKR7RitaxAryJFqM59QKqp-zZsB3CPNscMrMFIHUhuR420",
+                    secretKey: "EDngjRXR-qcOfUbrEch4ZMMac6mewMvElddpt_rQiBu4qmXmp30dpUU6d3ioaeq7NAJfVROcdYC_zHCg",
+                    returnURL: "https://your-app.com/return",
+                    cancelURL: "https://your-app.com/cancel",
+                    transactions: [
+                      {
+                        "amount": {
+                          "total": orderData != null ? orderData.others != null && orderData.others!.isNotEmpty  ? orderData.others![0].total ?? "" : "" : cartResponse?.totals?.totalPrice,
+                          "currency": "USD",
+                          "details": {
+                            "subtotal": "0",
+                            "shipping": "0",
+                            "handling_fee": "0",
+                            "tax": "0",
+                            "shipping_discount": 0
+                          }
+                        },
+                        "description": "Payment for Order #$orderId",
+                        "invoice_number": orderId
+                      }
+                    ],
+                    note: "Thank you for your purchase!",
+                    onSuccess: (Map params) async{
+                      await changeOrderStatus(orderId: orderId, statusToChanged: 'wc-completado', wpUserId: wpUserId).then((res) async{
+                        if(orderData != null){
+                          await getOrderDetails(orderId: orderId);
+                        }else{
+
+                        }
+                      });
+                    },
+                    onCancel: (Map params) {
+
+
+                    },
+                    onError: (error) {
+
+                    },
+                  )
+          ));
+      setIsLoading(
+          isLoading: false);
+    } catch (exception) {
+      setIsLoading(
+          isLoading: false);
+      AppConstants.showCustomToast(
+          status: false, message: "$exception");
+    }
+  }
+
+
+
+  //empty cart
+  Future<void> emptyCart({required String tiendaToken}) async{
+    try{
+      setIsLoading(isLoading: true);
+
+      final response = await delete(
+        Uri.parse("${Api.localBaseURL}/cart/items"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Basic $tiendaToken",
+        },
+        body: jsonEncode({'status': 'wc-completado '}),
+      );
+      dynamic data = jsonDecode(response.body);
+
+      setIsLoading(isLoading: false);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        AppConstants.showCustomToast(
+            status: false, message: '${data['message'] ?? ""}');
+
+      }
+
+      setIsLoading(isLoading: false);
+    }catch(exception){
+      setIsLoading(isLoading: false);
+    }
+  }
 
 }

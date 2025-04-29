@@ -13,7 +13,7 @@ import '../models/assistant/assistant_sub_slot_model.dart';
 import '../views/screens/login_screen.dart';
 
 
-enum RequestType{post,get}
+// enum RequestType{post,get}
 
 
 class ApiClass{

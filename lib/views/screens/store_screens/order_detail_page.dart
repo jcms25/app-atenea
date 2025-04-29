@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_constants.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final String orderNumber;
@@ -261,34 +262,36 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           ));
                 },
               ),
-              Consumer<StoreController>(builder: (context,storeController,child){
+              Consumer2<StoreController,StudentParentTeacherController>(builder: (context,storeController,studentParentTeacherController,child){
                 return  Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
                       visible: storeController.orderDetailModel?.others?[0].status == "pending",
-                      child: Padding(padding: const EdgeInsets.all(10), child:  Consumer2<StoreController, StudentParentTeacherController>(
-                        builder: (context, storeController,
-                            studentParentTeacherController, child) {
-                          return Row(
-                            children: [
-                              Expanded(child: CustomButtonWidget(
-                                  buttonTitle: 'Cancelar',
-                                  onPressed: () async {
-                                    await storeController.changeOrderStatus(
-                                        orderId: widget.orderNumber,
-                                        statusToChanged: 'cancelled',
-                                        wpUserId: studentParentTeacherController
-                                            .userdata?.wpUsrId ??
-                                            "");
-                                  })),
-                              const SizedBox(width: 20,),
-                              Expanded(child:   CustomButtonWidget(
-                                  buttonTitle: 'Pagar', onPressed: () async{
-                                  await storeController.getPaymentLinkForOrder(orderId: widget.orderNumber,isLoading: true);
-                              }),)
-                            ],
-                          );
-                        },
+                      child: Padding(padding: const EdgeInsets.all(10), child:  Row(
+                        children: [
+                          Expanded(child: CustomButtonWidget(
+                              buttonTitle: 'Cancelar',
+                              onPressed: () async {
+                                await storeController.changeOrderStatus(
+                                    orderId: widget.orderNumber,
+                                    statusToChanged: 'cancelled',
+                                    wpUserId: studentParentTeacherController
+                                        .userdata?.parentWpUsrId ??
+                                        "");
+                              })),
+                          const SizedBox(width: 20,),
+                          Expanded(child:   CustomButtonWidget(
+                              buttonTitle: 'Pagar', onPressed: () async{
+
+                            // if(storeController.orderDetailModel?.others?[0].paymentMethod == "PayPal"){
+                            //   // await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "");
+                            //   await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",orderData: storeController.orderDetailModel);
+                            // }
+                            AppConstants.showCustomToast(status: false, message: 'Actualmente funcionando. Proporcionaremos una actualización en la próxima actualización de APK.');
+
+                            // await storeController.getPaymentLinkForOrder(orderId: widget.orderNumber,isLoading: true);
+                          }),)
+                        ],
                       ),)),
                 );
               }),

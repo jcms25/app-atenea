@@ -4,7 +4,6 @@ import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +21,15 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
   StoreController? storeController;
   StudentParentTeacherController? studentParentTeacherController;
 
+  TextEditingController? additionalComments;
+
   @override
   void initState() {
     super.initState();
     storeController = Provider.of<StoreController>(context, listen: false);
     studentParentTeacherController =
         Provider.of<StudentParentTeacherController>(context, listen: false);
+    additionalComments = TextEditingController();
   }
 
   @override
@@ -91,6 +93,7 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                   CustomTextField(
                     validateFunction: (value) {},
                     minLine: 5,
+                    controller: additionalComments,
                     textInputAction: TextInputAction.done,
                     hintText: """Añada las observaciones que crea oportunas para cuando procesemos el pedido (por ejemplo, en tregar al alumno)""",
                   ),
@@ -113,76 +116,104 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                               textColor: AppColors.secondary,
                               buttonTitle: 'Realizar el pedido',
                               onPressed: () async {
-                                // if(storeController.selectedPaymentOption == AppConstants.listOfPaymentsMethod[2]){
-                                 try{
-                                   await Navigator.of(context).push(MaterialPageRoute(
-                                     builder: (BuildContext context) => UsePaypal(
-                                       sandboxMode: true, // Set to false for Live Mode
-                                       clientId: "AeHT8MueLp3v2EpqSDIuPQ9Zabq5aC61RgCdVN-yhVFJbapEWLjXk6Cn654qpJqG9yeyQ1AaNIq0F3ew",
-                                       secretKey: "EAsbfjhUJCNXlWjm0YZfcO4VswmbnpyhPygdppp14PH3RxQ-Y-QUf5AEneFy2a-_vOZTIERKk3GGmRIT",
-                                       returnURL: "https://your-app.com/return",
-                                       cancelURL: "https://your-app.com/cancel",
-                                       transactions: [
-                                         {
-                                           "amount": {
-                                             "total": "10.00",
-                                             "currency": "USD",
-                                             "details": {
-                                               "subtotal": "10.00",
-                                               "shipping": "0",
-                                               "handling_fee": "0",
-                                               "tax": "0",
-                                               "shipping_discount": 0
-                                             }
-                                           },
-                                           "description": "Payment for Order #1234",
-                                         }
-                                       ],
-                                       note: "Thank you for your purchase!",
-                                       onSuccess: (Map params) {
-                                         ScaffoldMessenger.of(context).showSnackBar(
-                                             SnackBar(content: Text("Payment Successful!",style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.primary),))
-                                         );
-                                       },
-                                       onCancel: (Map params) {
-                                         ScaffoldMessenger.of(context).showSnackBar(
-                                             SnackBar(content: Text("Payment Cancelled"))
-                                         );
-                                       },
-                                       onError: (error) {
-                                         ScaffoldMessenger.of(context).showSnackBar(
-                                             SnackBar(content: Text("Payment Error!"))
-                                         );
-                                       },
-                                     ),
-                                   ));
-                                 }catch(exception){
-                                   AppConstants.showCustomToast(status: false, message: "$exception");
-                                 }
 
-
-
-                                // if (storeController.selectedPaymentMethod !=
-                                //     null) {
+                                // if(storeController.selectedPaymentMethod == "ppcp-gateway") {
                                 //   try {
-                                //     await storeController.checkout(
-                                //         tiendaToken:
-                                //             studentParentTeacherController
-                                //                     .userdata?.tiendaToken ??
-                                //                 "");
+                                //     storeController.setIsLoading(
+                                //         isLoading: true);
+                                //
+                                //     if (storeController.selectedPaymentMethod !=
+                                //         null) {
+                                //       try {
+                                //         await storeController.checkout(
+                                //             tiendaToken:
+                                //                 studentParentTeacherController
+                                //                         .userdata?.tiendaToken ??
+                                //                     "",
+                                //             additionalOrderComment: additionalComments?.text.isNotEmpty ?? false ? additionalComments?.text ?? "" : null
+                                //         );
+                                //       } catch (exception) {
+                                //         AppConstants.showCustomToast(
+                                //             status: false, message: '$exception');
+                                //       }
+                                //     } else {
+                                //     }
+                                //
+                                //
+                                //
+                                //     // await Navigator.of(context).push(
+                                //     //     MaterialPageRoute(
+                                //     //       builder: (BuildContext context) =>
+                                //     //           UsePaypal(
+                                //     //             sandboxMode: true,
+                                //     //             // Set to false for Live Mode
+                                //     //             clientId: "ASBWJBhK7MZPbRxSWlTEgbl1tiRajJd3-Vx5tmWWWj_UaF4YbUe4jz318wfD5DnvVueB0VNpzR-go1gx",
+                                //     //             secretKey: "EIAZuWHXI49xrFWIjZfmUMsGUpU7t3t_vs2wlmRcK4kXKe0h0X7S8QRvuH3uMQB6H9JSHpJrJuXOivE6",
+                                //     //             returnURL: "https://your-app.com/return",
+                                //     //             cancelURL: "https://your-app.com/cancel",
+                                //     //             transactions: [
+                                //     //               {
+                                //     //                 "amount": {
+                                //     //                   "total": storeController.cartResponse?.totals?.totalPrice ?? "0.0",
+                                //     //                   "currency": "USD",
+                                //     //                   "details": {
+                                //     //                     "subtotal": storeController.cartResponse?.totals?.totalItems ?? "0.0",
+                                //     //                     "shipping": "0",
+                                //     //                     "handling_fee": "0",
+                                //     //                     "tax": storeController.cartResponse?.totals?.totalItemsTax ?? "0.0",
+                                //     //                     "shipping_discount": 0
+                                //     //                   }
+                                //     //                 },
+                                //     //                 "description": "Payment for Order #${}",
+                                //     //               }
+                                //     //             ],
+                                //     //             note: "Thank you for your purchase!",
+                                //     //
+                                //     //             onSuccess: (Map params) {
+                                //     //                 ScaffoldMessenger.of(context)
+                                //     //                     .showSnackBar(
+                                //     //                     SnackBar(content: Text(
+                                //     //                       "Payment Successful!",
+                                //     //                       style: AppTextStyle
+                                //     //                           .getOutfit400(
+                                //     //                           textSize: 18,
+                                //     //                           textColor: AppColors
+                                //     //                               .primary),))
+                                //     //                 );
+                                //     //             },
+                                //     //             onCancel: (Map params) {
+                                //     //               ScaffoldMessenger.of(context)
+                                //     //                   .showSnackBar(
+                                //     //                   SnackBar(content: Text(
+                                //     //                       "Payment Cancelled"))
+                                //     //               );
+                                //     //             },
+                                //     //             onError: (error) {
+                                //     //               ScaffoldMessenger.of(context)
+                                //     //                   .showSnackBar(
+                                //     //                   SnackBar(content: Text(
+                                //     //                       "Payment Error!"))
+                                //     //               );
+                                //     //             },
+                                //     //           ),
+                                //     //     ));
+                                //     storeController.setIsLoading(
+                                //         isLoading: false);
                                 //   } catch (exception) {
+                                //     storeController.setIsLoading(
+                                //         isLoading: false);
                                 //     AppConstants.showCustomToast(
-                                //         status: false, message: '$exception');
+                                //         status: false, message: "$exception");
                                 //   }
-                                // } else {
-                                //   AppConstants.showCustomToast(
-                                //       status: false,
-                                //       message:
-                                //           'Por favor seleccione el método de pago');
+                                //
+                                //
+                                //
                                 // }
-                              }
 
-                              );
+
+                                AppConstants.showCustomToast(status: false, message: 'Actualmente funcionando. Proporcionaremos una actualización en la próxima actualización de APK.');
+
+                              });
                     },
                   ),
                   const SizedBox(

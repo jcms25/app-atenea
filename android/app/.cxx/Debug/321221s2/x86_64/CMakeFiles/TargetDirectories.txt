@@ -1,0 +1,2 @@
+/Users/vishalbhatt/Documents/Flutter_Projects/demo_projects/payment_gateway_int_colegio/android/app/.cxx/Debug/321221s2/x86_64/CMakeFiles/edit_cache.dir
+/Users/vishalbhatt/Documents/Flutter_Projects/demo_projects/payment_gateway_int_colegio/android/app/.cxx/Debug/321221s2/x86_64/CMakeFiles/rebuild_cache.dir

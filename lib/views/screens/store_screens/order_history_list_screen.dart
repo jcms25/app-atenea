@@ -13,7 +13,10 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/store_model/order_list_model.dart';
+import '../../../services/redsys_service.dart';
 import '../../../utils/app_colors.dart';
+
+
 
 class OrderHistoryListScreen extends StatefulWidget {
   const OrderHistoryListScreen({super.key});
@@ -190,9 +193,11 @@ class OrderHistoryWidget extends StatelessWidget {
                   ),
                   Expanded(
                       child: CustomButtonWidget(
-                          buttonTitle: 'Ver', onPressed: () {
-                            Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
-                      })),
+                          buttonTitle: 'Ver', onPressed: () async{
+                            // Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
+                            final result = await PaymentService.startPayment();
+
+                          })),
                 ],
               )
             ],
@@ -233,3 +238,4 @@ class OrderRowWidget extends StatelessWidget {
     );
   }
 }
+

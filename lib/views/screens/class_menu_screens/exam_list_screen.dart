@@ -1,6 +1,5 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/exam_list_model.dart';
-import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
@@ -365,9 +364,7 @@ class ExamItemWidget extends StatelessWidget {
                                         return GestureDetector(
                                           onTap: () async {
                                             try {
-                                              String? token =
-                                                  AppSharedPreferences
-                                                      .getBasicAthToken();
+                                              // String? token = AppSharedPreferences.getBasicAthToken();
                                               studentParentTeacherController
                                                   .setIsLoading(
                                                       isLoading: true);
@@ -377,10 +374,12 @@ class ExamItemWidget extends StatelessWidget {
                                                       RequestType.delete,
                                                   endPoint:
                                                       "${Api.teacherDeleteExam}/${examListItem.eid}",
-                                                  header: {
-                                                    "Authorization":
-                                                        "Basic $token"
-                                                  }).then((res) async {
+                                                  // header: {
+                                                  //   "Authorization":
+                                                  //       "Basic $token"
+                                                  // }
+
+                                                  ).then((res) async {
                                                 if (res['status']) {
                                                   await studentParentTeacherController
                                                       .getListOfExams(
@@ -392,6 +391,8 @@ class ExamItemWidget extends StatelessWidget {
                                                           wpUserId: "",
                                                           roleType:
                                                               RoleType.teacher);
+                                                }else{
+                                                  studentParentTeacherController.setIsLoading(isLoading: false);
                                                 }
                                                 AppConstants.showCustomToast(
                                                     status: res['status'],
@@ -435,7 +436,7 @@ class ExamItemWidget extends StatelessWidget {
                                 // content: Text("Are you sure want to delete ${examListItem.eName} ?"),
                                 content: RichText(
                                     text: TextSpan(
-                                        text: "¿Estás seguro de eliminar ${examListItem.eName}? ",
+                                        text: "¿Estás seguro de eliminar\t",
                                         style: AppTextStyle.getOutfit400(
                                             textSize: 16,
                                             textColor: AppColors.black),

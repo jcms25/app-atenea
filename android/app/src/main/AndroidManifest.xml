@@ -19,6 +19,7 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:usesCleartextTraffic="true"
+        tools:replace="android:label"
         tools:ignore="UnusedAttribute">
 
         <meta-data
@@ -54,6 +55,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.redsys.tpvvinapplibrary.DirectPaymentActivity"
+            android:exported="true" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

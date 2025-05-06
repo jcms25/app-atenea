@@ -182,7 +182,7 @@ class OrderHistoryWidget extends StatelessWidget {
                           if(await canLaunchUrl(Uri.parse(orderItem.invoiceLink ?? ""))){
                                 await launchUrl(Uri.parse(orderItem.invoiceLink ?? ""));
                               }else{
-                                AppConstants.showCustomToast(status: false, message: "Please Try Again.");
+                                AppConstants.showCustomToast(status: false, message: "Por favor, inténtalo de nuevo");
                               }
                             }catch(exception){
                               AppConstants.showCustomToast(status: false, message: "$exception");
@@ -192,12 +192,16 @@ class OrderHistoryWidget extends StatelessWidget {
                     width: 10,
                   ),
                   Expanded(
-                      child: CustomButtonWidget(
-                          buttonTitle: 'Ver', onPressed: () async{
-                            // Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
-                            final result = await PaymentService.startPayment();
+                      child: Consumer2<StoreController,StudentParentTeacherController>(
+                        builder: (context,storeController,studentParentTeacherController,child){
+                          return CustomButtonWidget(
+                              buttonTitle: 'Ver', onPressed: () async{
+                              Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
+                             // await PaymentService.startPayment();
 
-                          })),
+                          });
+                        },
+                      )),
                 ],
               )
             ],

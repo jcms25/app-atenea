@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/store_model/coupon_response.dart';
-import '../../../utils/app_colors.dart';
-import '../../../utils/app_constants.dart';
-import '../../../utils/app_textstyle.dart';
-import '../../custom_widgets/custom_button_widget.dart';
+import '../../../../models/store_model/coupon_response.dart';
+import '../../../../utils/app_colors.dart';
+import '../../../../utils/app_constants.dart';
+import '../../../../utils/app_textstyle.dart';
+import '../../../custom_widgets/custom_button_widget.dart';
 
 class TotalBottomSheet extends StatefulWidget {
   const TotalBottomSheet({super.key});
@@ -159,14 +159,15 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                                           Column(
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
-                                              Text("€${couponListResponse?.amount ?? ""}",style: AppTextStyle.getOutfit600(textSize: 30, textColor: AppColors.orange),),
-                                              SizedBox(height: 5,),
+                                              Text("${couponListResponse?.discountType == "percent" ? double.parse(couponListResponse?.amount ?? "0.0").toInt() : couponListResponse?.amount ?? ""}\t%",style: AppTextStyle.getOutfit600(textSize: 30, textColor: AppColors.orange),),
+                                              const SizedBox(height: 5,),
                                               Text('DESCUENTO',style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.white),)
                                             ],
                                           ),
+                                          const SizedBox(width: 10,),
                                           Expanded(child: Text(
-                                            "Coupen de prueba",
-                                            textAlign: TextAlign.center,
+                                            "Descuento del 10% en Uniformes y Ropa deportiva por pertenecer a la AMPA",
+                                            textAlign: TextAlign.start,
                                             style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.orange),))
                                         ],
                                       ),

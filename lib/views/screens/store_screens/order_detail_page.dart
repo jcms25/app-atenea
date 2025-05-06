@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_colors.dart';
-import '../../../utils/app_constants.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final String orderNumber;
@@ -283,14 +282,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           Expanded(child:   CustomButtonWidget(
                               buttonTitle: 'Pagar', onPressed: () async{
 
-                            // if(storeController.orderDetailModel?.others?[0].paymentMethod == "PayPal"){
-                            //   // await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "");
-                            //   await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",orderData: storeController.orderDetailModel);
-                            // }
-                            AppConstants.showCustomToast(status: false, message: 'Actualmente funcionando. Proporcionaremos una actualización en la próxima actualización de APK.');
-
-                            // await storeController.getPaymentLinkForOrder(orderId: widget.orderNumber,isLoading: true);
-                          }),)
+                            if(storeController.orderDetailModel?.others?[0].paymentMethod == "PayPal"){
+                              // await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "");
+                              await storeController.payUsingPaypal(orderId: widget.orderNumber, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",orderData: storeController.orderDetailModel);
+                            }
+                           }),)
                         ],
                       ),)),
                 );

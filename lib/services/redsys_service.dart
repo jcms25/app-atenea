@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class PaymentService {
@@ -7,7 +8,9 @@ class PaymentService {
     try {
       await platform.invokeMethod('startRedsysPayment');
     } catch (e) {
-      print('Payment initiation failed: $e');
+      if (kDebugMode) {
+        print('Payment initiation failed: $e');
+      }
 
     }
   }

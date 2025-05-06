@@ -95,7 +95,7 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                     minLine: 5,
                     controller: additionalComments,
                     textInputAction: TextInputAction.done,
-                    hintText: """Añada las observaciones que crea oportunas para cuando procesemos el pedido (por ejemplo, en tregar al alumno)""",
+                    hintText: """Añada las observaciones que crea oportunas para cuando procesemos el pedido (por ejemplo, entregar al alumno)""",
                   ),
                   const SizedBox(
                     height: 10,
@@ -115,103 +115,56 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                               backgroundColor: AppColors.orange,
                               textColor: AppColors.secondary,
                               buttonTitle: 'Realizar el pedido',
-                              onPressed: () async {
+                              onPressed: () async{
+
+
 
                                 // if(storeController.selectedPaymentMethod == "ppcp-gateway") {
-                                //   try {
-                                //     storeController.setIsLoading(
-                                //         isLoading: true);
-                                //
-                                //     if (storeController.selectedPaymentMethod !=
-                                //         null) {
-                                //       try {
-                                //         await storeController.checkout(
-                                //             tiendaToken:
-                                //                 studentParentTeacherController
-                                //                         .userdata?.tiendaToken ??
-                                //                     "",
-                                //             additionalOrderComment: additionalComments?.text.isNotEmpty ?? false ? additionalComments?.text ?? "" : null
-                                //         );
-                                //       } catch (exception) {
-                                //         AppConstants.showCustomToast(
-                                //             status: false, message: '$exception');
-                                //       }
-                                //     } else {
-                                //     }
-                                //
-                                //
-                                //
-                                //     // await Navigator.of(context).push(
-                                //     //     MaterialPageRoute(
-                                //     //       builder: (BuildContext context) =>
-                                //     //           UsePaypal(
-                                //     //             sandboxMode: true,
-                                //     //             // Set to false for Live Mode
-                                //     //             clientId: "ASBWJBhK7MZPbRxSWlTEgbl1tiRajJd3-Vx5tmWWWj_UaF4YbUe4jz318wfD5DnvVueB0VNpzR-go1gx",
-                                //     //             secretKey: "EIAZuWHXI49xrFWIjZfmUMsGUpU7t3t_vs2wlmRcK4kXKe0h0X7S8QRvuH3uMQB6H9JSHpJrJuXOivE6",
-                                //     //             returnURL: "https://your-app.com/return",
-                                //     //             cancelURL: "https://your-app.com/cancel",
-                                //     //             transactions: [
-                                //     //               {
-                                //     //                 "amount": {
-                                //     //                   "total": storeController.cartResponse?.totals?.totalPrice ?? "0.0",
-                                //     //                   "currency": "USD",
-                                //     //                   "details": {
-                                //     //                     "subtotal": storeController.cartResponse?.totals?.totalItems ?? "0.0",
-                                //     //                     "shipping": "0",
-                                //     //                     "handling_fee": "0",
-                                //     //                     "tax": storeController.cartResponse?.totals?.totalItemsTax ?? "0.0",
-                                //     //                     "shipping_discount": 0
-                                //     //                   }
-                                //     //                 },
-                                //     //                 "description": "Payment for Order #${}",
-                                //     //               }
-                                //     //             ],
-                                //     //             note: "Thank you for your purchase!",
-                                //     //
-                                //     //             onSuccess: (Map params) {
-                                //     //                 ScaffoldMessenger.of(context)
-                                //     //                     .showSnackBar(
-                                //     //                     SnackBar(content: Text(
-                                //     //                       "Payment Successful!",
-                                //     //                       style: AppTextStyle
-                                //     //                           .getOutfit400(
-                                //     //                           textSize: 18,
-                                //     //                           textColor: AppColors
-                                //     //                               .primary),))
-                                //     //                 );
-                                //     //             },
-                                //     //             onCancel: (Map params) {
-                                //     //               ScaffoldMessenger.of(context)
-                                //     //                   .showSnackBar(
-                                //     //                   SnackBar(content: Text(
-                                //     //                       "Payment Cancelled"))
-                                //     //               );
-                                //     //             },
-                                //     //             onError: (error) {
-                                //     //               ScaffoldMessenger.of(context)
-                                //     //                   .showSnackBar(
-                                //     //                   SnackBar(content: Text(
-                                //     //                       "Payment Error!"))
-                                //     //               );
-                                //     //             },
-                                //     //           ),
-                                //     //     ));
-                                //     storeController.setIsLoading(
-                                //         isLoading: false);
-                                //   } catch (exception) {
-                                //     storeController.setIsLoading(
-                                //         isLoading: false);
-                                //     AppConstants.showCustomToast(
-                                //         status: false, message: "$exception");
-                                //   }
-                                //
-                                //
-                                //
-                                // }
+                                if(storeController.selectedPaymentMethod != null) {
+                                  if(storeController.selectedPaymentMethod == "ppcp-gateway"){
+                                    try {
+                                      storeController.setIsLoading(
+                                          isLoading: true);
 
 
-                                AppConstants.showCustomToast(status: false, message: 'Actualmente funcionando. Proporcionaremos una actualización en la próxima actualización de APK.');
+                                      if (storeController.selectedPaymentMethod !=
+                                          null) {
+                                        dynamic result = await storeController.checkout(
+                                          tiendaToken:
+                                          studentParentTeacherController
+                                              .userdata?.tiendaToken ??
+                                              "",
+                                          additionalOrderComment: additionalComments?.text.isNotEmpty ?? false ? additionalComments?.text ?? "" : null,
+                                          wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",
+                                        );
+
+                                        if(result['status']){
+
+                                          String orderId = result['orderId'];
+                                          await storeController.payUsingPaypal(orderId: orderId, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",isFromCart: true);
+
+                                        }else{
+                                          storeController.setIsLoading(isLoading: false);
+                                        }
+                                      } else {
+                                        AppConstants.showCustomToast(status: false, message: 'Por favor seleccione el método de pago');
+                                      }
+
+                                      storeController.setIsLoading(
+                                          isLoading: false);
+                                    } catch (exception) {
+                                      storeController.setIsLoading(
+                                          isLoading: false);
+                                      AppConstants.showCustomToast(
+                                          status: false, message: "$exception");
+                                    }
+                                  }else{
+
+                                  }
+
+                                } else {
+                                  AppConstants.showCustomToast(status: false, message: 'Por favor seleccione el método de pago');
+                                }
 
                               });
                     },

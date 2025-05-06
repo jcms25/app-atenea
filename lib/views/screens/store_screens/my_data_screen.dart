@@ -136,13 +136,13 @@ class _MyDataScreenState extends State<MyDataScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              CustomTextField(
-                                controller: nifOptionalController,
-                                  label: "NIF (opcional)",
-                                  validateFunction: (String? value) {}),
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              // CustomTextField(
+                              //   controller: nifOptionalController,
+                              //     label: "NIF (opcional)",
+                              //     validateFunction: (String? value) {}),
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
                               CustomTextField(
                                 controller: phoneController,
                                   label: "Telefono",
@@ -379,7 +379,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                               billingName: nameController?.text ?? "",
                                               billingLastName: lastNameController?.text ?? "",
                                                billingNIF: nifController?.text ?? "",
-                                              billingNIFOptional: nifOptionalController?.text ?? "",
+                                              // billingNIFOptional: nifOptionalController?.text ?? "",
                                               billingPhoneNumber: phoneController?.text ?? "",
                                               billingAddress: addressController?.text ?? "",
                                               billingPostCode: postalCodeController?.text ?? "",

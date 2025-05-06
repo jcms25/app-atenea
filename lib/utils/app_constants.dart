@@ -19,6 +19,12 @@ class AppConstants {
     final formatter = NumberFormat.currency(locale: 'de_DE', symbol: '€');
     return formatter.format(priceFormat); // Example: 2514 -> "25,14 €"
   }
+
+  static String convertToPaypalAmount(String totalPriceInCents) {
+    double cents = double.parse(totalPriceInCents);
+    return (cents / 100).toStringAsFixed(2); // e.g., "870" → "8.70"
+  }
+
   static const List<MessageSendCategoryForTeacher> listOfCategoryToTeacherSendMessage = [
     MessageSendCategoryForTeacher.student,
     MessageSendCategoryForTeacher.parent,

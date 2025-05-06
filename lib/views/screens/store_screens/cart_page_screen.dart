@@ -189,7 +189,7 @@
 //   }
 // }
 
-import 'package:colegia_atenea/views/screens/store_screens/total_bottom_sheet.dart';
+import 'package:colegia_atenea/views/screens/store_screens/checkout/total_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

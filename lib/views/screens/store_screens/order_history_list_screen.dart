@@ -197,8 +197,7 @@ class OrderHistoryWidget extends StatelessWidget {
                           return CustomButtonWidget(
                               buttonTitle: 'Ver', onPressed: () async{
                               Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
-                             // await PaymentService.startPayment();
-
+                            // PaymentService.startPayment();
                           });
                         },
                       )),

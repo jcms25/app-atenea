@@ -56,8 +56,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.redsys.tpvvinapplibrary.DirectPaymentActivity"
-            android:exported="true" />
+        <activity android:name="com.redsys.tpvvinapplibrary.webview.WebViewPaymentActivity">
+            <!-- Intent filters, if needed -->
+        </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -2,29 +2,29 @@ class CouponListResponse {
   int? id;
   String? code;
   String? amount;
-  String? status;
-  String? dateCreated;
-  String? dateCreatedGmt;
-  String? dateModified;
+  dynamic status;
+  dynamic dateCreated;
+  dynamic dateCreatedGmt;
+  dynamic dateModified;
   String? dateModifiedGmt;
   String? discountType;
   String? description;
-  // Null? dateExpires;
+  dynamic dateExpires;
   // Null? dateExpiresGmt;
   int? usageCount;
-  bool? individualUse;
-  // List<Null>? productIds;
-  // List<Null>? excludedProductIds;
-  // Null? usageLimit;
-  // Null? usageLimitPerUser;
-  // Null? limitUsageToXItems;
+  dynamic individualUse;
+  List<dynamic>? productIds;
+  List<dynamic>? excludedProductIds;
+  dynamic usageLimit;
+  dynamic usageLimitPerUser;
+  dynamic limitUsageToXItems;
   bool? freeShipping;
-  List<int>? productCategories;
-  // List<Null>? excludedProductCategories;
-  bool? excludeSaleItems;
+  List<dynamic>? productCategories;
+  List<dynamic>? excludedProductCategories;
+  dynamic excludeSaleItems;
   String? minimumAmount;
   String? maximumAmount;
-  // List<Null>? emailRestrictions;
+  List<String>? emailRestrictions;
   List<String>? usedBy;
   List<MetaData>? metaData;
   // Links? lLinks;
@@ -92,7 +92,7 @@ class CouponListResponse {
     // usageLimitPerUser = json['usage_limit_per_user'];
     // limitUsageToXItems = json['limit_usage_to_x_items'];
     freeShipping = json['free_shipping'];
-    productCategories = json['product_categories'].cast<int>();
+    productCategories = json['product_categories'] == null ? [] : json['product_categories'].cast<String>();
     // if (json['excluded_product_categories'] != null) {
     //   excludedProductCategories = <Null>[];
     //   json['excluded_product_categories'].forEach((v) {
@@ -108,7 +108,7 @@ class CouponListResponse {
     //     emailRestrictions!.add(new Null.fromJson(v));
     //   });
     // }
-    usedBy = json['used_by'].cast<String>();
+    usedBy = json['used_by'] == null ? [] : json['used_by'].cast<String>();
     if (json['meta_data'] != null) {
       metaData = <MetaData>[];
       json['meta_data'].forEach((v) {

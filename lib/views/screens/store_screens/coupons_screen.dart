@@ -6,6 +6,7 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/screens/store_screens/checkout/coupon_list_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -20,13 +21,15 @@ class CouponsScreen extends StatefulWidget {
 class _CouponsScreenState extends State<CouponsScreen> {
 
   StoreController? storeController;
+  StudentParentTeacherController? studentParentTeacherController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((res){
         storeController = Provider.of<StoreController>(context,listen: false);
-        storeController?.getCoupons();
+        studentParentTeacherController = Provider.of<StudentParentTeacherController>(context,listen: false);
+        storeController?.getCoupons(userId: studentParentTeacherController?.userdata?.parentWpUsrId ?? "");
     });
   }
 
@@ -83,93 +86,26 @@ class _CouponsScreenState extends State<CouponsScreen> {
                     Text('Cupones Disponibles',style: AppTextStyle.getOutfit500(textSize: 24, textColor: AppColors.secondary),),
                     const SizedBox(height: 20,),
 
-                    Consumer2<StoreController,StudentParentTeacherController>(
-                      builder: (context,storeController,studentParentTeacherController,child){
-                        CouponListResponse? couponListResponse = storeController.couponListResponse;
-                        return Visibility(
-                          visible: couponListResponse != null,
-                          child: GestureDetector(
-                            onTap: (){
-                              Get.dialog(
-                              barrierDismissible: true,
 
-                                  AlertDialog(
-                                 shape: RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.circular(10),
-                                 ),
-                                 title: Text('Aplicar cupón',style: AppTextStyle.getOutfit600(textSize: 22, textColor: AppColors.secondary),),
-                                 content: Text('¿Quieres aplicar un cupón con el código de cupón: ${couponListResponse?.code} ?'),
-                                 actions: [
-                                   CustomButtonWidget(buttonTitle: 'No', onPressed: (){
-                                     Get.back();
-                                   } ),
-                                   const SizedBox(height: 10,),
-                                   CustomButtonWidget(buttonTitle: 'Sí', onPressed: () async{
 
-                                     Get.back();
-                                     await storeController.applyOrRemoveCoupon(applyOrRemove: 0, couponCode: couponListResponse?.code ?? "", tiendaToken: studentParentTeacherController.userdata?.tiendaToken ?? "").then((res){
-                                            storeController.setIsBottomSheetLoader(isBottomSheetLoader: false);
-                                     });
-                                   } )
-                                 ],
-                              ));
+                    Expanded(child: Consumer<StoreController>(
+                      builder: (context,storeController,child){
+                        return ListView.separated(
+
+                            itemCount: storeController.couponListResponse.length,
+                            separatorBuilder: (context,index){
+                              return SizedBox(height: 10,);
                             },
-                            child:  Container(
-                              padding: const EdgeInsets.all(10),
-                              width: MediaQuery.sizeOf(context).width,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.primary
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          // Text("${couponListResponse?.amount ?? ""}%",style: AppTextStyle.getOutfit600(textSize: 30, textColor: AppColors.orange),),
-                                          Text("${couponListResponse?.discountType == "percent" ? double.parse(couponListResponse?.amount ?? "0.0").toInt() : couponListResponse?.amount}\t%",style: AppTextStyle.getOutfit600(textSize: 30, textColor: AppColors.orange),),
-                                          const SizedBox(height: 5,),
-                                          Text('DESCUENTO',style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.white),)
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10,),
-                                      Expanded(child: Text(
-                                        "Descuento del 10% en Uniformes y Ropa deportiva por pertenecer a la AMPA",
-                                        textAlign: TextAlign.left,
-                                        style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.orange),))
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20,),
-                                  Row(
-                                    children: [
-                                      Expanded(child: Row(
-                                        children: [
-                                          Icon(Icons.discount,color: AppColors.orange,),
-                                          SizedBox(width: 5,),
-                                          Text("${couponListResponse?.code}",style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.orange),)
-                                        ],
-                                      )),
-                                      const SizedBox(width: 5,),
-                                      Expanded(child: Row(
-                                        children: [
-                                          Icon(Icons.watch_later_outlined,color: AppColors.orange,),
-                                          SizedBox(width: 5,),
-                                          Text("Nunca caduca",style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.orange),)
-                                        ],
-                                      ))
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
+                            itemBuilder: (context,index){
+                              CouponListResponse couponListResponse = storeController.couponListResponse[index];
+                              return CustomCouponWidget(couponListResponse: storeController.couponListResponse[index], onCouponTap: (){
+                                onCouponItemClick(couponListResponse);
+                              },);
+                            });
                       },
-                    ),
+                    )),
+
+
 
                     const SizedBox(height: 20,),
 
@@ -183,6 +119,36 @@ class _CouponsScreenState extends State<CouponsScreen> {
               })
             ],
           ),
+        ));
+  }
+
+
+  void onCouponItemClick(CouponListResponse couponListResponse) async{
+    Get.dialog(
+        barrierDismissible: true,
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text('Aplicar cupón',style: AppTextStyle.getOutfit600(textSize: 22, textColor: AppColors.secondary),),
+          content: Text('¿Quieres aplicar un cupón con el código de cupón: ${couponListResponse.code} ?'),
+          actions: [
+            CustomButtonWidget(buttonTitle: 'No', onPressed: (){
+              Get.back();
+            } ),
+            const SizedBox(height: 10,),
+            Consumer2<StoreController,StudentParentTeacherController>(
+              builder: (context,storeController,studentParentTeacherController,child){
+                return CustomButtonWidget(buttonTitle: 'Sí', onPressed: () async{
+
+                  Get.back();
+                  await storeController.applyOrRemoveCoupon(applyOrRemove: 0, couponCode: couponListResponse.code ?? "", tiendaToken: studentParentTeacherController.userdata?.tiendaToken ?? "").then((res){
+                    storeController.setIsBottomSheetLoader(isBottomSheetLoader: false);
+                  });
+                } );
+              },
+            )
+          ],
         ));
   }
 }

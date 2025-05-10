@@ -979,39 +979,58 @@ class StoreController extends ChangeNotifier {
   //List of Coupons Response
 
 
-  CouponListResponse? couponListResponse;
+  List<CouponListResponse> couponListResponse = [];
 
   void setCouponListResponse(
-      {required CouponListResponse? couponListResponse}) {
-    this.couponListResponse = couponListResponse;
+      {required List<CouponListResponse>? couponListResponse}) {
+    this.couponListResponse = couponListResponse ?? [];
     notifyListeners();
   }
 
   //get coupon list for coupon screen
-  void getCoupons() async {
+  void getCoupons({required String userId}) async {
+
+
     try {
       //check whether user is included into ampa or not
       // List<String> userRoles =
       //     AppSharedPreferences.getUserData()?.userRoles ?? [];
 
+
       setIsBottomSheetLoader(isBottomSheetLoader: true);
 
-      var getCouponURL = Uri.parse(
-          'https://colegioatenea.es/wp-json/wc/v3/coupons/16818?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
+      // var getCouponURL = Uri.parse(
+      //     'https://colegioatenea.es/wp-json/wc/v3/coupons/16818?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
+      //
+
+      // if (userRoles.contains('ampa')) {
+      //
+      // }
+
+      var getCouponURL = Uri.parse("${Api.localBaseURL}/couponlist?user_id=$userId");
       var response = Request('GET', getCouponURL)
         ..headers.addAll({
           'Content-Type': 'application/json',
           // 'Authorization': 'Bearer $tiendaToken'
         });
-
       var streamedResponse = await response.send();
       var responseData = await Response.fromStream(streamedResponse);
 
       if (responseData.statusCode == 200 || responseData.statusCode == 201) {
         dynamic body = jsonDecode(responseData.body);
-        CouponListResponse couponListResponse =
-        CouponListResponse.fromJson(body);
-        setCouponListResponse(couponListResponse: couponListResponse);
+
+        if(body['status']){
+          if(body['data'] != null){
+            List<CouponListResponse> listOfCoupons = List<CouponListResponse>.from(body['data'].map((e) => CouponListResponse.fromJson(e)).toList());
+            setCouponListResponse(couponListResponse: listOfCoupons);
+          }
+        }else{
+          AppConstants.showCustomToast(status: false, message: body['Message'] ?? "");
+        }
+
+        // CouponListResponse couponListResponse =
+        // CouponListResponse.fromJson(body);
+        // setCouponListResponse(couponListResponse: couponListResponse);
       }
       else {
         dynamic data = jsonDecode(response.body);
@@ -1019,15 +1038,15 @@ class StoreController extends ChangeNotifier {
             status: false, message: '${data['message'] ?? ""}');
       }
 
-      setIsBottomSheetLoader(isBottomSheetLoader: false);
 
-      // if (userRoles.contains('ampa')) {
-      //
-      // }
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
     } catch (exception) {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsBottomSheetLoader(isBottomSheetLoader: false);
     }
+
+
+
   }
 
   //add additional comment to order
@@ -1065,18 +1084,12 @@ class StoreController extends ChangeNotifier {
         body: jsonEncode({'status': statusToChanged}),
       );
 
-      print(response);
       dynamic data = jsonDecode(response.body);
-      print(data);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if(data['status']){
-
           AppConstants.showCustomToast(status: true, message: "completado");
         }
-
-        await getOrderDetails(orderId: orderId);
-        getListOfOrders(wpUserId: wpUserId);
         setIsLoading(isLoading: false);
       }
     } catch (exception) {
@@ -1162,29 +1175,29 @@ class StoreController extends ChangeNotifier {
   Future<void> emptyCart({required String tiendaToken}) async{
     try{
       setIsLoading(isLoading: true);
-
       final response = await delete(
-        Uri.parse("${StoreApi.localBaseURL}/cart/items"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': "Basic $tiendaToken",
-        }
+          Uri.parse("${StoreApi.localBaseURL}/cart/items"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer $tiendaToken",
+          }
       );
-      dynamic data = jsonDecode(response.body);
 
       setIsLoading(isLoading: true);
-      print("Empty cart API Response : $data");
       if (response.statusCode == 200 || response.statusCode == 201) {
         setCartResponse(cartResponse: null);
         AppConstants.showCustomToast(
             status: true, message: 'Carrito vaciado exitosamente');
 
       }
-
       setIsLoading(isLoading: false);
     }catch(exception){
       setIsLoading(isLoading: false);
     }
+
+
+
+
   }
 
 }

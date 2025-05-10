@@ -141,7 +141,7 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                                         if(result['status']){
 
                                           String orderId = result['orderId'];
-                                          await storeController.payUsingPaypal(orderId: orderId, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",isFromCart: true);
+                                          await storeController.payUsingPaypal(orderId: orderId, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",isFromCart: true,studentParentTeacherController: studentParentTeacherController);
 
                                         }else{
                                           storeController.setIsLoading(isLoading: false);

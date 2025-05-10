@@ -205,6 +205,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         Provider.of<StudentParentTeacherController>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print(widget.productId);
       storeController?.getProductDetail(
         productId: widget.productId,
         tiendaToken:
@@ -423,7 +424,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             Align(
                                               alignment:
                                               Alignment.centerRight,
-                                              child: GestureDetector(
+                                              child: Padding(padding: const EdgeInsets.only(right: 10),child:  GestureDetector(
                                                 onTap: () {
                                                   storeController
                                                       .setSelectedVariations(
@@ -435,7 +436,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                       null);
                                                 },
                                                 child: Text(
-                                                  "claro talla",
+                                                  "Claro",
                                                   style: AppTextStyle
                                                       .getOutfit400(
                                                       textSize: 20,
@@ -443,7 +444,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                       AppColors
                                                           .primary),
                                                 ),
-                                              ),
+                                              ),),
                                             )
                                           ],
                                         )

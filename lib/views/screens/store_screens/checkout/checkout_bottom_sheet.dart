@@ -117,7 +117,7 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                               textColor: AppColors.secondary,
                               buttonTitle: 'Realizar el pedido',
                                onPressed: () async {
-                                 dynamic orderAmount = int.parse(storeController.cartResponse?.totals?.totalPrice ?? "0");
+
 
                                  try {
                                   if (storeController.selectedPaymentMethod !=

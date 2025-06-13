@@ -10,6 +10,7 @@ import 'package:colegia_atenea/models/store_model/coupon_response.dart';
 import 'package:colegia_atenea/models/store_model/order_details_model.dart';
 import 'package:colegia_atenea/models/store_model/product_item_model.dart';
 import 'package:colegia_atenea/models/store_model/subcategory_list_model.dart';
+import 'package:colegia_atenea/services/payment_service.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -118,19 +119,19 @@ class StoreController extends ChangeNotifier {
           BillingDetailModel billingDetailModel =
               BillingDetailModel.fromJson(res);
           setBillingDetailModel(billingDetail: billingDetailModel.data);
-          setListOfClass(classList: billingDetailModel.classlist ?? []);
-
-          dynamic selectedClass = billingDetail?.billingAlumnosClassName;
-
-          if (selectedClass != null &&
-              selectedClass.runtimeType == List<String>) {
-            selectedClassItem = selectedClass[0];
-            notifyListeners();
-          } else if (selectedClass.runtimeType == String &&
-              selectedClass != "") {
-            selectedClassItem = selectedClass;
-            notifyListeners();
-          }
+          // setListOfClass(classList: billingDetailModel.classlist ?? []);
+          //
+          // dynamic selectedClass = billingDetail?.billingAlumnosClassName;
+          //
+          // if (selectedClass != null &&
+          //     selectedClass.runtimeType == List<String>) {
+          //   selectedClassItem = selectedClass[0];
+          //   notifyListeners();
+          // } else if (selectedClass.runtimeType == String &&
+          //     selectedClass != "") {
+          //   selectedClassItem = selectedClass;
+          //   notifyListeners();
+          // }
 
           String billingState =
               billingDetailModel.data?.billingState?.trim() ?? "";
@@ -176,26 +177,27 @@ class StoreController extends ChangeNotifier {
       Map<String, dynamic> bodyData = {
         "billing_first_name": billingName,
         "billing_last_name": billingLastName,
-        "billing_myfield3": billingNIF,
-        "billing_vat": billingNIFOptional ?? "",
+        // "billing_myfield3": billingNIF,
+        // "billing_vat": billingNIFOptional ?? "",
+        "billing_vat": billingNIF,
         "billing_phone": billingPhoneNumber,
         "billing_address_1": billingAddress,
         "billing_postcode": billingPostCode,
         "billing_city": billingCity,
         "billing_state": billingState,
         "billing_email": billingEmail,
-        "billing_wooccm10": billingAlumnosName
+        // "billing_wooccm10": billingAlumnosName
       };
 
       // if (selectedClassItem.isNotEmpty) {
       // for (int i = 0; i < selectedClassItem.length; i++) {
       //   bodyData['billing_wooccm12[$i]'] = selectedClassItem[i];
       // }
-      if (selectedClassItem != null) {
-        bodyData['billing_wooccm12'] = billingAlumnosClass;
-      } else {
-        bodyData['billing_wooccm12'] = "";
-      }
+      // if (selectedClassItem != null) {
+      //   bodyData['billing_wooccm12'] = billingAlumnosClass;
+      // } else {
+      //   bodyData['billing_wooccm12'] = "";
+      // }
       await Api.httpRequest(
               requestType: RequestType.post,
               body: bodyData,
@@ -920,65 +922,7 @@ class StoreController extends ChangeNotifier {
     }
   } 
 
-  // //get payment link for the order
-  // Future<void> getPaymentLinkForOrder(
-  //     {required String orderId, bool? isLoading}) async {
-  //   try {
-  //     setIsLoading(isLoading: isLoading ?? false);
-  //
-  //     var getPaymentLinkUrl = Uri.parse(
-  //         'https://colegioatenea.es/wp-json/wc/v3/orders/$orderId?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
-  //     var response = Request('GET', getPaymentLinkUrl)
-  //       ..headers.addAll({
-  //         'Content-Type': 'application/json',
-  //         // 'Authorization': 'Bearer $tiendaToken'
-  //       });
-  //
-  //     var streamedResponse = await response.send();
-  //     var responseData = await Response.fromStream(streamedResponse);
-  //
-  //     if (responseData.statusCode == 200 || responseData.statusCode == 201) {
-  //       dynamic paymentResponse = jsonDecode(responseData.body);
-  //
-  //       if (paymentResponse['payment_url'] != null) {
-  //         if (paymentResponse['payment_url'] != "") {
-  //           if (isLoading != null) {
-  //             setIsLoading(isLoading: false);
-  //           }
-  //
-  //           setIsBottomSheetLoader(isBottomSheetLoader: false);
-  //           Get.to(() => WebViewScreen(
-  //                 // loadURL: paymentResponse['payment_url'], label: "",
-  //                 loadURL: paymentResponse['payment_url'],
-  //                 label: 'pago',
-  //               ));
-  //
-  //           // Uri uri = Uri.parse(paymentResponse['payment_url']);
-  //           // if(await canLaunchUrl(uri)){
-  //           //   print("this is executed");
-  //           //   await launchUrl(uri,mode: LaunchMode.externalApplication,);
-  //           // }else{
-  //           //   AppConstants.showCustomToast(status: false, message: '¡Error! Inténtalo de nuevo.');
-  //           // }
-  //         }
-  //       }
-  //     }
-  //     else {
-  //       dynamic data = jsonDecode(response.body);
-  //       AppConstants.showCustomToast(
-  //           status: false, message: '${data['message'] ?? ""}');
-  //     }
-  //
-  //     setIsBottomSheetLoader(isBottomSheetLoader: false);
-  //   } catch (exception) {
-  //     AppConstants.showCustomToast(status: false, message: '$exception');
-  //     setIsBottomSheetLoader(isBottomSheetLoader: false);
-  //   }
-  // }
-
-  //List of Coupons Response
-
-
+  //This will store list of coupons
   List<CouponListResponse> couponListResponse = [];
 
   void setCouponListResponse(
@@ -992,21 +936,8 @@ class StoreController extends ChangeNotifier {
 
 
     try {
-      //check whether user is included into ampa or not
-      // List<String> userRoles =
-      //     AppSharedPreferences.getUserData()?.userRoles ?? [];
-
 
       setIsBottomSheetLoader(isBottomSheetLoader: true);
-
-      // var getCouponURL = Uri.parse(
-      //     'https://colegioatenea.es/wp-json/wc/v3/coupons/16818?consumer_key=ck_0d5b0ca96e9254872eee1417e3d6b29aac8802e1&consumer_secret=cs_68fab31b6229737391172a6c8bf849a137371276');
-      //
-
-      // if (userRoles.contains('ampa')) {
-      //
-      // }
-
       var getCouponURL = Uri.parse("${Api.localBaseURL}/couponlist?user_id=$userId");
       var response = Request('GET', getCouponURL)
         ..headers.addAll({
@@ -1027,10 +958,6 @@ class StoreController extends ChangeNotifier {
         }else{
           AppConstants.showCustomToast(status: false, message: body['Message'] ?? "");
         }
-
-        // CouponListResponse couponListResponse =
-        // CouponListResponse.fromJson(body);
-        // setCouponListResponse(couponListResponse: couponListResponse);
       }
       else {
         dynamic data = jsonDecode(response.body);
@@ -1057,7 +984,6 @@ class StoreController extends ChangeNotifier {
               requestType: RequestType.post,
               endPoint: 'updateordernote?order_id=$orderId&order_note=$comment')
           .then((res) {
-        if (res['status']) {}
       });
     } catch (exception) {
       setIsBottomSheetLoader(isBottomSheetLoader: false);
@@ -1085,11 +1011,11 @@ class StoreController extends ChangeNotifier {
       );
 
       dynamic data = jsonDecode(response.body);
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if(data['status']){
+        if(data['status'] == 'completado'){
           AppConstants.showCustomToast(status: true, message: "completado");
         }
+
         setIsLoading(isLoading: false);
       }
     } catch (exception) {
@@ -1102,9 +1028,14 @@ class StoreController extends ChangeNotifier {
 
   //Paypal checkout for paypal method selected
   Future<void> payUsingPaypal({required String orderId,
-    required String wpUserId,OrderDetailModel? orderData,CartResponse? cartData,StudentParentTeacherController? studentParentTeacherController,
+    required String wpUserId,OrderDetailModel? orderData,
+    StudentParentTeacherController? studentParentTeacherController,
+    String? orderAmount,
     bool? isFromCart
   }) async{
+
+
+
 
     try {
       if(isFromCart ?? false){
@@ -1112,7 +1043,10 @@ class StoreController extends ChangeNotifier {
       }
       setIsLoading(
           isLoading: true);
-      await Get.to(() => UsePaypal(
+      await Get.to(() => PopScope(
+          canPop: true,
+          onPopInvokedWithResult: (ctx,mdl){},
+          child: UsePaypal(
         sandboxMode: true,
         // Set to false for Live Mode
 
@@ -1124,7 +1058,7 @@ class StoreController extends ChangeNotifier {
         transactions: [
           {
             "amount": {
-              "total": orderData != null ? orderData.others != null && orderData.others!.isNotEmpty  ? orderData.others![0].total ?? "0.0" : "" : AppConstants.convertToPaypalAmount(cartResponse?.totals?.totalPrice ?? "0.0"),
+              "total": orderData != null ? orderData.others != null && orderData.others!.isNotEmpty  ? orderData.others![0].total ?? "0.0" : "" : orderAmount ?? "0.0",
               // "total" : "10.00",
               "currency": "EUR",
               "details": {
@@ -1139,26 +1073,23 @@ class StoreController extends ChangeNotifier {
             "invoice_number": orderId
           }
         ],
-        note: "Thank you for your purchase!",
+        note: "Gracias por su compra",
         onSuccess: (Map params) async{
-
-          Get.snackbar('success', 'Payment Success',backgroundColor: AppColors.green,colorText: AppColors.white,);
-           await changeOrderStatus(orderId: orderId, statusToChanged: 'completado', wpUserId: wpUserId).then((res) async{
+          Get.snackbar('éxito', 'Pago exitoso',backgroundColor: AppColors.green,colorText: AppColors.white,);
+          await changeOrderStatus(orderId: orderId, statusToChanged: 'completado', wpUserId: wpUserId).then((res) async{
             if(orderData != null){
               await getOrderDetails(orderId: orderId);
-              await getListOfOrders(wpUserId: studentParentTeacherController?.userdata?.parentWpUsrId ?? "");
-            }else{
-              await emptyCart(tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
+              await getListOfOrders(wpUserId: wpUserId);
             }
           });
         },
         onCancel: (Map params) {
-          Get.snackbar('Cancel', 'Payment cancel Due to Issue',backgroundColor: AppColors.red,colorText: AppColors.white,);
+          Get.snackbar('Cancelar', 'Pago cancelado debido a un problema',backgroundColor: AppColors.red,colorText: AppColors.white,);
         },
         onError: (error) {
-          Get.snackbar('error', 'This is error',backgroundColor: AppColors.red,colorText: AppColors.white,);
-          },
-      ),);
+          Get.snackbar('error', 'Error al realizar el pago',backgroundColor: AppColors.red,colorText: AppColors.white,);
+        },
+      )),);
       setIsLoading(
           isLoading: false);
     } catch (exception) {
@@ -1170,6 +1101,24 @@ class StoreController extends ChangeNotifier {
   }
 
 
+  //Redsys Payment Method for both Redsys as well as Bizum
+  Future<void> redSysPayment({required String paymentMethodType,required String orderId,required String amount,String? wpUserId,bool? fromCart}) async{
+    try{
+      await PaymentService.startPayment(paymentMethod: paymentMethodType, orderId: orderId, amount: amount).then((result) async{
+        if(result){
+          await changeOrderStatus(orderId: orderId, statusToChanged: 'completado', wpUserId: wpUserId ?? "").then((res) async{
+            if(wpUserId != null){
+              await getOrderDetails(orderId: orderId);
+              await getListOfOrders(wpUserId: wpUserId);
+            }
+          });
+        }
+
+      });
+    }catch(exception){
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
 
   //empty cart
   Future<void> emptyCart({required String tiendaToken}) async{
@@ -1188,16 +1137,12 @@ class StoreController extends ChangeNotifier {
         setCartResponse(cartResponse: null);
         AppConstants.showCustomToast(
             status: true, message: 'Carrito vaciado exitosamente');
-
       }
-      setIsLoading(isLoading: false);
     }catch(exception){
       setIsLoading(isLoading: false);
     }
 
-
-
-
   }
+
 
 }

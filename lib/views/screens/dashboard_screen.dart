@@ -120,12 +120,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 BorderRadius.circular(65.0),
                                             child: profileImage == null ||
                                                     profileImage.isEmpty
-                                                ? Image.asset(
-                                                    AppImages.person,
-                                                    fit: BoxFit.cover,
-                                                    height: 65,
-                                                    width: 65,
-                                                  )
+                                                // ? Image.asset(
+                                                //     AppImages.person,
+                                                //     fit: BoxFit.cover,
+                                                //     height: 65,
+                                                //     width: 65,
+                                                //   )
+                                                ? SvgPicture.asset(
+                                              AppImages.person,
+                                              fit: BoxFit.cover,
+                                              height: 65,
+                                              width: 65,
+                                            )
                                                 : Image.network(
                                                     profileImage,
                                                     fit: BoxFit.cover,

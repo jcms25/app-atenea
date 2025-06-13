@@ -428,7 +428,7 @@ class ProductCard extends StatelessWidget {
                 children: [
                   // ✅ Product Name
                   Text(
-                    product.name ?? 'Product Name',
+                   AppConstants.unescape.convert( product.name ?? 'Product Name'),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,

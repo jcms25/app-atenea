@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:intl/intl.dart';
 
 import 'app_colors.dart';
@@ -41,6 +42,11 @@ class AppConstants {
     "Profesor",
     "Asistente"
   ];
+
+
+  //HTML Escape
+  static var unescape = HtmlUnescape();
+
 
   //bottom navigation bar
 

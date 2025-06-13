@@ -61,7 +61,7 @@ import java.util.HashMap
 import java.util.Locale
 
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
     private val SORTING_CHANNEL = "native_sorting"
     private val CHANNEL = "com.example.payment"
 
@@ -95,185 +95,215 @@ class MainActivity: FlutterActivity() {
             }
 
         //Payment channel
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
-                call, result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            CHANNEL
+        ).setMethodCallHandler { call, result ->
             if (call.method == "startRedsysPayment") {
-                startPayment()  // Call the function to start the payment
-                result.success("Payment started")
+                val orderId = "Ord_${call.argument<Int>("orderId")}"
+                val paymentMethodType = call.argument<String>("payment_method") ?: "RedSys"
+                val signature = call.argument<String>("signature") ?: ""
+                val merchantParams = call.argument<String>("merchantParams") ?: ""
+                val amountReceived = call.argument<Int>("amount") ?: 0
+//                startPayment(
+//                    orderId = orderId,
+//                    paymentMethod = paymentMethodType,
+//                    merchantParams = merchantParams,
+//                    signature = signature,
+//                    amount = amountReceived.toDouble()
+//                )  // Call the function to start the payment
+                startPayment(orderId, paymentMethodType, signature, merchantParams, amountReceived.toDouble()) { paymentResult ->
+                    result.success(paymentResult)
+                }
             }
         }
 
 
     }
 
-    private fun sortObjectsByKey(items: List<Map<String, Any>>, key: String): List<Map<String, Any>> {
+    private fun sortObjectsByKey(
+        items: List<Map<String, Any>>,
+        key: String
+    ): List<Map<String, Any>> {
         val collator = Collator.getInstance(Locale("es", "ES")) // Spanish sorting
         return items.sortedWith(compareBy(collator) { it[key]?.toString() ?: "" })
     }
-    private fun startPayment() {
-        try {
-            val tpv = TPVV()
 
-            // Configuration for test environment
-            TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)  // Test environment
-            TPVVConfiguration.setFuc("999008881")  // Use the correct test FUC
-            TPVVConfiguration.setTerminal("1")  // Terminal number
-            TPVVConfiguration.setCurrency("978")  // EUR currency
-            TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")  // Test license key (replace with your actual key)
+//    private fun startPayment(orderId: String, paymentMethod: String, signature : String, merchantParams : String,amount : Double) : Map<String,T> {
+//        try {
+//            val tpv = TPVV()
+//
+//            // Configuration for test environment
+//
+//            //Test environment
+//            TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)
+////            TPVVConfiguration.setFuc("999008881")
+////            TPVVConfiguration.setTerminal("1")
+//            TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")  // Test license key (replace with your actual key)
+//
+//            //Production Environment
+////            TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_REAL)
+//            TPVVConfiguration.setFuc("348775818")
+//            TPVVConfiguration.setTerminal("001")
+////            TPVVConfiguration.setLicense("AepJ83ytmfpF5ToI1gO")
+//
+//            TPVVConfiguration.setCurrency("978")  // EUR currency
+//
+//            // Extra parameters (you can pass CVV, Expiry Date, and Card Number here)
+////            val extraParams = hashMapOf(
+////                "Ds_Merchant_ProductDescription" to "Test Payment"
+////            )
+//            Log.e("Signature",signature)
+//            val extraParams = HashMap<String, String>()
+//            extraParams["Ds_SignatureVersion"] = "HMAC_SHA256_V1"
+//            extraParams["Ds_MerchantParameters"] = merchantParams
+//            extraParams["Ds_Signature"] = signature
+//
+//            if (paymentMethod == "Bizum") {
+//                extraParams["Ds_Merchant_PayMethods"] = "z"
+//            }
+//
+//
+//
+////            extraParams["Ds_Merchant_CardNumber"] = "4548812049400004"
+////            extraParams["Ds_Merchant_ExpiryDate"] = "1225"
+////            extraParams["Ds_Merchant_CVV2"] = "123"
+////            extraParams["Ds_Merchant_Identifier"] = ""
+////            extraParams["Ds_Merchant_UrlOK"] = "https://yourdomain.com/payment-success"
+////            extraParams["Ds_Merchant_UrlKO"] = "https://yourdomain.com/payment-failure"
+////            extraParams["Ds_Merchant_MerchantURL"] = "https://yourdomain.com/redsys/notify"
+//
+//
+//
+//            // Initiate direct payment
+////            TPVV.doDirectPayment(
+////                this,
+////                orderId,  // Unique order code
+////                amount,  // Amount in EUR
+////                "0",  // Operation type (0 is standard payment)
+////                null,  // Test FUC
+////                "Test Payment",  // Product description
+////                extraParams,
+////                object : IPaymentResult {
+////                    override fun paymentResultOK(result: ResultResponse) {
+////                        Log.e("Payment Response", "${result}")
+////                        Log.d("PAYMENT", "✅ Success: ${result.responseCode}")
+//////                        result.success("success");
+////                        // Handle successful payment
+////                    }
+////
+////                    override fun paymentResultKO(error: ErrorResponse) {
+////                        Log.e("Payment Response", "${error}")
+////                        Log.e("PAYMENT", "❌ Failed: ${error.code} - ${error.desc}")
+////                        // Handle failure
+//////                        result.error("REDSYS_ERROR", error.desc, error.code);
+////                    }
+////                }
+////            )
+//
+//
+//            val resultMap = map<String,T>();
+//
+//            TPVV.doWebViewPayment(
+//                this,
+//                orderId,
+//                amount,
+//                "0",
+//                null,
+//                "Test Payment",
+//                extraParams,
+//                object : IPaymentResult {
+//                    override fun paymentResultOK(result: ResultResponse) {
+//                        Log.e("Payment Response", "${result}")
+//                        result["status"] = true
+//                        Log.d("PAYMENT", "✅ Success: ${result.responseCode}")
+////                        result.success("success");
+//                        // Handle successful payment
+//                    }
+//
+//                    override fun paymentResultKO(error: ErrorResponse) {
+//                        Log.e("Payment Response", "${error}")
+//                        Log.e("PAYMENT", "❌ Failed: ${error.code} - ${error.desc}")
+//                        // Handle failure
+////                        result.error("REDSYS_ERROR", error.desc, error.code);
+//                        resultMap["status"] = false;
+//                    }
+//                }
+//            )
+//
+//            return  resultMap;
+//        } catch (e: Exception) {
+//            Log.e("PaymentError", "Error starting payment: ${e.localizedMessage}")
+//            val map = mapOf("status" to false)
+//            return map;
+//        }
+//    }
 
-            // Generate a unique order code
-            val orderCode = "ORDER" + System.currentTimeMillis()
+fun startPayment(
+    orderId: String,
+    paymentMethod: String,
+    signature: String,
+    merchantParams: String,
+    amount: Double,
+    callback: (Map<String, Any>) -> Unit
+) {
+    try {
+        val tpv = TPVV()
 
-            // Extra parameters (you can pass CVV, Expiry Date, and Card Number here)
-            val extraParams = hashMapOf(
-                "Ds_Merchant_ProductDescription" to "Test Payment"
-            )
+        // Test Environment
+        TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)
+        TPVVConfiguration.setFuc("348775818")
+        TPVVConfiguration.setTerminal("001")
+        TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")
+        TPVVConfiguration.setCurrency("978")
 
-            // Initiate direct payment
-            TPVV.doDirectPayment(
-                this,
-                orderCode,  // Unique order code
-                10.0,  // Amount in EUR
-                TPVVConstants.PAYMENT_METHOD_Z,  // Operation type (0 is standard payment)
-                null,  // Test FUC
-                "Test Payment",  // Product description
-                extraParams,
-                object : IPaymentResult {
-                    override fun paymentResultOK(result: ResultResponse) {
-                        Log.d("PAYMENT", "✅ Success: ${result.responseCode}")
-                        // Handle successful payment
-                    }
-
-                    override fun paymentResultKO(error: ErrorResponse) {
-                        Log.e("PAYMENT", "❌ Failed: ${error.code} - ${error.desc}")
-                        // Handle failure
-                    }
-                }
-            )
-        } catch (e: Exception) {
-            Log.e("PaymentError", "Error starting payment: ${e.localizedMessage}")
+        val extraParams = HashMap<String, String>()
+        extraParams["Ds_SignatureVersion"] = "HMAC_SHA256_V1"
+        extraParams["Ds_MerchantParameters"] = merchantParams
+        extraParams["Ds_Signature"] = signature
+        if (paymentMethod == "Bizum") {
+            extraParams["Ds_Merchant_PayMethods"] = "z"
         }
+
+        TPVV.doWebViewPayment(
+            context,
+            orderId,
+            amount,
+            "0",
+            null,
+            "Test Payment",
+            extraParams,
+            object : IPaymentResult {
+                override fun paymentResultOK(result: ResultResponse) {
+                    val resultMap = mapOf(
+                        "status" to true,
+                        "responseCode" to result.responseCode,
+                        "raw" to result.toString()
+                    )
+                    Log.e("Payment Native Status","$result")
+                    callback(resultMap)
+                }
+
+                override fun paymentResultKO(error: ErrorResponse) {
+                    val resultMap = mapOf(
+                        "status" to false,
+                        "errorCode" to error.code,
+                        "errorDesc" to error.desc,
+                        "raw" to error.toString()
+                    )
+                    callback(resultMap)
+                }
+            }
+        )
+
+    } catch (e: Exception) {
+        val map = mapOf(
+            "status" to false,
+            "error" to e.localizedMessage
+        )
+        callback(map)
     }
-
-
-//    private fun startPayment() {
-//        try {
-//            val tpv = TPVV()
-//
-//            val orderCode = "ORD123"
-//            val amount = 10.0
-//            val transactionType = "0"
-//            val merchantCode = "999008881"
-//            val productDescription = "This is test payment we are doing it."
-//
-//            // Only declare this once
-//            val extraParams = HashMap<String, String>()
-//
-//            TPVVConfiguration.setCurrency("978")
-//            TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)
-//            TPVVConfiguration.setFuc(merchantCode)
-//            TPVVConfiguration.setTerminal("1")
-//            TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")
-//
-//            val paymentResult = object : IPaymentResult {
-//                override fun paymentResultOK(result: ResultResponse) {
-//                    Log.d("Payment", "Payment successful: ${result.responseCode}")
-//                    paymentResult?.success("Payment successful: ${result.responseCode}")
-//                }
-//
-//                override fun paymentResultKO(error: ErrorResponse) {
-//                    Log.e("Payment", "Payment failed: ${error.code} - ${error.desc}")
-//                    paymentResult?.error("PAYMENT_FAILED", "Error ${error.code}: ${error.desc}", null)
-//                }
-//            }
-//
-//            TPVV.doDirectPayment(
-//                this,
-//                orderCode,
-//                amount,
-//                transactionType,
-//                merchantCode,
-//               productDescription,
-//                extraParams,
-//                paymentResult
-//            )
-//
-//        } catch (e: Exception) {
-//            Log.e("PaymentError", "Error starting payment: ${e.localizedMessage}")
-//        }
-//    }
-
-
-//    private fun startPayment() {
-//        try {
-//            val tpv = TPVV()
-//
-//            val orderCode = "ORD123" // You can make this dynamic if needed
-//            val amount = 10.0        // Same for amount
-//            val transactionType = "0" // Normal payment
-//            val merchantCode = "999008881"
-//            val productDescription = "This is test payment we are doing it."
-//
-//            val extraParams = HashMap<String, String>()
-//
-//            // Setup configuration for test environment
-//            TPVVConfiguration.setCurrency("978") // EUR
-//            TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)
-//            TPVVConfiguration.setFuc(merchantCode)
-//            TPVVConfiguration.setTerminal("1")
-//            TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")
-//
-//            // Actual payment result handler
-//            val resultHandler = object : IPaymentResult {
-//                override fun paymentResultOK(result: ResultResponse) {
-//                    Log.d("Payment", "Payment successful: ${result.responseCode}")
-//                    paymentResult?.success("Payment successful: ${result.responseCode}")
-//                    paymentResult = null
-//                }
-//
-//                override fun paymentResultKO(error: ErrorResponse) {
-//                    Log.e("Payment", "Payment failed: ${error.code} - ${error.desc}")
-//                    paymentResult?.error("PAYMENT_FAILED", "Error ${error.code}: ${error.desc}", null)
-//                    paymentResult = null
-//                }
-//            }
-//
-//            // Initiate payment
-//            TPVV.doDirectPayment(
-//                this,
-//                orderCode,
-//                amount,
-//                transactionType,
-//                merchantCode,
-//                productDescription,
-//                extraParams,
-//                resultHandler
-//            )
-//
-//        } catch (e: Exception) {
-//            Log.e("PaymentError", "Error starting payment: ${e.localizedMessage}")
-//            paymentResult?.error("EXCEPTION", e.localizedMessage, null)
-//            paymentResult = null
-//        }
-//    }
-
-
-
-    // Handle the result of the payment process
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-////        if (requestCode == 1001) {
-////            if (resultCode == RESULT_OK) {
-////                Log.d("Payment", "Payment successful")
-////            } else {
-////                Log.d("Payment", "Payment failed or was canceled")
-////            }
-////        }else{
-////            Log.d("Payment", "Request code will be : $resultCode")
-////        }
-//        PaymentHelper.handlePaymentResult(requestCode, resultCode, data)
-//    }
-
+}
 
 }
 

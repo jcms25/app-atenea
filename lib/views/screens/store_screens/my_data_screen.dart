@@ -49,7 +49,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
     postalCodeController = TextEditingController();
     locationController = TextEditingController();
     emailController = TextEditingController();
-    studentNameController = TextEditingController();
+    // studentNameController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((res) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
@@ -60,14 +60,14 @@ class _MyDataScreenState extends State<MyDataScreen> {
                 BillingDetail? billingDetail = storeController?.billingDetail;
                 nameController?.text = billingDetail?.billingFirstName ?? "";
                 lastNameController?.text = billingDetail?.billingLastName ?? "";
-                nifController?.text = billingDetail?.billingNIF ?? "";
+                nifController?.text = billingDetail?.billingNIFOptional ?? "";
                 nifOptionalController?.text = billingDetail?.billingNIFOptional ?? "";
                 phoneController?.text = billingDetail?.billingPhoneNumber ?? "";
                 addressController?.text = billingDetail?.billingAddress1 ?? "";
                 postalCodeController?.text = billingDetail?.billingPostcode ?? "";
                 locationController?.text = billingDetail?.billingCity ?? "";
                 emailController?.text = billingDetail?.billingEmail ?? "";
-                studentNameController?.text = billingDetail?.billingAlumnosName ?? "";
+                // studentNameController?.text = billingDetail?.billingAlumnosName ?? "";
 
 
       });
@@ -122,7 +122,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                               ),
                               CustomTextField(
                                  controller: lastNameController,
-                                  label: "Appellidos",
+                                  label: "Apellidos",
                                   validateFunction:
                                       AppValidations.valueEmptyOrNot),
                               const SizedBox(
@@ -265,104 +265,104 @@ class _MyDataScreenState extends State<MyDataScreen> {
                                   label: "Correo electrónico",
                                   validateFunction:
                                       AppValidations.valueEmptyOrNot),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              CustomTextField(
-                                controller: studentNameController,
-                                  label: "Nombre alumno",
-                                  validateFunction:
-                                      AppValidations.valueEmptyOrNot),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text("Curso",
-                                  style: AppTextStyle.getOutfit400(
-                                      textSize: 18,
-                                      textColor: AppColors.secondary)),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: 60,
-                                width: MediaQuery.sizeOf(context).width,
-                                decoration: BoxDecoration(
-                                    // color:
-                                    //     AppColors.secondary.withOpacity(0.05),
-                                    color: AppColors.secondary.withValues(alpha: 0.05),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                child: Center(
-                                  child: Consumer<StoreController>(
-                                    builder: (context, storeController, child) {
-                                      return DropdownButton<String>(
-                                          value: storeController.selectedClassItem,
-                                          hint: Text(
-                                                storeController.selectedClassItem?.isEmpty ?? false ? 'Seleccionar clase' : storeController.selectedClassItem ?? "",
-                                            style: AppTextStyle.getOutfit400(
-                                                textSize: 16,
-                                                // textColor: AppColors.secondary
-                                                //     .withOpacity(0.4)
-                                              textColor: AppColors.secondary.withValues(alpha: 0.4)
-                                            ),
-                                          ),
-                                          items: storeController.classList
-                                              .map((e) {
-                                            return DropdownMenuItem<String>(
-                                                value: e.cName ?? "",
-                                                child: Text(
-                                                  "${e.cName}",
-                                                  style: AppTextStyle
-                                                      .getOutfit400(
-                                                      textSize: 18,
-                                                      textColor: AppColors
-                                                          .secondary),
-                                                ),
-                                                // child: Row(
-                                                //   mainAxisAlignment:
-                                                //       MainAxisAlignment.start,
-                                                //   children: [
-                                                //     Consumer<StoreController>(
-                                                //       builder: (context,
-                                                //           storeController,
-                                                //           child) {
-                                                //         return Checkbox(
-                                                //             value: s,
-                                                //             onChanged:
-                                                //                 (bool? status) {
-                                                //               if (status ??
-                                                //                   false) {
-                                                //                 storeController
-                                                //                     .addToSelectedClassItem(
-                                                //                         className:
-                                                //                             e.cName ??
-                                                //                                 "");
-                                                //               } else {
-                                                //                 storeController
-                                                //                     .removeSelectedClassItem(
-                                                //                         className:
-                                                //                             e.cName ??
-                                                //                                 "");
-                                                //               }
-                                                //             });
-                                                //       },
-                                                //     ),
-                                                //
-                                                //   ],
-                                                // ));
-                                            );
-                                          }).toList(),
-                                          underline: const SizedBox.shrink(),
-                                          isExpanded: true,
-                                          onChanged: (String? value) {
-                                            storeController.setSelectedClassItem(selectedClassItem: value);
-                                          });
-                                    },
-                                  ),
-                                ),
-                              ),
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
+                              // CustomTextField(
+                              //   controller: studentNameController,
+                              //     label: "Nombre alumno",
+                              //     validateFunction:
+                              //         AppValidations.valueEmptyOrNot),
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
+                              // Text("Curso",
+                              //     style: AppTextStyle.getOutfit400(
+                              //         textSize: 18,
+                              //         textColor: AppColors.secondary)),
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
+                              // Container(
+                              //   height: 60,
+                              //   width: MediaQuery.sizeOf(context).width,
+                              //   decoration: BoxDecoration(
+                              //       // color:
+                              //       //     AppColors.secondary.withOpacity(0.05),
+                              //       color: AppColors.secondary.withValues(alpha: 0.05),
+                              //       borderRadius:
+                              //           BorderRadius.all(Radius.circular(10))),
+                              //   padding: const EdgeInsets.symmetric(
+                              //       horizontal: 10, vertical: 5),
+                              //   child: Center(
+                              //     child: Consumer<StoreController>(
+                              //       builder: (context, storeController, child) {
+                              //         return DropdownButton<String>(
+                              //             value: storeController.selectedClassItem,
+                              //             hint: Text(
+                              //                   storeController.selectedClassItem?.isEmpty ?? false ? 'Seleccionar clase' : storeController.selectedClassItem ?? "",
+                              //               style: AppTextStyle.getOutfit400(
+                              //                   textSize: 16,
+                              //                   // textColor: AppColors.secondary
+                              //                   //     .withOpacity(0.4)
+                              //                 textColor: AppColors.secondary.withValues(alpha: 0.4)
+                              //               ),
+                              //             ),
+                              //             items: storeController.classList
+                              //                 .map((e) {
+                              //               return DropdownMenuItem<String>(
+                              //                   value: e.cName ?? "",
+                              //                   child: Text(
+                              //                     "${e.cName}",
+                              //                     style: AppTextStyle
+                              //                         .getOutfit400(
+                              //                         textSize: 18,
+                              //                         textColor: AppColors
+                              //                             .secondary),
+                              //                   ),
+                              //                   // child: Row(
+                              //                   //   mainAxisAlignment:
+                              //                   //       MainAxisAlignment.start,
+                              //                   //   children: [
+                              //                   //     Consumer<StoreController>(
+                              //                   //       builder: (context,
+                              //                   //           storeController,
+                              //                   //           child) {
+                              //                   //         return Checkbox(
+                              //                   //             value: s,
+                              //                   //             onChanged:
+                              //                   //                 (bool? status) {
+                              //                   //               if (status ??
+                              //                   //                   false) {
+                              //                   //                 storeController
+                              //                   //                     .addToSelectedClassItem(
+                              //                   //                         className:
+                              //                   //                             e.cName ??
+                              //                   //                                 "");
+                              //                   //               } else {
+                              //                   //                 storeController
+                              //                   //                     .removeSelectedClassItem(
+                              //                   //                         className:
+                              //                   //                             e.cName ??
+                              //                   //                                 "");
+                              //                   //               }
+                              //                   //             });
+                              //                   //       },
+                              //                   //     ),
+                              //                   //
+                              //                   //   ],
+                              //                   // ));
+                              //               );
+                              //             }).toList(),
+                              //             underline: const SizedBox.shrink(),
+                              //             isExpanded: true,
+                              //             onChanged: (String? value) {
+                              //               storeController.setSelectedClassItem(selectedClassItem: value);
+                              //             });
+                              //       },
+                              //     ),
+                              //   ),
+                              // ),
                               const SizedBox(
                                 height: 20,
                               ),

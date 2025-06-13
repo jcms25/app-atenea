@@ -1,5 +1,6 @@
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
@@ -276,7 +277,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                     statusToChanged: 'cancelled',
                                     wpUserId: studentParentTeacherController
                                         .userdata?.parentWpUsrId ??
-                                        "");
+                                        "").then((res) async{
+                                         await storeController.getOrderDetails(orderId: widget.orderNumber);
+                                });
                               })),
                           const SizedBox(width: 20,),
                           Expanded(child:   CustomButtonWidget(
@@ -285,6 +288,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             if(storeController.orderDetailModel?.others?[0].paymentMethod == "PayPal"){
                               // await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "");
                               await storeController.payUsingPaypal(orderId: widget.orderNumber, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",orderData: storeController.orderDetailModel);
+                            }else if(storeController.orderDetailModel?.others?[0].paymentMethod == "Bizum"){
+                              await storeController.redSysPayment(paymentMethodType: "Bizum", orderId: widget.orderNumber, amount: '${storeController.orderDetailModel?.others?[0].total}',wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
+                            }else if(storeController.orderDetailModel?.others?[0].paymentMethod == "Servired/RedSys"){
+                              await storeController.redSysPayment(paymentMethodType: "Redsys", orderId: widget.orderNumber, amount: '${storeController.orderDetailModel?.others?[0].total}',wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
+                            }else{
+                              AppConstants.showCustomToast(status: false, message: "Método de pago no disponible");
                             }
                            }),)
                         ],

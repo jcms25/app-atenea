@@ -64,7 +64,9 @@ dependencies:
   flutter_paypal:
   webview_flutter:
   flutter_inappwebview:
-
+  html_unescape:
+  crypto:
+  pointycastle:
 dev_dependencies:
   flutter_test:
     sdk: flutter

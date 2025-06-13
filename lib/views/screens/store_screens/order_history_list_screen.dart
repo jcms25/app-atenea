@@ -5,7 +5,6 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
-import 'package:colegia_atenea/views/screens/store_screens/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,9 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/store_model/order_list_model.dart';
-import '../../../services/redsys_service.dart';
 import '../../../utils/app_colors.dart';
-
+import 'order_detail_page.dart';
 
 
 class OrderHistoryListScreen extends StatefulWidget {
@@ -197,7 +195,6 @@ class OrderHistoryWidget extends StatelessWidget {
                           return CustomButtonWidget(
                               buttonTitle: 'Ver', onPressed: () async{
                               Get.to(() => OrderDetailPage(orderNumber: orderItem.orderId?.split("#").last ?? "",));
-                            // PaymentService.startPayment();
                           });
                         },
                       )),

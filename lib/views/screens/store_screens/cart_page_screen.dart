@@ -310,13 +310,13 @@ class CartListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return cartItems.isNotEmpty
-        ? ListView.builder(
-            padding: const EdgeInsets.all(2.0),
-            itemCount: cartItems.length,
-            itemBuilder: (context, index) {
-              return _buildCartItem(cartItems[index]);
-            },
-          )
+        ? ScrollConfiguration(behavior: const ScrollBehavior().copyWith(overscroll: false), child: ListView.builder(
+      padding: const EdgeInsets.all(2.0),
+      itemCount: cartItems.length,
+      itemBuilder: (context, index) {
+        return _buildCartItem(cartItems[index]);
+      },
+    ))
         : Center(
             child: Text(
               'Tu carrito está vacío',

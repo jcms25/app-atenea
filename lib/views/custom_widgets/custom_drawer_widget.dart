@@ -154,23 +154,58 @@ class CustomDrawerWidget extends StatelessWidget {
               },
             ),
           ),
-          CustomButtonWidget(
-              buttonTitle: "logout".tr,
-              suffixIcon: AppImages.loginArrow,
-              margin: 10,
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return LogOutDialogue(
-                          currentLoggedInUserRole:
-                              studentParentTeacherController
-                                          .currentLoggedInUserRole ==
-                                      RoleType.assistant
-                                  ? 0
-                                  : 1);
-                    });
-              })
+          Column(
+            children: [
+              Consumer<StudentParentTeacherController>(
+                builder: (context,studentParentTeacherController,child){
+                  return Visibility(
+                      visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.parent,
+                      child: GestureDetector(
+                    onTap: () async{
+                      studentParentTeacherController.openUrl(url: AppConstants.ampaProfile);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            AppImages.ampaIcon,
+                            width: 40,
+                            height: 40,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "AMPA",
+                            style: AppTextStyle.getOutfit400(textSize: 20, textColor: AppColors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                  ));
+                },
+              ),
+              CustomButtonWidget(
+                  buttonTitle: "logout".tr,
+                  suffixIcon: AppImages.loginArrow,
+                  margin: 10,
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return LogOutDialogue(
+                              currentLoggedInUserRole:
+                                  studentParentTeacherController
+                                              .currentLoggedInUserRole ==
+                                          RoleType.assistant
+                                      ? 0
+                                      : 1);
+                        });
+                  })
+            ],
+          )
         ],
       ),
     );

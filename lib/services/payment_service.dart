@@ -52,6 +52,8 @@ class PaymentService {
 
 
       final result = await platform.invokeMethod('startRedsysPayment',{'orderId' : newOrderId,'payment_method' : paymentMethod,'signature':signature,'merchantParams' : base64Params,'amount' : amountInCents });
+
+
       return result['status'];
     } catch (e) {
       if (kDebugMode) {

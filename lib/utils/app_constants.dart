@@ -12,6 +12,9 @@ enum MessageSendCategoryForTeacher{student,parent,toAllParent,toAllStudent}
 enum TypesOfPaymentMethod{cash,paypal,bizum,servired}
 
 class AppConstants {
+  static const ampaProfile = "https://colegioatenea.es/ampa/";
+
+
   static const List<String> daysInSpanish = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
 
 // Helper function to format price

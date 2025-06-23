@@ -23,16 +23,16 @@ class MessageScreen extends StatefulWidget {
 }
 
 class MessageListScreen extends State<MessageScreen> {
-  StudentParentTeacherController? appController;
+  StudentParentTeacherController? studentParentTeacherController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      appController =
+      studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
-      appController?.getMessageList(
-          showLoader: !(appController?.listOfMessagesModel == null));
+      studentParentTeacherController?.getMessageList(
+          showLoader: !(studentParentTeacherController?.listOfMessagesModel != null));
     });
   }
 
@@ -161,9 +161,9 @@ class MessageListScreen extends State<MessageScreen> {
             ],
           ),
           Consumer<StudentParentTeacherController>(
-            builder: (context, appController, child) {
+            builder: (context, studentParentTeacherController, child) {
               return Visibility(
-                  visible: appController.isLoading,
+                  visible: studentParentTeacherController.isLoading,
                   child: const LoadingLayout());
             },
           ),
@@ -208,6 +208,7 @@ class CustomRadioWidget extends StatelessWidget {
               height: 25,
               child: Radio(
                   value: messageType,
+                  activeColor: AppColors.primary,
                   groupValue: appController.currentSelectedMessageListType,
                   onChanged: (String? value) {
                     appController.setCurrentSelectedMessageType(

@@ -65,4 +65,6 @@ class AppImages{
   static const String orderHistory = "$rootPath/order_history.svg";
   static const String categoriesIcon = "$rootPath/categories.svg";
 
+
+  static const String ampaIcon = "$rootPath/ampa.png";
 }

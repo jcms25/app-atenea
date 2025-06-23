@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:colegia_atenea/views/screens/store_screens/products/bundles_product_list_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       storeController?.getProductDetail(
         productId: widget.productId,
         tiendaToken:
-        studentParentTeacherController?.userdata?.tiendaToken ?? "",
+            studentParentTeacherController?.userdata?.tiendaToken ?? "",
       );
     });
   }
@@ -91,26 +92,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                                 CachedNetworkImage(
                                   imageUrl: storeController.productItem?.images
-                                      ?.isNotEmpty ??
-                                      false
+                                              ?.isNotEmpty ??
+                                          false
                                       ? storeController
-                                      .productItem?.images![0].src ??
-                                      ""
+                                              .productItem?.images![0].src ??
+                                          ""
                                       : "",
                                   width: double.infinity,
                                   fit: BoxFit.contain,
-                                  placeholder: (context, url) =>
-                                      Container(
-                                        color: Colors.grey[300],
-                                        child: const Center(
-                                            child: CircularProgressIndicator()),
-                                      ),
+                                  placeholder: (context, url) => Container(
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                        child: CircularProgressIndicator()),
+                                  ),
                                   errorWidget: (context, url, error) =>
                                       Container(
-                                        color: Colors.grey[300],
-                                        child: const Icon(Icons.broken_image,
-                                            size: 50),
-                                      ),
+                                    color: Colors.grey[300],
+                                    child: const Icon(Icons.broken_image,
+                                        size: 50),
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
                                 Padding(
@@ -118,29 +118,41 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         horizontal: 16),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppConstants.unescape.convert(storeController.productItem?.name ?? ""),
+                                          AppConstants.unescape.convert(
+                                              storeController
+                                                      .productItem?.name ??
+                                                  ""),
                                           style: AppTextStyle.getOutfit600(
                                               textSize: 22,
                                               textColor: AppColors.secondary),
                                         ),
                                         const SizedBox(height: 10),
                                         Text(
-                                          storeController
-                                              .selectedVariations == null
-                                              ? storeController.productItem
-                                              ?.prices?.priceRange == null
-                                              ? AppConstants.formatPrice(double.tryParse(storeController.productItem
-                                              ?.prices?.regularPrice ?? "0.0") ?? 0)
-                                              : "${AppConstants.formatPrice(double.tryParse(storeController.productItem
-                                              ?.prices?.priceRange
-                                              ?.minAmount ?? "0.0") ?? 0)}-${AppConstants.formatPrice(double.tryParse(storeController
-                                              .productItem?.prices?.priceRange
-                                              ?.maxAmount ?? "0.0") ?? 0)}"
-                                              : AppConstants.formatPrice(double.tryParse(storeController.variationProduct
-                                              ?.prices?.regularPrice ?? "0.0") ?? 0),
+                                          storeController.selectedVariations ==
+                                                  null
+                                              ? storeController
+                                                          .productItem
+                                                          ?.prices
+                                                          ?.priceRange ==
+                                                      null
+                                                  ? AppConstants.formatPrice(
+                                                      double.tryParse(storeController
+                                                                  .productItem
+                                                                  ?.prices
+                                                                  ?.regularPrice ??
+                                                              "0.0") ??
+                                                          0)
+                                                  : "${AppConstants.formatPrice(double.tryParse(storeController.productItem?.prices?.priceRange?.minAmount ?? "0.0") ?? 0)}-${AppConstants.formatPrice(double.tryParse(storeController.productItem?.prices?.priceRange?.maxAmount ?? "0.0") ?? 0)}"
+                                              : AppConstants.formatPrice(double
+                                                      .tryParse(storeController
+                                                              .variationProduct
+                                                              ?.prices
+                                                              ?.regularPrice ??
+                                                          "0.0") ??
+                                                  0),
                                           style: AppTextStyle.getOutfit500(
                                               textSize: 20,
                                               textColor: AppColors.secondary),
@@ -148,150 +160,178 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         const SizedBox(
                                           height: 20,
                                         ),
-
-                                        storeController.productItem?.type == "yith_bundle" ? SizedBox.shrink() :
-                                        storeController.productItem?.attributes
-                                            ?.isNotEmpty ??
-                                            false
-                                            ? Column(
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .center,
-                                              children: [
-                                                Text(
-                                                  storeController
-                                                      .productItem
-                                                      ?.attributes?[0]
-                                                      .name ??
-                                                      "",
-                                                  style: AppTextStyle
-                                                      .getOutfit500(
-                                                      textSize: 20,
-                                                      textColor: AppColors
-                                                          .secondary),
-                                                ),
-                                                const SizedBox(
-                                                    height: 10),
-                                                Expanded(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                          BorderRadius
-                                                              .circular(
-                                                              10),
-                                                          color: AppColors
-                                                              .secondary
-                                                              .withValues(
-                                                              alpha:
-                                                              0.1)),
-                                                      height: 60,
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10),
-                                                      padding:
-                                                      const EdgeInsets
-                                                          .all(10),
-                                                      child: DropdownButton<
-                                                          Variations>(
-                                                          value: storeController
-                                                              .selectedVariations,
-                                                          isExpanded: true,
-                                                          underline:
-                                                          const SizedBox
-                                                              .shrink(),
-                                                          hint: Text(
-                                                            'Elija opciones',
-                                                            style: AppTextStyle
-                                                                .getOutfit400(
-                                                                textSize: 16,
-                                                                textColor: AppColors
-                                                                    .secondary
-                                                                    .withValues(
-                                                                    alpha:
-                                                                    0.4)),
-                                                          ),
-                                                          items: storeController
-                                                              .listOfVariations
-                                                              .map((e) {
-                                                            return DropdownMenuItem<
-                                                                Variations>(
-                                                                value: e,
-                                                                child: Text(e
-                                                                    .attributes?[
-                                                                0]
-                                                                    .value ??
-                                                                    ""));
-                                                          }).toList(),
-                                                          onChanged:
-                                                              (Variations?
-                                                          variations) {
-                                                            storeController
-                                                                .setSelectedVariations(
-                                                                selectedVariations:
-                                                                variations);
-
-                                                            if (variations !=
-                                                                null) {
-                                                              storeController
-                                                                  .getProductDetail(
-                                                                  productId:
-                                                                  '${variations
-                                                                      .id}',
-                                                                  tiendaToken:
-                                                                  studentParentTeacherController
-                                                                      ?.userdata
-                                                                      ?.tiendaToken ??
-                                                                      "",
-                                                                  variationProductDetail:
-                                                                  true);
-                                                            }
-                                                          }),
-                                                    ))
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Align(
-                                              alignment:
-                                              Alignment.centerRight,
-                                              child: Padding(padding: const EdgeInsets.only(right: 10),child:  GestureDetector(
+                                        storeController.productItem?.type ==
+                                                "yith_bundle"
+                                            ? GestureDetector(
                                                 onTap: () {
-                                                  storeController
-                                                      .setSelectedVariations(
-                                                      selectedVariations:
-                                                      null);
-                                                  storeController
-                                                      .setSelectedVariationDetail(
-                                                      productItem:
-                                                      null);
+                                                  Get.bottomSheet(
+                                                      BundlesProductListBottomSheet(listOfBundleProducts: storeController.productItem?.extensions?.customProductData?.bundleData ?? [],),
+                                                      backgroundColor: AppColors
+                                                          .transparent,
+
+                                                  );
                                                 },
                                                 child: Text(
-                                                  "quitar selection",
+                                                  "Ver productos",
                                                   style: AppTextStyle
-                                                      .getOutfit400(
-                                                      textSize: 20,
-                                                      textColor:
-                                                      AppColors
-                                                          .primary),
+                                                          .getOutfit500(
+                                                              textSize: 20,
+                                                              textColor:
+                                                                  AppColors
+                                                                      .primary)
+                                                      .copyWith(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline),
                                                 ),
-                                              ),),
-                                            )
-                                          ],
-                                        )
-                                            : SizedBox.shrink(),
+                                              )
+                                            : storeController
+                                                        .productItem
+                                                        ?.attributes
+                                                        ?.isNotEmpty ??
+                                                    false
+                                                ? Column(
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            storeController
+                                                                    .productItem
+                                                                    ?.attributes?[
+                                                                        0]
+                                                                    .name ??
+                                                                "",
+                                                            style: AppTextStyle
+                                                                .getOutfit500(
+                                                                    textSize:
+                                                                        20,
+                                                                    textColor:
+                                                                        AppColors
+                                                                            .secondary),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Expanded(
+                                                              child: Container(
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                color: AppColors
+                                                                    .secondary
+                                                                    .withValues(
+                                                                        alpha:
+                                                                            0.1)),
+                                                            height: 60,
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        10),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            child: DropdownButton<
+                                                                    Variations>(
+                                                                value: storeController
+                                                                    .selectedVariations,
+                                                                isExpanded:
+                                                                    true,
+                                                                underline:
+                                                                    const SizedBox
+                                                                        .shrink(),
+                                                                hint: Text(
+                                                                  'Elija opciones',
+                                                                  style: AppTextStyle.getOutfit400(
+                                                                      textSize:
+                                                                          16,
+                                                                      textColor: AppColors
+                                                                          .secondary
+                                                                          .withValues(
+                                                                              alpha: 0.4)),
+                                                                ),
+                                                                items: storeController
+                                                                    .listOfVariations
+                                                                    .map((e) {
+                                                                  return DropdownMenuItem<
+                                                                          Variations>(
+                                                                      value: e,
+                                                                      child: Text(e
+                                                                              .attributes?[0]
+                                                                              .value ??
+                                                                          ""));
+                                                                }).toList(),
+                                                                onChanged:
+                                                                    (Variations?
+                                                                        variations) {
+                                                                  storeController
+                                                                      .setSelectedVariations(
+                                                                          selectedVariations:
+                                                                              variations);
+
+                                                                  if (variations !=
+                                                                      null) {
+                                                                    storeController.getProductDetail(
+                                                                        productId:
+                                                                            '${variations.id}',
+                                                                        tiendaToken:
+                                                                            studentParentTeacherController?.userdata?.tiendaToken ??
+                                                                                "",
+                                                                        variationProductDetail:
+                                                                            true);
+                                                                  }
+                                                                }),
+                                                          ))
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  right: 10),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              storeController
+                                                                  .setSelectedVariations(
+                                                                      selectedVariations:
+                                                                          null);
+                                                              storeController
+                                                                  .setSelectedVariationDetail(
+                                                                      productItem:
+                                                                          null);
+                                                            },
+                                                            child: Text(
+                                                              "quitar selection",
+                                                              style: AppTextStyle
+                                                                  .getOutfit400(
+                                                                      textSize:
+                                                                          20,
+                                                                      textColor:
+                                                                          AppColors
+                                                                              .primary),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                : SizedBox.shrink(),
                                         const SizedBox(
-                                          height: 10,
+                                          height: 20,
                                         ),
                                         Text(
-                                          "SKU : ${storeController
-                                              .selectedVariations != null
-                                              ? storeController.variationProduct
-                                              ?.sku
-                                              : storeController.productItem
-                                              ?.sku}",
+                                          "SKU : ${storeController.selectedVariations != null ? storeController.variationProduct?.sku : storeController.productItem?.sku}",
                                           style: AppTextStyle.getOutfit400(
                                               textSize: 18,
                                               textColor: AppColors.secondary),
@@ -300,20 +340,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                           height: 10,
                                         ),
                                         Text(
-                                          "Categorías : ${storeController
-                                              .selectedVariations !=
-                                              null
-                                              ? storeController.variationProduct
-                                              ?.categories?.map((e) {
-                                            return e.name;
-                                          }).join(",") ??
-                                              ""
-                                              : storeController
-                                              .productItem?.categories?.map((
-                                              e) {
-                                            return e.name;
-                                          }).join(",") ??
-                                              ""}",
+                                          "Categorías : ${storeController.selectedVariations != null ? storeController.variationProduct?.categories?.map((e) {
+                                                return e.name;
+                                              }).join(",") ?? "" : storeController.productItem?.categories?.map((e) {
+                                                return e.name;
+                                              }).join(",") ?? ""}",
                                           style: AppTextStyle.getOutfit400(
                                               textSize: 18,
                                               textColor: AppColors.secondary),
@@ -346,7 +377,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   /// Like Button
                   // IconButton(
                   //   icon: Icon(
@@ -358,27 +388,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                   /// Quantity Selector
                   Visibility(
-                      visible:  storeController.productItem?.type != "yith_bundle" ,
+                      visible:
+                          storeController.productItem?.type != "yith_bundle",
                       child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle,
-                            color: AppColors.secondary),
-                        onPressed: storeController.quantity > 1
-                            ? storeController.decreaseQuantity
-                            : null,
-                      ),
-                      Text(
-                        storeController.quantity.toString(),
-                        style: AppTextStyle.getOutfit600(
-                            textSize: 18, textColor: AppColors.secondary),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.add_circle, color: AppColors.primary),
-                        onPressed: storeController.increaseQuantity,
-                      ),
-                    ],
-                  )),
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.remove_circle,
+                                color: AppColors.secondary),
+                            onPressed: storeController.quantity > 1
+                                ? storeController.decreaseQuantity
+                                : null,
+                          ),
+                          Text(
+                            storeController.quantity.toString(),
+                            style: AppTextStyle.getOutfit600(
+                                textSize: 18, textColor: AppColors.secondary),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add_circle,
+                                color: AppColors.primary),
+                            onPressed: storeController.increaseQuantity,
+                          ),
+                        ],
+                      )),
 
                   /// Add to Cart Button
                   Expanded(
@@ -393,16 +425,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         onPressed: storeController.isLoading
                             ? null
-                            : () async{
-                          await storeController.addToCart(
-                              noOfItems: storeController.productItem?.type == "yith_bundle" ? 1 : storeController.quantity,
-                              tiendaToken: studentParentTeacherController
-                                  ?.userdata?.tiendaToken ?? "",
-                              productId: storeController.selectedVariations == null ? widget.productId : null,
-                              variation: storeController.selectedVariations,
-                             variationProductId: storeController.selectedVariations == null ? null :"${storeController.selectedVariations?.id ?? ""}", fromProductListOrFromDetails: 2
-                          );
-                        },
+                            : () async {
+                                await storeController.addToCart(
+                                    noOfItems:
+                                        storeController.productItem?.type ==
+                                                "yith_bundle"
+                                            ? 1
+                                            : storeController.quantity,
+                                    tiendaToken: studentParentTeacherController
+                                            ?.userdata?.tiendaToken ??
+                                        "",
+                                    productId:
+                                        storeController.selectedVariations ==
+                                                null
+                                            ? widget.productId
+                                            : null,
+                                    variation:
+                                        storeController.selectedVariations,
+                                    variationProductId: storeController
+                                                .selectedVariations ==
+                                            null
+                                        ? null
+                                        : "${storeController.selectedVariations?.id ?? ""}",
+                                    fromProductListOrFromDetails: 2);
+                              },
                         child: Text(
                           "Añadir al carrito",
                           style: AppTextStyle.getOutfit600(

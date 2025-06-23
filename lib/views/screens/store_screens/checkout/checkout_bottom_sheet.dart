@@ -128,7 +128,6 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                                         isLoading: true);
                                     dynamic orderAmount = int.parse(storeController.cartResponse?.totals?.totalPrice ?? "0");
 
-
                                     dynamic result =
                                         await storeController.checkout(
                                             tiendaToken:
@@ -196,6 +195,8 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                                                   "Por favor seleccione el método de pago");
                                         }
                                       });
+                                    }else{
+                                      AppConstants.showCustomToast(status: false, message: result['Message'] ?? result['message'] ?? "Error");
                                     }
 
                                     storeController.setIsLoading(

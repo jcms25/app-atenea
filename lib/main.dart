@@ -100,6 +100,9 @@ void main() async {
       // specify the fallback locale in case an invalid locale is selected.
       theme: ThemeData(
           primarySwatch: createMaterialColor(AppColors.primary),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: AppColors.primary
+          ),
           useMaterial3: false),
     )),
   ));

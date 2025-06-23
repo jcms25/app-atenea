@@ -26,8 +26,10 @@ class ProductItem {
   dynamic lowStockRemaining;
   bool? soldIndividually;
   AddToCart? addToCart;
+  Extensions? extensions;
 
-  ProductItem({this.id, this.name, this.slug, this.parent, this.type, this.variation, this.permalink, this.sku, this.shortDescription, this.description, this.onSale, this.prices, this.priceHtml, this.averageRating, this.reviewCount, this.images, this.categories, this.attributes, this.variations, this.hasOptions, this.isPurchasable, this.isInStock, this.isOnBackorder, this.lowStockRemaining, this.soldIndividually, this.addToCart});
+
+  ProductItem({this.id, this.name, this.slug, this.parent, this.type, this.variation, this.permalink, this.sku, this.shortDescription, this.description, this.onSale, this.prices, this.priceHtml, this.averageRating, this.reviewCount, this.images, this.categories, this.attributes, this.variations, this.hasOptions, this.isPurchasable, this.isInStock, this.isOnBackorder, this.lowStockRemaining, this.soldIndividually, this.addToCart,this.extensions});
 
   ProductItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -72,6 +74,10 @@ class ProductItem {
     lowStockRemaining = json['low_stock_remaining'];
     soldIndividually = json['sold_individually'];
     addToCart = json['add_to_cart'] != null ? AddToCart.fromJson(json['add_to_cart']) : null;
+    extensions = json['extensions'] != null
+        ? Extensions.fromJson(json['extensions'])
+        : null;
+
   }
 
   Map<String, dynamic> toJson() {
@@ -375,6 +381,115 @@ class AddToCart {
     data['minimum'] = minimum;
     data['maximum'] = maximum;
     data['multiple_of'] = multipleOf;
+    return data;
+  }
+}
+
+
+class Extensions {
+  CustomProductData? customProductData;
+
+  Extensions({this.customProductData});
+
+  Extensions.fromJson(Map<String, dynamic> json) {
+    customProductData = json['custom_product_data'] != null
+        ? CustomProductData.fromJson(json['custom_product_data'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (customProductData != null) {
+      data['custom_product_data'] = customProductData!.toJson();
+    }
+    return data;
+  }
+}
+
+class CustomProductData {
+  List<BundleData>? bundleData;
+
+  CustomProductData({this.bundleData});
+
+  CustomProductData.fromJson(Map<String, dynamic> json) {
+    if (json['bundle_data'] != null) {
+      bundleData = <BundleData>[];
+      json['bundle_data'].forEach((v) {
+        bundleData!.add(BundleData.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (bundleData != null) {
+      data['bundle_data'] = bundleData!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class BundleData {
+  String? bundleOrder;
+  String? productId;
+  String? bpShowName;
+  String? bpTitle;
+  String? bpShowDescription;
+  String? bpDescription;
+  String? bpDiscount;
+  String? bpMinQty;
+  String? bpMaxQty;
+  String? bpProductName;
+  String? bpProductPrice;
+  String? bpProductImg;
+  String? bpProductSku;
+
+  BundleData(
+      {this.bundleOrder,
+        this.productId,
+        this.bpShowName,
+        this.bpTitle,
+        this.bpShowDescription,
+        this.bpDescription,
+        this.bpDiscount,
+        this.bpMinQty,
+        this.bpMaxQty,
+        this.bpProductName,
+        this.bpProductPrice,
+        this.bpProductImg,
+        this.bpProductSku});
+
+  BundleData.fromJson(Map<String, dynamic> json) {
+    bundleOrder = json['bundle_order'];
+    productId = json['product_id'];
+    bpShowName = json['bp_show_name'];
+    bpTitle = json['bp_title'];
+    bpShowDescription = json['bp_show_description'];
+    bpDescription = json['bp_description'];
+    bpDiscount = json['bp_discount'];
+    bpMinQty = json['bp_min_qty'];
+    bpMaxQty = json['bp_max_qty'];
+    bpProductName = json['bp_product_name'];
+    bpProductPrice = json['bp_product_price'];
+    bpProductImg = json['bp_product_img'];
+    bpProductSku = json['bp_product_sku'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['bundle_order'] = bundleOrder;
+    data['product_id'] = productId;
+    data['bp_show_name'] = bpShowName;
+    data['bp_title'] = bpTitle;
+    data['bp_show_description'] = bpShowDescription;
+    data['bp_description'] = bpDescription;
+    data['bp_discount'] = bpDiscount;
+    data['bp_min_qty'] = bpMinQty;
+    data['bp_max_qty'] = bpMaxQty;
+    data['bp_product_name'] = bpProductName;
+    data['bp_product_price'] = bpProductPrice;
+    data['bp_product_img'] = bpProductImg;
+    data['bp_product_sku'] = bpProductSku;
     return data;
   }
 }

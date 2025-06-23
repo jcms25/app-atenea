@@ -337,7 +337,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             Expanded(
               child: Stack(
                 children: [
-                  Consumer<StoreController>(
+                  ScrollConfiguration(behavior: ScrollBehavior().copyWith(overscroll: false), child: Consumer<StoreController>(
                     builder: (context, storeController, child) {
                       return GridView.builder(
                         controller: _scrollController,
@@ -356,7 +356,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         },
                       );
                     },
-                  ),
+                  )),
                   Consumer<StoreController>(
                     builder: (context, storeController, child) {
                       return Visibility(

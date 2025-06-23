@@ -601,7 +601,7 @@ class StoreController extends ChangeNotifier {
       } else {
         dynamic data = jsonDecode(responseData.body);
         AppConstants.showCustomToast(
-            status: false, message: '${data['message'] ?? ""}');
+            status: false, message: AppConstants.unescape.convert('${data['message'] ?? ""}'));
         _loadingProducts.remove(productId);
         notifyListeners(); // Notify UI that loading has finished
       }

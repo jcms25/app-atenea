@@ -194,45 +194,41 @@ class _MainScreenState extends State<MainScreen> {
           return CustomDrawerWidget(studentParentTeacherController: studentParentTeacherController,);
         },
       ),
-      body: Stack(
-        children: [
-          Consumer<StudentParentTeacherController>(
-            builder: (context, appController, child) {
-              return appController.currentLoggedInUserRole == RoleType.student
-                  ? appController.currentBottomIndexSelected == 0
-                  ? const DashboardScreen()
-                  : appController.currentBottomIndexSelected == 1
-                  ? const MessageScreen(studentOrParent: "0")
-                  : appController.currentBottomIndexSelected == 2
-                  ? const ParentStudentInfo()
-                  : appController.currentBottomIndexSelected == 3
-                  ? const ClassesScreen()
-                  : const EventScreen()
-                  : appController.currentLoggedInUserRole == RoleType.parent
-                  ? appController.currentBottomIndexSelected == 0
-                  ? const DashboardScreen()
-                  : appController.currentBottomIndexSelected == 1
-                  ? const CircularScreen()
-                  : appController.currentBottomIndexSelected == 2
-                  ? const MessageScreen(studentOrParent: "0")
-                  : appController.currentBottomIndexSelected == 3
-                  ? const ParentStudentInfo()
-                  : appController.currentBottomIndexSelected ==
-                  4
-                  ? const ClassesScreen()
-                  : const EventScreen()
-                  : appController.currentBottomIndexSelected == 0
-                  ? const DashboardScreen()
-                  : appController.currentBottomIndexSelected == 1
-                  ? const MessageScreen(studentOrParent: "0")
-                  : appController.currentBottomIndexSelected == 2
-                  ? const TeacherClassMenuScreen()
-                  : appController.currentBottomIndexSelected == 3
-                  ? const TeachingManagementScreen()
-                  : const EventScreen();
-            },
-          ),
-        ],
+      body:  Consumer<StudentParentTeacherController>(
+        builder: (context, appController, child) {
+          return appController.currentLoggedInUserRole == RoleType.student
+              ? appController.currentBottomIndexSelected == 0
+              ? const DashboardScreen()
+              : appController.currentBottomIndexSelected == 1
+              ? const MessageScreen(studentOrParent: "0")
+              : appController.currentBottomIndexSelected == 2
+              ? const ParentStudentInfo()
+              : appController.currentBottomIndexSelected == 3
+              ? const ClassesScreen()
+              : const EventScreen()
+              : appController.currentLoggedInUserRole == RoleType.parent
+              ? appController.currentBottomIndexSelected == 0
+              ? const DashboardScreen()
+              : appController.currentBottomIndexSelected == 1
+              ? const CircularScreen()
+              : appController.currentBottomIndexSelected == 2
+              ? const MessageScreen(studentOrParent: "0")
+              : appController.currentBottomIndexSelected == 3
+              ? const ParentStudentInfo()
+              : appController.currentBottomIndexSelected ==
+              4
+              ? const ClassesScreen()
+              : const EventScreen()
+              : appController.currentBottomIndexSelected == 0
+              ? const DashboardScreen()
+              : appController.currentBottomIndexSelected == 1
+              ? const MessageScreen(studentOrParent: "0")
+              : appController.currentBottomIndexSelected == 2
+              ? const TeacherClassMenuScreen()
+              : appController.currentBottomIndexSelected == 3
+              ? const TeachingManagementScreen()
+              : const EventScreen();
+        },
       ),
     ));
   }

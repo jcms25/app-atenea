@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:io' as io;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -19,8 +20,11 @@ class PaymentService {
     try {
 
       String normalized = amount.replaceAll(',', '.');
-      double amountDouble = double.parse(normalized);
-      int amountInCents = (amountDouble * 100).round();
+      dynamic amountInCents = double.parse(normalized);
+
+      if(io.Platform.isAndroid){
+        amountInCents = (amountInCents * 100).round();
+      }
 
       final random = Random();
       int threeDigitNumber = 100 + random.nextInt(900);
@@ -52,7 +56,6 @@ class PaymentService {
 
 
       final result = await platform.invokeMethod('startRedsysPayment',{'orderId' : newOrderId,'payment_method' : paymentMethod,'signature':signature,'merchantParams' : base64Params,'amount' : amountInCents });
-
 
       return result['status'];
     } catch (e) {

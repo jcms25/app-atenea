@@ -105,11 +105,14 @@ import TPVVInLibrary
                       from: rootVC,
                       flutterResult: result,
                       orderId: orderId,
+//                      amount: amount,
                       amount: amount,
                       paymentMethodType: method,
                       signature: signature,
                       merchantParams: merchantParams
                   )
+                  print(amount)
+                  result(FlutterError(code: "false", message: "Can't get root controller", details: nil))
               } else {
                   print("NO_ROOT_CONTROLLER")
                   result(FlutterError(code: "NO_ROOT_CONTROLLER", message: "Can't get root controller", details: nil))
@@ -262,7 +265,7 @@ extension AppDelegate: WebViewPaymentResponseDelegate {
     func responsePaymentOK(response: WebViewPaymentResponseOK) {
         
         let resultData: [String: Any] = [
-             "status": "true",
+             "status": true,
              "order": response.Ds_Order ?? "",
              "amount": response.Ds_Amount ?? "",
              "currency": response.Ds_Currency ?? "",

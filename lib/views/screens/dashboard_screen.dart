@@ -96,7 +96,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       userdata: studentParentTeacherController
                                           .userdata,
                                       roleType: studentParentTeacherController
-                                          .currentLoggedInUserRole,
+                                          .currentLoggedInUserRole, assistantData: null,
                                     ));
                               },
                               child: Container(

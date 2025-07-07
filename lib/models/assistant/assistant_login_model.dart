@@ -12,7 +12,7 @@ class Assistant {
   bool status;
   String message;
   String basicAuthToken;
-  AssistantUserdata userdata;
+  AssistantUserdata? userdata;
 
   Assistant({
     required this.status,
@@ -23,8 +23,8 @@ class Assistant {
 
   factory Assistant.fromJson(Map<String, dynamic> json) => Assistant(
     status: json["status"],
-    message: json["Message"],
-    basicAuthToken: json["basicAuthToken"],
+    message: json["Message"] ?? json["Message"] ?? "",
+    basicAuthToken: json["basicAuthToken"] ?? "",
     userdata: AssistantUserdata.fromJson(json["userdata"]),
   );
 
@@ -32,12 +32,12 @@ class Assistant {
     "status": status,
     "Message": message,
     "basicAuthToken": basicAuthToken,
-    "userdata": userdata.toJson(),
+    "userdata": userdata?.toJson(),
   };
 }
 
 class AssistantUserdata {
-  Data data;
+  AssistantData data;
   int id;
   Caps caps;
   String capKey;
@@ -56,7 +56,7 @@ class AssistantUserdata {
   });
 
   factory AssistantUserdata.fromJson(Map<String, dynamic> json) => AssistantUserdata(
-    data: Data.fromJson(json["data"]),
+    data: AssistantData.fromJson(json["data"]),
     id: json["ID"],
     caps: Caps.fromJson(json["caps"]),
     capKey: json["cap_key"],
@@ -132,23 +132,28 @@ class Caps {
   };
 }
 
-class Data {
-  String id;
-  String userLogin;
-  String userPass;
-  String userNicename;
-  String userEmail;
-  String userUrl;
-  DateTime userRegistered;
-  String userActivationKey;
-  String userStatus;
-  String displayName;
-  String userRole;
-  String className;
-  String classId;
+class AssistantData {
+  String? id;
+  String? userLogin;
+  String? userPass;
+  String? userNicename;
+  String? userEmail;
+  String? userUrl;
+  DateTime? userRegistered;
+  String? userActivationKey;
+  String? userStatus;
+  String? displayName;
+  String? userRole;
+  String? className;
+  String? classId;
   String? cookie;
+  String? userImage;
+  String? userPhone;
+  String? userAddress;
+  String? city;
+  String? postCode;
 
-  Data({
+  AssistantData({
     required this.id,
     required this.userLogin,
     required this.userPass,
@@ -162,10 +167,15 @@ class Data {
     required this.userRole,
     required this.className,
     required this.classId,
-    required this.cookie
+    required this.cookie,
+    required this.userImage,
+    required this.userPhone,
+    required this.userAddress,
+    required this.city,
+    required this.postCode
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory AssistantData.fromJson(Map<String, dynamic> json) => AssistantData(
     id: json["ID"],
     userLogin: json["user_login"],
     userPass: json["user_pass"],
@@ -179,7 +189,12 @@ class Data {
     userRole: json["user_role"],
     className: json["class_name"],
     classId: json["class_id"],
-    cookie: json["cookies"]
+    cookie: json["cookies"],
+    userImage: json["user_image"],
+    userPhone: json["phone"],
+    userAddress : json["address"],
+    city : json["city"],
+    postCode : json["postcode"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -189,13 +204,19 @@ class Data {
     "user_nicename": userNicename,
     "user_email": userEmail,
     "user_url": userUrl,
-    "user_registered": userRegistered.toIso8601String(),
+    "user_registered": userRegistered?.toIso8601String(),
     "user_activation_key": userActivationKey,
     "user_status": userStatus,
     "display_name": displayName,
     "user_role": userRole,
     "class_name": className,
     "class_id": classId,
-    "cookies" : cookie
+    "cookies" : cookie,
+    "user_image" : userImage,
+    "phone" : userPhone,
+    "address" : userAddress,
+    "city" : city,
+    "postcode" : userPhone
+
   };
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:colegia_atenea/controllers/assistant_controller.dart';
 import 'package:colegia_atenea/controllers/edit_profile_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
@@ -14,15 +15,16 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/assistant/assistant_login_model.dart';
 import '../../services/app_shared_preferences.dart';
 import '../../utils/app_colors.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final Userdata? userdata;
   final RoleType? roleType;
-
+  final AssistantData? assistantData;
   const EditProfileScreen(
-      {super.key, required this.userdata, required this.roleType});
+      {super.key, required this.userdata, required this.roleType,required this.assistantData});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -42,41 +44,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController(
-        text: widget.roleType == RoleType.teacher
-            ? widget.userdata?.teacherEmail ?? ""
-            : widget.roleType == RoleType.parent
-                ? widget.userdata?.parentEmail ?? ""
-                : widget.userdata?.stuEmail ?? "");
-    mobileController = TextEditingController(
-        text: widget.roleType == RoleType.teacher
-            ? widget.userdata?.phone ?? ""
-            : widget.roleType == RoleType.parent
-                ? widget.userdata?.pPhone ?? ""
-                : widget.userdata?.sPhone ?? "");
-    actualAddressController = TextEditingController(
-        text: widget.roleType == RoleType.teacher
-            ? widget.userdata?.address ?? ""
-            : widget.roleType == RoleType.parent
-                ? widget.userdata?.sPaddress ?? ""
-                : widget.userdata?.sAddress ?? "");
-    cityController = TextEditingController(
-        text: widget.roleType == RoleType.teacher
-            ? widget.userdata?.city ?? ""
-            : widget.roleType == RoleType.parent
-                ? widget.userdata?.sPCity ?? ""
-                : widget.userdata?.sCity ?? "");
-    postalCodeController = TextEditingController(
-        text: widget.roleType == RoleType.teacher
-            ? widget.userdata?.zipcode ?? ""
-            : widget.roleType == RoleType.parent
-                ? widget.userdata?.sPZipCode ?? ""
-                : widget.userdata?.sZipcode ?? "");
-    nifController = TextEditingController(
-        text: widget.roleType == RoleType.teacher
-            ? widget.userdata?.empCode ?? ""
-            : "");
-
+    initializeEditProfileScreen();
     WidgetsBinding.instance.addPostFrameCallback((res) {
       editProfileController =
           Provider.of<EditProfileController>(context, listen: false);
@@ -255,13 +223,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Consumer2<StudentParentTeacherController,
+                          Consumer3<StudentParentTeacherController,AssistantController,
                               EditProfileController>(
-                            builder: (context, studentParentTeacherController,
+                            builder: (context, studentParentTeacherController,assistantController,
                                 editingProfileController, child) {
+                              String? userRole = AppSharedPreferences.getUserLoggedInRole();
                               return CustomButtonWidget(
                                   buttonTitle: 'Actualizar',
-                                  onPressed: () async {
+                                  onPressed:  userRole == "assistant" ? () async{
+                                    if(editProfileFormKey.currentState?.validate() ?? false){
+                                      await assistantController.updateAssistantEditProfile(email: emailController?.text ?? "", phone: mobileController?.text ?? "", address: actualAddressController?.text ?? "", postCode: postalCodeController?.text ?? "", city: cityController?.text ?? "", userId: assistantController.assistant?.id ?? "");
+                                    }
+                                  }   :    () async {
                                     if (editProfileFormKey.currentState
                                             ?.validate() ??
                                         false) {
@@ -349,13 +322,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                       )),
                 ),
-                circularImage: Consumer2<StudentParentTeacherController,
+                circularImage: Consumer3<StudentParentTeacherController,AssistantController,
                         EditProfileController>(
-                    builder: (context, studentParentTeacherController,
+                    builder: (context, studentParentTeacherController,assistantController,
                         editProfileController, child) {
                   Userdata? userdata = studentParentTeacherController.userdata;
                   String? userRole = AppSharedPreferences.getUserLoggedInRole();
-                  String? profileImage = userRole == "student"
+                  AssistantData? assistantData = assistantController.assistant;
+                  String? profileImage = userRole == "assistant" ? assistantData?.userImage : userRole == "student"
                       ? userdata?.stuImage
                       : userRole == "parent"
                           ? userdata?.parentImage
@@ -422,10 +396,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   );
                 }),
               ),
-              Consumer<EditProfileController>(
-                builder: (context, editingController, child) {
+              Consumer2<EditProfileController,AssistantController>(
+                builder: (context, editingController, assistantController,child) {
                   return Visibility(
-                      visible: editingController.isLoading,
+                      visible: editingController.isLoading || assistantController.isLoading,
                       child: LoadingLayout());
                 },
               )
@@ -444,5 +418,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     nifController?.dispose();
 
     super.dispose();
+  }
+
+  void initializeEditProfileScreen() {
+    if(widget.roleType == RoleType.assistant){
+      emailController = TextEditingController(text: widget.assistantData?.userEmail ?? "");
+      mobileController = TextEditingController(text: widget.assistantData?.userPhone ?? "");
+      actualAddressController = TextEditingController(text: widget.assistantData?.userAddress ?? "");
+      cityController = TextEditingController(text: widget.assistantData?.city ?? "");
+      postalCodeController = TextEditingController(text: widget.assistantData?.postCode ?? "");
+    } else{
+      emailController = TextEditingController(
+          text: widget.roleType == RoleType.teacher
+              ? widget.userdata?.teacherEmail ?? ""
+              : widget.roleType == RoleType.parent
+              ? widget.userdata?.parentEmail ?? ""
+              : widget.userdata?.stuEmail ?? "");
+      mobileController = TextEditingController(
+          text: widget.roleType == RoleType.teacher
+              ? widget.userdata?.phone ?? ""
+              : widget.roleType == RoleType.parent
+              ? widget.userdata?.pPhone ?? ""
+              : widget.userdata?.sPhone ?? "");
+      actualAddressController = TextEditingController(
+          text: widget.roleType == RoleType.teacher
+              ? widget.userdata?.address ?? ""
+              : widget.roleType == RoleType.parent
+              ? widget.userdata?.sPaddress ?? ""
+              : widget.userdata?.sAddress ?? "");
+      cityController = TextEditingController(
+          text: widget.roleType == RoleType.teacher
+              ? widget.userdata?.city ?? ""
+              : widget.roleType == RoleType.parent
+              ? widget.userdata?.sPCity ?? ""
+              : widget.userdata?.sCity ?? "");
+      postalCodeController = TextEditingController(
+          text: widget.roleType == RoleType.teacher
+              ? widget.userdata?.zipcode ?? ""
+              : widget.roleType == RoleType.parent
+              ? widget.userdata?.sPZipCode ?? ""
+              : widget.userdata?.sZipcode ?? "");
+      nifController = TextEditingController(
+          text: widget.roleType == RoleType.teacher
+              ? widget.userdata?.empCode ?? ""
+              : "");
+    }
+
   }
 }

@@ -1,4 +1,4 @@
-import 'package:colegia_atenea/services/share_preferences.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../main.dart';
@@ -6,8 +6,10 @@ import '../main.dart';
 @pragma('vm:entry-point')
 Future<void> backgroundHandler(RemoteMessage message) async{
   if(message.notification!.body!.split("|").first == "0"){
-    await SharedPref.initialization();
-    await SharedPref.pref.setBool(SharedPref.isLogin, false);
+    // await SharedPref.initialization();
+    await AppSharedPreferences.initialization();
+    await AppSharedPreferences.loggedOutUser();
+    // await SharedPref.pref.setBool(SharedPref.isLogin, false);
   }
 }
 

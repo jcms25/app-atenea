@@ -9,6 +9,7 @@ class AppSharedPreferences {
   static const String _baseAuthToken = "basicAuthToken";
   static const String _loggedInUserRole = "loggedInUserRole";
   static const String _loggedInUserCredential = "loggedInUserCredential";
+  static const String _keyData = "keyData";
 
   static SharedPreferences? sharedPreferences;
 
@@ -60,17 +61,18 @@ class AppSharedPreferences {
   }
   //save assistant logged in data
   static Future<void> saveAssistantLoggedInData(
-      {required Assistant assistant}) async {
-    await sharedPreferences?.setString(_userDataKey, jsonEncode(assistant));
+      {required Assistant assistant,required String basicAuthToken}) async {
+    await sharedPreferences?.setString(_userDataKey, jsonEncode(assistant.userdata?.data));
     await sharedPreferences?.setString(_loggedInUserRole, "assistant");
+    await sharedPreferences?.setString(_baseAuthToken, basicAuthToken);
   }
 
   //get assistant logged in data
-  static Assistant? getAssistantLoggedInData() {
+  static AssistantData? getAssistantLoggedInData() {
     String? assistantData = sharedPreferences?.getString(_userDataKey);
     return assistantData == null
         ? null
-        : Assistant.fromJson(jsonDecode(assistantData));
+        : AssistantData.fromJson(jsonDecode(assistantData));
   }
 
   //get user logged in role
@@ -79,12 +81,24 @@ class AppSharedPreferences {
     return role;
   }
 
+  //save key data
+  static Future<void> saveKeyData({KeyData? keyData}) async{
+    await sharedPreferences?.setString(_keyData, jsonEncode(keyData));
+  }
+
+  //get key data
+  static KeyData? getKeyData() {
+    String? keyData = sharedPreferences?.getString(_keyData);
+    return keyData != null ? KeyData.fromJson(jsonDecode(keyData)) : null;
+  }
+
 
   //logged out user
   static Future<void> loggedOutUser() async{
     await sharedPreferences?.remove(_userDataKey);
     await sharedPreferences?.remove(_loggedInUserRole);
     await sharedPreferences?.remove(_baseAuthToken);
+    await sharedPreferences?.remove(_keyData);
   }
 }
 

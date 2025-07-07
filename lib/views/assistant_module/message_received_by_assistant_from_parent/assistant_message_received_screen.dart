@@ -124,10 +124,11 @@ class _AssistantMessageReceivedScreenState extends State<AssistantMessageReceive
       isLoading = true;
     });
 
-    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-    String token = assistant?.basicAuthToken ?? "";
+
+    AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
     ApiClass apiClass = ApiClass();
-    dynamic res = await apiClass.getCommonMessageList(token,assistant?.userdata.data.cookie ?? "");
+    dynamic res = await apiClass.getCommonMessageList(token,assistant?.cookie ?? "");
     if(res['status']){
       MessageListModel commonListModel = MessageListModel.fromJson(res);
       setState(() {

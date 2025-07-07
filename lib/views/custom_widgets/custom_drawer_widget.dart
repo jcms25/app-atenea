@@ -27,7 +27,6 @@ import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_ma
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_schedule_screen.dart';
-import 'package:colegia_atenea/views/screens/webview_screen/webview_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -78,7 +77,7 @@ class CustomDrawerWidget extends StatelessWidget {
                     Get.to(() => EditProfileScreen(
                           userdata: studentParentTeacherController.userdata,
                           roleType: studentParentTeacherController
-                              .currentLoggedInUserRole,
+                              .currentLoggedInUserRole, assistantData: null,
                         ));
                   },
                   child: Row(
@@ -444,8 +443,8 @@ class CustomDrawerWidget extends StatelessWidget {
 
   Widget _buildListOfDrawerOption(DrawerMenuOption drawerMenuOption) {
     if (drawerMenuOption.subMenu == null) {
-      return Consumer2<StudentParentTeacherController, WebViewProvider>(builder:
-          (context, studentParentTeacherController, webViewProvider, child) {
+      return Consumer<StudentParentTeacherController>(builder:
+          (context, studentParentTeacherController,child) {
         return ListTile(
           leading: drawerMenuOption.icon == null
               ? const SizedBox.shrink()
@@ -460,8 +459,7 @@ class CustomDrawerWidget extends StatelessWidget {
             onDrawerItemClick(
                 drawerMenuOption: drawerMenuOption,
                 roleType:
-                    studentParentTeacherController.currentLoggedInUserRole,
-                webViewProvider: webViewProvider);
+                    studentParentTeacherController.currentLoggedInUserRole);
           },
           title: Text(
             drawerMenuOption.name ?? "-",
@@ -498,8 +496,7 @@ class CustomDrawerWidget extends StatelessWidget {
   //on click of drawer menu option
   void onDrawerItemClick(
       {required DrawerMenuOption drawerMenuOption,
-      required RoleType? roleType,
-      required WebViewProvider webViewProvider}) {
+      required RoleType? roleType}) {
     switch (drawerMenuOption.name ?? "") {
       case "Escritorio":
         AppConstants.mainScreenKey.currentState?.closeDrawer();

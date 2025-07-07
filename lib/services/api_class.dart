@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:colegia_atenea/models/failed_class_model.dart';
-import 'package:colegia_atenea/services/share_preferences.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_new_communication_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -1203,8 +1202,8 @@ class ApiClass{
 }
 
 void sessionExpired() async {
-  await SharedPref.initialization();
-  await SharedPref.pref.setBool(SharedPref.isLogin, false);
+  // await SharedPref.initialization();
+  // await SharedPref.pref.setBool(SharedPref.isLogin, false);
   Fluttertoast.showToast(msg: 'sessionExpired'.tr);
   Get.offAll(const LoginScreen());
 }

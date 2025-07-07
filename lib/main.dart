@@ -8,7 +8,6 @@ import 'package:colegia_atenea/services/notification_service.dart';
 import 'package:colegia_atenea/services/world_languages.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_routes.dart';
-import 'package:colegia_atenea/views/screens/webview_screen/webview_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -79,8 +78,7 @@ void main() async {
       ChangeNotifierProvider(create: (context) => SplashLoginController()),
       ChangeNotifierProvider(create: (context) => AssistantController()),
       ChangeNotifierProvider(create: (context) => EditProfileController()),
-      ChangeNotifierProvider(create: (context) => StoreController()),
-      ChangeNotifierProvider(create: (context) => WebViewProvider())
+      ChangeNotifierProvider(create: (context) => StoreController())
     ],
     child: SafeArea(
         child: GetMaterialApp(

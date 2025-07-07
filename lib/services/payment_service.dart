@@ -1,13 +1,16 @@
 import 'dart:math';
 import 'dart:io' as io;
 
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
+import 'package:colegia_atenea/models/login_model.dart';
 
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:pointycastle/export.dart';
+
+import '../utils/app_constants.dart';
 
 class PaymentService {
   static const platform = MethodChannel('com.example.payment');
@@ -26,17 +29,22 @@ class PaymentService {
         amountInCents = (amountInCents * 100).round();
       }
 
+
+
       final random = Random();
       int threeDigitNumber = 100 + random.nextInt(900);
       // String newOrderId = "ORDER$orderId";  //12 chars
       String newOrderId = "$threeDigitNumber$orderId".padLeft(4,'0');
-      const secretKeyBase64 = "Mk9m98IfEblmPfrpsawtFg=="; // test key
+      // const secretKeyBase64 = "Mk9m98IfEblmPfrpsawtFg=="; // test key
+      // const rawKey = "55D4UZySgTtj362quGtRvDvagDix2doL";
 
-      // const secretKeyBase64 = "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
+      KeyData? keyData = AppSharedPreferences.getKeyData();
+      String secretKeyBase64 = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.production?.redsysSecretKey ?? "")));
 
+      // final secretKeyBase64 = base64.decode(rawKey); // temporary fix
       final merchantParams = json.encode({
         "Ds_Merchant_Amount": amountInCents.toString(),
-        "Ds_Merchant_Order": newOrderId,
+        "Ds_Merchant_Order": "ORDN$newOrderId",
         "Ds_Merchant_MerchantCode": "348775818",
         // "Ds_Merchant_MerchantCode": "999008881",
         "Ds_Merchant_Currency": "978",
@@ -50,13 +58,11 @@ class PaymentService {
       final base64Params = base64.encode(utf8.encode(merchantParams));
       final signature = generateRedsysSignature(
         base64Params: base64Params,
-        order: newOrderId,
+        order: "ORDN$newOrderId",
         secretKeyBase64: secretKeyBase64,
       );
 
-
       final result = await platform.invokeMethod('startRedsysPayment',{'orderId' : newOrderId,'payment_method' : paymentMethod,'signature':signature,'merchantParams' : base64Params,'amount' : amountInCents });
-
       return result['status'];
     } catch (e) {
       if (kDebugMode) {

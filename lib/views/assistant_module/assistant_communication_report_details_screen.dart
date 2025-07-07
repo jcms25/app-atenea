@@ -503,9 +503,9 @@ class CommunicationDetailChild extends State<CommunicationDetail> {
     String cookie = "";
     String? role = AppSharedPreferences.getUserLoggedInRole();
     if (role == "assistant") {
-      Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-      token = assistant?.basicAuthToken ?? "";
-      cookie = assistant?.userdata.data.cookie ?? "";
+
+      AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+      cookie = assistant?.cookie ?? "";
     } else {
       // Parentlogin parentLogin = await sessionManagement.getModelParent('');
       Userdata? userdata = AppSharedPreferences.getUserData();

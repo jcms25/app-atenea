@@ -1,16 +1,17 @@
-import 'package:colegia_atenea/models/assistant/assistant_dashboard_model.dart';
-import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_classes_screen.dart';
-import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import '../../services/app_shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../../controllers/assistant_controller.dart';
+import '../../controllers/student_parent_teacher_controller.dart';
 import '../../utils/app_images.dart';
 import '../../utils/text_style.dart';
 import '../custom_widgets/custom_loader.dart';
+import '../screens/edit_profile_screen.dart';
 
 class AssistantDashboard extends StatefulWidget {
   final String username;
@@ -23,18 +24,16 @@ class AssistantDashboard extends StatefulWidget {
 }
 
 class AssistantDashboardChild extends State<AssistantDashboard> {
-  String imagePath = "";
-  bool isLoading = false;
-  String classCount = "";
-  String commonMessageCount ="";
-  String studentReportCount = "";
-  String username = "-";
+  AssistantController? assistantController;
+
 
   @override
   void initState() {
     super.initState();
-    setUsername();
-    getDashboardData();
+    WidgetsBinding.instance.addPostFrameCallback((res){
+      assistantController = Provider.of<AssistantController>(context,listen: false);
+      assistantController?.getAssistantDashboardData();
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -49,40 +48,70 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
                   color: AppColors.primary
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 10,),
-                  const SizedBox(
-                    height: 65,
-                    width: 65,
-                    child: CircleAvatar(
-                      radius: 16.0,
-                      backgroundColor: Colors.grey,
-                      child: Icon(Icons.person,color: AppColors.primary,size: 50,),
-                    ),
-                  ),
-                  const SizedBox(width: 10,),
-                  Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+              child:  Consumer<AssistantController>(
+                builder: (context, assistantController, child) {
+                  String profileImage = assistantController.assistant?.userImage ?? "";
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() => EditProfileScreen(
+                        roleType: RoleType.assistant,
+                        assistantData: assistantController.assistant,
+                        userdata: null,
+                      ));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "hello".tr,
-                          style: AppTextStyle.getOutfit300(textSize: 16, textColor: AppColors.white),
+                        const SizedBox(width: 20,),
+                        SizedBox(
+                          height: 45,
+                          width: 45,
+                          child: profileImage.isEmpty
+                              ? const CircleAvatar(
+                            backgroundImage: AssetImage(AppImages.people),
+                          )
+                              : CircleAvatar(
+                            radius: 16.0,
+                            backgroundColor: AppColors.primary,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(65.0),
+                              child: Image.network(
+                                profileImage,
+                                fit: BoxFit.cover,
+                                height: 65,
+                                width: 65,
+                              ),
+                            ),
+                          ),
                         ),
-                         Text(
-                          username,
-                          style: AppTextStyle.getOutfit600(textSize: 20, textColor: AppColors.white)
-                        )
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "hello".tr,
+                                  style: AppTextStyle.getOutfit300(
+                                      textSize: 16, textColor: AppColors.white),
+                                ),
+                                AutoSizeText(
+                                    maxLines: 1,
+                                    assistantController.assistant?.displayName ?? "",
+                                    style: AppTextStyle.getOutfit600(
+                                        textSize: 20, textColor: AppColors.white))
+                              ],
+                            )),
                       ],
                     ),
-                  )
-                ],
+                  );
+                },
               ),
             ),
+
             Container(
               width: MediaQuery.of(context).size.width,
               margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -101,7 +130,8 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
             const SizedBox(height: 10,),
             GestureDetector(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildScreen()));
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildScreen()));
+                Get.to(() => ChildScreen());
               },
               child: Container(
                 height: 100,
@@ -160,13 +190,17 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                                   color: AppColors
                                       .blue),
                             ),
-                            Text(
-                              classCount,
-                              style: CustomStyle
-                                  .cardText
-                                  .copyWith(
-                                  color: AppColors
-                                      .blue),
+                            Consumer<AssistantController>(
+                              builder: (context,assistantController,child){
+                                return Text(
+                                  assistantController.assistantDashboardModel?.count.classCount ?? "",
+                                  style: CustomStyle
+                                      .cardText
+                                      .copyWith(
+                                      color: AppColors
+                                          .blue),
+                                );
+                              },
                             )
                           ],
                         ))
@@ -232,13 +266,17 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                                 color: AppColors
                                     .green),
                           ),
-                          Text(
-                            commonMessageCount,
-                            style: CustomStyle
-                                .cardText
-                                .copyWith(
-                                color: AppColors
-                                    .green),
+                          Consumer<AssistantController>(
+                            builder: (context,assistantController,child){
+                              return Text(
+                                assistantController.assistantDashboardModel != null ? "${assistantController.assistantDashboardModel?.count.commonMessageCount}" : "",
+                                style: CustomStyle
+                                    .cardText
+                                    .copyWith(
+                                    color: AppColors
+                                        .green),
+                              );
+                            },
                           )
                         ],
                       ))
@@ -303,14 +341,18 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                                 color: AppColors
                                     .orange),
                           ),
-                          Text(
-                            studentReportCount,
-                            style: CustomStyle
-                                .cardText
-                                .copyWith(
-                                color: AppColors
-                                    .orange),
-                          )
+                         Consumer<AssistantController>(
+                           builder: (context,assistantController,child){
+                             return  Text(
+                               assistantController.assistantDashboardModel != null ? "${assistantController.assistantDashboardModel?.count.reportCount}" : "",
+                               style: CustomStyle
+                                   .cardText
+                                   .copyWith(
+                                   color: AppColors
+                                       .orange),
+                             );
+                           },
+                         )
                         ],
                       ))
                 ],
@@ -318,55 +360,15 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
             )
           ],
         ),
-        Visibility(visible: isLoading ,child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: Colors.black54,
-          child: const Center(
-            child: LoadingLayout(),
-          ),
-        ),)
+        Consumer<AssistantController>(
+          builder: (context,assistantController,child){
+            return Visibility(
+                visible: assistantController.isLoading,
+                child: LoadingLayout());
+          },
+        )
       ],
     );
   }
 
-  void getDashboardData() async{
-    setState(() {
-      isLoading = true;
-    });
-    // ApiClass apiclass = ApiClass();
-    // SessionManagement sessionManagement = SessionManagement();
-    // Assistant assistant = await sessionManagement.getAssistantDetail();
-    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-
-    dynamic dashboardData = await ApiClass().getAsDashboard(
-        assistant?.basicAuthToken ?? "",
-        assistant?.userdata.data.cookie ?? "");
-    if(dashboardData['status']){
-      AssistantDashboardModel assistantDashboard = AssistantDashboardModel.fromJson(dashboardData);
-      String tempClassCount = assistantDashboard.count.classCount;
-      String tempCommonMessageCount = assistantDashboard.count.commonMessageCount;
-      String tempStudentCount = assistantDashboard.count.reportCount;
-      setState(() {
-        classCount = tempClassCount.isEmpty ? "-" : tempClassCount;
-        commonMessageCount = tempCommonMessageCount.isEmpty ? "-" : tempCommonMessageCount;
-        studentReportCount = tempStudentCount.isEmpty ? "-" : tempStudentCount;
-        isLoading = false;
-      });
-    }else{
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  void setUsername() async{
-    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-    // SessionManagement  sessionManagement = SessionManagement();
-    // Assistant assistant = await sessionManagement.getAssistantDetail();
-    setState(() {
-        username = assistant?.userdata.data.displayName ?? ""
-        ;
-    });
-  }
 }

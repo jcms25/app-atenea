@@ -157,9 +157,10 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
       });
 
       if(role == "assistant"){
-        Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-        String token = assistant?.basicAuthToken ?? "";
-        getCommonMessageList(token,role!,assistant?.userdata.data.cookie ?? "");
+
+        AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+        String token = AppSharedPreferences.getBasicAthToken() ?? "";
+        getCommonMessageList(token,role!,assistant?.cookie ?? "");
       }else{
         // Parentlogin parentLogin = await sessionManagement.getModelParent('');
         Userdata? userdata = AppSharedPreferences.getUserData();
@@ -174,9 +175,10 @@ class CommunicationListScreenChild extends State<CommunicationListScreen> {
         //if selected radio is select then student report list we wil retrieve.
 
       if(role == "assistant"){
-        Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-        String token = assistant?.basicAuthToken ?? "";
-        getStudentReportList(token,role ?? "",assistant?.userdata.data.cookie ?? "");
+
+        AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+        String token = AppSharedPreferences.getBasicAthToken() ?? "";
+        getStudentReportList(token,role ?? "",assistant?.cookie ?? "");
       }
       else{
         Userdata? userdata = AppSharedPreferences.getUserData();

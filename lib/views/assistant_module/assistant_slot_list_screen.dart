@@ -97,8 +97,10 @@ class SlotListChild extends State<SlotList> {
     // ApiClass apiClass = ApiClass();
     // Assistant assistant = await sessionManagement.getAssistantDetail();
     // String token = assistant.basicAuthToken;
-    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-    dynamic tempClassList = await ApiClass().getAsSlot(assistant?.basicAuthToken ?? "",assistant?.userdata.data.cookie ?? "");
+
+    AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
+    dynamic tempClassList = await ApiClass().getAsSlot(token,assistant?.cookie ?? "");
     if(tempClassList['status']){
       SlotListModel slotListModel = SlotListModel.fromJson(tempClassList);
       setState(() {

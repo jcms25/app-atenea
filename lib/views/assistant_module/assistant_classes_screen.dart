@@ -151,9 +151,9 @@ class ChildScreenState extends State<ChildScreen> {
   }
 
   void getClassLisData() async{
-    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-    String token = assistant?.basicAuthToken ?? "";
-    dynamic tempClassList = await ApiClass().getAsClassList(token,assistant?.userdata.data.cookie ?? "");
+    AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
+    dynamic tempClassList = await ApiClass().getAsClassList(token,assistant?.cookie ?? "");
     if(tempClassList['status']){
       ClassListModel classListModel = ClassListModel.fromJson(tempClassList);
       setState(() {

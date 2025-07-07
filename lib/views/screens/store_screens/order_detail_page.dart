@@ -1,6 +1,5 @@
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
-import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
@@ -11,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_constants.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final String orderNumber;
@@ -266,7 +266,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 return  Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                      visible: storeController.orderDetailModel?.others?[0].status == "pending",
+                      // visible: storeController.orderDetailModel?.others?[0].status == "pending",
+                      visible: true,
                       child: Padding(padding: const EdgeInsets.all(10), child:  Row(
                         children: [
                           Expanded(child: CustomButtonWidget(
@@ -284,6 +285,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           const SizedBox(width: 20,),
                           Expanded(child:   CustomButtonWidget(
                               buttonTitle: 'Pagar', onPressed: () async{
+
 
                             if(storeController.orderDetailModel?.others?[0].paymentMethod == "PayPal"){
                               // await storeController.payUsingPaypal(orderId: widget.orderNumber, context: context, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "");

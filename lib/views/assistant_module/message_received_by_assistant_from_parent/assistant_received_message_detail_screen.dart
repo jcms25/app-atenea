@@ -251,10 +251,11 @@ class _AssistantMessageReceivedDetailScreenState
       isLoading = true;
     });
 
-    Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-    String token = assistant?.basicAuthToken ?? "";
+
+    AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
     dynamic res = await ApiClass().getMessageDetails(
-        isCommonOrStudentReport: 0, token: token, messageId: widget.id, cookie: assistant?.userdata.data.cookie ?? "");
+        isCommonOrStudentReport: 0, token: token, messageId: widget.id, cookie: assistant?.cookie ?? "");
     if (res['status']) {
       MessageDetailModel commonMessageModel = MessageDetailModel.fromJson(res);
       setState(() {

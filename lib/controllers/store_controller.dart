@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
+import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
 import 'package:colegia_atenea/models/store_model/cart_response_model.dart';
 import 'package:colegia_atenea/models/store_model/checkout_model.dart'
@@ -1034,25 +1036,34 @@ class StoreController extends ChangeNotifier {
     bool? isFromCart
   }) async{
 
-
-
-
     try {
       if(isFromCart ?? false){
         Get.back();
       }
+
+      // KeyData? keyData = AppSharedPreferences.getKeyData();
+      KeyData? keyData = AppSharedPreferences.getKeyData();
+
+      //try sandbox data
+      String secretKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.production?.secretKey ?? "")));
+      String clientKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.production?.clientKey ?? "")));
+
+      final random = Random();
+      int threeDigitNumber = 100 + random.nextInt(900);
+      // String newOrderId = "ORDER$orderId";  //12 chars
+      String newOrderId = "$threeDigitNumber$orderId".padLeft(4,'0');
       setIsLoading(
           isLoading: true);
       await Get.to(() => PopScope(
           canPop: true,
           onPopInvokedWithResult: (ctx,mdl){},
           child: UsePaypal(
-        sandboxMode: true,
+        sandboxMode: false,
         // Set to false for Live Mode
 
         //colegio test account for euro
-        clientId : "ARa9ChbxxaBRQZtMEiqwgTALgXPicTa61EEAe3OkBEwYXU-fMp_Sf_ADaiBpRrRSuHpdggweNcvX68L3",
-        secretKey : "EK3VXyzhgzoIDwZKnbFibXpbBoL56TtgH6OebvBC4iy_BgCLsk07MOVV7HoWaHfwL0WZrKCa1G_J-nqc",
+        clientId : clientKey,
+        secretKey : secretKey,
         returnURL: "https://your-app.com/return",
         cancelURL: "https://your-app.com/cancel",
         transactions: [
@@ -1070,7 +1081,7 @@ class StoreController extends ChangeNotifier {
               }
             },
             "description": "Payment for Order #$orderId",
-            "invoice_number": orderId
+            "invoice_number": newOrderId
           }
         ],
         note: "Gracias por su compra",
@@ -1087,7 +1098,7 @@ class StoreController extends ChangeNotifier {
           Get.snackbar('Cancelar', 'Pago cancelado debido a un problema',backgroundColor: AppColors.red,colorText: AppColors.white,);
         },
         onError: (error) {
-          Get.snackbar('error', 'Error al realizar el pago',backgroundColor: AppColors.red,colorText: AppColors.white,);
+          Get.snackbar('error', 'Error al realizar el pago $error',backgroundColor: AppColors.red,colorText: AppColors.white,);
         },
       )),);
       setIsLoading(

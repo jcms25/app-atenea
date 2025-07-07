@@ -29,6 +29,16 @@ class AppConstants {
     return (cents / 100).toStringAsFixed(2); // e.g., "870" → "8.70"
   }
 
+
+  //restoring base 64
+  static String restoreBase64Padding(String input) {
+    int mod = input.length % 4;
+    if (mod == 2) return '$input==';
+    if (mod == 3) return '$input=';
+    if (mod == 0) return input;
+    return "";
+  }
+
   static const List<MessageSendCategoryForTeacher> listOfCategoryToTeacherSendMessage = [
     MessageSendCategoryForTeacher.student,
     MessageSendCategoryForTeacher.parent,
@@ -118,6 +128,18 @@ class AppConstants {
     OptionModel(optionId: 4, optionName: "events", optionIcon: AppImages.event),
   ];
 
+  
+  //assistant drawer and bottom list
+  static List<OptionModel> assistantDrawerAndBottomList = [
+    OptionModel(
+        optionId: 0,
+        optionName: 'drawerOption1'.tr,
+        optionIcon:  AppImages.asDashBoardActive),
+    OptionModel(optionId: 1, optionName: 'asClassTitle'.tr, optionIcon: AppImages.asClassesActive),
+    OptionModel(optionId: 2, optionName: 'option1'.tr,optionIcon: AppImages.asMessageActive),
+    OptionModel(optionId: 3, optionName: 'reportOption'.tr, optionIcon: AppImages.asStickyIcon)
+  ];
+  
   //Drawer List
 
   //parent

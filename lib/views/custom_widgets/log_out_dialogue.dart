@@ -51,53 +51,85 @@ class LogOutDialogue extends StatelessWidget {
                   backgroundColor: AppColors.primary,
                   elevation: 0.0),
               onPressed: () async {
-                // if(currentLoggedInUserRole == 0){
-                //
-                // }else{
-                // }
-
-                try {
-                  Get.back();
-                  AppConstants.mainScreenKey.currentState?.closeDrawer();
-                  studentParentTeacherController.setIsLoading(isLoading: true);
-                  RoleType? roleType =
-                      studentParentTeacherController.currentLoggedInUserRole;
-
-                  await Api.httpRequest(
-                      requestType: RequestType.post,
-                      endPoint: Api.logoutEndPoint,
-                      body: <String, dynamic>{
-                        "user_id": roleType == RoleType.assistant
-                            ? assistantController.assistant?.userdata.id
-                                .toString()
-                            : roleType == RoleType.student ||
-                                    roleType == RoleType.teacher
-                                ? studentParentTeacherController
-                                        .userdata?.wpUsrId ??
-                                    ""
-                                : studentParentTeacherController
-                                        .userdata?.parentWpUsrId ??
-                                    ""
-                      }).then((response) async {
-                    if (response['status']) {
+                if(currentLoggedInUserRole == 0){
+                    Get.back();
+                    AppConstants.assistantKey.currentState?.closeDrawer();
+                    try {
+                      Get.back();
                       AppConstants.mainScreenKey.currentState?.closeDrawer();
-                      await AppSharedPreferences.loggedOutUser();
-                      studentParentTeacherController.loggedOutClearData();
-                      studentParentTeacherController.setIsLoading(
-                          isLoading: false);
-                      Get.offNamedUntil(
-                          AppRoutes.loginScreen, (routes) => false);
-                    } else {
-                      studentParentTeacherController.setIsLoading(isLoading: false);
-                      AppConstants.showCustomToast(
-                          status: false,
-                          message:
+                      assistantController.setIsLoading(isLoading: true);
+
+                      await Api.httpRequest(
+                          requestType: RequestType.post,
+                          endPoint: Api.logoutEndPoint,
+                          body: <String, dynamic>{
+                            "user_id": assistantController.assistant?.id
+                          }).then((response) async {
+                        if (response['status']) {
+                          AppConstants.assistantKey.currentState?.closeDrawer();
+                          await AppSharedPreferences.loggedOutUser();
+                          assistantController.onLogout();
+                          Get.offNamedUntil(
+                              AppRoutes.loginScreen, (routes) => false);
+                        } else {
+                          assistantController.setIsLoading(isLoading: false);
+                          AppConstants.showCustomToast(
+                              status: false,
+                              message:
                               response['Message'] ?? response['message'] ?? "");
+                        }
+                      });
+                    } catch (exception) {
+                      assistantController.setIsLoading(isLoading: false);
+                      AppConstants.showCustomToast(status: false, message: "$exception");
                     }
-                  });
-                } catch (exception) {
-                  studentParentTeacherController.setIsLoading(isLoading: false);
+                }else{
+                  try {
+                    Get.back();
+                    AppConstants.mainScreenKey.currentState?.closeDrawer();
+                    studentParentTeacherController.setIsLoading(isLoading: true);
+                    RoleType? roleType =
+                        studentParentTeacherController.currentLoggedInUserRole;
+
+                    await Api.httpRequest(
+                        requestType: RequestType.post,
+                        endPoint: Api.logoutEndPoint,
+                        body: <String, dynamic>{
+                          "user_id": roleType == RoleType.assistant
+                              ? assistantController.assistant?.id
+                              .toString()
+                              : roleType == RoleType.student ||
+                              roleType == RoleType.teacher
+                              ? studentParentTeacherController
+                              .userdata?.wpUsrId ??
+                              ""
+                              : studentParentTeacherController
+                              .userdata?.parentWpUsrId ??
+                              ""
+                        }).then((response) async {
+                      if (response['status']) {
+                        AppConstants.mainScreenKey.currentState?.closeDrawer();
+                        await AppSharedPreferences.loggedOutUser();
+                        studentParentTeacherController.loggedOutClearData();
+                        studentParentTeacherController.setIsLoading(
+                            isLoading: false);
+                        Get.offNamedUntil(
+                            AppRoutes.loginScreen, (routes) => false);
+                      } else {
+                        studentParentTeacherController.setIsLoading(isLoading: false);
+                        AppConstants.showCustomToast(
+                            status: false,
+                            message:
+                            response['Message'] ?? response['message'] ?? "");
+                      }
+                    });
+                  } catch (exception) {
+                    studentParentTeacherController.setIsLoading(isLoading: false);
+                  }
+
                 }
+
+
 
                 // _scaffoldKey.currentState!.closeDrawer();
                 // getSenderId();
@@ -112,43 +144,3 @@ class LogOutDialogue extends StatelessWidget {
     );
   }
 }
-
-// void logOutApi(String senderId) async {
-//   try {
-//     final Response response = await post(
-//         Uri.parse("https://colegioatenea.es/wp-json/scl-api/v1/logout"),
-//         body: <String, dynamic>{"user_id": senderId});
-//
-//     if (response.statusCode == 200) {
-//       var data = jsonDecode(response.body);
-//       if (data["status"]) {
-//         SessionManagement sessionManagement = SessionManagement();
-//         int? role = await sessionManagement.getRole("Role");
-//         SharedPreferences sharedPreferences =
-//             await SharedPreferences.getInstance();
-//         sharedPreferences.setBool('Login', false);
-//         if (role == 0) {
-//           sessionManagement.destroySession();
-//         } else {
-//           sessionManagement.destroySessionParent();
-//         }
-//         Fluttertoast.showToast(
-//             msg: 'logOut'.tr, backgroundColor: AppColors.primary);
-//         navigateTo();
-//       } else {
-//         Fluttertoast.showToast(msg: data["message"]);
-//         setState(() {
-//           isLoading = false;
-//         });
-//       }
-//     } else {
-//       setState(() {
-//         isLoading = false;
-//       });
-//     }
-//   } catch (exception) {
-//     setState(() {
-//       isLoading = false;
-//     });
-//   }
-// }

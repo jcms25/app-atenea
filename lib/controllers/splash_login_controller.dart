@@ -98,6 +98,18 @@ class SplashLoginController extends ChangeNotifier {
             roleOfUser == "parent" ||
             roleOfUser == "teacher") {
           LoginModel loginModel = LoginModel.fromJson(response);
+
+          // if(roleOfUser == "parent"){
+          //  String? key1 = response['static']['sandbox']['key1'];
+          //   if(key1 != null){
+          //     List<int> newKey1 = base64Decode(restoreBase64Padding(key1));
+          //     String decoded = utf8.decode(newKey1);
+          //     print(response);
+          //     print("decrypted data : $decoded");
+          //   }
+          // }
+          // setIsLoading(isLoading: false);
+
           await AppSharedPreferences.saveUserData(
               basicAuthToken: loginModel.basicAuthToken,
               userdata: loginModel.userdata, role: roleOfUser);
@@ -108,14 +120,22 @@ class SplashLoginController extends ChangeNotifier {
                   : roleOfUser == "parent"
                   ? RoleType.parent
                   : RoleType.teacher);
+          if(roleOfUser == "parent"){
+            await AppSharedPreferences.saveKeyData(keyData: loginModel.keyData);
+          }
           setIsLoading(isLoading: false);
           Get.offNamedUntil(
               AppRoutes.studentParentTeacherMainScreen, (route) => false);
-        } else if (roleOfUser == "assistant") {
+
+        }
+        else if (roleOfUser == "assistant") {
           Assistant assistant = Assistant.fromJson(response);
+
           await AppSharedPreferences.saveAssistantLoggedInData(
-              assistant: assistant);
-          assistantController.setAssistant(assistant: assistant);
+              assistant: assistant,
+              basicAuthToken: assistant.basicAuthToken
+          );
+          assistantController.setAssistant(assistant: assistant.userdata?.data);
           Get.offNamedUntil(AppRoutes.assistantMainScreen, (route) => false);
           setIsLoading(isLoading: false);
         }
@@ -129,10 +149,9 @@ class SplashLoginController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
-
-
-
   }
+
+
 
   //checked if user already logged in or not
   void checkUserAlreadyLoggedIn(
@@ -154,7 +173,8 @@ class SplashLoginController extends ChangeNotifier {
         Get.offNamedUntil(
             AppRoutes.studentParentTeacherMainScreen, (routes) => false);
       } else {
-        Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
+
+        AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
         assitantController?.setAssistant(assistant: assistant);
         Get.offNamedUntil(AppRoutes.assistantMainScreen, (routes) => false);
       }

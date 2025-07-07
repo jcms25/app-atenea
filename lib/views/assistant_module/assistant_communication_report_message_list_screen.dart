@@ -90,9 +90,10 @@ class _ReportListScreenState extends State<ReportListScreen> {
     //if selected radio is select then student report list we wil retrieve.
 
     if(role == "assistant"){
-      Assistant? assistant = AppSharedPreferences.getAssistantLoggedInData();
-      String token = assistant?.basicAuthToken ?? "";
-      getList(token,2,assistant?.userdata.data.cookie ?? "");
+
+      AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      getList(token,2,assistant?.cookie ?? "");
     }
     else{
       // Parentlogin parentLogin = await sessionManagement.getModelParent('');

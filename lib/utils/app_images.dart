@@ -53,6 +53,7 @@ class AppImages{
   static const String asChildClass = "$rootPath/as_class_symbol.svg";
   static const String asPeoplePrimary = "$rootPath/people_primary.svg";
   static const String whiteBookIcon = "$rootPath/subject_white_icon.svg";
+  static const String asStickyIcon = "$rootPath/sticky_note.svg";
 
 
 

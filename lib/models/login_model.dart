@@ -2,13 +2,15 @@ class LoginModel {
   bool? status;
   String? message;
   String? basicAuthToken;
-
+  KeyData? keyData;
   Userdata? userdata;
 
 
-  LoginModel({this.status, this.message, this.basicAuthToken, this.userdata});
+  LoginModel({this.status, this.message, this.basicAuthToken, this.keyData,this.userdata});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
+    keyData =
+    json['static'] != null ? KeyData.fromJson(json['static']) : null;
     status = json['status'];
     message = json['Message'];
     basicAuthToken = json['basicAuthToken'];
@@ -19,6 +21,9 @@ class LoginModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    if (keyData != null) {
+      data['static'] = keyData!.toJson();
+    }
     data['status'] = status;
     data['Message'] = message;
     data['basicAuthToken'] = basicAuthToken;
@@ -499,3 +504,50 @@ class StudentData {
   }
 }
 
+class KeyData {
+  SandboxProductionData? sandbox;
+  SandboxProductionData? production;
+
+  KeyData({this.sandbox, this.production});
+
+  KeyData.fromJson(Map<String, dynamic> json) {
+    sandbox =
+    json['sandbox'] != null ? SandboxProductionData.fromJson(json['sandbox']) : null;
+    production = json['production'] != null
+        ? SandboxProductionData.fromJson(json['production'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (sandbox != null) {
+      data['sandbox'] = sandbox!.toJson();
+    }
+    if (production != null) {
+      data['production'] = production!.toJson();
+    }
+    return data;
+  }
+}
+
+class SandboxProductionData {
+  String? clientKey;
+  String? secretKey;
+  String? redsysSecretKey;
+
+  SandboxProductionData({this.clientKey, this.secretKey, this.redsysSecretKey});
+
+  SandboxProductionData.fromJson(Map<String, dynamic> json) {
+    clientKey = json['client_key'];
+    secretKey = json['secret_key'];
+    redsysSecretKey = json['redsys_secret_key'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['client_key'] = clientKey;
+    data['secret_key'] = secretKey;
+    data['redsys_secret_key'] = redsysSecretKey;
+    return data;
+  }
+}

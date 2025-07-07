@@ -100,7 +100,8 @@ class MainActivity : FlutterActivity() {
             CHANNEL
         ).setMethodCallHandler { call, result ->
             if (call.method == "startRedsysPayment") {
-                val orderId = "Ord_${call.argument<Int>("orderId")}"
+//                val orderId = "Ord_${call.argument<Int>("orderId")}"
+                val orderId = "ORDN${call.argument<Int>("orderId")}"
                 val paymentMethodType = call.argument<String>("payment_method") ?: "RedSys"
                 val signature = call.argument<String>("signature") ?: ""
                 val merchantParams = call.argument<String>("merchantParams") ?: ""
@@ -136,11 +137,17 @@ fun startPayment(
         val tpv = TPVV()
 
         // Test Environment
-        TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)
+//        TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_TEST)
+        TPVVConfiguration.setEnvironment(TPVVConstants.ENVIRONMENT_REAL)
         TPVVConfiguration.setFuc("348775818")
         TPVVConfiguration.setTerminal("001")
-        TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")
+//        TPVVConfiguration.setLicense("L6mRW1S9LAtZMhged7iq")
+        TPVVConfiguration.setLicense("AepJ83ytmfpF5ToI1gO")
         TPVVConfiguration.setCurrency("978")
+
+        /*
+           Test License Key : L6mRW1S9LAtZMhged7iq
+        */
 
         val extraParams = HashMap<String, String>()
         extraParams["Ds_SignatureVersion"] = "HMAC_SHA256_V1"
@@ -149,6 +156,7 @@ fun startPayment(
         if (paymentMethod == "Bizum") {
             extraParams["Ds_Merchant_PayMethods"] = "z"
         }
+
 
         TPVV.doWebViewPayment(
             context,
@@ -172,7 +180,8 @@ fun startPayment(
                 override fun paymentResultKO(error: ErrorResponse) {
                     val resultMap = mapOf(
                         "status" to false,
-                        "errorCode" to error.code,
+//                        "errorCode" to error.code,
+                        "errorCode" to orderId.toString(),
                         "errorDesc" to error.desc,
                         "raw" to error.toString()
                     )

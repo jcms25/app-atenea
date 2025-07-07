@@ -266,8 +266,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 return  Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                      // visible: storeController.orderDetailModel?.others?[0].status == "pending",
-                      visible: true,
+                      visible: storeController.orderDetailModel?.others?[0].status == "pending",
                       child: Padding(padding: const EdgeInsets.all(10), child:  Row(
                         children: [
                           Expanded(child: CustomButtonWidget(

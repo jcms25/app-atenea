@@ -1045,8 +1045,11 @@ class StoreController extends ChangeNotifier {
       KeyData? keyData = AppSharedPreferences.getKeyData();
 
       //try sandbox data
-      String secretKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.production?.secretKey ?? "")));
-      String clientKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.production?.clientKey ?? "")));
+      String secretKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.sandbox?.secretKey ?? "")));
+      String clientKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.sandbox?.clientKey ?? "")));
+
+      print(secretKey);
+      print(clientKey);
 
       final random = Random();
       int threeDigitNumber = 100 + random.nextInt(900);
@@ -1058,7 +1061,7 @@ class StoreController extends ChangeNotifier {
           canPop: true,
           onPopInvokedWithResult: (ctx,mdl){},
           child: UsePaypal(
-        sandboxMode: false,
+        sandboxMode: true,
         // Set to false for Live Mode
 
         //colegio test account for euro
@@ -1087,7 +1090,10 @@ class StoreController extends ChangeNotifier {
         note: "Gracias por su compra",
         onSuccess: (Map params) async{
           Get.snackbar('éxito', 'Pago exitoso',backgroundColor: AppColors.green,colorText: AppColors.white,);
-          await changeOrderStatus(orderId: orderId, statusToChanged: 'completado', wpUserId: wpUserId).then((res) async{
+          await changeOrderStatus(orderId: orderId,
+              // statusToChanged: 'completado',
+              statusToChanged: 'processing',
+              wpUserId: wpUserId).then((res) async{
             if(orderData != null){
               await getOrderDetails(orderId: orderId);
               await getListOfOrders(wpUserId: wpUserId);
@@ -1117,7 +1123,7 @@ class StoreController extends ChangeNotifier {
     try{
       await PaymentService.startPayment(paymentMethod: paymentMethodType, orderId: orderId, amount: amount).then((result) async{
         if(result){
-          await changeOrderStatus(orderId: orderId, statusToChanged: 'completado', wpUserId: wpUserId ?? "").then((res) async{
+          await changeOrderStatus(orderId: orderId, statusToChanged: 'processing', wpUserId: wpUserId ?? "").then((res) async{
             if(wpUserId != null){
               await getOrderDetails(orderId: orderId);
               await getListOfOrders(wpUserId: wpUserId);

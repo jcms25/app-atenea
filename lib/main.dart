@@ -7,6 +7,7 @@ import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/services/notification_service.dart';
 import 'package:colegia_atenea/services/world_languages.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
+import 'package:colegia_atenea/utils/app_remote_config.dart';
 import 'package:colegia_atenea/utils/app_routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -38,6 +39,7 @@ void main() async {
   }
   await Firebase.initializeApp();
   await NotificationService.initialize();
+  // AppRemoteConfig.initializeRemoteConfig();
   AndroidInitializationSettings androidInitializationSettings =
       const AndroidInitializationSettings("logo");
   DarwinInitializationSettings iosSettings = const DarwinInitializationSettings(

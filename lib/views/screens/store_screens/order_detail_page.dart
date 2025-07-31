@@ -287,8 +287,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
 
                             if(storeController.orderDetailModel?.others?[0].paymentMethod == "PayPal"){
-                              // await storeController.payUsingPaypal(orderId: widget.orderNumber, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",orderData: storeController.orderDetailModel);
-                              AppConstants.showCustomToast(status: false, message: 'Este método de pago no está disponible actualmente. Para comprar, utilice la web.');
+                              await storeController.payUsingPaypal(orderId: widget.orderNumber, wpUserId: studentParentTeacherController.userdata?.parentWpUsrId ?? "",orderData: storeController.orderDetailModel);
+                              // AppConstants.showCustomToast(status: false, message: 'Este método de pago no está disponible actualmente. Para comprar, utilice la web.');
                             }else if(storeController.orderDetailModel?.others?[0].paymentMethod == "Bizum"){
                               await storeController.redSysPayment(paymentMethodType: "Bizum", orderId: widget.orderNumber, amount: '${storeController.orderDetailModel?.others?[0].total}',wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
                             }else if(storeController.orderDetailModel?.others?[0].paymentMethod == "Servired/RedSys"){

@@ -164,7 +164,7 @@ fun startPayment(
             amount,
             "0",
             null,
-            "Test Payment",
+            "Order From Mobile App.",
             extraParams,
             object : IPaymentResult {
                 override fun paymentResultOK(result: ResultResponse) {
@@ -173,7 +173,6 @@ fun startPayment(
                         "responseCode" to result.responseCode,
                         "raw" to result.toString()
                     )
-                    Log.e("Payment Native Status","$result")
                     callback(resultMap)
                 }
 

@@ -1026,7 +1026,18 @@ class StoreController extends ChangeNotifier {
     }
   }
 
-
+  //calculate total based on paypal charges
+  double getTotalAfterApplyPaypalCharges({required double subTotal}){
+    print("sub total : $subTotal");
+    double subTotalWithSurcharge = subTotal * 0.035 + 0.25;
+    print("sub total with surcharge : $subTotalWithSurcharge");
+    if(subTotalWithSurcharge < 0.5){
+      subTotalWithSurcharge = subTotalWithSurcharge + 0.5;
+      print("sub total with surcharge : $subTotalWithSurcharge");
+    }
+    print("total amount : ${subTotal + subTotalWithSurcharge}");
+    return subTotal + subTotalWithSurcharge;
+  }
 
   //Paypal checkout for paypal method selected
   Future<void> payUsingPaypal({required String orderId,
@@ -1048,15 +1059,20 @@ class StoreController extends ChangeNotifier {
       String secretKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.sandbox?.secretKey ?? "")));
       String clientKey = utf8.decode(base64Decode(AppConstants.restoreBase64Padding(keyData?.sandbox?.clientKey ?? "")));
 
-      print(secretKey);
-      print(clientKey);
-
       final random = Random();
       int threeDigitNumber = 100 + random.nextInt(900);
       // String newOrderId = "ORDER$orderId";  //12 chars
       String newOrderId = "$threeDigitNumber$orderId".padLeft(4,'0');
       setIsLoading(
           isLoading: true);
+
+      //
+      // String orderSubTotalAmount = orderData != null ? orderData.others != null && orderData.others!.isNotEmpty  ? orderData.others![0].total ?? "0.0" : "" : orderAmount ?? "0.0";
+      //
+      // double subTotalAmount = double.parse(orderSubTotalAmount);
+      //
+      // double amountWithPaypalCharges = getTotalAfterApplyPaypalCharges(subTotal: subTotalAmount);
+
       await Get.to(() => PopScope(
           canPop: true,
           onPopInvokedWithResult: (ctx,mdl){},

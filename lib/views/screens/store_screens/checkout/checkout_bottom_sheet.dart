@@ -1,10 +1,8 @@
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
-import 'package:colegia_atenea/utils/app_remote_config.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
-// import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -81,6 +79,36 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                         return PaymentOptionWidget(paymentMethodName: e);
                       }) ??
                       [],
+                  Consumer<StoreController>(
+                    builder: (context,storeController,child){
+                      return Visibility(
+                          visible: storeController.selectedPaymentMethod == "ppcp-gateway",
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                          child:  Column(
+                            children: [
+                              Text("\n- Cargo Fijo: 0.25\n- Cargo en Porcentaje: 3.5\n- Cargo mínimo: 0.5 \n- Cargo máximo: 0 (desactivado)\n- Impuestos incluidos",
+                                style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),),
+                              SizedBox(height: 10,),
+                              Consumer<StoreController>(
+                                builder: (context,storeController,child){
+                                  // return Text("Total ${AppConstants.getTotalAmount(subTotal: AppConstants.formatPrice(double.tryParse('${storeController.cartResponse?.totals?.totalPrice ?? 0}') ?? 0))}",
+                                  //   style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),
+                                  // );
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Total\t:",style: AppTextStyle.getOutfit600(textSize: 18, textColor: AppColors.black),),
+                                      Text(AppConstants.formatPrice(double.tryParse(storeController.cartResponse?.totals?.totalPrice ?? "0.0") ?? 0.0),style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary),)
+                                    ],
+                                  );
+                                },
+                              )
+                            ],
+                          ),
+                          ));
+                    },
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -125,93 +153,173 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                                       null) {
 
 
-                                    if(storeController
-                                        .selectedPaymentMethod !=
-                                        "ppcp-gateway"){
-                                      storeController.setIsLoading(
-                                          isLoading: true);
-                                      dynamic orderAmount = int.parse(storeController.cartResponse?.totals?.totalPrice ?? "0");
+                                    // if(storeController
+                                    //     .selectedPaymentMethod !=
+                                    //     "ppcp-gateway"){
+                                    //   storeController.setIsLoading(
+                                    //       isLoading: true);
+                                    //   dynamic orderAmount = int.parse(storeController.cartResponse?.totals?.totalPrice ?? "0");
+                                    //
+                                    //   dynamic result =
+                                    //   await storeController.checkout(
+                                    //       tiendaToken:
+                                    //       studentParentTeacherController
+                                    //           .userdata
+                                    //           ?.tiendaToken ??
+                                    //           "",
+                                    //       wpUserId:
+                                    //       studentParentTeacherController
+                                    //           .userdata
+                                    //           ?.parentWpUsrId ??
+                                    //           "",
+                                    //       additionalOrderComment:
+                                    //       additionalComments?.text);
+                                    //
+                                    //   if (result['status']) {
+                                    //     String orderId = result['orderId'];
+                                    //
+                                    //     await storeController
+                                    //         .emptyCart(
+                                    //         tiendaToken:
+                                    //         studentParentTeacherController
+                                    //             .userdata
+                                    //             ?.tiendaToken ??
+                                    //             "")
+                                    //         .then((res) async {
+                                    //
+                                    //       if (storeController
+                                    //           .selectedPaymentMethod ==
+                                    //           "ppcp-gateway") {
+                                    //
+                                    //         //pay using paypal
+                                    //         Get.back();
+                                    //         await storeController.payUsingPaypal(
+                                    //             orderId: orderId,
+                                    //             wpUserId:
+                                    //             studentParentTeacherController
+                                    //                 .userdata
+                                    //                 ?.parentWpUsrId ??
+                                    //                 "",
+                                    //             studentParentTeacherController:
+                                    //             studentParentTeacherController,
+                                    //             isFromCart: true,
+                                    //             orderAmount: AppConstants.convertToPaypalAmount("$orderAmount")
+                                    //         );
+                                    //       } else if (storeController
+                                    //           .selectedPaymentMethod ==
+                                    //           "redsys") {
+                                    //
+                                    //         //RedSys Payment
+                                    //         Get.back();
+                                    //         await storeController.redSysPayment(paymentMethodType: "Redsys", orderId: orderId, amount: AppConstants.convertToPaypalAmount("$orderAmount"),wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
+                                    //       } else if (storeController
+                                    //           .selectedPaymentMethod ==
+                                    //           "bizumredsys") {
+                                    //
+                                    //         //Bizum paypal
+                                    //         Get.back();
+                                    //         await storeController.redSysPayment(paymentMethodType: "Bizum", orderId: orderId, amount: AppConstants.convertToPaypalAmount("$orderAmount"),wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
+                                    //
+                                    //       } else {
+                                    //         AppConstants.showCustomToast(
+                                    //             status: false,
+                                    //             message:
+                                    //             "Por favor seleccione el método de pago");
+                                    //       }
+                                    //     });
+                                    //   }
+                                    //   else{
+                                    //     AppConstants.showCustomToast(status: false, message: result['Message'] ?? result['message'] ?? "Error");
+                                    //   }
+                                    //
+                                    //   storeController.setIsLoading(
+                                    //       isLoading: false);
+                                    // }else{
+                                    //   AppConstants.showCustomToast(
+                                    //       status: false,
+                                    //       message:
+                                    //       "Este método de pago no está disponible actualmente. Seleccione otro método de pago.");
+                                    // }
 
-                                      dynamic result =
-                                      await storeController.checkout(
+                                    storeController.setIsLoading(
+                                        isLoading: true);
+                                    dynamic orderAmount = int.parse(storeController.cartResponse?.totals?.totalPrice ?? "0");
+
+                                    dynamic result =
+                                    await storeController.checkout(
+                                        tiendaToken:
+                                        studentParentTeacherController
+                                            .userdata
+                                            ?.tiendaToken ??
+                                            "",
+                                        wpUserId:
+                                        studentParentTeacherController
+                                            .userdata
+                                            ?.parentWpUsrId ??
+                                            "",
+                                        additionalOrderComment:
+                                        additionalComments?.text);
+
+                                    if (result['status']) {
+                                      String orderId = result['orderId'];
+
+                                      await storeController
+                                          .emptyCart(
                                           tiendaToken:
                                           studentParentTeacherController
                                               .userdata
                                               ?.tiendaToken ??
-                                              "",
-                                          wpUserId:
-                                          studentParentTeacherController
-                                              .userdata
-                                              ?.parentWpUsrId ??
-                                              "",
-                                          additionalOrderComment:
-                                          additionalComments?.text);
+                                              "")
+                                          .then((res) async {
 
-                                      if (result['status']) {
-                                        String orderId = result['orderId'];
+                                        if (storeController
+                                            .selectedPaymentMethod ==
+                                            "ppcp-gateway") {
 
-                                        await storeController
-                                            .emptyCart(
-                                            tiendaToken:
-                                            studentParentTeacherController
-                                                .userdata
-                                                ?.tiendaToken ??
-                                                "")
-                                            .then((res) async {
+                                          //pay using paypal
+                                          Get.back();
+                                          await storeController.payUsingPaypal(
+                                              orderId: orderId,
+                                              wpUserId:
+                                              studentParentTeacherController
+                                                  .userdata
+                                                  ?.parentWpUsrId ??
+                                                  "",
+                                              studentParentTeacherController:
+                                              studentParentTeacherController,
+                                              isFromCart: true,
+                                              orderAmount: AppConstants.convertToPaypalAmount("$orderAmount")
+                                          );
+                                        } else if (storeController
+                                            .selectedPaymentMethod ==
+                                            "redsys") {
 
-                                          if (storeController
-                                              .selectedPaymentMethod ==
-                                              "ppcp-gateway") {
+                                          //RedSys Payment
+                                          Get.back();
+                                          await storeController.redSysPayment(paymentMethodType: "Redsys", orderId: orderId, amount: AppConstants.convertToPaypalAmount("$orderAmount"),wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
+                                        } else if (storeController
+                                            .selectedPaymentMethod ==
+                                            "bizumredsys") {
 
-                                            //pay using paypal
-                                            Get.back();
-                                            await storeController.payUsingPaypal(
-                                                orderId: orderId,
-                                                wpUserId:
-                                                studentParentTeacherController
-                                                    .userdata
-                                                    ?.parentWpUsrId ??
-                                                    "",
-                                                studentParentTeacherController:
-                                                studentParentTeacherController,
-                                                isFromCart: true,
-                                                orderAmount: AppConstants.convertToPaypalAmount("$orderAmount")
-                                            );
-                                          } else if (storeController
-                                              .selectedPaymentMethod ==
-                                              "redsys") {
+                                          //Bizum paypal
+                                          Get.back();
+                                          await storeController.redSysPayment(paymentMethodType: "Bizum", orderId: orderId, amount: AppConstants.convertToPaypalAmount("$orderAmount"),wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
 
-                                            //RedSys Payment
-                                            Get.back();
-                                            await storeController.redSysPayment(paymentMethodType: "Redsys", orderId: orderId, amount: AppConstants.convertToPaypalAmount("$orderAmount"),wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
-                                          } else if (storeController
-                                              .selectedPaymentMethod ==
-                                              "bizumredsys") {
-
-                                            //Bizum paypal
-                                            Get.back();
-                                            await storeController.redSysPayment(paymentMethodType: "Bizum", orderId: orderId, amount: AppConstants.convertToPaypalAmount("$orderAmount"),wpUserId: studentParentTeacherController.userdata?.parentWpUsrId);
-
-                                          } else {
-                                            AppConstants.showCustomToast(
-                                                status: false,
-                                                message:
-                                                "Por favor seleccione el método de pago");
-                                          }
-                                        });
-                                      }
-                                      else{
-                                        AppConstants.showCustomToast(status: false, message: result['Message'] ?? result['message'] ?? "Error");
-                                      }
-
-                                      storeController.setIsLoading(
-                                          isLoading: false);
-                                    }else{
-                                      AppConstants.showCustomToast(
-                                          status: false,
-                                          message:
-                                          "Este método de pago no está disponible actualmente. Seleccione otro método de pago.");
+                                        } else {
+                                          AppConstants.showCustomToast(
+                                              status: false,
+                                              message:
+                                              "Por favor seleccione el método de pago");
+                                        }
+                                      });
                                     }
+                                    else{
+                                      AppConstants.showCustomToast(status: false, message: result['Message'] ?? result['message'] ?? "Error");
+                                    }
+
+                                    storeController.setIsLoading(
+                                        isLoading: false);
+
                                   } else {
                                     AppConstants.showCustomToast(
                                         status: false,
@@ -263,18 +371,11 @@ class PaymentOptionWidget extends StatelessWidget {
         //     ? "enable_bizum"
         //     : "enable_paypal") ?? false;
         // print(status);
-        return Visibility(
-            visible: paymentMethodName == "redsys"
-                ? true
-                : paymentMethodName == "bizumredsys"
-                ? true
-                : false,
-            child: GestureDetector(
+        return GestureDetector(
           onTap: () {
-            // storeController.setSelectedPaymentOption(
-            //     selectedPaymentOption: paymentMethodName);
             storeController.setSelectedPaymentMethod(
                 selectedPaymentMethod: paymentMethodName);
+            print(paymentMethodName);
           },
           child: Row(
             children: [
@@ -283,9 +384,6 @@ class PaymentOptionWidget extends StatelessWidget {
                   value: paymentMethodName,
                   groupValue: storeController.selectedPaymentMethod,
                   onChanged: (String? value) {
-                    // storeController.setSelectedPaymentOption(
-                    //     selectedPaymentOption: value);
-
                     storeController.setSelectedPaymentMethod(
                         selectedPaymentMethod: value);
                   }),
@@ -301,7 +399,7 @@ class PaymentOptionWidget extends StatelessWidget {
                   ))
             ],
           ),
-        ));
+        );
       },
     );
   }

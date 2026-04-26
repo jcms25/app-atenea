@@ -31,6 +31,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
   TextEditingController? nameOfExamController;
   TextEditingController? comments;
   ExamListItem? examListItem;
+  String _ewOption = 'Examen';
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
     examListItem = arguments?['exam-data'];
     nameOfExamController = TextEditingController(text: examListItem?.eName);
     comments = TextEditingController(text: examListItem?.comments);
+    _ewOption = examListItem?.ewOption ?? 'Examen';
     initializeDateFormatting(Get.locale!.languageCode, null);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
@@ -86,8 +88,8 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
           appBar: CustomAppBarWidget(
             title: Text(
               arguments?['reason'] == "add-exam"
-                  ? 'Agregar examen'
-                  : 'Editar examen',
+                  ? 'Agregar examen/trabajo'
+                  : 'Editar examen/trabajo',
               style: AppTextStyle.getOutfit500(
                   textSize: 20, textColor: AppColors.white),
             ),
@@ -152,6 +154,57 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                               const SizedBox(
                                 height: 15,
                               ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Tipo",
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 18,
+                                        textColor: AppColors.secondary),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  StatefulBuilder(
+                                    builder: (context, setStateLocal) {
+                                      return Row(
+                                        children: [
+                                          Expanded(
+                                            child: RadioListTile<String>(
+                                              title: Text("Examen",
+                                                  style: AppTextStyle.getOutfit400(
+                                                      textSize: 16,
+                                                      textColor: AppColors.secondary)),
+                                              value: "Examen",
+                                              groupValue: _ewOption,
+                                              activeColor: AppColors.primary,
+                                              onChanged: (value) {
+                                                setStateLocal(() => _ewOption = value!);
+                                                setState(() => _ewOption = value!);
+                                              },
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: RadioListTile<String>(
+                                              title: Text("Trabajo",
+                                                  style: AppTextStyle.getOutfit400(
+                                                      textSize: 16,
+                                                      textColor: AppColors.secondary)),
+                                              value: "Trabajo",
+                                              groupValue: _ewOption,
+                                              activeColor: AppColors.primary,
+                                              onChanged: (value) {
+                                                setStateLocal(() => _ewOption = value!);
+                                                setState(() => _ewOption = value!);
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -528,7 +581,8 @@ class _TeacherAddEditExamScreenState extends State<TeacherAddEditExamScreen> {
                                                         comments:
                                                             comments?.text ??
                                                                 "",
-                                                        subjects: studentParentTeacherController.selectedSubjectIdOfExam != null ? ["${studentParentTeacherController.selectedSubjectIdOfExam}"] : []);
+                                                        subjects: studentParentTeacherController.selectedSubjectIdOfExam != null ? ["${studentParentTeacherController.selectedSubjectIdOfExam}"] : [],
+                                                        ewOption: _ewOption);
                                               } else {
                                                 AppConstants.showCustomToast(
                                                     status: false,

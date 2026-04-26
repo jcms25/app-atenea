@@ -43,6 +43,7 @@ class ExamListItem {
   String? sid;
   String? subName;
   String? professorName;
+  String? ewOption;
 
   ExamListItem(
       {this.eid,
@@ -61,7 +62,8 @@ class ExamListItem {
         this.subId,
         this.sid,
         this.subName,
-        this.professorName});
+        this.professorName,
+        this.ewOption});
 
   ExamListItem.fromJson(Map<String, dynamic> json) {
     eid = json['eid'] ?? "";
@@ -81,6 +83,7 @@ class ExamListItem {
     sid = json['sid'] ?? "";
     subName = json['sub_name'] ?? "";
     professorName = json['professor_name'] ?? "";
+    ewOption = json['ew_option'] ?? "Examen";
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +105,7 @@ class ExamListItem {
     data['sid'] = sid;
     data['sub_name'] = subName;
     data['professor_name'] = professorName;
+    data['ew_option'] = ewOption;
     return data;
   }
 }

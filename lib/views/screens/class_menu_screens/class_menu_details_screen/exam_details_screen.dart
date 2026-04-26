@@ -16,12 +16,15 @@ class ExamDetailScreen extends StatefulWidget {
   final String sID;
   final String professorName;
   final String subjectName;
+  final String ewOption;
 
   const ExamDetailScreen({
     super.key,
     required this.id,
-    required this.sID,
-    required this.professorName, required this.subjectName,
+    this.sID = "",
+    this.professorName = "",
+    this.subjectName = "",
+    this.ewOption = "Examen",
   });
 
   @override
@@ -102,11 +105,17 @@ class _ExamDetailScreenChildState extends State<ExamDetailScreen> {
                                         style: CustomStyle.txtvalue4,
                                       ),
                                     ),
-                                    Expanded(child: Text(
-                                      widget.subjectName,
-                                      style: CustomStyle.txtvalue4.copyWith(
-                                          fontWeight: FontWeight.w600),
-                                    )
+                                    Consumer<StudentParentTeacherController>(
+                                      builder: (context, ctrl, child) {
+                                        final name = widget.subjectName.isNotEmpty
+                                            ? widget.subjectName
+                                            : (ctrl.examDetailItem?.subDetails?.map((s) => s.name ?? '').join(', ') ?? '-');
+                                        return Expanded(child: Text(
+                                          name,
+                                          style: CustomStyle.txtvalue4.copyWith(
+                                              fontWeight: FontWeight.w600),
+                                        ));
+                                      },
                                     )
                                   ],
                                 ),
@@ -120,9 +129,12 @@ class _ExamDetailScreenChildState extends State<ExamDetailScreen> {
                                 Consumer<StudentParentTeacherController>(
                                   builder: (context,
                                       studentParentTeacherController, child) {
+                                    final prof = widget.professorName.isNotEmpty
+                                        ? widget.professorName
+                                        : (studentParentTeacherController.examDetailItem?.professorName ?? "-");
                                     return ExamDetailRow(
                                         label: "professor".tr,
-                                        value: widget.professorName);
+                                        value: prof);
                                   },
                                 ),
                                 const SizedBox(
@@ -135,8 +147,9 @@ class _ExamDetailScreenChildState extends State<ExamDetailScreen> {
                                 Consumer<StudentParentTeacherController>(
                                   builder: (context,
                                       studentParentTeacherController, child) {
+                                    final ew = studentParentTeacherController.examDetailItem?.ewOption ?? widget.ewOption;
                                     return ExamDetailRow(
-                                        label: "title".tr,
+                                        label: ew,
                                         value: studentParentTeacherController
                                                 .examDetailItem?.eName ??
                                             "-");

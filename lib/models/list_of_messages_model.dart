@@ -23,6 +23,7 @@ class ListOfMessagesModel {
 }
 
 class Data {
+  List<MessageItem>? allMessages;
   List<MessageItem>? receivedMessages;
   List<MessageItem>? sendMessages;
   List<MessageItem>? deleteMessageList;
@@ -30,13 +31,20 @@ class Data {
   List<GroupList>? teacherList;
 
   Data(
-      {this.receivedMessages,
+      {this.allMessages,
+        this.receivedMessages,
         this.sendMessages,
         this.deleteMessageList,
         this.groupList,
         this.teacherList});
 
   Data.fromJson(Map<String, dynamic> json) {
+    if (json['alllist'] != null) {
+      allMessages = <MessageItem>[];
+      json['alllist'].forEach((v) {
+        allMessages!.add(MessageItem.fromJson(v));
+      });
+    }
     if (json['inboxlist'] != null) {
       receivedMessages = <MessageItem>[];
       json['inboxlist'].forEach((v) {
@@ -71,6 +79,9 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    if (allMessages != null) {
+      data['alllist'] = allMessages!.map((v) => v.toJson()).toList();
+    }
     if (receivedMessages != null) {
       data['inboxlist'] = receivedMessages!.map((v) => v.toJson()).toList();
     }
@@ -106,6 +117,7 @@ class MessageItem {
   String? attachments;
   String? senderName;
   String? receiverName;
+  String? direction;
 
   MessageItem(
       {
@@ -126,22 +138,23 @@ class MessageItem {
         this.receiverName
       });
 
-  MessageItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    mid = json['mid'];
-    sId = json['s_id'];
-    rId = json['r_id'];
+MessageItem.fromJson(Map<String, dynamic> json) {
+    id = json['id']?.toString();
+    mid = json['mid']?.toString();
+    sId = json['s_id']?.toString();
+    rId = json['r_id']?.toString();
     subject = json['subject'];
     msg = json['msg'];
-    replayId = json['replay_id'];
-    mainMId = json['main_m_id'];
-    delStat = json['del_stat'];
-    sRead = json['s_read'];
-    rRead = json['r_read'];
+    replayId = json['replay_id']?.toString();
+    mainMId = json['main_m_id']?.toString();
+    delStat = json['del_stat']?.toString();
+    sRead = json['s_read']?.toString();
+    rRead = json['r_read']?.toString();
     mDate = json['m_date'];
-    attachments = json['attachments'];
+    attachments = json['attachments']?.toString();
     senderName = json['sender_name'];
     receiverName = json['receiver_name'];
+    direction = json['direction'];
   }
 
   Map<String, dynamic> toJson() {
@@ -161,6 +174,7 @@ class MessageItem {
     data['attachments'] = attachments;
     data['sender_name'] = senderName;
     data['receiver_name'] = receiverName;
+    data['direction'] = direction;
     return data;
   }
 }

@@ -252,7 +252,11 @@ class StoreController extends ChangeNotifier {
           .then((res) {
         if (res['status']) {
           OrderList orderList = OrderList.fromJson(res);
-          setListOfOrders(listOfOrders: orderList.data ?? []);
+          final filteredOrders = (orderList.data ?? []).where((order) {
+            final status = order.status?.toLowerCase() ?? '';
+            return status != 'cancelled' && status != 'checkout-draft';
+          }).toList();
+          setListOfOrders(listOfOrders: filteredOrders);
         }
         setIsLoading(isLoading: false);
       });
@@ -318,14 +322,20 @@ class StoreController extends ChangeNotifier {
 
       var body = categoryName == "Libros"
           ? jsonEncode({
-              "include":
-                  "464,465,466,1001,467,468,469,470,471,472,473,474,475,476,477,478,479",
+              "include": "464,465,466,1001,467,468,469,470,471,472,473,474,475,476,477,478,479",
+              "order": "asc",
+              "orderby": "slug",
+              "per_page": 100
+            })
+          : categoryName == "Uniformes"
+          ? jsonEncode({
+              "include": "1203,1204",
               "order": "asc",
               "orderby": "slug",
               "per_page": 100
             })
           : jsonEncode({
-              "include": "855,856,857,858,859,860,861,862,863,864",
+              "include": "829,855,856,857,858,859,860,861,862,863,864",
               "order": "asc",
               "orderby": "slug",
               "per_page": 100
@@ -384,9 +394,20 @@ class StoreController extends ChangeNotifier {
     });
   }
 
-  //List of products
+ //List of products
   List<ProductItem> listOfProducts = [];
   List<ProductItem> filterProducts = [];
+ 
+  String? closedCategoryMessage;
+  String? closedCategoryTitle;
+  String? closedCategoryImage;
+
+  void setClosedCategory({String? message, String? title, String? image}) {
+    closedCategoryMessage = message;
+    closedCategoryTitle = title;
+    closedCategoryImage = image;
+    notifyListeners();
+  }
 
   void setProductList({required List<ProductItem> listOfProducts}) {
     this.listOfProducts = listOfProducts;
@@ -404,6 +425,7 @@ class StoreController extends ChangeNotifier {
       {required String categoryId, required String tiendaToken}) async {
     try {
       setIsLoading(isLoading: true);
+      setClosedCategory(message: null, title: null, image: null);
       var url = Uri.parse(
           '${StoreApi.localBaseURL}/products?category=$categoryId&per_page=100');
 
@@ -418,10 +440,21 @@ class StoreController extends ChangeNotifier {
 
       if (responseData.statusCode == 200) {
         dynamic data = jsonDecode(responseData.body);
-        if (data.isNotEmpty) {
+        // Detectar respuesta de categoría cerrada (objeto con 'code', no array)
+        if (data is Map && data['code'] != null &&
+            (data['code'] == 'categoria_cerrada' || data['code'] == 'tienda_cerrada')) {
+          setClosedCategory(
+            message: data['message'] ?? 'Esta sección no está disponible en este momento.',
+            title: data['titulo'] ?? '',
+            image: data['imagen'] ?? '',
+          );
+          setProductList(listOfProducts: []);
+        } else if (data is List && data.isNotEmpty) {
           List<ProductItem> listOfProducts = List<ProductItem>.from(
               data.map((e) => ProductItem.fromJson(e)).toList());
           setProductList(listOfProducts: listOfProducts);
+        } else {
+          setProductList(listOfProducts: []);
         }
       } else {
         dynamic data = jsonDecode(responseData.body);
@@ -599,6 +632,7 @@ class StoreController extends ChangeNotifier {
         setSelectedVariations(selectedVariations: null);
         setSelectedVariationDetail(productItem: null);
         _loadingProducts.remove(productId);
+        getCartDetails(tiendaToken: tiendaToken);
         notifyListeners(); // Notify UI that loading has finished
       } else {
         dynamic data = jsonDecode(responseData.body);
@@ -642,6 +676,23 @@ class StoreController extends ChangeNotifier {
         dynamic data = jsonDecode(responseData.body);
         CartResponse cartResponse = CartResponse.fromJson(data);
         setCartResponse(cartResponse: cartResponse);
+
+        // Auto-aplicar cupones por rol si el carrito no está vacío
+        final userRoles = AppSharedPreferences.getUserData()?.userRoles ?? [];
+        final cartItems = cartResponse.items ?? [];
+        final appliedCoupons = (cartResponse.coupons ?? [])
+            .map((c) => c.code?.toLowerCase() ?? '')
+            .toList();
+
+        if (cartItems.isNotEmpty && userRoles.contains('ampa')) {
+          if (!appliedCoupons.contains('abono10ampa')) {
+            await applyOrRemoveCoupon(
+              applyOrRemove: 0,
+              couponCode: 'abono10ampa',
+              tiendaToken: tiendaToken,
+            );
+          }
+        }
       } else {
         dynamic data = jsonDecode(responseData.body);
         AppConstants.showCustomToast(
@@ -873,12 +924,12 @@ class StoreController extends ChangeNotifier {
       }
       else {
         dynamic data = jsonDecode(responseData.body);
-        AppConstants.showCustomToast(
-            status: false, message: '${data['message'] ?? ""}');
-
+        String errorMsg = '${data['message'] ?? "Error al procesar el pedido"}';
+        AppConstants.showCustomToast(status: false, message: errorMsg);
         setIsBottomSheetLoader(isBottomSheetLoader: false);
         return {
-          "status" : false
+          "status": false,
+          "message": errorMsg
         };
       }
     } catch (exception) {
@@ -1138,6 +1189,7 @@ class StoreController extends ChangeNotifier {
   Future<void> redSysPayment({required String paymentMethodType,required String orderId,required String amount,String? wpUserId,bool? fromCart}) async{
     try{
       await PaymentService.startPayment(paymentMethod: paymentMethodType, orderId: orderId, amount: amount).then((result) async{
+        print('redSys result: $result');
         if(result){
           await changeOrderStatus(orderId: orderId, statusToChanged: 'processing', wpUserId: wpUserId ?? "").then((res) async{
             if(wpUserId != null){

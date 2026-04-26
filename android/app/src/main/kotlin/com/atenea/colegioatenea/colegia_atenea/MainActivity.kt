@@ -101,7 +101,7 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             if (call.method == "startRedsysPayment") {
 //                val orderId = "Ord_${call.argument<Int>("orderId")}"
-                val orderId = "ORDN${call.argument<Int>("orderId")}"
+                val orderId = call.argument<String>("orderId") ?: ""
                 val paymentMethodType = call.argument<String>("payment_method") ?: "RedSys"
                 val signature = call.argument<String>("signature") ?: ""
                 val merchantParams = call.argument<String>("merchantParams") ?: ""
@@ -164,10 +164,11 @@ fun startPayment(
             amount,
             "0",
             null,
-            "Order From Mobile App.",
+            "Pedido $orderId - app",
             extraParams,
             object : IPaymentResult {
                 override fun paymentResultOK(result: ResultResponse) {
+                    Log.d("REDSYS", "paymentResultOK: ${result.responseCode}")
                     val resultMap = mapOf(
                         "status" to true,
                         "responseCode" to result.responseCode,
@@ -177,6 +178,7 @@ fun startPayment(
                 }
 
                 override fun paymentResultKO(error: ErrorResponse) {
+                    Log.d("REDSYS", "paymentResultKO: ${error.desc}")
                     val resultMap = mapOf(
                         "status" to false,
 //                        "errorCode" to error.code,

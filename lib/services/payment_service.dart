@@ -34,7 +34,7 @@ class PaymentService {
       final random = Random();
       int threeDigitNumber = 100 + random.nextInt(900);
       // String newOrderId = "ORDER$orderId";  //12 chars
-      String newOrderId = "$threeDigitNumber$orderId".padLeft(4,'0');
+      String newOrderId = "${threeDigitNumber}0000$orderId";
       // const secretKeyBase64 = "Mk9m98IfEblmPfrpsawtFg=="; // test key
       // const rawKey = "55D4UZySgTtj362quGtRvDvagDix2doL";
 
@@ -44,16 +44,16 @@ class PaymentService {
       // final secretKeyBase64 = base64.decode(rawKey); // temporary fix
       final merchantParams = json.encode({
         "Ds_Merchant_Amount": amountInCents.toString(),
-        "Ds_Merchant_Order": "ORDN$newOrderId",
+        "Ds_Merchant_Order": newOrderId,
         "Ds_Merchant_MerchantCode": "348775818",
         // "Ds_Merchant_MerchantCode": "999008881",
         "Ds_Merchant_Currency": "978",
         "Ds_Merchant_TransactionType": "0",
         "Ds_Merchant_Terminal": "001",
         // "Ds_Merchant_Terminal": "1",
-        "Ds_Merchant_MerchantURL": "https://example.com/notify",
-        "Ds_Merchant_UrlOK": "https://example.com/success",
-        "Ds_Merchant_UrlKO": "https://example.com/fail",
+      "Ds_Merchant_MerchantURL": "https://colegioatenea.es/?wc-api=WC_Gateway_redsys",
+      "Ds_Merchant_UrlOK": "https://colegioatenea.es/tienda/pedido-recibido/",
+      "Ds_Merchant_UrlKO": "https://colegioatenea.es/tienda/carrito/",
       });
       final base64Params = base64.encode(utf8.encode(merchantParams));
       final signature = generateRedsysSignature(

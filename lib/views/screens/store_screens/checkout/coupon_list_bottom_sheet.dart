@@ -69,12 +69,13 @@ class _CouponListBottomSheetState extends State<CouponListBottomSheet> {
                            textSize: 16, textColor: AppColors.secondary),
                      ),
                    )
-                       : ListView.builder(
-                       itemCount:
-                       storeController.couponListResponse.length,
-                       itemBuilder: (context, index) {
-                         CouponListResponse couponListResponse = storeController.couponListResponse[index];
-                         return CustomCouponWidget(
+                      : ListView.separated(
+                          itemCount:
+                          storeController.couponListResponse.length,
+                          separatorBuilder: (context, index) => const SizedBox(height: 10),
+                          itemBuilder: (context, index) {
+                            CouponListResponse couponListResponse = storeController.couponListResponse[index];
+                            return CustomCouponWidget(
                            couponListResponse: couponListResponse,
                            onCouponTap: () async{
                              Get.back();

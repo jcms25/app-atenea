@@ -251,6 +251,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //Communication Section :
   ListOfMessagesModel? listOfMessagesModel;
+  List<MessageItem> allMessageList = [];
   List<MessageItem> receivedMessageList = [];
   List<MessageItem> sendMessageList = [];
   List<MessageItem> tempMessageList = [];
@@ -259,9 +260,13 @@ class StudentParentTeacherController extends ChangeNotifier {
       {required List<MessageItem> listOfMessage,
       required int messageListType}) {
     //messageListType -> 0 : received list , 1 : sender list
-    messageListType == 0
-        ? receivedMessageList = listOfMessage
-        : sendMessageList = listOfMessage;
+    if (messageListType == 0) {
+      receivedMessageList = listOfMessage;
+    } else if (messageListType == 1) {
+      sendMessageList = listOfMessage;
+    } else {
+      allMessageList = listOfMessage;
+    }
     notifyListeners();
   }
 
@@ -272,15 +277,17 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //received or sent
-  String currentSelectedMessageListType = "Recibidas";
+  String currentSelectedMessageListType = "Todas";
 
   void setCurrentSelectedMessageType(
       {required String currentSelectedMessageListType}) {
     this.currentSelectedMessageListType = currentSelectedMessageListType;
     if (currentSelectedMessageListType == "Recibidas") {
       tempMessageList = receivedMessageList;
-    } else {
+    } else if (currentSelectedMessageListType == "Enviadas") {
       tempMessageList = sendMessageList;
+    } else {
+      tempMessageList = allMessageList;
     }
     notifyListeners();
   }
@@ -297,26 +304,33 @@ class StudentParentTeacherController extends ChangeNotifier {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Authorization': "Basic $token",
             'Cookie': cookies
-          }).then((response) {
+          }).then((response) {          
         if (response['status']) {
           ListOfMessagesModel listOfMessages =
               ListOfMessagesModel.fromJson(response);
           setListOfMessageModel(listOfMessagesModel: listOfMessages);
+          setMessageList(
+              listOfMessage: listOfMessages.data?.allMessages ?? [],
+              messageListType: 2);
           setMessageList(
               listOfMessage: listOfMessages.data?.receivedMessages ?? [],
               messageListType: 0);
           setMessageList(
               listOfMessage: listOfMessages.data?.sendMessages ?? [],
               messageListType: 1);
-          currentSelectedMessageListType == "Recibidas"
-              ? tempMessageList = receivedMessageList
-              : tempMessageList = sendMessageList;
+          if (currentSelectedMessageListType == "Recibidas") {
+            tempMessageList = receivedMessageList;
+          } else if (currentSelectedMessageListType == "Enviadas") {
+            tempMessageList = sendMessageList;
+          } else {
+            tempMessageList = allMessageList;
+          }
           notifyListeners();
         }
         setIsLoading(isLoading: false);
       });
     } catch (exception) {
-      setIsLoading(isLoading: false);
+      setIsLoading(isLoading: false);      
     }
   }
 
@@ -388,10 +402,13 @@ class StudentParentTeacherController extends ChangeNotifier {
             status: response['status'], message: response['Message'] ?? "");
         setIsLoading(isLoading: false);
       });
+
     } catch (exception) {
-      setIsLoading(isLoading: false);
+      setIsLoading(isLoading: false);      
     }
   }
+
+  //student and parent side teacher list
 
   //student and parent side teacher list
   List<TeacherItemForSendMessage> teacherListForMessageSend = [];
@@ -500,7 +517,9 @@ class StudentParentTeacherController extends ChangeNotifier {
       String? classId,
       String? receiverId,
       String? toAllParent,
-      String? toAllStudent}) async {
+      String? toAllStudent,
+      String? replyId,
+      String? groupName}) async {
 
     try {
       setIsLoading(isLoading: true);
@@ -526,16 +545,20 @@ class StudentParentTeacherController extends ChangeNotifier {
           : userdata?.wpUsrId ?? "";
 
       if (classId != null) {
-        request.fields['classid'] = classId;
-        request.fields['studentall'] = toAllStudent ?? "";
-        request.fields['parentall'] = toAllParent ?? "";
+          request.fields['classid'] = classId;
+          request.fields['studentall'] = toAllStudent ?? "";
+          request.fields['parentall'] = toAllParent ?? "";
+          request.fields['group_name'] = groupName ?? "";
       }
       else {
         request.fields['reciever_id[0]'] = receiverId ?? "";
       }
 
-      request.fields['subject'] = messageSubject;
-      request.fields['msg'] = description;
+    request.fields['subject'] = messageSubject;
+    request.fields['msg'] = description;
+    if (replyId != null && replyId.isNotEmpty) {
+      request.fields['reply_id'] = replyId;
+    }
 
 
 
@@ -559,7 +582,7 @@ class StudentParentTeacherController extends ChangeNotifier {
         return {"status": false, "message": "Please try again."};
       }
     } catch (exception) {
-      setIsLoading(isLoading: false);
+      setIsLoading(isLoading: false);      
       return {"status": false, "message": "Please try again."};
     }
   }
@@ -1391,6 +1414,35 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //add event user side
+  Future<void> deleteEvent({required String eventId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      await Api.httpRequest(
+          requestType: RequestType.delete,
+          endPoint: "event/$eventId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
+          }).then((response) async {
+        if (response['status']) {
+          AppConstants.showCustomToast(
+              status: true, message: "Evento eliminado");
+          setIsLoading(isLoading: false);
+          getEvents();
+        } else {
+          AppConstants.showCustomToast(
+              status: false,
+              message: response['Message'] ?? "Error al eliminar");
+          setIsLoading(isLoading: false);
+        }
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
   Future<void> addEditEvent(
       {required String title,
       required String description,
@@ -1400,7 +1452,10 @@ class StudentParentTeacherController extends ChangeNotifier {
       required String eventEndTime,
       required String eventType,
       required String eventColor,
-      String? eventId}) async {
+      String? eventId,
+      String notifyTo = 'none',
+      String notifyClass = '',
+      String notifyStudent = ''}) async {
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -1421,6 +1476,9 @@ class StudentParentTeacherController extends ChangeNotifier {
             "etime": eventEndTime,
             "etype": eventType,
             "ecolor": eventColor,
+            "ev_notify_to": notifyTo,
+            "ev_notify_class": notifyClass,
+            "ev_notify_student": notifyStudent,
           }).then((response) async {
         if (response['status']) {
           AppConstants.showCustomToast(
@@ -1453,6 +1511,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //date time wise events list
   Map<DateTime, List<EventListItemDetail>> mapOfEventsDateWise = {};
+  List<EventLegendItem> eventLegend = [];
 
   setMapOfEvents(
       {required Map<DateTime, List<EventListItemDetail>> listOfEvent}) {
@@ -1493,6 +1552,7 @@ class StudentParentTeacherController extends ChangeNotifier {
           }).then((response) {
         if (response['status']) {
           Events events = Events.fromJson(response);
+          eventLegend = events.legend;          
           setEventsAccordingDate(eventData: events.eventsList);
         }
 
@@ -1503,29 +1563,34 @@ class StudentParentTeacherController extends ChangeNotifier {
     }
   }
 
-  //filter out events according date
-  void setEventsAccordingDate({required List<EventListItem> eventData}) {
-    Map<DateTime, List<EventListItemDetail>> eventMap = {};
-    DateFormat df = DateFormat("yyyy-MM-dd");
-    for (var element in eventData) {
-      if (eventMap[element.startDate] != null) {
-        eventMap[
-                DateTime.parse(df.format(element.startDate ?? DateTime.now()))]!
-            .addAll(element.list ?? []);
-      } else {
-        eventMap[DateTime.parse(
-                df.format(element.startDate ?? DateTime.now()))] =
-            element.list ?? [];
+//filter out events according date
+void setEventsAccordingDate({required List<EventListItem> eventData}) {
+  Map<DateTime, List<EventListItemDetail>> eventMap = {};
+  DateFormat df = DateFormat("yyyy-MM-dd");
+  for (var element in eventData) {
+    for (var detail in element.list ?? []) {
+      if (detail.startDate == null) continue;
+      DateTime start = DateTime.parse(df.format(detail.startDate!));
+      DateTime end = DateTime.parse(df.format(detail.endDate ?? start));
+      DateTime current = start;
+      while (!current.isAfter(end)) {
+        if (eventMap[current] != null) {
+          eventMap[current]!.add(detail);
+        } else {
+          eventMap[current] = [detail];
+        }
+        current = current.add(const Duration(days: 1));
       }
     }
-
-    setTodayEvent(
-        eventList:
-            eventMap.containsKey(DateTime.parse(df.format(DateTime.now())))
-                ? eventMap[DateTime.parse(df.format(DateTime.now()))]!
-                : []);
-    mapOfEventsDateWise = eventMap;
   }
+
+  setTodayEvent(
+      eventList:
+          eventMap.containsKey(DateTime.parse(df.format(DateTime.now())))
+              ? eventMap[DateTime.parse(df.format(DateTime.now()))]!
+              : []);
+  mapOfEventsDateWise = eventMap;
+}
 
   //teacher followed up
   List<FollowedUpItem> listOfStudentFollowedUp = [];
@@ -1796,7 +1861,8 @@ class StudentParentTeacherController extends ChangeNotifier {
       required String endDateOfExam,
       required String examTime,
       required String comments,
-      required List<String> subjects}) async {
+      required List<String> subjects,
+      String ewOption = "Examen"}) async {
     try {
       setIsLoading(isLoading: true);
 
@@ -1806,7 +1872,8 @@ class StudentParentTeacherController extends ChangeNotifier {
         "exam_start_date": startDateOfExam,
         "exam_end_date": endDateOfExam,
         "time": examTime,
-        "comments": comments
+        "comments": comments,
+        "ew_option": ewOption
       };
 
       for (int i = 0; i < subjects.length; i++) {
@@ -2011,6 +2078,7 @@ class StudentParentTeacherController extends ChangeNotifier {
         "ClassID": classId,
         "SubjectID": subjectId,
         "ExamID": examId,
+        "sender_id": userdata?.wpUsrId ?? "",
       };
 
       List<TextEditingController> remarksController = _observedControllers.values.toList();
@@ -2039,6 +2107,7 @@ class StudentParentTeacherController extends ChangeNotifier {
                   classId: classId, subjectId: subjectId, examId: examId)
               .then((response) {
             setIsLoading(isLoading: false);
+            setViewOrAddEditMarks(viewOrAddEditMarks: 0);
           });
         } else {
           AppConstants.showCustomToast(

@@ -39,7 +39,6 @@ class WorldLanguage extends Translations {
           'circulardetail': 'Circular Details',
           'settings': 'Settings',
           'enclass': 'Entolled Classes',
-          'subject': 'Subject',
           'iotc': 'Incharge of the class',
           'fch': 'Family care hours',
           'techerdetail': 'Teacher Detail',

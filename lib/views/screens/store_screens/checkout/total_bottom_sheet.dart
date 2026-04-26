@@ -86,20 +86,16 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Visibility(
-                            visible:
-                            storeController.cartResponse?.coupons?.isNotEmpty ??
-                                false,
-                            child: storeController.cartResponse?.coupons?.isNotEmpty ??
-                                false
-                                ?   Row(
+                        ...storeController.cartResponse?.coupons?.map((coupon) => Column(
+                          children: [
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Cupón:\n${storeController.cartResponse?.coupons?[0].code ?? ""}',
+                                Text('Cupón:\n${coupon.code ?? ""}',
                                     style: AppTextStyle.getOutfit500(
                                         textSize: 18, textColor: AppColors.secondary)),
                                 RichText(text: TextSpan(
-                                    text: "-${AppConstants.formatPrice((double.tryParse(storeController.cartResponse?.coupons?[0].totals?.totalDiscount ?? "") ?? 0) + (double.tryParse(storeController.cartResponse?.coupons?[0].totals?.totalDiscountTax ?? "") ?? 0))}",
+                                    text: "-${AppConstants.formatPrice((double.tryParse(coupon.totals?.totalDiscount ?? "") ?? 0) + (double.tryParse(coupon.totals?.totalDiscountTax ?? "") ?? 0))}",
                                     style: AppTextStyle.getOutfit500(
                                         textSize: 18, textColor: AppColors.secondary),
                                     children: [
@@ -108,16 +104,20 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
                                         style: AppTextStyle.getOutfit500(
                                             textSize: 18, textColor: AppColors.blue),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () async{
-                                            await storeController.applyOrRemoveCoupon(applyOrRemove: 1, couponCode: storeController.cartResponse?.coupons?[0].code ?? "", tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
+                                          ..onTap = () async {
+                                            await storeController.applyOrRemoveCoupon(
+                                                applyOrRemove: 1,
+                                                couponCode: coupon.code ?? "",
+                                                tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
                                           },
                                       )
                                     ]
                                 )),
-
                               ],
-                            )
-                                : SizedBox.shrink()),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        )) ?? [],
 
                         const SizedBox(
                           height: 10,

@@ -48,6 +48,18 @@ class _TeacherAddEditMarksScreenState extends State<TeacherAddEditMarksScreen> {
         studentParentTeacherController?.getListOfClassesAssignToTeacher(
             showLoader: true);
       }
+      // Mostrar el modal automáticamente al abrir la pantalla
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              backgroundColor: Colors.transparent,
+              builder: (context) {
+                return TeacherViewMarksBottomSheet();
+              });
+        }
+      });
     });
   }
 
@@ -146,7 +158,11 @@ class _TeacherAddEditMarksScreenState extends State<TeacherAddEditMarksScreen> {
               studentParentTeacherController?.setViewOrAddEditMarks(
                   viewOrAddEditMarks: null);
 
-              Get.back();
+              if (Get.previousRoute.isEmpty || Get.previousRoute == '/') {
+                studentParentTeacherController?.setCurrentBottomIndexSelected(index: 3);
+              } else {
+                Get.back();
+              }
             },
           ),
           body: Stack(
@@ -431,6 +447,7 @@ class _TabularViewOfMarksState extends State<TabularViewOfMarks> {
         return Column(
           children: [
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 border: Border(
@@ -446,7 +463,26 @@ class _TabularViewOfMarksState extends State<TabularViewOfMarks> {
                     textSize: 18, textColor: AppColors.secondary),
               ),
             ),
-            Table(
+            Builder(
+              builder: (context) {
+                final ctrl = Provider.of<StudentParentTeacherController>(context, listen: false);
+                final hasMarks = ctrl.listOfMarksItem.any((e) => e.mark != null && e.mark!.isNotEmpty);
+                if (!hasMarks) {
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2, color: AppColors.secondary),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Notas no introducidas aún",
+                        style: AppTextStyle.getOutfit400(textSize: 16, textColor: AppColors.secondary),
+                      ),
+                    ),
+                  );
+                }
+                return Table(
               columnWidths: {
                 0: FlexColumnWidth(4),
                 1: FlexColumnWidth(1),
@@ -511,7 +547,9 @@ class _TabularViewOfMarksState extends State<TabularViewOfMarks> {
                   ]);
                 })
               ],
-            )
+            );
+              },
+            ),
           ],
         );
       },

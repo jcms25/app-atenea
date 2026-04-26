@@ -43,17 +43,17 @@ if (flutterVersionName == null) {
 //apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 35
-    ndkVersion "25.1.8937393"
+    compileSdkVersion 36
+    ndkVersion = flutter.ndkVersion
     namespace = "com.atenea.colegioatenea.colegia_atenea"
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets {
@@ -67,8 +67,8 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 8
-        versionName '1.6.1'
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     repositories {
@@ -86,8 +86,8 @@ android {
     }
     buildTypes {
         release {
-//            signingConfig signingConfigs.release
-              signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.debug
         }
     }
 }
@@ -108,6 +108,5 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'androidx.webkit:webkit:1.4.0'  // or the latest version
-
+    implementation 'androidx.webkit:webkit:1.4.0'
 }

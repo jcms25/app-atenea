@@ -89,7 +89,11 @@ class CartResponse {
     //     errors!.add(Null.fromJson(v));
     //   });
     // }
-    paymentMethods = json['payment_methods'].cast<String>();
+    // paymentMethods = json['payment_methods'].cast<String>(); // Línea original (incluye PayPal)
+        paymentMethods = (json['payment_methods'] as List<dynamic>)
+            .cast<String>()
+            .where((method) => method != 'ppcp-gateway')
+            .toList();
     extensions = json['extensions'] != null
         ? CartExtension.fromJson(json['extensions'])
         : null;
@@ -160,7 +164,8 @@ class Items {
   Prices? prices;
   CartTotal? totals;
   String? catalogVisibility;
-  Extensions? extensions;
+    Extensions? extensions;
+    bool? isClosed;
 
   Items(
       {this.key,
@@ -225,9 +230,10 @@ class Items {
     totals =
     json['totals'] != null ? CartTotal.fromJson(json['totals']) : null;
     catalogVisibility = json['catalog_visibility'];
-    extensions = json['extensions'] != null
-        ? Extensions.fromJson(json['extensions'])
-        : null;
+        extensions = json['extensions'] != null
+            ? Extensions.fromJson(json['extensions'])
+            : null;
+        isClosed = extensions?.isClosed ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -264,6 +270,7 @@ class Items {
       data['totals'] = totals!.toJson();
     }
     data['catalog_visibility'] = catalogVisibility;
+        data['is_closed'] = isClosed;
     if (extensions != null) {
       data['extensions'] = extensions!.toJson();
     }
@@ -505,8 +512,9 @@ class Totals {
 
 class Extensions {
   YithWoocommerceProductBundles? yithWoocommerceProductBundles;
+  bool? isClosed;
 
-  Extensions({this.yithWoocommerceProductBundles});
+  Extensions({this.yithWoocommerceProductBundles, this.isClosed});
 
   Extensions.fromJson(Map<String, dynamic> json) {
     yithWoocommerceProductBundles =
@@ -514,6 +522,7 @@ class Extensions {
         ? YithWoocommerceProductBundles.fromJson(
         json['yith-woocommerce-product-bundles'])
         : null;
+    isClosed = json['wpsp_closed']?['is_closed'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -522,6 +531,7 @@ class Extensions {
       data['yith-woocommerce-product-bundles'] =
           yithWoocommerceProductBundles!.toJson();
     }
+    data['wpsp_closed'] = {'is_closed': isClosed};
     return data;
   }
 }

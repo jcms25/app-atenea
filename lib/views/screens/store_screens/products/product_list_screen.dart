@@ -256,6 +256,7 @@ import 'package:provider/provider.dart';
 import '../../../../controllers/store_controller.dart';
 import '../../../../models/store_model/product_item_model.dart';
 import '../../../../utils/app_colors.dart';
+import '../cart_page_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
   final String categoryId;
@@ -285,6 +286,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
           categoryId: widget.categoryId,
           tiendaToken:
               studentParentTeacherController?.userdata?.tiendaToken ?? "");
+      storeController?.getCartDetails(
+          tiendaToken:
+              studentParentTeacherController?.userdata?.tiendaToken ?? "");
     });
   }
 
@@ -305,6 +309,44 @@ class _ProductListScreenState extends State<ProductListScreen> {
         title: Text(widget.categoryName,
             style: AppTextStyle.getOutfit600(
                 textSize: 20, textColor: AppColors.white)),
+        actionIcons: [
+          Consumer<StoreController>(
+            builder: (context, storeController, child) {
+              int itemCount = storeController.cartResponse?.items?.length ?? 0;
+              return GestureDetector(
+                onTap: () => Get.to(() => CartPageScreen())?.then((_) {
+                  storeController?.getCartDetails(
+                      tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
+                }),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(Icons.shopping_cart, color: AppColors.white, size: 28),
+                    if (itemCount > 0)
+                      Positioned(
+                        right: -6,
+                        top: -6,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: AppColors.orange,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '$itemCount',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -339,6 +381,48 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 children: [
                   ScrollConfiguration(behavior: ScrollBehavior().copyWith(overscroll: false), child: Consumer<StoreController>(
                     builder: (context, storeController, child) {
+                      // Categoría cerrada: mostrar mensaje
+                      if (storeController.closedCategoryMessage != null) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              if (storeController.closedCategoryImage != null && storeController.closedCategoryImage!.isNotEmpty)
+                                CachedNetworkImage(
+                                  imageUrl: storeController.closedCategoryImage!,
+                                  width: double.infinity,
+                                  height: 220,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Container(height: 220, color: Colors.grey[200]),
+                                  errorWidget: (context, url, error) => const SizedBox.shrink(),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (storeController.closedCategoryImage == null || storeController.closedCategoryImage!.isEmpty)
+                                      Icon(Icons.lock_outline, size: 64, color: Colors.grey[400]),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      storeController.closedCategoryTitle != null && storeController.closedCategoryTitle!.isNotEmpty
+                                          ? storeController.closedCategoryTitle!
+                                          : 'Sección no disponible',
+                                      style: AppTextStyle.getOutfit600(textSize: 20, textColor: AppColors.primary),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      storeController.closedCategoryMessage!,
+                                      style: AppTextStyle.getOutfit400(textSize: 15, textColor: Colors.grey[600]!),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                       return GridView.builder(
                         controller: _scrollController,
                         gridDelegate:

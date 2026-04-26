@@ -43,7 +43,11 @@ class _TeacherScheduleScreenState extends State<TeacherScheduleScreen> {
             onLeadingIconClicked: (){
               studentParentTeacherController?.setSelectedTeacherScheduleItem(teacherScheduleItem: null);
               studentParentTeacherController?.setTeacherScheduleList(teacherScheduleList: []);
-              Get.back();
+              if (Get.previousRoute.isEmpty || Get.previousRoute == '/') {
+                studentParentTeacherController?.setCurrentBottomIndexSelected(index: 3);
+              } else {
+                Get.back();
+              }
 
               },
               title: Text(

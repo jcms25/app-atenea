@@ -191,6 +191,7 @@
 
 import 'package:colegia_atenea/utils/app_remote_config.dart';
 import 'package:colegia_atenea/views/screens/store_screens/checkout/total_bottom_sheet.dart';
+import 'package:colegia_atenea/views/screens/store_screens/checkout/closed_items_warning_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -264,13 +265,26 @@ class _CartPageScreenState extends State<CartPageScreen> with WidgetsBindingObse
                           storeController.cartResponse?.items?.isNotEmpty ??
                               false,
                       child: GestureDetector(
-                        onTap: () async{
-                           Get.bottomSheet(TotalBottomSheet(),
+                        onTap: () async {
+                          final closedItems = storeController.cartResponse?.items
+                              ?.where((item) => item.isClosed == true)
+                              .toList() ?? [];
+
+                          if (closedItems.isNotEmpty) {
+                            Get.bottomSheet(
+                              ClosedItemsWarningSheet(closedItems: closedItems),
                               isDismissible: true,
                               isScrollControlled: true,
-                              backgroundColor: AppColors.transparent).then((res){
-                                storeController.setCouponListResponse(couponListResponse: null);
-                          });
+                              backgroundColor: AppColors.transparent,
+                            );
+                          } else {
+                            Get.bottomSheet(TotalBottomSheet(),
+                                isDismissible: true,
+                                isScrollControlled: true,
+                                backgroundColor: AppColors.transparent).then((res) {
+                              storeController.setCouponListResponse(couponListResponse: null);
+                            });
+                          }
                         },
                         child: Text(
                           'Comprar',

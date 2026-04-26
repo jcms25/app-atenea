@@ -1,5 +1,7 @@
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/events_list.dart';
+import 'package:colegia_atenea/models/teacher/teacher_class_model.dart';
+import 'package:colegia_atenea/models/student_list_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
@@ -27,6 +29,9 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
 
   TextEditingController? titleController;
   TextEditingController? descriptionController;
+  String _notifyTo = 'none';
+  TeacherClassItem? _selectedClass;
+  StudentItem? _selectedStudent;
 
   @override
   void initState() {
@@ -49,6 +54,10 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
           ? TimeOfDay(hour: endDateTime.hour, minute: endDateTime.minute)
           : null;
 
+      // Cargar lista de clases del profesor si no está disponible
+      if (studentParentTeacherController?.listOfClassAssignToTeacher.isEmpty ?? true) {
+        studentParentTeacherController?.getListOfClassesAssignToTeacher(showLoader: false);
+      }
       studentParentTeacherController?.setSelectedEventStartDate(
           date: startDateTime);
       studentParentTeacherController?.setSelectedEventEndDate(date: endDateTime);
@@ -438,59 +447,190 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                             height: 20,
                           ),
 
-                          //color
+                          // Notificar a
                           Text(
-                            'Color',
+                            'Notificar a',
                             style: AppTextStyle.getOutfit500(
                                 textSize: 18, textColor: AppColors.secondary),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Container(
                             width: MediaQuery.sizeOf(context).width,
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                // color: AppColors.secondary.withOpacity(0.06)
-                                color: AppColors.secondary.withValues(alpha: 0.06)
-                            ),
-                            child: Consumer<StudentParentTeacherController>(
-                              builder: (context, studentParentTeacherController,
-                                  child) {
-                                return DropdownButton<EventColorModel>(
-                                    underline: const SizedBox.shrink(),
-                                    isExpanded: true,
-                                    value: studentParentTeacherController
-                                        .selectedEventColor,
-                                    items:
-                                        AppConstants.eventColorModel.map((e) {
-                                      return DropdownMenuItem<EventColorModel>(
-                                          value: e,
-                                          child: Text(
-                                            e.color,
-                                            style: AppTextStyle.getOutfit500(
-                                                textSize: 16,
-                                                textColor: AppColors.secondary),
-                                          ));
-                                    }).toList(),
-                                    onChanged:
-                                        (EventColorModel? eventColorModel) {
-                                      studentParentTeacherController
-                                          .setSelectedEventColor(
-                                              eventColorModel: eventColorModel);
-                                    });
+                                color: AppColors.secondary.withValues(alpha: 0.06)),
+                            child: DropdownButton<String>(
+                              underline: const SizedBox.shrink(),
+                              isExpanded: true,
+                              value: _notifyTo,
+                              items: const [
+                                DropdownMenuItem(value: 'none',    child: Text('Sin notificación')),
+                                DropdownMenuItem(value: 'all',     child: Text('Todos los alumnos y sus padres')),
+                                DropdownMenuItem(value: 'class',   child: Text('Un grupo de clase')),
+                                DropdownMenuItem(value: 'student', child: Text('Un alumno específico')),
+                              ],
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _notifyTo = value ?? 'none';
+                                  _selectedClass = null;
+                                  _selectedStudent = null;
+                                });
                               },
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 10),
+                          // Selector de clase
+                          if (_notifyTo == 'class')
+                            Consumer<StudentParentTeacherController>(
+                              builder: (context, ctrl, child) {
+                                return Container(
+                                  width: MediaQuery.sizeOf(context).width,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: AppColors.secondary.withValues(alpha: 0.06)),
+                                  child: DropdownButton<TeacherClassItem>(
+                                    underline: const SizedBox.shrink(),
+                                    isExpanded: true,
+                                    hint: const Text('Selecciona una clase'),
+                                    value: _selectedClass,
+                                    items: ctrl.listOfClassAssignToTeacher.map((e) {
+                                      return DropdownMenuItem<TeacherClassItem>(
+                                        value: e,
+                                        child: Text(e.cName ?? ''),
+                                      );
+                                    }).toList(),
+                                    onChanged: (TeacherClassItem? value) {
+                                      setState(() {
+                                        _selectedClass = value;
+                                        _selectedStudent = null;
+                                      });
+                                      if (value != null) {
+                                        ctrl.getListOfStudents(
+                                          classId: value.cid ?? '',
+                                          roleType: RoleType.teacher,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          // Selector de alumno
+                          if (_notifyTo == 'student')
+                            Consumer<StudentParentTeacherController>(
+                              builder: (context, ctrl, child) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.sizeOf(context).width,
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: AppColors.secondary.withValues(alpha: 0.06)),
+                                      child: DropdownButton<TeacherClassItem>(
+                                        underline: const SizedBox.shrink(),
+                                        isExpanded: true,
+                                        hint: const Text('Selecciona una clase'),
+                                        value: _selectedClass,
+                                        items: ctrl.listOfClassAssignToTeacher.map((e) {
+                                          return DropdownMenuItem<TeacherClassItem>(
+                                            value: e,
+                                            child: Text(e.cName ?? ''),
+                                          );
+                                        }).toList(),
+                                        onChanged: (TeacherClassItem? value) {
+                                          setState(() {
+                                            _selectedClass = value;
+                                            _selectedStudent = null;
+                                          });
+                                          if (value != null) {
+                                            ctrl.getListOfStudents(
+                                              classId: value.cid ?? '',
+                                              roleType: RoleType.teacher,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    if (_selectedClass != null)
+                                      Container(
+                                        width: MediaQuery.sizeOf(context).width,
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            color: AppColors.secondary.withValues(alpha: 0.06)),
+                                        child: DropdownButton<StudentItem>(
+                                          underline: const SizedBox.shrink(),
+                                          isExpanded: true,
+                                          hint: const Text('Selecciona un alumno'),
+                                          value: _selectedStudent,
+                                          items: ctrl.listOfStudents.map((e) {
+                                            return DropdownMenuItem<StudentItem>(
+                                              value: e,
+                                              child: Text('${e.sLname ?? ''}, ${e.sFname ?? ''}'),
+                                            );
+                                          }).toList(),
+                                          onChanged: (StudentItem? value) {
+                                            setState(() { _selectedStudent = value; });
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          const SizedBox(height: 20),
 
                           //add-edit event button
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              // Botón Borrar — solo en modo edición
+                              if (arguments?['reason'] == 'edit-event' && eventListItemDetail?.id != null)
+                                Consumer<StudentParentTeacherController>(
+                                  builder: (context, studentParentTeacherController, child) {
+                                    return Container(
+                                      height: 60,
+                                      padding: const EdgeInsets.all(5),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text("Eliminar evento"),
+                                              content: const Text("¿Estás seguro de que quieres eliminar este evento?"),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.pop(context),
+                                                  child: const Text("Cancelar"),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    studentParentTeacherController.deleteEvent(
+                                                      eventId: eventListItemDetail!.id ?? "",
+                                                    );
+                                                    Get.back();
+                                                  },
+                                                  child: const Text("Eliminar", style: TextStyle(color: Colors.red)),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        child: const Text("Borrar"),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              const SizedBox(width: 10),
+                              Container(
                               height: 60,
                               width: MediaQuery.sizeOf(context).width * 0.30,
                               padding: const EdgeInsets.all(5),
@@ -509,33 +649,22 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                                       .eventEndDate !=
                                                   null) {
                                             await studentParentTeacherController.addEditEvent(
-                                                title:
-                                                    titleController?.text ?? "",
-                                                description:
-                                                    descriptionController?.text ??
-                                                        "",
-                                                eventStartDate:
-                                                    DateFormat("yyyy-MM-dd").format(
-                                                        studentParentTeacherController
-                                                            .eventStartDate!),
-                                                eventEndDate: DateFormat("yyyy-MM-dd").format(
-                                                    studentParentTeacherController
-                                                        .eventEndDate!),
-                                                eventStartTime:
-                                                    studentParentTeacherController.startTime == null
-                                                        ? ""
-                                                        : "${studentParentTeacherController.startTime?.hour ?? ""}:${studentParentTeacherController.startTime?.minute ?? ""}",
+                                                title: titleController?.text ?? "",
+                                                description: descriptionController?.text ?? "",
+                                                eventStartDate: DateFormat("yyyy-MM-dd").format(studentParentTeacherController.eventStartDate!),
+                                                eventEndDate: DateFormat("yyyy-MM-dd").format(studentParentTeacherController.eventEndDate!),
+                                                eventStartTime: studentParentTeacherController.startTime == null
+                                                    ? ""
+                                                    : "${studentParentTeacherController.startTime?.hour ?? ""}:${studentParentTeacherController.startTime?.minute ?? ""}",
                                                 eventEndTime: studentParentTeacherController.endTime == null
                                                     ? ""
                                                     : "${studentParentTeacherController.endTime?.hour ?? ""}:${studentParentTeacherController.endTime?.minute ?? ""}",
-                                                eventType: studentParentTeacherController
-                                                    .selectedEventType.id,
-                                                eventColor:
-                                                    studentParentTeacherController
-                                                        .selectedEventColor
-                                                        .id,
-                                                eventId: eventListItemDetail?.id
-
+                                                eventType: studentParentTeacherController.selectedEventType.id,
+                                                eventColor: "#007bff",
+                                                eventId: eventListItemDetail?.id,
+                                                notifyTo: _notifyTo,
+                                                notifyClass: _selectedClass?.cid ?? "",
+                                                notifyStudent: _selectedStudent?.wpUsrId ?? "",
                                             );
                                           } else {
                                             AppConstants.showCustomToast(
@@ -555,6 +684,7 @@ class _TeacherAddEditEventState extends State<TeacherAddEditEvents> {
                                 },
                               ),
                             ),
+                            ],
                           )
                         ],
                       ),

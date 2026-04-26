@@ -7,11 +7,13 @@ class Events {
   bool status;
   String message;
   List<EventListItem> eventsList;
+  List<EventLegendItem> legend;
 
   Events({
     required this.status,
     required this.message,
     required this.eventsList,
+    required this.legend,
   });
 
   factory Events.fromJson(Map<String, dynamic> json) => Events(
@@ -21,12 +23,17 @@ class Events {
             ? []
             : List<EventListItem>.from(
                 json["data"].map((x) => EventListItem.fromJson(x))),
+        legend: json["legend"] == null
+            ? []
+            : List<EventLegendItem>.from(
+                json["legend"].map((x) => EventLegendItem.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
         "Message": message,
         "data": List<dynamic>.from(eventsList.map((x) => x.toJson())),
+        "legend": List<dynamic>.from(legend.map((x) => {'color': x.color, 'label': x.label})),
       };
 }
 
@@ -98,4 +105,17 @@ class EventListItemDetail {
         'created_by': createdBy,
         "description" : description
       };
+}
+
+class EventLegendItem {
+  final String color;
+  final String label;
+
+  EventLegendItem({required this.color, required this.label});
+
+  factory EventLegendItem.fromJson(Map<String, dynamic> json) =>
+      EventLegendItem(
+        color: json['color'] ?? '#888888',
+        label: json['label'] ?? '',
+      );
 }

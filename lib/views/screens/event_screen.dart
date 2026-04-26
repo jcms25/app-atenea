@@ -25,14 +25,17 @@ class _EventScreenChildState extends State<EventScreen> {
 
   @override
   void initState() {
-    super.initState();
-    initializeDateFormatting(Get.locale!.languageCode, null);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      studentParentTeacherController =
-          Provider.of<StudentParentTeacherController>(context, listen: false);
-      studentParentTeacherController?.getEvents();
-    });
-  }
+      super.initState();
+      initializeDateFormatting(Get.locale!.languageCode, null);
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        studentParentTeacherController =
+            Provider.of<StudentParentTeacherController>(context, listen: false);
+        studentParentTeacherController?.setTodayEvent(eventList: []);
+        studentParentTeacherController?.eventLegend = [];
+        studentParentTeacherController?.mapOfEventsDateWise = {};
+        studentParentTeacherController?.getEvents();
+      });
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -132,20 +135,73 @@ class _EventScreenChildState extends State<EventScreen> {
                               ),
                               todayTextStyle:
                                   const TextStyle(color: AppColors.white),
-                              markerDecoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.secondary,
-                                // borderRadius: BorderRadius.circular(
-                                //     8.0)
-                              ),
-                              markersMaxCount: 3,
+                                markersMaxCount: 3,
                               outsideDaysVisible: true,
+                            ),
+                            calendarBuilders: CalendarBuilders(
+                              markerBuilder: (context, date, events) {
+                                if (events.isEmpty) return const SizedBox.shrink();
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: events.take(3).map((e) {
+                                    final evt = e as EventListItemDetail;
+                                    Color dotColor = evt.color != null && evt.color!.isNotEmpty
+                                        ? hexToColor(evt.color!)
+                                        : AppColors.primary;
+                                    return Container(
+                                      width: 7,
+                                      height: 7,
+                                      margin: const EdgeInsets.symmetric(horizontal: 1),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: dotColor,
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
+                              },
                             ),
                             onDayLongPressed:
                                 (DateTime selectDay, DateTime focusDay) {},
                           );
                         },
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Consumer<StudentParentTeacherController>(
+                      builder: (context, studentParentTeacherController, child) {
+                        if (studentParentTeacherController.eventLegend.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+                        return Wrap(
+                          spacing: 12,
+                          runSpacing: 8,
+                          children: studentParentTeacherController.eventLegend.map((item) {
+                            final color = Color(int.parse(item.color.substring(1, 7), radix: 16) + 0xFF000000);
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  item.label,
+                                  style: AppTextStyle.getOutfit400(
+                                      textSize: 12, textColor: AppColors.secondary),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                        );
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -220,13 +276,20 @@ class EventWidget extends StatelessWidget {
   final Color color;
   const EventWidget({super.key, required this.eventListItemDetail, required this.color});
 
+  // Calcula color de texto legible según luminosidad del fondo (WCAG)
+  Color _textColorForBg(Color bg) {
+    // bg.r, bg.g, bg.b devuelven valores entre 0.0 y 1.0 en Flutter
+    final luminance = 0.299 * bg.r + 0.587 * bg.g + 0.114 * bg.b;
+    return luminance > 0.5 ? const Color(0xFF222222) : Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final textColor = _textColorForBg(color);
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          // color: color.withOpacity(0.05),
-          color: color.withValues(alpha: 0.05),
+          color: color,
           borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 10),
@@ -238,19 +301,24 @@ class EventWidget extends StatelessWidget {
             children: [
               Expanded(child: Text(eventListItemDetail.title ?? "",
                   style: AppTextStyle.getOutfit700(
-                      textSize: 20, textColor: color))),
+                      textSize: 20, textColor: textColor))),
               Consumer<StudentParentTeacherController>(
-                builder: (context,studentParentTeacherController,child){
+                builder: (context, studentParentTeacherController, child) {
                   return Visibility(
-                    visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher && studentParentTeacherController.userdata?.wpUsrId == eventListItemDetail.createdBy,
-                      child: IconButton(icon: Icon(Icons.edit),color: color, onPressed: () {
-                        Get.to(() => TeacherAddEditEvents(),
-                          arguments: {
-                           "reason" : "edit-event",
-                           "event-data" : eventListItemDetail
-                          }
-                        );
-                      },));
+                    visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher &&
+                        studentParentTeacherController.userdata?.wpUsrId == eventListItemDetail.createdBy &&
+                        eventListItemDetail.id != null,
+                    child: IconButton(
+                      icon: const Icon(Icons.edit),
+                      color: textColor,
+                      onPressed: () {
+                        Get.to(() => TeacherAddEditEvents(), arguments: {
+                          "reason": "edit-event",
+                          "event-data": eventListItemDetail
+                        });
+                      },
+                    ),
+                  );
                 },
               )
             ],
@@ -260,11 +328,11 @@ class EventWidget extends StatelessWidget {
           ),
           RichText(text: TextSpan(
            text: "Fecha de inicio\t:\t",
-           style: AppTextStyle.getOutfit600(textSize: 18, textColor: color),
+           style: AppTextStyle.getOutfit600(textSize: 18, textColor: textColor),
            children: [
              TextSpan(
                text:DateFormat("dd-MM-yyyy HH:mm").format(eventListItemDetail.startDate ?? DateTime.now()),
-               style: AppTextStyle.getOutfit600(textSize: 16, textColor: color)
+               style: AppTextStyle.getOutfit600(textSize: 16, textColor: textColor)
              ),
            ]
          )),
@@ -273,11 +341,11 @@ class EventWidget extends StatelessWidget {
           ),
           RichText(text: TextSpan(
               text: "Fecha de finalización\t:\t",
-              style: AppTextStyle.getOutfit600(textSize: 18, textColor: color),
+              style: AppTextStyle.getOutfit600(textSize: 18, textColor: textColor),
               children: [
                 TextSpan(
                     text:DateFormat("dd-MM-yyyy HH:mm").format(eventListItemDetail.endDate ?? DateTime.now()),
-                    style: AppTextStyle.getOutfit600(textSize: 16, textColor: color)
+                    style: AppTextStyle.getOutfit600(textSize: 16, textColor: textColor)
                 ),
               ]
           )),

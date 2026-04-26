@@ -113,7 +113,8 @@ class _Circular extends State<CircularScreen> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                                 mainAxisSpacing: 10.0,
                                 crossAxisSpacing: 10.0,
-                                crossAxisCount: 2),
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.85),
                             itemBuilder: (context, index) {
                               Datum data = tempList[index];
                               return GestureDetector(
@@ -131,13 +132,29 @@ class _Circular extends State<CircularScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        margin: const EdgeInsets.all(10),
-                                        padding: data.image == null ? const EdgeInsets.all(5) : null,
-                                        child: data.image == null || data.image!.isEmpty ? Image.asset(AppImages.document,fit: BoxFit.fill,) : AspectRatio(aspectRatio: 16/9, child: Image.network(data.image ?? "",fit: BoxFit.contain,filterQuality: FilterQuality.high,),),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
+                                        child: SizedBox(
+                                          height: 110,
+                                          width: double.infinity,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(8),
+                                            child: data.image == null || data.image!.isEmpty
+                                                ? Padding(
+                                                    padding: const EdgeInsets.all(8),
+                                                    child: Image.asset(AppImages.document, fit: BoxFit.contain),
+                                                  )
+                                                : Image.network(data.image ?? "", fit: BoxFit.contain, filterQuality: FilterQuality.high),
+                                          ),
+                                        ),
                                       ),
-                                      data.title.length > 15 ? Text("${data.title.substring(0,14)}${".."}",style: title,) : Text(data.title,style: title,),
+                                      Text(
+                                        data.title,
+                                        style: title,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
                                       Text(data.date,style: title.copyWith(fontSize: 14),)
                                     ],
                                   ),

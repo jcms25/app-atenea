@@ -46,6 +46,22 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
         studentParentTeacherController?.getListOfClassesAssignToTeacher(
             showLoader: true);
       }
+      // Mostrar el modal automáticamente al abrir la pantalla
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          showModalBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(30))),
+              builder: (context) {
+                return StatefulBuilder(builder: (context, state) {
+                  return FollowedUpBottomSheet();
+                });
+              });
+        }
+      });
     });
   }
 

@@ -27,7 +27,7 @@ class MessageListScreen extends State<MessageScreen> {
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
@@ -105,6 +105,7 @@ class MessageListScreen extends State<MessageScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  CustomRadioWidget(messageType: "Todas"),
                   CustomRadioWidget(messageType: AppConstants.messageType1),
                   CustomRadioWidget(messageType: AppConstants.messageType2),
                 ],
@@ -135,6 +136,7 @@ class MessageListScreen extends State<MessageScreen> {
                                         appController.tempMessageList[index];
                                     return MessageListWidget(
                                         messageItem: messageItem,
+                                        showDirection: appController.currentSelectedMessageListType == "Todas",
                                         onPressed: () {
                                           if (messageItem.id != null) {
                                             Get.to(() => CommunicationDetail(
@@ -145,7 +147,9 @@ class MessageListScreen extends State<MessageScreen> {
                                                 fromParent: true));
                                           } else {
                                             Get.to(() => MessageDetailScreen(
-                                                messageId:  messageItem.mid ?? "", messageType: appController.currentSelectedMessageListType,));
+                                                messageId: messageItem.mid ?? "",
+                                                messageType: messageItem.direction == 'sent' ? "Enviadas" : "Recibidas",
+                                            ));
                                           }
                                         });
                                   },

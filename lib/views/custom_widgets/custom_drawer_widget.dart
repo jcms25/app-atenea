@@ -28,6 +28,7 @@ import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_schedule_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -202,7 +203,27 @@ class CustomDrawerWidget extends StatelessWidget {
                                       ? 0
                                       : 1);
                         });
-                  })
+                  }),
+              FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  final version = snapshot.hasData
+                      ? 'v${snapshot.data!.version}'
+                      : '';
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      version,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey,
+                        fontFamily: 'Outfit',
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           )
         ],
@@ -661,10 +682,7 @@ class CustomDrawerWidget extends StatelessWidget {
         // Get.to(() => WebViewScreen(loadURL: url, label: 'Libros',));
         Get.to(() => SubCategoryListScreen(categoryName: 'Libros'));
       case "Uniformes":
-        // String url = 'https://colegioatenea.es/product-category/uniformes/';
-        // Get.to(() => WebViewScreen(loadURL: url, label: 'Uniformes',));
-        Get.to(() =>
-            ProductListScreen(categoryId: '724', categoryName: 'Uniformes'));
+        Get.to(() => SubCategoryListScreen(categoryName: 'Uniformes'));
         break;
       case "Material":
         Get.to(() => SubCategoryListScreen(categoryName: 'Material'));

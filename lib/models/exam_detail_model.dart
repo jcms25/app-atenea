@@ -36,6 +36,8 @@ class ExamDetailItem {
   String? updatedBy;
   String? cName;
   List<SubDetails>? subDetails;
+  String? professorName;
+  String? ewOption;
 
   ExamDetailItem(
       {this.eid,
@@ -50,7 +52,9 @@ class ExamDetailItem {
         this.createdBy,
         this.updatedBy,
         this.cName,
-        this.subDetails});
+        this.subDetails,
+        this.professorName,
+        this.ewOption});
 
   ExamDetailItem.fromJson(Map<String, dynamic> json) {
     eid = json['eid'];
@@ -65,6 +69,8 @@ class ExamDetailItem {
     createdBy = json['created_by'];
     updatedBy = json['updated_by'];
     cName = json['c_name'];
+    professorName = json['professor_name'] ?? '';
+    ewOption = json['ew_option'] ?? 'Examen';
     if (json['subdetails'] != null) {
       subDetails = <SubDetails>[];
       json['subdetails'].forEach((v) {
@@ -87,6 +93,8 @@ class ExamDetailItem {
     data['created_by'] = createdBy;
     data['updated_by'] = updatedBy;
     data['c_name'] = cName;
+    data['professor_name'] = professorName;
+    data['ew_option'] = ewOption;
     if (subDetails != null) {
       data['subdetails'] = subDetails!.map((v) => v.toJson()).toList();
     }

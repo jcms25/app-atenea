@@ -83,7 +83,11 @@ class ExamListScreenState extends State<ExamListScreen> {
             onLeadingIconClicked: () {
               studentParentTeacherController?.setIsLoading(isLoading: false);
               studentParentTeacherController?.setListOfExams(listOfExams: []);
-              Get.back();
+              if (Get.previousRoute.isEmpty || Get.previousRoute == '/') {
+                studentParentTeacherController?.setCurrentBottomIndexSelected(index: 3);
+              } else {
+                Get.back();
+              }
             },
             actionIcons: [
               Visibility(

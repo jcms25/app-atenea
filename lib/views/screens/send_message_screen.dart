@@ -19,8 +19,10 @@ import '../../models/teacher/parent_list_model.dart';
 class MessageSendScreen extends StatefulWidget {
   final RoleType roleType;
   final String? teacherId;
+  final String? initialSubject;
+  final String? replyId;
 
-  const MessageSendScreen({super.key, this.teacherId, required this.roleType});
+  const MessageSendScreen({super.key, this.teacherId, required this.roleType, this.initialSubject, this.replyId});
 
   @override
   State<StatefulWidget> createState() {
@@ -39,32 +41,35 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      studentParentTeacherController =
-          Provider.of<StudentParentTeacherController>(context, listen: false);
-      if (widget.roleType != RoleType.teacher) {
-        studentParentTeacherController?.getListOfTeacherForMessageSend(
-            teacherId: widget.teacherId);
-      } else {
-        if (studentParentTeacherController
-                ?.listOfClassAssignToTeacher.isNotEmpty ??
-            false) {
-          studentParentTeacherController?.setCurrentSelectedClass(
-              teacherClass: studentParentTeacherController
-                  ?.listOfClassAssignToTeacher[0]);
-          if (studentParentTeacherController?.listOfStudents.isEmpty ?? true) {
-            studentParentTeacherController?.getListOfStudents(
-                classId: studentParentTeacherController
-                        ?.listOfClassAssignToTeacher[0].cid ??
-                    "",
-                roleType: RoleType.teacher);
-            studentParentTeacherController?.getListOfParents(
-                classId: studentParentTeacherController
-                        ?.listOfClassAssignToTeacher[0].cid ??
-                    "");
+          studentParentTeacherController =
+              Provider.of<StudentParentTeacherController>(context, listen: false);
+          if (widget.roleType != RoleType.teacher) {
+            studentParentTeacherController?.getListOfTeacherForMessageSend(
+                teacherId: widget.teacherId);
+            if (widget.initialSubject != null) {
+              _subjectController.text = widget.initialSubject!;
+            }
+          } else {
+            if (studentParentTeacherController
+                    ?.listOfClassAssignToTeacher.isNotEmpty ??
+                false) {
+              studentParentTeacherController?.setCurrentSelectedClass(
+                  teacherClass: studentParentTeacherController
+                      ?.listOfClassAssignToTeacher[0]);
+              if (studentParentTeacherController?.listOfStudents.isEmpty ?? true) {
+                studentParentTeacherController?.getListOfStudents(
+                    classId: studentParentTeacherController
+                            ?.listOfClassAssignToTeacher[0].cid ??
+                        "",
+                    roleType: RoleType.teacher);
+                studentParentTeacherController?.getListOfParents(
+                    classId: studentParentTeacherController
+                            ?.listOfClassAssignToTeacher[0].cid ??
+                        "");
+              }
+            }
           }
-        }
-      }
-    });
+        });
   }
 
   @override
@@ -624,9 +629,6 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                           //   //   Get.back();
                                           //   // }
                                           // });
-
-
-
                                           await studentParentTeacherController.sendMessage(
                                               messageSubject: _subjectController.text,
                                               description: _messageController.text,
@@ -635,10 +637,19 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                        ? studentParentTeacherController.currentSelectedClass?.cid ?? "" : null,
                                               receiverId: studentParentTeacherController.currentLoggedInUserRole == RoleType.parent || studentParentTeacherController.currentLoggedInUserRole == RoleType.student ? studentParentTeacherController.currentSelectedTeacherForMessageSend?.wpUsrId : studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.student ? studentParentTeacherController.currentSelectedStudentForSendMessage?.wpUsrId : studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.parent ? studentParentTeacherController.currentSelectedParentForSendMessage?.parentWpUsrId : null,
                                               toAllParent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllParent ? "1" : null,
-                                              toAllStudent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ? "1" : null
-                                          ).then((res){
+                                              toAllStudent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ? "1" : null,
+                                              groupName: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllParent
+                                                  ? "Clase ${studentParentTeacherController.currentSelectedClass?.cName ?? ""} Padres"
+                                                  : studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent
+                                                  ? "Clase ${studentParentTeacherController.currentSelectedClass?.cName ?? ""} Alumnos"
+                                                  : null,
+                                              replyId: widget.replyId,                                        
+                                          ).then((res){                                            
                                             if(res['status']){
+                                              studentParentTeacherController.setCurrentSelectedMessageType(
+                                                  currentSelectedMessageListType: AppConstants.messageType2);
                                               studentParentTeacherController.getMessageList(showLoader: true);
+                                              Get.back();
                                               Get.back();
                                             }
                                           });

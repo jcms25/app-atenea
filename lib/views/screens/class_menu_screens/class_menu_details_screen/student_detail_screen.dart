@@ -401,26 +401,18 @@ class ParentWidget extends StatelessWidget {
       children: [
         Text(
           parentData.pGender == "Male"
-              // ? "parentsdetail".tr
-              // : "parentsdetail2".tr,
-            ? "Datalles del Padre" :
-            "Datalles de la Madre",
-          // parentData.pGender == "Male" ?
-          //       "Nombre de la Padre"
-          //     : "Nombre de la Madre",
-          style: AppTextStyle.getOutfit600(
-              textSize: 18, textColor: AppColors.secondary),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        CustomStudentDetailRow(
-            label: parentData.pGender == "Male"
-                ?
-                // "pname".tr
-                "Nombre del Padre"
-                : "Nombre de la Madre",
-            // "pname2".tr,
+              ? "Detalles del Padre"
+              : "Detalles de la Madre",
+              style: AppTextStyle.getOutfit600(
+                  textSize: 18, textColor: AppColors.secondary),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CustomStudentDetailRow(
+                label: parentData.pGender == "Male"
+                    ? "Nombre del Padre"
+                    : "Nombre de la Madre",
             value: "${parentData.pFname}\t${parentData.pLname}"),
         const SizedBox(
           height: 10,

@@ -39,7 +39,7 @@ class MessageDetailItem {
   String? image;
   String? recevierName;
   String? recevierImage;
-  List<String>? subMessage;
+  List<MessageDetailItem>? subMessage;
 
   MessageDetailItem(
       {this.mid,
@@ -61,29 +61,30 @@ class MessageDetailItem {
         this.subMessage});
 
   MessageDetailItem.fromJson(Map<String, dynamic> json) {
-    mid = json['mid'];
-    sId = json['s_id'];
-    rId = json['r_id'];
+    mid = json['mid']?.toString();
+    sId = json['s_id']?.toString();
+    rId = json['r_id']?.toString();
     subject = json['subject'];
     msg = json['msg'];
-    replayId = json['replay_id'];
-    mainMId = json['main_m_id'];
-    delStat = json['del_stat'];
-    sRead = json['s_read'];
-    rRead = json['r_read'];
+    replayId = json['replay_id']?.toString();
+    mainMId = json['main_m_id']?.toString();
+    delStat = json['del_stat']?.toString();
+    sRead = json['s_read']?.toString();
+    rRead = json['r_read']?.toString();
     mDate = json['m_date'];
-    attachments = json['attachments'];
+    attachments = json['attachments']?.toString();
     name = json['name'];
     image = json['image'];
     recevierName = json['recevier_name'];
     recevierImage = json['recevier_image'];
-    if (json['sub_message'] != null) {
-      subMessage = <String>[];
-      json['sub_message'].forEach((v) {
-        if(v.runtimeType != String){
-          subMessage!.add("");
-        }
-      });
+    if (json['sub_message'] != null && json['sub_message'] is List) {
+      subMessage = (json['sub_message'] as List)
+          .map((v) => MessageDetailItem.fromJson(v))
+          .toList();
+    } else if (json['submessage'] != null && json['submessage'] is List) {
+      subMessage = (json['submessage'] as List)
+          .map((v) => MessageDetailItem.fromJson(v))
+          .toList();
     }
   }
 
@@ -106,7 +107,7 @@ class MessageDetailItem {
     data['recevier_name'] = recevierName;
     data['recevier_image'] = recevierImage;
     if (subMessage != null) {
-      data['sub_message'] = subMessage!.map((v) => v).toList();
+      data['sub_message'] = subMessage!.map((v) => v.toJson()).toList();
     }
     return data;
   }

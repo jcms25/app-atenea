@@ -87,7 +87,9 @@ class CircularData extends State<CircularDetail> {
                         children: [
                           Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
+                            constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height,
+                            ),
                             margin: const EdgeInsets.only(top: 50, bottom: 30),
                             decoration: const BoxDecoration(
                                 color: Colors.white,
@@ -104,19 +106,13 @@ class CircularData extends State<CircularDetail> {
                                   const SizedBox(height: 10,),
                                   Text(date,style: CustomStyle.textValue,),
                                   const SizedBox(height: 30,),
-                                  imagePath.isEmpty ? SizedBox(
-                                    height: 200,
-                                    width: MediaQuery.of(context).size.width,) :
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                  //   decoration: BoxDecoration(
-                                  //   // image: DecorationImage(
-                                  //   //   image: NetworkImage(imagepath),
-                                  //   //   fit: BoxFit.fill
-                                  //   // )
-                                  // ),
-                                  //   child: AspectRatio(aspectRatio: 16/9, child: ,),
-                                    child: Image.network(imagePath,fit: BoxFit.fill,),
+                                  imagePath.isEmpty ? const SizedBox(height: 10) :
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: AspectRatio(
+                                      aspectRatio: 2 / 1,
+                                      child: Image.network(imagePath, fit: BoxFit.contain),
+                                    ),
                                   ),
                                   const SizedBox(height: 20,),
                                   HtmlWidget(description,onTapUrl: (url) async{

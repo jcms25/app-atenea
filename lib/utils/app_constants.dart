@@ -383,10 +383,11 @@ class AppConstants {
 
   //show custom toast message
   static void showCustomToast({required bool status, required String message}) {
-    Fluttertoast.showToast(
-        backgroundColor: status ? AppColors.green : AppColors.red,
-        textColor: AppColors.white,
-        msg: message);
+      Fluttertoast.showToast(
+          backgroundColor: status ? AppColors.green : AppColors.red,
+          textColor: AppColors.white,
+          toastLength: Toast.LENGTH_LONG,
+          msg: message);
   }
 
   //Message Type
@@ -453,7 +454,7 @@ class AppConstants {
 
   //Keys
   static final GlobalKey<ScaffoldState> _mainScreenKey =
-      GlobalKey<ScaffoldState>();
+    GlobalKey<ScaffoldState>();
 
   static GlobalKey<ScaffoldState> get mainScreenKey => _mainScreenKey;
 

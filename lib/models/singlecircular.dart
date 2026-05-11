@@ -40,6 +40,8 @@ class Data {
     this.date,
     this.description,
     this.excerpt,
+    this.adjuntoUrl,
+    this.adjuntoNombre,
   });
 
   String? id;
@@ -48,6 +50,8 @@ class Data {
   String? date;
   String? description;
   String? excerpt;
+  String? adjuntoUrl;
+  String? adjuntoNombre;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["id"] ?? "",
@@ -56,6 +60,8 @@ class Data {
     date: json["date"],
     description: json["description"] ?? "",
     excerpt: json["excerpt"] ?? "",
+    adjuntoUrl: json["adjunto_url"] ?? "",
+    adjuntoNombre: json["adjunto_nombre"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -65,5 +71,7 @@ class Data {
     "date": date,
     "description": description,
     "excerpt": excerpt,
+    "adjunto_url": adjuntoUrl,
+    "adjunto_nombre": adjuntoNombre,
   };
 }

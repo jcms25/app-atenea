@@ -70,14 +70,13 @@ class ChildScreenState extends State<ChildScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AssistantChildrenScreen(data.cid)));
+                            builder: (context) => AssistantChildrenScreen(data.cid, className: data.cName)));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: 100,
                     margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        // color: AppColors.primary.withOpacity(0.05),
                         color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(15)),
                     child: Row(
@@ -109,7 +108,6 @@ class ChildScreenState extends State<ChildScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              // AppStrings.ass_classes,
                               'as1'.tr,
                               style: const TextStyle(
                                   fontSize: 20,

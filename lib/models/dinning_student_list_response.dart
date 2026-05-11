@@ -46,6 +46,7 @@ class DinningStudentItem {
   String? day;
   String? month;
   String? color;
+  String? role;
 
   DinningStudentItem(
       {this.sid,
@@ -57,7 +58,8 @@ class DinningStudentItem {
         this.diningProfile,
         this.day,
         this.month,
-        this.color});
+        this.color,
+        this.role});
 
   DinningStudentItem.fromJson(Map<String, dynamic> json) {
     sid = json['sid'];
@@ -70,6 +72,7 @@ class DinningStudentItem {
     day = json['day'];
     month = json['month'];
     color = json['color'];
+    role = json['role'];
   }
 
   Map<String, dynamic> toJson() {
@@ -84,6 +87,7 @@ class DinningStudentItem {
     data['day'] = day;
     data['month'] = month;
     data['color'] = color;
+    data['role'] = role;
     return data;
   }
 }

@@ -19,23 +19,22 @@ class ChildDetail extends StatefulWidget {
 }
 
 class ChildDetailScreen extends State<ChildDetail> {
-  //
-  // TextStyle txtLabelStyle = TextStyle(
-  //     color: AppColors.secondary.withOpacity(0.75),
-  //     fontFamily: 'Outfit',
-  //     fontWeight: FontWeight.w400,
-  //     fontSize: 18);
-  // TextStyle txtValueStyle = const TextStyle(
-  //       color: AppColors.secondary,
-  //     fontFamily: 'Outfit',
-  //     fontWeight: FontWeight.w500,
-  //     fontSize: 18);
-
   String imagePath = "";
 
   @override
   void initState() {
     super.initState();
+  }
+
+  // Formatea "Apellidos Nombre" → "Apellidos, Nombre"
+  String _formatName(String fullName) {
+    final parts = fullName.trim().split(' ');
+    if (parts.length < 2) return fullName;
+    // El nombre viene como "Apellido1 Apellido2 Nombre" o "Apellido Nombre"
+    // Buscamos la última palabra como nombre y el resto como apellidos
+    final firstName = parts.last;
+    final lastNames = parts.sublist(0, parts.length - 1).join(' ');
+    return '$lastNames, $firstName';
   }
 
   @override
@@ -46,11 +45,6 @@ class ChildDetailScreen extends State<ChildDetail> {
         backgroundColor: AppColors.primary,
         title: Text(
           'asChildDet'.tr,
-          // style: const TextStyle(
-          //   fontFamily: "Outfit",
-          //   fontSize: 19,
-          //   fontWeight: FontWeight.w500,
-          // ),
           style: AppTextStyle.getOutfit500(textSize: 19, textColor: AppColors.white),
         ),
       ),
@@ -95,91 +89,42 @@ class ChildDetailScreen extends State<ChildDetail> {
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          widget.tempChildModel.name,
+                          _formatName(widget.tempChildModel.name),
                           textAlign: TextAlign.center,
-                          // style: const TextStyle(
-                          //     fontFamily: 'Outfit',
-                          //     fontWeight: FontWeight.w600,
-                          //     fontSize: 32,
-                          //     color: AppColors.secondary),
                           style: AppTextStyle.getOutfit600(textSize: 32, textColor: AppColors.secondary),
                         ),
                       ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      LabelValueLayout(label: "address".tr, value: widget.tempChildModel.address),
-                      const SizedBox(height: 10,),
-                      // LabelValueLayout(label: "workingHours".tr, value: "12-00"),
-                      // const SizedBox(height: 10,),
-                      Text("parent".tr,
-                        // style: TextStyle(
-                        //   // color: AppColors.secondary.withOpacity(0.75),
-                        //   color: AppColors.secondary.withValues(alpha: 0.75),
-                        //   fontFamily: 'Outfit',
-                        //   fontWeight: FontWeight.w400,
-                        //   fontSize: 18),
+                      const SizedBox(height: 15),
+                      LabelValueLayout(label: 'singalClass'.tr, value: widget.tempChildModel.className),
+                      const SizedBox(height: 10),
+                      LabelValueLayout(label: 'address'.tr, value: widget.tempChildModel.address),
+                      const SizedBox(height: 10),
+                      Text(
+                        'parents'.tr,
                         style: AppTextStyle.getOutfit400(textSize: 18, textColor: AppColors.secondary.withValues(alpha: 0.75)),
                       ),
-                      const SizedBox(height: 10,),
-                      // Row(
-                      //   children: [
-                      //     Expanded(child:
-                      //     Container(
-                      //       height: 60,
-                      //       padding: const EdgeInsets.symmetric(horizontal: 15),
-                      //       alignment: Alignment.centerLeft,
-                      //       decoration: BoxDecoration(
-                      //         color: AppColors.secondary.withOpacity(0.06),
-                      //         borderRadius: BorderRadius.circular(12),
-                      //       ),
-                      //       child: Text(
-                      //         "parent1",
-                      //         style: txtValueStyle,
-                      //       ),
-                      //     )),
-                      //     const SizedBox(width: 10,),
-                      //     Expanded(child:  Container(
-                      //       height: 60,
-                      //       padding: const EdgeInsets.symmetric(horizontal: 15),
-                      //       alignment: Alignment.centerLeft,
-                      //       decoration: BoxDecoration(
-                      //         color: AppColors.secondary.withOpacity(0.06),
-                      //         borderRadius: BorderRadius.circular(12),
-                      //       ),
-                      //       child: Text(
-                      //         "parent2",
-                      //         style: txtValueStyle,
-                      //       ),
-                      //     )),
-                      //   ],
-                      // ),
+                      const SizedBox(height: 10),
                       Row(
-                        children: widget.tempChildModel.parentsName.map((e){
-                          return  Expanded(
-                              child: Container(
-                                height: 60,
-                                padding: const EdgeInsets.symmetric(horizontal: 15),
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  // color: AppColors.secondary.withOpacity(0.06),
-                                  color: AppColors.secondary.withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                margin: const EdgeInsets.only(left: 5),
-                                child: AutoSizeText(
-                                  e.name,
-                                  style: AppTextStyle.getOutfit500(textSize: 18, textColor: AppColors.secondary),
-                                  // style: txtValueStyle,
-                                ),
+                        children: widget.tempChildModel.parentsName.map((e) {
+                          return Expanded(
+                            child: Container(
+                              height: 60,
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                color: AppColors.secondary.withValues(alpha: 0.06),
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              margin: const EdgeInsets.only(left: 5),
+                              child: AutoSizeText(
+                                e.name,
+                                style: AppTextStyle.getOutfit500(textSize: 18, textColor: AppColors.secondary),
+                              ),
+                            ),
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 10,),
-                      LabelValueLayout(label: "singalClass".tr, value: widget.tempChildModel.className),
-                      const SizedBox(height: 10,),
-
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -193,16 +138,13 @@ class ChildDetailScreen extends State<ChildDetail> {
                         color: AppColors.primary,
                         width: 3.0,
                         style: BorderStyle.solid),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(160)),
+                    borderRadius: const BorderRadius.all(Radius.circular(160)),
                     boxShadow: [
                       BoxShadow(
-                        // color: AppColors.primary.withOpacity(0.5),
                         color: AppColors.primary.withValues(alpha: 0.5),
                         spreadRadius: 0,
                         blurRadius: 25,
-                        offset: const Offset(
-                            0, 0), // changes position of shadow
+                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
@@ -210,7 +152,7 @@ class ChildDetailScreen extends State<ChildDetail> {
                     radius: 16.0,
                     backgroundImage: NetworkImage(widget.tempChildModel.imagePath),
                     backgroundColor: AppColors.primary,
-                    onBackgroundImageError: (e,s){},
+                    onBackgroundImageError: (e, s) {},
                   ),
                 ),
               ],

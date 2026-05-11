@@ -24,8 +24,8 @@ class MessageListModel {
   factory MessageListModel.fromJson(Map<String, dynamic> json) => MessageListModel(
     status: json["status"],
     message: json["message"],
-    sendList: List<MessageData>.from(json["sendList"].map((x) => MessageData.fromJson(x))),
-    receiveList: List<MessageData>.from(json["receiveList"].map((x) => MessageData.fromJson(x))),
+    sendList: List<MessageData>.from((json["sendList"] ?? []).map((x) => MessageData.fromJson(x))),
+    receiveList: List<MessageData>.from((json["receiveList"] ?? []).map((x) => MessageData.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -78,24 +78,24 @@ class MessageData {
   });
 
   factory MessageData.fromJson(Map<String, dynamic> json) => MessageData(
-    id: json["id"],
-    slotId: json["slot_id"],
-    sId: json["s_id"],
-    rId: json["r_id"],
-    subject: json["subject"],
-    msg: json["msg"],
-    replayId: json["replay_id"],
-    mainMId: json["main_m_id"],
-    delStat: json["del_stat"],
+    id: json["id"] ?? "",
+    slotId: json["slot_id"] ?? "",
+    sId: json["s_id"] ?? "",
+    rId: json["r_id"] ?? "",
+    subject: json["subject"] ?? "",
+    msg: json["msg"] ?? "",
+    replayId: json["replay_id"] ?? "",
+    mainMId: json["main_m_id"] ?? "",
+    delStat: json["del_stat"] ?? "",
     sRead: json["s_read"],
     rRead: json["r_read"],
-    mDate: DateTime.parse(json["m_date"]),
-    attachments: json["attachments"],
-    studentId: json["student_id"],
-    senderName: json["sender_name"],
-    recieverName: json["reciever_name"],
-    parentName: json["parent_name"],
-    studentName: json["student_name"],
+    mDate: DateTime.tryParse(json["m_date"] ?? "") ?? DateTime.now(),
+    attachments: json["attachments"] is String ? json["attachments"] : "",
+    studentId: json["student_id"] ?? "",
+    senderName: json["sender_name"] ?? "",
+    recieverName: json["reciever_name"] ?? "",
+    parentName: json["parent_name"] ?? "",
+    studentName: json["student_name"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {

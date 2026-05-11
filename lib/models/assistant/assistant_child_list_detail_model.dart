@@ -72,23 +72,23 @@ class ChildListDatum {
   List<ParentDatum> parentData;
 
   factory ChildListDatum.fromJson(Map<String, dynamic> json) => ChildListDatum(
-    sid: json["sid"],
-    wpUsrId: json["wp_usr_id"],
-    studentName: json["student_name"],
-    sRollno: json["s_rollno"],
-    sDob: json["s_dob"],
-    sGender: json["s_gender"]!,
-    sAddress: json["s_address"],
+    sid: json["sid"] ?? "",
+    wpUsrId: json["wp_usr_id"] ?? "",
+    studentName: json["student_name"] ?? "",
+    sRollno: json["s_rollno"] ?? "",
+    sDob: json["s_dob"] ?? "",
+    sGender: json["s_gender"] ?? "",
+    sAddress: json["s_address"] ?? "",
     sPaddress: json["s_paddress"],
-    sCountry: json["s_country"],
-    sZipcode: json["s_zipcode"],
-    sPhone: json["s_phone"],
-    classId: json["class_id"]!,
-    sCity: json["s_city"],
-    className: json["class_name"]!,
-    studEmail: json["stud_email"],
-    studImage: json["stud_image"],
-    parentData: List<ParentDatum>.from(json["ParentData"].map((x) => ParentDatum.fromJson(x))),
+    sCountry: json["s_country"] ?? "",
+    sZipcode: json["s_zipcode"] ?? "",
+    sPhone: json["s_phone"] ?? "",
+    classId: json["class_id"] ?? "",
+    sCity: json["s_city"] ?? "",
+    className: json["class_name"] ?? "",
+    studEmail: json["stud_email"] ?? "",
+    studImage: json["stud_image"] ?? "",
+    parentData: List<ParentDatum>.from((json["ParentData"] ?? []).map((x) => ParentDatum.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -133,13 +133,13 @@ class ParentDatum {
   String parentImage;
 
   factory ParentDatum.fromJson(Map<String, dynamic> json) => ParentDatum(
-    parentName: json["parent_name"],
-    stuWpUsrId: json["stu_wp_usr_id"],
-    parentWpUsrId: json["parent_wp_usr_id"],
-    pPhone: json["p_phone"],
-    sPaddress: json["s_paddress"],
-    pEmail: json["p_email"],
-    parentImage: json["parent_image"],
+    parentName: json["parent_name"] ?? "",
+    stuWpUsrId: json["stu_wp_usr_id"] ?? "",
+    parentWpUsrId: json["parent_wp_usr_id"] ?? "",
+    pPhone: json["p_phone"] ?? "",
+    sPaddress: json["s_paddress"] ?? "",
+    pEmail: json["p_email"] ?? "",
+    parentImage: json["parent_image"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -152,4 +152,3 @@ class ParentDatum {
     "parent_image": parentImage,
   };
 }
-

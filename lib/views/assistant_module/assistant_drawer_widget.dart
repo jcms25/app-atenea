@@ -7,6 +7,7 @@ import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_colors.dart';
@@ -23,92 +24,86 @@ class AssistantDrawerWidget extends StatelessWidget {
     return Drawer(
       child: Column(
         children: [
-      Container(
-      decoration: const BoxDecoration(
-      color: AppColors.primary,
-          borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(30),
-            bottomLeft: Radius.circular(30),
-          )),
-      padding: const EdgeInsets.all(15),
-      width: double.infinity,
-      child: Consumer<AssistantController>(
-        builder: (context, assistantController, child) {
-          String profileImage = assistantController.assistant?.userImage ?? "";
-          return GestureDetector(
-            onTap: () {
-              Get.to(() => EditProfileScreen(
-                roleType: RoleType.assistant,
-                assistantData: assistantController.assistant,
-                userdata: null,
-              ));
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 65,
-                  width: 65,
-                  child: profileImage.isEmpty
-                      ? const CircleAvatar(
-                    backgroundImage: AssetImage(AppImages.people),
-                  )
-                      : CircleAvatar(
-                    radius: 16.0,
-                    backgroundColor: AppColors.primary,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(65.0),
-                      child: Image.network(
-                        profileImage,
-                        fit: BoxFit.cover,
+          Container(
+            decoration: const BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
+                )),
+            padding: const EdgeInsets.all(15),
+            width: double.infinity,
+            child: Consumer<AssistantController>(
+              builder: (context, assistantController, child) {
+                String profileImage = assistantController.assistant?.userImage ?? "";
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(() => EditProfileScreen(
+                      roleType: RoleType.assistant,
+                      assistantData: assistantController.assistant,
+                      userdata: null,
+                    ));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
                         height: 65,
                         width: 65,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "hello".tr,
-                          style: AppTextStyle.getOutfit300(
-                              textSize: 16, textColor: AppColors.white),
+                        child: profileImage.isEmpty
+                            ? const CircleAvatar(
+                          backgroundImage: AssetImage(AppImages.people),
+                        )
+                            : CircleAvatar(
+                          radius: 16.0,
+                          backgroundColor: AppColors.primary,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(65.0),
+                            child: Image.network(
+                              profileImage,
+                              fit: BoxFit.cover,
+                              height: 65,
+                              width: 65,
+                            ),
+                          ),
                         ),
-                        AutoSizeText(
-                            maxLines: 1,
-                            assistantController.assistant?.displayName ?? "",
-                            style: AppTextStyle.getOutfit600(
-                                textSize: 20, textColor: AppColors.white))
-                      ],
-                    )),
-                // const Spacer(),
-                const SizedBox(
-                  width: 10,
-                ),
-                Image.asset(AppImages.whiteAppLogo, width: 50, height: 50)
-              ],
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "hello".tr,
+                                style: AppTextStyle.getOutfit300(
+                                    textSize: 16, textColor: AppColors.white),
+                              ),
+                              AutoSizeText(
+                                  maxLines: 1,
+                                  assistantController.assistant?.displayName ?? "",
+                                  style: AppTextStyle.getOutfit600(
+                                      textSize: 20, textColor: AppColors.white))
+                            ],
+                          )),
+                      const SizedBox(width: 10),
+                      Image.asset(AppImages.whiteAppLogo, width: 50, height: 50)
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
-    ),
-          const SizedBox(
-            height: 10,
           ),
-
-          // ...AppConstants.assistantDrawerAndBottomList.forEach((e){return AssistantDrawerItemWidget(optionName: e.optionName, optionId: e.optionId, currentSelectedIndex: 1);}).toList(),
-
-          ...AppConstants.assistantDrawerAndBottomList.map((e){
+          const SizedBox(height: 10),
+          ...AppConstants.assistantDrawerAndBottomList.map((e) {
             return Consumer<AssistantController>(
-              builder: (context,assistantController,child){
-                return AssistantDrawerItemWidget(optionName: e.optionName, optionId: e.optionId,
+              builder: (context, assistantController, child) {
+                return AssistantDrawerItemWidget(
+                  optionName: e.optionName,
+                  optionId: e.optionId,
                   svgIconImage: e.optionIcon,
-                  currentSelectedIndex: assistantController.currentBottomIndexSelected, assistantController: assistantController,);
+                  currentSelectedIndex: assistantController.currentBottomIndexSelected,
+                  assistantController: assistantController,
+                );
               },
             );
           }),
@@ -121,11 +116,27 @@ class AssistantDrawerWidget extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (context) {
-                      return LogOutDialogue(
-                          currentLoggedInUserRole: 0);
+                      return LogOutDialogue(currentLoggedInUserRole: 0);
                     });
-              })
-
+              }),
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              final version = snapshot.hasData ? 'v${snapshot.data!.version}' : '';
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  version,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey,
+                    fontFamily: 'Outfit',
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -144,26 +155,28 @@ class AssistantDrawerItemWidget extends StatelessWidget {
       required this.optionName,
       required this.optionId,
       required this.currentSelectedIndex,
-      this.svgIconImage, required this.assistantController});
-
+      this.svgIconImage,
+      required this.assistantController});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       selected: currentSelectedIndex == optionId,
       selectedTileColor: AppColors.primary,
-      leading:  SvgPicture.asset(
-
+      leading: SvgPicture.asset(
         svgIconImage ?? "",
         width: 25,
         height: 25,
-        colorFilter: ColorFilter.mode(currentSelectedIndex == optionId ? AppColors.white : AppColors.primary, BlendMode.srcIn),) ,
+        colorFilter: ColorFilter.mode(
+            currentSelectedIndex == optionId ? AppColors.white : AppColors.primary,
+            BlendMode.srcIn),
+      ),
       onTap: () {
-
-        if(optionId != 1){
+        if (optionId != 1) {
           Get.back();
-          assistantController.setCurrentBottomIndexSelected(currentBottomIndexSelected: optionId);
-        }else{
+          assistantController.setCurrentBottomIndexSelected(
+              currentBottomIndexSelected: optionId);
+        } else {
           Get.to(() => ChildScreen());
         }
       },

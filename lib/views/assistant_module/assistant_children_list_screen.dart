@@ -19,8 +19,9 @@ import '../../services/api_class.dart';
 
 class AssistantChildrenScreen extends StatefulWidget {
   final String classId;
+  final String className;
 
-  const AssistantChildrenScreen(this.classId, {super.key});
+  const AssistantChildrenScreen(this.classId, {super.key, this.className = ""});
 
   @override
   State<StatefulWidget> createState() {
@@ -34,6 +35,12 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
   );
   List<ChildListDatum> childList = [];
   bool isLoading = false;
+
+  String _formatName(String fullName) {
+    final parts = fullName.trim().split(' ');
+    if (parts.length < 2) return fullName;
+    return '${parts.sublist(0, parts.length - 1).join(' ')}, ${parts.last}';
+  }
 
   @override
   void initState() {
@@ -55,7 +62,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
           child: const Icon(Icons.arrow_back),
         ),
         title: Text(
-          'asChild'.tr,
+          widget.className.isNotEmpty ? '${'asChild'.tr} ${widget.className}' : 'asChild'.tr,
           style: const TextStyle(
               fontFamily: "Outfit", fontWeight: FontWeight.w500, fontSize: 20),
         ),
@@ -85,7 +92,6 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                 return Padding(padding: const EdgeInsets.symmetric(horizontal: 10),child: Container(
                   height: 100,
                   decoration: BoxDecoration(
-                      // color: AppColors.primary.withOpacity(0.05),
                       color: AppColors.primary.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(15)),
                   child: Row(
@@ -122,7 +128,7 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                                           ChildDetail(childTempData)));
                             },
                             child: Text(
-                              childList[index].studentName,
+                              _formatName(childList[index].studentName),
                               style: textStyle.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.secondary,
@@ -150,12 +156,9 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
                                     },
                                     child: AutoSizeText(
                                       e.parentName.length > 6 ? "${e.parentName.substring(0,10)}..." : e.parentName,
-                                      // e.parentName,
                                       style: textStyle.copyWith(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
-                                          // color: AppColors.secondary
-                                          //     .withOpacity(0.7)
                                           color: AppColors.secondary.withValues(alpha: 0.7)
                                       ),
                                     ),
@@ -226,9 +229,19 @@ class AssistantChildrenScreenState extends State<AssistantChildrenScreen> {
     String token = AppSharedPreferences.getBasicAthToken() ?? "";
     dynamic tempChildList = await ApiClass().getAsSlotChildList(token,widget.classId,assistant?.cookie ?? "");
     if(tempChildList['status']){
-        ChildListDetailModel childListDetailModel = ChildListDetailModel.fromJson(tempChildList);
-        childListDetailModel.data.sort((a,b) => a.studentName.compareTo(b.studentName));
-        setState(() {
+      ChildListDetailModel childListDetailModel = ChildListDetailModel.fromJson(tempChildList);
+        childListDetailModel.data.sort((a, b) {
+          String normalize(String s) => s
+              .toLowerCase()
+              .replaceAll(RegExp(r'[áàäâã]'), 'a')
+              .replaceAll(RegExp(r'[éèëê]'), 'e')
+              .replaceAll(RegExp(r'[íìïî]'), 'i')
+              .replaceAll(RegExp(r'[óòöôõ]'), 'o')
+              .replaceAll(RegExp(r'[úùüû]'), 'u')
+              .replaceAll('ñ', 'nz');
+          return normalize(a.studentName).compareTo(normalize(b.studentName));
+        });
+      setState(() {
         childList = childListDetailModel.data;
         isLoading = false;
       });

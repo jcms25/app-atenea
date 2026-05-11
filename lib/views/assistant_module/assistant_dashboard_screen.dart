@@ -26,7 +26,6 @@ class AssistantDashboard extends StatefulWidget {
 class AssistantDashboardChild extends State<AssistantDashboard> {
   AssistantController? assistantController;
 
-
   @override
   void initState() {
     super.initState();
@@ -35,6 +34,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
       assistantController?.getAssistantDashboardData();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -48,7 +48,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
                   color: AppColors.primary
               ),
-              child:  Consumer<AssistantController>(
+              child: Consumer<AssistantController>(
                 builder: (context, assistantController, child) {
                   String profileImage = assistantController.assistant?.userImage ?? "";
                   return GestureDetector(
@@ -85,9 +85,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20,),
                         Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +117,6 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               height: 100,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
-                  // color: AppColors.dashBack.withOpacity(0.06)
                   color: AppColors.dashBack.withValues(alpha: 0.06)
               ),
               child: Text(
@@ -128,10 +125,12 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               ),
             ),
             const SizedBox(height: 10,),
+
+            // Banner Clases (índice 1)
             GestureDetector(
-              onTap: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildScreen()));
-                Get.to(() => ChildScreen());
+              onTap: () {
+                Provider.of<AssistantController>(context, listen: false)
+                    .setCurrentBottomIndexSelected(currentBottomIndexSelected: 1);
               },
               child: Container(
                 height: 100,
@@ -148,57 +147,32 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                         width: 60,
                         decoration: const BoxDecoration(
                           color: AppColors.blue,
-                          borderRadius:
-                          BorderRadius.only(
-                              topRight: Radius
-                                  .circular(160),
-                              bottomRight:
-                              Radius.circular(
-                                  160),
-                              bottomLeft:
-                              Radius.circular(
-                                  50),
-                              topLeft:
-                              Radius.circular(
-                                  50)),
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(160),
+                              bottomRight: Radius.circular(160),
+                              bottomLeft: Radius.circular(50),
+                              topLeft: Radius.circular(50)),
                         ),
                         child: Padding(
-                          padding:
-                          const EdgeInsets.only(
-                              top: 20,
-                              right: 20,
-                              bottom: 20,
-                              left: 5),
-                          child: SvgPicture.asset(
-                            AppImages.cardImg,
-                          ),
+                          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 20, left: 5),
+                          child: SvgPicture.asset(AppImages.cardImg),
                         )),
                     Padding(
-                        padding:
-                        const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               'asClassTitle'.tr,
                               softWrap: true,
-                              style: CustomStyle
-                                  .textValue
-                                  .copyWith(
-                                  color: AppColors
-                                      .blue),
+                              style: CustomStyle.textValue.copyWith(color: AppColors.blue),
                             ),
                             Consumer<AssistantController>(
-                              builder: (context,assistantController,child){
+                              builder: (context, assistantController, child) {
                                 return Text(
                                   assistantController.assistantDashboardModel?.count.classCount ?? "",
-                                  style: CustomStyle
-                                      .cardText
-                                      .copyWith(
-                                      color: AppColors
-                                          .blue),
+                                  style: CustomStyle.cardText.copyWith(color: AppColors.blue),
                                 );
                               },
                             )
@@ -209,159 +183,128 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
               ),
             ),
             const SizedBox(height: 10,),
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: AppColors.greenLight,
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      height: 100,
-                      width: 60,
-                      decoration: const BoxDecoration(
-                        color: AppColors.green,
-                        borderRadius:
-                        BorderRadius.only(
-                            topRight: Radius
-                                .circular(160),
-                            bottomRight:
-                            Radius.circular(
-                                160),
-                            bottomLeft:
-                            Radius.circular(
-                                50),
-                            topLeft:
-                            Radius.circular(
-                                50)),
-                      ),
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.only(
-                            top: 20,
-                            right: 20,
-                            bottom: 20,
-                            left: 5),
-                        child: SvgPicture.asset(
-                          AppImages.cardImg,
+
+            // Banner Comunicaciones (índice 2)
+            GestureDetector(
+              onTap: () {
+                Provider.of<AssistantController>(context, listen: false)
+                    .setCurrentBottomIndexSelected(currentBottomIndexSelected: 2);
+              },
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: AppColors.greenLight,
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        height: 100,
+                        width: 60,
+                        decoration: const BoxDecoration(
+                          color: AppColors.green,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(160),
+                              bottomRight: Radius.circular(160),
+                              bottomLeft: Radius.circular(50),
+                              topLeft: Radius.circular(50)),
                         ),
-                      )),
-                  Padding(
-                      padding:
-                      const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "option1".tr,
-                            softWrap: true,
-                            style: CustomStyle
-                                .textValue
-                                .copyWith(
-                                color: AppColors
-                                    .green),
-                          ),
-                          Consumer<AssistantController>(
-                            builder: (context,assistantController,child){
-                              return Text(
-                                assistantController.assistantDashboardModel != null ? "${assistantController.assistantDashboardModel?.count.commonMessageCount}" : "",
-                                style: CustomStyle
-                                    .cardText
-                                    .copyWith(
-                                    color: AppColors
-                                        .green),
-                              );
-                            },
-                          )
-                        ],
-                      ))
-                ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 20, left: 5),
+                          child: SvgPicture.asset(AppImages.cardImg),
+                        )),
+                    Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "option1".tr,
+                              softWrap: true,
+                              style: CustomStyle.textValue.copyWith(color: AppColors.green),
+                            ),
+                            Consumer<AssistantController>(
+                              builder: (context, assistantController, child) {
+                                return Text(
+                                  assistantController.assistantDashboardModel != null
+                                      ? "${assistantController.assistantDashboardModel?.count.commonMessageCount}"
+                                      : "",
+                                  style: CustomStyle.cardText.copyWith(color: AppColors.green),
+                                );
+                              },
+                            )
+                          ],
+                        ))
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 10,),
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                // color: Colors.orange.withOpacity(0.10),
-                color: AppColors.orange.withValues(alpha: 0.10)
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      height: 100,
-                      width: 60,
-                      decoration: const BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius:
-                        BorderRadius.only(
-                            topRight: Radius
-                                .circular(160),
-                            bottomRight:
-                            Radius.circular(
-                                160),
-                            bottomLeft:
-                            Radius.circular(
-                                50),
-                            topLeft:
-                            Radius.circular(
-                                50)),
-                      ),
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.only(
-                            top: 20,
-                            right: 20,
-                            bottom: 20,
-                            left: 5),
-                        child: SvgPicture.asset(
-                          AppImages.cardImg,
+
+            // Banner Informes (índice 3)
+            GestureDetector(
+              onTap: () {
+                Provider.of<AssistantController>(context, listen: false)
+                    .setCurrentBottomIndexSelected(currentBottomIndexSelected: 3);
+              },
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: AppColors.orange.withValues(alpha: 0.10),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        height: 100,
+                        width: 60,
+                        decoration: const BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(160),
+                              bottomRight: Radius.circular(160),
+                              bottomLeft: Radius.circular(50),
+                              topLeft: Radius.circular(50)),
                         ),
-                      )),
-                  Padding(
-                      padding:
-                      const EdgeInsets.only(left: 10,top: 10,bottom: 10),
-                      child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "option2".tr,
-                            softWrap: true,
-                            style: CustomStyle
-                                .textValue
-                                .copyWith(
-                                color: AppColors
-                                    .orange),
-                          ),
-                         Consumer<AssistantController>(
-                           builder: (context,assistantController,child){
-                             return  Text(
-                               assistantController.assistantDashboardModel != null ? "${assistantController.assistantDashboardModel?.count.reportCount}" : "",
-                               style: CustomStyle
-                                   .cardText
-                                   .copyWith(
-                                   color: AppColors
-                                       .orange),
-                             );
-                           },
-                         )
-                        ],
-                      ))
-                ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 20, left: 5),
+                          child: SvgPicture.asset(AppImages.cardImg),
+                        )),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "option2".tr,
+                              softWrap: true,
+                              style: CustomStyle.textValue.copyWith(color: AppColors.orange),
+                            ),
+                            Consumer<AssistantController>(
+                              builder: (context, assistantController, child) {
+                                return Text(
+                                  assistantController.assistantDashboardModel != null
+                                      ? "${assistantController.assistantDashboardModel?.count.reportCount}"
+                                      : "",
+                                  style: CustomStyle.cardText.copyWith(color: AppColors.orange),
+                                );
+                              },
+                            )
+                          ],
+                        ))
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
         Consumer<AssistantController>(
-          builder: (context,assistantController,child){
+          builder: (context, assistantController, child) {
             return Visibility(
                 visible: assistantController.isLoading,
                 child: LoadingLayout());
@@ -370,5 +313,4 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
       ],
     );
   }
-
 }

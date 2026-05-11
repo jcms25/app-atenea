@@ -271,6 +271,7 @@ class WorldLanguage extends Translations {
           'viewall': 'Ver todo',
           'message': 'Comunicaciones',
           'parent': 'Padre',
+          'parents': 'Padres',
           'email': 'Email',
           'education': 'Educacion',
           'profession': 'Profesion',

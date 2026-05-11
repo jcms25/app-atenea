@@ -2168,7 +2168,7 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
     }
   }
 
-  //selected day
+//selected day
   String? currentSelectedDinningDay;
 
   void setCurrentSelectedDinningDay({required String? selectedDinningDay}) {
@@ -2185,6 +2185,14 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
       setCurrentSelectedDinningDay(selectedDinningDay: null);
       getDaysOfMonthFromDinningTable(selectedMonth: dinningMonth.id);
     }
+    notifyListeners();
+  }
+
+  // Selected dining date
+  DateTime selectedDinningDate = DateTime.now();
+
+  void setSelectedDinningDate({required DateTime date}) {
+    selectedDinningDate = date;
     notifyListeners();
   }
 
@@ -2270,10 +2278,14 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
 
 //get dinning student list
   Future<void> getDinningStudentList(
-      {required String classId, required int month, required String day}) async {
+      {required String classId, required DateTime date}) async {
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String day = date.day.toString().padLeft(2, '0');
+      String month = date.month.toString().padLeft(2, '0');
+      String year = date.year.toString();
+      String diningDate = "$day/$month/$year";
       await Api.httpRequest(
               requestType: RequestType.get,
               header: {
@@ -2283,7 +2295,7 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
                 'Cookie': userdata?.cookies ?? ""
               },
               endPoint:
-                  "${Api.dinningStudentListEndPoint}?class_id=$classId&month=$month&day=$day&current_role=${currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher"}")
+                  "${Api.dinningStudentListEndPoint}?class_id=$classId&dining_date=$diningDate&current_role=${currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher"}")
           .then((response) {
         if (response['status']) {
           DinningStudentListResponse dinningStudentListResponse =
@@ -2313,59 +2325,82 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
   }
 
 //add edit dinning at teacher side
-  Future<void> addEditDinningStatus(
-      {required int monthNumber, required String day}) async {
-    try {
-      setIsLoading(isLoading: true);
-      Map<String, dynamic> bodyData = {"Month": "$monthNumber", "Day": day};
+  Future<void> addEditDinningStatus() async {
+  try {
+    setIsLoading(isLoading: true);
+    
+    // Construir dining_date en formato dd/mm/yyyy
+    String day = selectedDinningDate.day.toString().padLeft(2, '0');
+    String month = selectedDinningDate.month.toString().padLeft(2, '0');
+    String year = selectedDinningDate.year.toString();
+    String diningDate = "$day/$month/$year";
+    
+    String currentRole = currentLoggedInUserRole == RoleType.parent ? "parent" : "teacher";
+    Map<String, dynamic> bodyData = {"dining_date": diningDate, "current_role": currentRole};
 
-      List<int> listOfStatus = mapOfStatusOfStudentDinning.values.toList();
-      for (int i = 0; i < listOfStatus.length; i++) {
-        bodyData["atten[$i]"] = "${listOfStatus[i]}";
-      }
-
-      List<String> listOfStudentId = mapOfStatusOfStudentDinning.keys.toList();
-      for (int i = 0; i < listOfStatus.length; i++) {
-        bodyData["student_id[$i]"] = listOfStudentId[i];
-      }
-
-      //all class id  of student
-      for (int i = 0; i < dinningStudentList.length; i++) {
-        bodyData["class_id[$i]"] = dinningStudentList[i].wpUsrId ?? "";
-      }
-
-      String token = AppSharedPreferences.getBasicAthToken() ?? "";
-      await Api.httpRequest(
-              requestType: RequestType.post,
-              endPoint: Api.addEditDinningTeacherSide,
-              header: {
-                'Content-Type':
-                    'application/x-www-form-urlencoded; charset=UTF-8',
-                'Authorization': "Basic $token",
-                'Cookie': userdata?.cookies ?? ""
-              },
-              body: bodyData)
-          .then((response) async {
-        AppConstants.showCustomToast(
-            status: response['status'],
-            message: response['Message'] ?? response['message'] ?? "");
-        setMapOfStatusOfStudentDinning(mapOfStatusOfStudentDinning: {});
-        if (response['status']) {
-          setDinningStudentList(dinningStudentList: []);
-          await getDinningStudentList(
-              classId: currentLoggedInUserRole == RoleType.parent
-                  ? ""
-                  : currentSelectedClass?.cid ?? "",
-              month: monthNumber,
-              day: day);
-          setIsLoading(isLoading: false);
-        }
-      });
-    } catch (exception) {
-      setIsLoading(isLoading: false);
-      AppConstants.showCustomToast(status: false, message: "$exception");
+    List<int> listOfStatus = mapOfStatusOfStudentDinning.values.toList();
+    for (int i = 0; i < listOfStatus.length; i++) {
+      bodyData["atten[$i]"] = "${listOfStatus[i]}";
     }
+
+    List<String> listOfStudentId = mapOfStatusOfStudentDinning.keys.toList();
+    for (int i = 0; i < listOfStudentId.length; i++) {
+      bodyData["student_id[$i]"] = listOfStudentId[i];
+    }
+
+    // class_id real del alumno
+    for (int i = 0; i < dinningStudentList.length; i++) {
+      bodyData["class_id[$i]"] = dinningStudentList[i].classId ?? "";
+    }
+
+    String token = AppSharedPreferences.getBasicAthToken() ?? "";
+    await Api.httpRequest(
+            requestType: RequestType.post,
+            endPoint: Api.addEditDinningTeacherSide,
+            header: {
+              'Content-Type':
+                  'application/x-www-form-urlencoded; charset=UTF-8',
+              'Authorization': "Basic $token",
+              'Cookie': userdata?.cookies ?? ""
+            },
+            body: bodyData)
+            .then((response) async {
+                AppConstants.showCustomToast(
+                    status: response['status'],
+                    message: response['Message'] ?? response['message'] ?? "");
+                setMapOfStatusOfStudentDinning(mapOfStatusOfStudentDinning: {});
+                if (response['status']) {
+                    // Mostrar avisos de registros bloqueados
+                    List<dynamic> blocked = response['blocked'] ?? [];
+                    if (blocked.isNotEmpty) {
+                        String avisos = blocked.map((b) => "• La asistencia de ${b['student_name']} fue notificada por ${b['sent_by']} y no puedes editarla").join("\n");
+                        Get.dialog(
+                            AlertDialog(
+                                title: Text("Registros no modificados"),
+                                content: Text(avisos),
+                                actions: [
+                                    TextButton(
+                                        onPressed: () => Get.back(),
+                                        child: Text("Entendido"),
+                                    )
+                                ],
+                            )
+                        );
+                    }
+                    setDinningStudentList(dinningStudentList: []);
+                    await getDinningStudentList(
+                        classId: currentLoggedInUserRole == RoleType.parent
+                            ? ""
+                            : currentSelectedClass?.cid ?? "",
+                        date: selectedDinningDate);
+                    setIsLoading(isLoading: false);
+                }
+            });
+  } catch (exception) {
+    setIsLoading(isLoading: false);
+    AppConstants.showCustomToast(status: false, message: "$exception");
   }
+}
 
  //teacher's time table screen(Mi Horario)
   List<TeacherScheduleItem> teacherScheduleList = [];

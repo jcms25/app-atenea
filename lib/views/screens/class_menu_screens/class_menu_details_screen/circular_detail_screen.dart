@@ -28,6 +28,8 @@ class CircularData extends State<CircularDetail> {
   String imagePath = "";
   String description = "";
   String date = "";
+  String adjuntoUrl = "";
+  String adjuntoNombre = "";
   bool isLoading = true;
 
   @override
@@ -102,10 +104,10 @@ class CircularData extends State<CircularDetail> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(name,style: CustomStyle.txtvalue3.copyWith(fontSize: 24),),
-                                  const SizedBox(height: 10,),
-                                  Text(date,style: CustomStyle.textValue,),
-                                  const SizedBox(height: 30,),
+                                  Text(name, style: CustomStyle.txtvalue3.copyWith(fontSize: 24)),
+                                  const SizedBox(height: 10),
+                                  Text(date, style: CustomStyle.textValue),
+                                  const SizedBox(height: 30),
                                   imagePath.isEmpty ? const SizedBox(height: 10) :
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
@@ -114,11 +116,35 @@ class CircularData extends State<CircularDetail> {
                                       child: Image.network(imagePath, fit: BoxFit.contain),
                                     ),
                                   ),
-                                  const SizedBox(height: 20,),
-                                  HtmlWidget(description,onTapUrl: (url) async{
-                                    bool launchedOrNot =  await _launchURL(url);
+                                  const SizedBox(height: 20),
+                                  HtmlWidget(description, onTapUrl: (url) async {
+                                    bool launchedOrNot = await _launchURL(url);
                                     return launchedOrNot;
-                                  },)
+                                  }),
+                                  if (adjuntoUrl.isNotEmpty) ...[
+                                    const SizedBox(height: 20),
+                                    const Divider(),
+                                    const SizedBox(height: 10),
+                                    GestureDetector(
+                                      onTap: () => _launchURL(adjuntoUrl),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.attach_file, color: Colors.blue),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              adjuntoNombre.isNotEmpty ? adjuntoNombre : adjuntoUrl,
+                                              style: const TextStyle(
+                                                color: Colors.blue,
+                                                decoration: TextDecoration.underline,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -140,14 +166,11 @@ class CircularData extends State<CircularDetail> {
                     child: LoadingLayout(),
                   ),
                 )),
-
           ],
         ));
   }
 
   void callAPI() async {
-
-
     Userdata? parent = AppSharedPreferences.getUserData();
     String ptoken = AppSharedPreferences.getBasicAthToken() ?? "";
     dynamic singleCircularDetails = await ApiClass().getSingleCircular(
@@ -163,10 +186,11 @@ class CircularData extends State<CircularDetail> {
         list!.data!.image == null ? imagePath == "" : imagePath = list!.data!.image!;
         description = list!.data!.description!;
         date = list!.data!.date!;
+        adjuntoUrl = list!.data!.adjuntoUrl ?? "";
+        adjuntoNombre = list!.data!.adjuntoNombre ?? "";
         isLoading = false;
       });
-    }
-    else{
+    } else {
       setState(() {
         isLoading = false;
       });
@@ -175,7 +199,7 @@ class CircularData extends State<CircularDetail> {
 
   Future<bool> _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url),mode: LaunchMode.externalApplication);
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
       return true;
     } else {
       return false;

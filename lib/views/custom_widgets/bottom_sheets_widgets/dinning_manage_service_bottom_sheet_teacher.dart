@@ -2,6 +2,8 @@ import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../../../controllers/student_parent_teacher_controller.dart';
 import '../../../utils/app_colors.dart';
@@ -23,6 +25,7 @@ class DinningManageServiceBottomSheetTeacher extends StatefulWidget {
 class _DinningManageServiceBottomSheetTeacherState
     extends State<DinningManageServiceBottomSheetTeacher> {
   StudentParentTeacherController? studentParentTeacherController;
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -30,14 +33,24 @@ class _DinningManageServiceBottomSheetTeacherState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
-      if (studentParentTeacherController?.currentSelectedDinningDay == null &&
-          studentParentTeacherController?.selectedDinningMonth == null) {
-        MonthModel? currentMonthModel = AppConstants.monthInSpanish
-            .firstWhereOrNull((e) => e.id == DateTime.now().month);
-        studentParentTeacherController?.setCurrentSelectedDinningMonth(
-            dinningMonth: currentMonthModel);
-      }
+      studentParentTeacherController?.setSelectedDinningDate(date: DateTime.now());
     });
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(DateTime.now().year - 1),
+      lastDate: DateTime(DateTime.now().year + 1),
+      locale: const Locale('es', 'ES'),     
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      studentParentTeacherController?.setSelectedDinningDate(date: picked);
+    }
   }
 
   @override
@@ -67,134 +80,47 @@ class _DinningManageServiceBottomSheetTeacherState
                         style: AppTextStyle.getOutfit400(
                             textSize: 16, textColor: AppColors.secondary),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       TeacherClassListDropdown(
                         fromWhichScreen: 9,
                         height: 60,
-                        // backgroundColor: AppColors.secondary.withOpacity(0.06),
                         backgroundColor: AppColors.secondary.withValues(alpha: 0.06),
                       )
                     ],
                   ),
                 );
               }),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Text(
-                "Mes :",
+                "Fecha:",
                 style: AppTextStyle.getOutfit400(
                     textSize: 16, textColor: AppColors.secondary),
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 10),
+              InkWell(
+                onTap: () => _selectDate(context),
+                child: Container(
+                  height: 60,
+                  width: MediaQuery.sizeOf(context).width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.secondary.withValues(alpha: 0.06),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        DateFormat('dd/MM/yyyy').format(selectedDate),
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 16, textColor: AppColors.secondary),
+                      ),
+                      Icon(Icons.calendar_today, color: AppColors.secondary),
+                    ],
+                  ),
+                ),
               ),
-              Consumer<StudentParentTeacherController>(
-                builder: (context, studentParentTeacherController, child) {
-                  return Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        // color: AppColors.secondary.withOpacity(0.06)
-                        color: AppColors.secondary.withValues(alpha: 0.06)
-                    ),
-                    padding: const EdgeInsets.all(5),
-                    child: DropdownButton<MonthModel>(
-                        isExpanded: true,
-                        underline: SizedBox.shrink(),
-                        value:
-                            studentParentTeacherController.selectedDinningMonth,
-                        items: AppConstants.monthInSpanish.map((e) {
-                          return DropdownMenuItem<MonthModel>(
-                              value: e,
-                              child: Text(
-                                e.monthName,
-                                style: AppTextStyle.getOutfit400(
-                                    textSize: 16,
-                                    textColor: AppColors.secondary),
-                              ));
-                        }).toList(),
-                        hint: Text(
-                          'Seleccione mes',
-                          style: AppTextStyle.getOutfit500(
-                              textSize: 16,
-                              // textColor: AppColors.secondary.withOpacity(0.5)
-                              textColor: AppColors.secondary.withValues(alpha: 0.5)
-                          ),
-                        ),
-                        onChanged: (MonthModel? value) {
-                          studentParentTeacherController
-                              .setCurrentSelectedDinningMonth(
-                                  dinningMonth: value);
-                        }),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Día",
-                style: AppTextStyle.getOutfit400(
-                    textSize: 16, textColor: AppColors.secondary),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Consumer<StudentParentTeacherController>(
-                builder: (context, studentParentTeacherController, child) {
-                  return studentParentTeacherController.isBottomLoader ? SizedBox(
-                    height: 60,
-                    child: Center(
-                      child: CircularProgressIndicator(color: AppColors.primary,),
-                    ),
-                  ) : Container(
-                    height: 60,
-                    width: MediaQuery.sizeOf(context).width,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        // color: AppColors.secondary.withOpacity(0.06)
-                        color: AppColors.secondary.withValues(alpha: 0.06)
-                    ),
-                    padding: const EdgeInsets.all(5),
-                    child: DropdownButton<String>(
-                        isExpanded: true,
-                        underline: SizedBox.shrink(),
-                        value: studentParentTeacherController
-                            .currentSelectedDinningDay,
-                        items: studentParentTeacherController.daysList
-                            .map((e) {
-                          return DropdownMenuItem<String>(
-                              value: e,
-                              child: Text(
-                                e,
-                                style: AppTextStyle.getOutfit400(
-                                    textSize: 16,
-                                    textColor: AppColors.secondary),
-                              ));
-                        }).toList(),
-                        hint: Text(
-                          'Seleccione Día',
-                          style: AppTextStyle.getOutfit500(
-                              textSize: 16,
-                              // textColor:
-                              // AppColors.secondary.withOpacity(0.5)
-                              textColor: AppColors.secondary.withValues(alpha: 0.5)
-                          ),
-                        ),
-                        onChanged: (String? value) {
-                          studentParentTeacherController
-                              .setCurrentSelectedDinningDay(
-                              selectedDinningDay: value);
-                        }),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Consumer<StudentParentTeacherController>(
                 builder: (context, studentParentTeacherController, child) {
                   return CustomButtonWidget(
@@ -204,38 +130,20 @@ class _DinningManageServiceBottomSheetTeacherState
                             .setDinningStudentList(dinningStudentList: []);
                         studentParentTeacherController.setDinningSettings(
                             dinningSettings: null);
-                        if (studentParentTeacherController
-                                    .selectedDinningMonth ==
-                                null ||
-                            studentParentTeacherController
-                                    .currentSelectedDinningDay ==
-                                null) {
-                          AppConstants.showCustomToast(
-                              status: false,
-                              message: "Por favor seleccione datos");
-                        } else {
-                          Get.back();
-                          if (widget.currentLoggedInRole == "teacher" &&
-                                  studentParentTeacherController
-                                          .currentSelectedClass !=
-                                      null ||
-                              widget.currentLoggedInRole == "parent") {
-                            await studentParentTeacherController
-                                .getDinningStudentList(
-                                    classId:
-                                        widget.currentLoggedInRole == "parent"
-                                            ? ""
-                                            : studentParentTeacherController
-                                                    .currentSelectedClass
-                                                    ?.cid ??
-                                                "",
-                                    month: studentParentTeacherController
-                                            .selectedDinningMonth?.id ??
-                                        0,
-                                    day: studentParentTeacherController
-                                            .currentSelectedDinningDay ??
-                                        "0");
-                          }
+                        Get.back();
+                        if (widget.currentLoggedInRole == "teacher" &&
+                                studentParentTeacherController
+                                        .currentSelectedClass !=
+                                    null ||
+                            widget.currentLoggedInRole == "parent") {
+                          await studentParentTeacherController
+                              .getDinningStudentList(
+                                  classId: widget.currentLoggedInRole == "parent"
+                                      ? ""
+                                      : studentParentTeacherController
+                                              .currentSelectedClass?.cid ??
+                                          "",
+                                  date: selectedDate);
                         }
                       });
                 },

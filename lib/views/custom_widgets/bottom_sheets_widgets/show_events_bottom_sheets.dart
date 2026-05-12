@@ -32,7 +32,7 @@ class ShowEventsBottomSheets extends StatelessWidget {
             builder : (context,studentParentTeacherController,child){
               return eventList.isEmpty ? Center(
                 child: Text(
-                  "Sin eventos",
+                  "Sin exámenes",
                   style: AppTextStyle.getOutfit500(textSize: 18, textColor: AppColors.secondary),
                 ),
               ) : Column(
@@ -51,35 +51,23 @@ class ShowEventsBottomSheets extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if ((e.className != null && e.className!.isNotEmpty) || (e.subject != null && e.subject!.isNotEmpty))
+                            Text(
+                              [e.className, e.subject].where((s) => s != null && s!.isNotEmpty).join(' - '),
+                              style: AppTextStyle.getOutfit600(textSize: 16, textColor: color),
+                            ),
+                          if ((e.className != null && e.className!.isNotEmpty) || (e.subject != null && e.subject!.isNotEmpty))
+                            const SizedBox(height: 4),
                           Text(e.title,
                               style: AppTextStyle.getOutfit700(
                                   textSize: 20, textColor: color)),
-                          const SizedBox(
-                            height: 10,
+                          const SizedBox(height: 10),
+                          Text(
+                            e.startDate != null && e.startDate!.isNotEmpty
+                                ? DateFormat("dd-MM-yyyy HH:mm").format(DateTime.parse(e.startDate!))
+                                : '',
+                            style: AppTextStyle.getOutfit600(textSize: 16, textColor: color),
                           ),
-                          RichText(text: TextSpan(
-                              text: "Fecha de inicio\t:\t",
-                              style: AppTextStyle.getOutfit600(textSize: 18, textColor: color),
-                              children: [
-                                TextSpan(
-                                    text: DateFormat("dd-MM-yyyy HH:mm").format(DateTime.parse(e.startDate ?? "")),
-                                    style: AppTextStyle.getOutfit600(textSize: 16, textColor: color)
-                                ),
-                              ]
-                          )),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          RichText(text: TextSpan(
-                              text: "Fecha de finalización\t:\t",
-                              style: AppTextStyle.getOutfit600(textSize: 18, textColor: color),
-                              children: [
-                                TextSpan(
-                                    text: DateFormat("dd-MM-yyyy HH:mm").format(DateTime.parse(e.endDate ?? "")),
-                                    style: AppTextStyle.getOutfit600(textSize: 16, textColor: color)
-                                ),
-                              ]
-                          )),
                         ],
                       ),
                     );

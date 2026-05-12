@@ -241,32 +241,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               const SizedBox(
                                 height: 15,
-                              ),
-                              Row(
-                                children: [
-                                  DashboardWidget2(
-                                      label: "events".tr,
-                                      color: AppColors.darkPurple,
-                                      id: 1),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  DashboardWidget2(
-                                      label: "exam".tr,
-                                      color: AppColors.red,
-                                      id: 2),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  DashboardWidget2(
-                                      label: "holiday".tr,
-                                      color: AppColors.green,
-                                      id: 3),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
+                              ),                              
                               Container(
                                 decoration: const BoxDecoration(
                                     color: AppColors.orange,
@@ -307,15 +282,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                             dateFormat.format(
                                                                 selectDay))] ??
                                                     [],
-                                                color: studentParentTeacherController
-                                                            .dashboardActivitiesToShow ==
-                                                        1
-                                                    ? AppColors.darkPurple
-                                                    : studentParentTeacherController
-                                                                .dashboardActivitiesToShow ==
-                                                            2
-                                                        ? AppColors.red
-                                                        : AppColors.green,
+                                                color: AppColors.red,
                                               );
                                             });
                                       },
@@ -367,15 +334,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             color: AppColors.white),
                                         markerDecoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: studentParentTeacherController
-                                                      .dashboardActivitiesToShow ==
-                                                  1
-                                              ? AppColors.darkPurple
-                                              : studentParentTeacherController
-                                                          .dashboardActivitiesToShow ==
-                                                      2
-                                                  ? AppColors.red
-                                                  : AppColors.green,
+                                          color: AppColors.red,   
                                           // borderRadius: BorderRadius.circular(
                                           //     8.0)
                                         ),
@@ -712,66 +671,6 @@ class DashboardWidget1 extends StatelessWidget {
           ))
         ],
       ),
-    );
-  }
-}
-
-class DashboardWidget2 extends StatelessWidget {
-  final String label;
-  final Color color;
-  final int id;
-
-  const DashboardWidget2(
-      {super.key, required this.label, required this.color, required this.id});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<StudentParentTeacherController>(
-      builder: (context, studentParentTeacherController, child) {
-        int currentSelected =
-            studentParentTeacherController.dashboardActivitiesToShow;
-        return GestureDetector(
-          onTap: () {
-            studentParentTeacherController.setDashboardActivitiesToShow(
-                dashboardActivitiesToShow: id);
-            studentParentTeacherController.setDashboardEvents(
-                dashboardActivitiesToShow: id);
-          },
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            height: 30,
-            decoration: BoxDecoration(
-              color: currentSelected == id
-                  // ? color.withOpacity(0.5)
-                  ? color.withValues(alpha: 0.5)
-                  : AppColors.white,
-              border: Border.all(
-                  color: currentSelected == id ? color : AppColors.white,
-                  width: 1.0,
-                  style: BorderStyle.solid),
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), color: color),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  label,
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 16, textColor: AppColors.secondary),
-                )
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

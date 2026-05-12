@@ -311,23 +311,31 @@ class EventItemDetail {
     required this.startDate,
     required this.endDate,
     required this.title,
+    this.className,
+    this.subject,
   });
 
   String? startDate;
   String? endDate;
   String title;
+  String? className;
+  String? subject;
 
   factory EventItemDetail.fromJson(Map<String, dynamic> json) =>
       EventItemDetail(
         startDate: json["StartDate"],
         endDate: json["EndDate"],
         title: json["Title"],
+        className: json["ClassName"],
+        subject: json["Subject"],
       );
 
   Map<String, dynamic> toJson() => {
     "StartDate": startDate,
     "EndDate": endDate,
     "Title": title,
+    "ClassName": className,
+    "Subject": subject,
   };
 }
 

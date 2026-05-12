@@ -242,7 +242,7 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //category to show in calendar of activities
   //1 -> Events , 2 -> Examen , 3-> Holidays/Vacations
-  int dashboardActivitiesToShow = 1;
+  int dashboardActivitiesToShow = 2;
 
   void setDashboardActivitiesToShow({required int dashboardActivitiesToShow}) {
     this.dashboardActivitiesToShow = dashboardActivitiesToShow;
@@ -2450,7 +2450,7 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
     userdata = null;
     dashboard = null;
     setCurrentBottomIndexSelected(index: 0);
-    setDashboardActivitiesToShow(dashboardActivitiesToShow: 1);
+    setDashboardActivitiesToShow(dashboardActivitiesToShow: 2);
     dashboardExamList = [];
     dashboardHoliday = [];
     dashboardEvents = [];

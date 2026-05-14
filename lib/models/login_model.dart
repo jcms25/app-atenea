@@ -184,7 +184,13 @@ class Userdata {
     classDate = json['class_date'];
     stuImage = json['stu_image'];
     stuEmail = json['stu_email'];
-    userRoles = json['user_roles'] != null ?  userRoles = json['user_roles'].cast<String>() : null;
+    if (json['user_roles'] != null) {
+      if (json['user_roles'] is List) {
+        userRoles = List<String>.from(json['user_roles']);
+      } else if (json['user_roles'] is Map) {
+        userRoles = List<String>.from(json['user_roles'].values);
+      }
+    }
     if (json['parentData'] != null) {
       parentData = <ParentData>[];
       json['parentData'].forEach((v) {

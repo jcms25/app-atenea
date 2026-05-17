@@ -39,12 +39,12 @@ class ShowEventsBottomSheets extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ...eventList.map((e){
+                    final itemColor = (e.isOwn == null || e.isOwn == true) ? AppColors.red : AppColors.darkPurple;
                     return Container(
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          // color: color.withOpacity(0.05),
-                        color: color.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(10)),
+                        color: itemColor.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(10)),
                       padding: const EdgeInsets.all(10),
                       margin: const EdgeInsets.only(bottom: 10),
                       child: Column(
@@ -53,20 +53,20 @@ class ShowEventsBottomSheets extends StatelessWidget {
                         children: [
                           if ((e.className != null && e.className!.isNotEmpty) || (e.subject != null && e.subject!.isNotEmpty))
                             Text(
-                              [e.className, e.subject].where((s) => s != null && s!.isNotEmpty).join(' - '),
-                              style: AppTextStyle.getOutfit600(textSize: 16, textColor: color),
+                            [e.className, e.subject].where((s) => s != null && s!.isNotEmpty).join(' - '),
+                            style: AppTextStyle.getOutfit600(textSize: 16, textColor: itemColor),
                             ),
                           if ((e.className != null && e.className!.isNotEmpty) || (e.subject != null && e.subject!.isNotEmpty))
                             const SizedBox(height: 4),
                           Text(e.title,
                               style: AppTextStyle.getOutfit700(
-                                  textSize: 20, textColor: color)),
+                                  textSize: 20, textColor: itemColor)),
                           const SizedBox(height: 10),
                           Text(
                             e.startDate != null && e.startDate!.isNotEmpty
                                 ? DateFormat("dd-MM-yyyy HH:mm").format(DateTime.parse(e.startDate!))
                                 : '',
-                            style: AppTextStyle.getOutfit600(textSize: 16, textColor: color),
+                            style: AppTextStyle.getOutfit600(textSize: 16, textColor: itemColor),
                           ),
                         ],
                       ),

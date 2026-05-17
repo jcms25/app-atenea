@@ -239,6 +239,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     textSize: 20,
                                     textColor: AppColors.secondary),
                               ),
+                              Consumer<StudentParentTeacherController>(
+                                builder: (context, ctrl, child) {
+                                  if (ctrl.currentLoggedInUserRole != RoleType.teacher) return const SizedBox.shrink();
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8, bottom: 4),
+                                    child: Row(
+                                      children: [
+                                        Container(width: 12, height: 12, decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.red)),
+                                        const SizedBox(width: 6),
+                                        Text("Mis exámenes", style: AppTextStyle.getOutfit400(textSize: 13, textColor: AppColors.secondary)),
+                                        const SizedBox(width: 16),
+                                        Container(width: 12, height: 12, decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.darkPurple)),
+                                        const SizedBox(width: 6),
+                                        Text("Otros Exámenes de mi alumnado", style: AppTextStyle.getOutfit400(textSize: 13, textColor: AppColors.secondary)),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                               const SizedBox(
                                 height: 15,
                               ),                              
@@ -315,8 +334,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       calendarStyle: CalendarStyle(
                                         selectedDecoration: const BoxDecoration(
                                             shape: BoxShape.circle,
-                                            // borderRadius: BorderRadius.all(
-                                            //     Radius.circular(10)),
                                             color: AppColors.primary),
                                         selectedTextStyle:
                                             AppTextStyle.getOutfit500(
@@ -324,22 +341,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 textColor: AppColors.white),
                                         todayDecoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            // borderRadius: BorderRadius.all(
-                                            //     Radius.circular(10)),
-                                            // color: AppColors.primary
-                                            //     .withOpacity(0.5)
                                           color: AppColors.primary.withValues(alpha: 0.5)
                                         ),
                                         todayTextStyle: const TextStyle(
                                             color: AppColors.white),
-                                        markerDecoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: AppColors.red,   
-                                          // borderRadius: BorderRadius.circular(
-                                          //     8.0)
-                                        ),
-                                        markersMaxCount: 3,
+                                        markersMaxCount: 0,
                                         outsideDaysVisible: true,
+                                      ),
+                                      calendarBuilders: CalendarBuilders(
+                                        markerBuilder: (context, date, events) {
+                                          if (events.isEmpty) return null;
+                                          final typedEvents = events.cast<EventItemDetail>();
+                                          return Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: typedEvents.map((e) {
+                                              final isOwn = e.isOwn ?? true;
+                                              return Container(
+                                                width: 7,
+                                                height: 7,
+                                                margin: const EdgeInsets.symmetric(horizontal: 1),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: isOwn ? AppColors.red : AppColors.darkPurple,
+                                                ),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
                                       ),
                                       onDayLongPressed: (DateTime selectDay,
                                           DateTime focusDay) {},

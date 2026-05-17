@@ -313,6 +313,7 @@ class EventItemDetail {
     required this.title,
     this.className,
     this.subject,
+    this.isOwn,
   });
 
   String? startDate;
@@ -320,6 +321,7 @@ class EventItemDetail {
   String title;
   String? className;
   String? subject;
+  bool? isOwn;
 
   factory EventItemDetail.fromJson(Map<String, dynamic> json) =>
       EventItemDetail(
@@ -328,6 +330,7 @@ class EventItemDetail {
         title: json["Title"],
         className: json["ClassName"],
         subject: json["Subject"],
+        isOwn: json["IsOwn"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -336,6 +339,7 @@ class EventItemDetail {
     "Title": title,
     "ClassName": className,
     "Subject": subject,
+    "IsOwn": isOwn,
   };
 }
 

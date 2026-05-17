@@ -54,6 +54,42 @@ class _EventScreenChildState extends State<EventScreen> {
                       "eventsCalendar".tr,
                       style: AppTextStyle.getOutfit600(textSize: 20, textColor: AppColors.secondary),
                     ),
+                    Consumer<StudentParentTeacherController>(
+                      builder: (context, studentParentTeacherController, child) {
+                        if (studentParentTeacherController.eventLegend.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 4),
+                          child: Wrap(
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: studentParentTeacherController.eventLegend.map((item) {
+                              final color = Color(int.parse(item.color.substring(1, 7), radix: 16) + 0xFF000000);
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: color,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    item.label,
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 12, textColor: AppColors.secondary),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -166,42 +202,6 @@ class _EventScreenChildState extends State<EventScreen> {
                           );
                         },
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Consumer<StudentParentTeacherController>(
-                      builder: (context, studentParentTeacherController, child) {
-                        if (studentParentTeacherController.eventLegend.isEmpty) {
-                          return const SizedBox.shrink();
-                        }
-                        return Wrap(
-                          spacing: 12,
-                          runSpacing: 8,
-                          children: studentParentTeacherController.eventLegend.map((item) {
-                            final color = Color(int.parse(item.color.substring(1, 7), radix: 16) + 0xFF000000);
-                            return Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: color,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  item.label,
-                                  style: AppTextStyle.getOutfit400(
-                                      textSize: 12, textColor: AppColors.secondary),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                        );
-                      },
                     ),
                     const SizedBox(
                       height: 20,

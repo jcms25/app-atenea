@@ -351,15 +351,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       calendarBuilders: CalendarBuilders(
                                         markerBuilder: (context, date, events) {
                                           if (events.isEmpty) return null;
-                                          final typedEvents = events.cast<EventItemDetail>();
+                                          final typedEvents = events.cast<EventItemDetail>().take(5).toList();
                                           return Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
                                             children: typedEvents.map((e) {
                                               final isOwn = e.isOwn ?? true;
                                               return Container(
-                                                width: 7,
-                                                height: 7,
-                                                margin: const EdgeInsets.symmetric(horizontal: 1),
+                                                width: 6,
+                                                height: 6,
+                                                margin: const EdgeInsets.symmetric(horizontal: 0.5),
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
                                                   color: isOwn ? AppColors.red : AppColors.darkPurple,

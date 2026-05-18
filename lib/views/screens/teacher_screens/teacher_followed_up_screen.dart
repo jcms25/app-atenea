@@ -236,8 +236,9 @@ class FollowedUpWidget extends StatelessWidget {
                 color: AppColors.primary),
             padding: const EdgeInsets.all(10),
             child: Text(
-              DateFormat("dd-MM-yyyy")
-                  .format(DateTime.parse(followedUpItemDetail?.date ?? "-")),
+              (followedUpItemDetail?.date != null && followedUpItemDetail?.date?.isNotEmpty == true && followedUpItemDetail?.date != "-")
+                  ? DateFormat("dd-MM-yyyy").format(DateTime.parse(followedUpItemDetail!.date!))
+                  : "-",
               style: AppTextStyle.getOutfit300(
                   textSize: 14, textColor: AppColors.white),
             ),

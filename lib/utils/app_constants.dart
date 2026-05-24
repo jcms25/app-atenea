@@ -219,7 +219,7 @@ class AppConstants {
     {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
   ];
 
-  //sub menu list
+//sub menu list
   static List<Map<String, String>> subMenuList = [
     {"name": "Envíos del Profesor"},
     {
@@ -239,6 +239,9 @@ class AppConstants {
     },
     {
       "name": "subMenuDrawer6".tr,
+    },
+    {
+      "name": "subMenuDrawer25".tr,
     },
     {
       "name": "subMenuDrawer7".tr,

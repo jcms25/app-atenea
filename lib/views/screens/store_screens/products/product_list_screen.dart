@@ -315,7 +315,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               int itemCount = storeController.cartResponse?.items?.length ?? 0;
               return GestureDetector(
                 onTap: () => Get.to(() => CartPageScreen())?.then((_) {
-                  storeController?.getCartDetails(
+                  storeController.getCartDetails(
                       tiendaToken: studentParentTeacherController?.userdata?.tiendaToken ?? "");
                 }),
                 child: Stack(

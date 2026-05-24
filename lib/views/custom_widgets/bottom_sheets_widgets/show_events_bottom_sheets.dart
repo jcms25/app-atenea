@@ -53,7 +53,7 @@ class ShowEventsBottomSheets extends StatelessWidget {
                         children: [
                           if ((e.className != null && e.className!.isNotEmpty) || (e.subject != null && e.subject!.isNotEmpty))
                             Text(
-                            [e.className, e.subject].where((s) => s != null && s!.isNotEmpty).join(' - '),
+                            [e.className, e.subject].where((s) => s != null && s.isNotEmpty).join(' - '),
                             style: AppTextStyle.getOutfit600(textSize: 16, textColor: itemColor),
                             ),
                           if ((e.className != null && e.className!.isNotEmpty) || (e.subject != null && e.subject!.isNotEmpty))

@@ -39,8 +39,12 @@ class ApiClass{
   String singleTeacher = "teacher";
   String singleSubject = "subject";
   String singleExam = "exam";
-  String classList = "classlist";
+ String classList = "classlist";
   String eventsList = "events";
+
+  // === Módulo Actitudinal ===
+  String classroomEventsEnabled = "classroom-events/enabled";
+  String classroomTags = "classroom-tags";
 
   Future<dynamic> loginCheck(String username, String password, String role,
       String deviceFCMToken, String deviceType) async {
@@ -1186,7 +1190,7 @@ class ApiClass{
     }
   }
 
-  String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
+String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     if (selectedCategory == null) {
       return "";
     }
@@ -1197,6 +1201,60 @@ class ApiClass{
             : selectedCategory == SelectOptionFromCategory1.poco
                 ? "Poco"
                 : "Nada";
+  }
+
+  // ============================================================
+  // MÓDULO ACTITUDINAL
+  // ============================================================
+
+  /// GET /scl-api/v1/classroom-events/enabled
+  /// Devuelve si el módulo está activado globalmente (switch admin)
+  Future<dynamic> getClassroomEventsEnabled(String token, String cookie) async {
+    try {
+      Response res = await get(
+        Uri.parse("$liveBaseUrl$classroomEventsEnabled"),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': cookie,
+        },
+      );
+      if (res.statusCode == 200) {
+        return json.decode(res.body);
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Something went wrong"};
+      }
+    } catch (exception) {
+      return {"status": false, "Message": "Exception: $exception"};
+    }
+  }
+
+  /// GET /scl-api/v1/classroom-tags
+  /// Devuelve la lista de etiquetas activas, agrupadas en positive y negative
+  Future<dynamic> getClassroomTags(String token, String cookie) async {
+    try {
+      Response res = await get(
+        Uri.parse("$liveBaseUrl$classroomTags"),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': cookie,
+        },
+      );
+      if (res.statusCode == 200) {
+        return json.decode(res.body);
+      } else if (res.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {"status": false, "Message": "Something went wrong"};
+      }
+    } catch (exception) {
+      return {"status": false, "Message": "Exception: $exception"};
+    }
   }
 
 }

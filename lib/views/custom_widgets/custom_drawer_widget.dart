@@ -37,6 +37,7 @@ import '../../utils/app_images.dart';
 import '../screens/class_menu_screens/grade_screen.dart';
 import '../screens/class_menu_screens/timetable_screen.dart';
 import '../screens/store_screens/coupons_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   final StudentParentTeacherController studentParentTeacherController;
@@ -443,9 +444,16 @@ class CustomDrawerWidget extends StatelessWidget {
         }
       } else {
         List<Map<String, dynamic>> subMenuList = AppConstants.subMenuList;
+        // Estado del switch global del módulo Actitudinal
+        bool classroomEventsEnabled =
+            studentParentTeacherController.isClassroomEventsEnabled;
         for (var e in subMenuList) {
           if (e['name'] == "Envíos del Profesor" &&
               roleType == RoleType.student) {
+            continue;
+          } else if (e['name'] == "subMenuDrawer25".tr &&
+              !classroomEventsEnabled) {
+            // "Actitud" oculto si el switch global está desactivado
             continue;
           } else {
             DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
@@ -635,6 +643,12 @@ class CustomDrawerWidget extends StatelessWidget {
           Get.to(() => GradeScreen(
               drawerMenuOption.classId ?? "", drawerMenuOption.wpUserId ?? ""));
         }
+        break;
+      case "Actitud":
+        Get.to(() => ClassroomEventsScreen(
+              studentId: drawerMenuOption.wpUserId ?? "",
+              studentName: drawerMenuOption.studentName ?? "",
+            ));
         break;
       case "Evaluaciones":
         Get.to(() => EvaluationScreen(

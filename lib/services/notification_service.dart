@@ -2,6 +2,7 @@ import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../main.dart';
+import 'dart:convert';
 
 @pragma('vm:entry-point')
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -51,15 +52,19 @@ class NotificationService {
       event.notification!.title!,
       event.notification!.body!.split("|").last,
       notificationDetails,
+      // payload: los datos del push serializados, para poder
+      // navegar cuando el usuario toca la notificación estando
+      // la app en primer plano.
+      payload: jsonEncode(event.data),
     );
   }
 
-  /// Determina a qué sección navegar según el payload FCM.
-  /// Campos esperados en message.data: "type" y/o "section"
-  ///
-  /// Valores conocidos:
-  ///   Exámenes : "Exam Created", "Exam Update"
-  ///   Notas    : "Notes Add",   "Notes Update"
+  // Determina a qué sección navegar según el payload FCM.
+  // Campos esperados en message.data: "type" y/o "section"
+  //
+  // Valores conocidos:
+  //   Exámenes : "Exam Created", "Exam Update"
+  //   Notas    : "Notes Add",   "Notes Update"
   static String resolveRoute(RemoteMessage message) {
     final String type = message.data["type"] ?? "";
 
@@ -80,6 +85,37 @@ class NotificationService {
         return "messages";
       case "Evaluations":
         return "evaluations";
+      case "Classroom Event":
+        return "classroom";
+      default:
+        return "dashboard";
+    }
+  }
+
+  // Igual que resolveRoute, pero a partir del Map de datos
+  // (usado al tocar una notificación local, cuyo payload es
+  // un Map deserializado y no un RemoteMessage).
+  static String resolveRouteFromData(Map<String, dynamic> data) {
+    final String type = data["type"]?.toString() ?? "";
+    switch (type) {
+      case "Exam Created":
+      case "Exam Update":
+        return "exams";
+      case "Notes Add":
+      case "Notes Update":
+        return "grades";
+      case "Event Add":
+      case "Event Update":
+        return "events";
+      case "Circular":
+        return "circular";
+      case "Message":
+      case "New Sub Message":
+        return "messages";
+      case "Evaluations":
+        return "evaluations";
+      case "Classroom Event":
+        return "classroom";
       default:
         return "dashboard";
     }

@@ -16,6 +16,7 @@ import 'package:colegia_atenea/services/payment_service.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:http/http.dart';
@@ -1077,19 +1078,6 @@ class StoreController extends ChangeNotifier {
     }
   }
 
-  //calculate total based on paypal charges
-  double getTotalAfterApplyPaypalCharges({required double subTotal}){
-    print("sub total : $subTotal");
-    double subTotalWithSurcharge = subTotal * 0.035 + 0.25;
-    print("sub total with surcharge : $subTotalWithSurcharge");
-    if(subTotalWithSurcharge < 0.5){
-      subTotalWithSurcharge = subTotalWithSurcharge + 0.5;
-      print("sub total with surcharge : $subTotalWithSurcharge");
-    }
-    print("total amount : ${subTotal + subTotalWithSurcharge}");
-    return subTotal + subTotalWithSurcharge;
-  }
-
   //Paypal checkout for paypal method selected
   Future<void> payUsingPaypal({required String orderId,
     required String wpUserId,OrderDetailModel? orderData,
@@ -1189,7 +1177,7 @@ class StoreController extends ChangeNotifier {
   Future<void> redSysPayment({required String paymentMethodType,required String orderId,required String amount,String? wpUserId,bool? fromCart}) async{
     try{
       await PaymentService.startPayment(paymentMethod: paymentMethodType, orderId: orderId, amount: amount).then((result) async{
-        print('redSys result: $result');
+        if (kDebugMode) debugPrint('redSys result: $result');
         if(result){
           await changeOrderStatus(orderId: orderId, statusToChanged: 'processing', wpUserId: wpUserId ?? "").then((res) async{
             if(wpUserId != null){

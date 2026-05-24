@@ -20,10 +20,11 @@ import '../../utils/app_colors.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_textstyle.dart';
 import 'class_menu_screens/classes.dart';
-import 'class_menu_screens/exam_list_screen.dart';
+//import 'class_menu_screens/exam_list_screen.dart';
 import 'class_menu_screens/class_menu_details_screen/exam_details_screen.dart';
 import 'class_menu_screens/grade_screen.dart';
 import 'parent_student_info_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -51,19 +52,45 @@ class _MainScreenState extends State<MainScreen> {
 
     // Escuchar cambios en pendingDeepLink en tiempo real
     ever(pendingDeepLink, (String destination) {
-      if (destination.isEmpty) return;
-      final String eid = pendingEid.value;
-      final String classId = pendingClassId.value;
-      pendingDeepLink.value = '';
-      pendingEid.value = '';
-      pendingClassId.value = '';
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _handleDeepLink(destination, eid: eid, classId: classId);
-      });
+      _processPendingDeepLink(destination);
+    });
+
+    // Caso de app arrancada desde una notificación (estaba cerrada):
+    // getInitialMessage() pudo poner pendingDeepLink ANTES de que
+    // MainScreen existiera, por lo que el 'ever' de arriba no llega
+    // a captarlo. Aquí, al montarse MainScreen, se comprueba si ya
+    // hay un deep link pendiente y se procesa.
+    if (pendingDeepLink.value.isNotEmpty) {
+      _processPendingDeepLink(pendingDeepLink.value);
+    }
+  }
+
+  // Procesa un deep link pendiente: lee los datos asociados,
+  // limpia las variables reactivas y navega.
+  void _processPendingDeepLink(String destination) {
+    if (destination.isEmpty) return;
+    final String eid = pendingEid.value;
+    final String classId = pendingClassId.value;
+    final String studentId = pendingStudentId.value;
+    final String studentName = pendingStudentName.value;
+    final String className = pendingClassName.value;
+    pendingDeepLink.value = '';
+    pendingEid.value = '';
+    pendingClassId.value = '';
+    pendingStudentId.value = '';
+    pendingStudentName.value = '';
+    pendingClassName.value = '';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleDeepLink(destination,
+          eid: eid,
+          classId: classId,
+          studentId: studentId,
+          studentName: studentName,
+          className: className);
     });
   }
 
-  void _handleDeepLink(String destination, {String? eid, String? classId}) {
+  void _handleDeepLink(String destination, {String? eid, String? classId, String? studentId, String? studentName, String? className}) {
     if (studentParentTeacherController == null) return;
 
     final RoleType role =
@@ -90,6 +117,16 @@ class _MainScreenState extends State<MainScreen> {
       }
     }
 
+// Si hay studentId, navegar directamente a la pantalla de actitud del alumno.
+    // La notificación de incidencia solo la recibe el padre → pantalla de solo lectura.
+    if (destination == "classroom" && studentId != null && studentId.isNotEmpty) {
+      Get.to(() => ClassroomEventsScreen(
+        studentId: studentId,
+        studentName: studentName ?? "",
+      ));
+      return;
+    }
+
     // Índices menú inferior por rol:
     // Alumno  : 0=Escritorio, 1=Comunicaciones, 2=Padres,    3=Clases,          4=Eventos
     // Padre   : 0=Escritorio, 1=Circulares,     2=Comunic.,  3=Alumnos, 4=Clases, 5=Eventos
@@ -101,9 +138,10 @@ class _MainScreenState extends State<MainScreen> {
     } else if (destination == "circular") {
       tabIndex = role == RoleType.parent ? 1 : 0;
     } else if (destination == "messages") {
+      // Modelo chat: basta con abrir la pestaña de Comunicaciones.
+      // (Se elimina el antiguo setCurrentSelectedMessageType /
+      // "Recibidas", obsoleto desde el rediseño a modelo chat.)
       tabIndex = role == RoleType.parent ? 2 : 1;
-      studentParentTeacherController!.setCurrentSelectedMessageType(
-          currentSelectedMessageListType: "Recibidas");
     } else if (destination == "exams" || destination == "grades") {
       tabIndex = 3; // Clases/Alumnos/Gestión docente en todos los roles
     }

@@ -36,6 +36,11 @@ import '../models/events_list.dart';
 import '../models/student_list_model.dart';
 import '../models/teacher/teacher_class_model.dart';
 import '../services/api.dart';
+import '../models/classroom_event_model.dart';
+import '../models/classroom_subject_model.dart';
+import '../models/classroom_tag_model.dart';
+import '../models/chat_list_model.dart';
+import '../models/chat_detail_model.dart';
 
 enum RoleType { student, parent, teacher, assistant }
 
@@ -179,6 +184,217 @@ class StudentParentTeacherController extends ChangeNotifier {
     return events ?? [];
   }
 
+  // ============================================================
+  // MÓDULO ACTITUDINAL — Switch global
+  // ============================================================
+  bool isClassroomEventsEnabled = false;
+
+  void setIsClassroomEventsEnabled({required bool enabled}) {
+    isClassroomEventsEnabled = enabled;
+    notifyListeners();
+  }
+
+  // Llama al endpoint /classroom-events/enabled y actualiza el flag global
+  Future<void> fetchClassroomEventsEnabled() async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.classroomEventsEnabledEndPoint,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true) {
+        bool enabled = (response['enabled'] ?? 0) == 1;
+        setIsClassroomEventsEnabled(enabled: enabled);
+      }
+    } catch (_) {
+      // Si falla, dejamos el flag en false (módulo oculto por seguridad)
+    }
+  }
+  // --- Histórico de incidencias actitudinales de un alumno ---
+  List<ClassroomEvent> listOfClassroomEvents = [];
+  ClassroomEventsSummary? classroomEventsSummary;
+
+  void setClassroomEvents({
+    required List<ClassroomEvent> events,
+    ClassroomEventsSummary? summary,
+  }) {
+    listOfClassroomEvents = events;
+    classroomEventsSummary = summary;
+    notifyListeners();
+  }
+
+  // Llama al endpoint /classroom-events?student_id=X y carga el histórico
+  Future<void> getClassroomEvents({
+    required String studentId,
+    required bool showLoader,
+  }) async {
+    try {
+      setIsLoading(isLoading: showLoader);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.classroomEventsEndPoint}?student_id=$studentId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true) {
+        ClassroomEventsResponse parsed =
+            ClassroomEventsResponse.fromJson(response);
+        setClassroomEvents(
+          events: parsed.data,
+          summary: parsed.summary,
+        );
+      } else {
+        setClassroomEvents(events: [], summary: null);
+      }
+      setIsLoading(isLoading: false);
+    } catch (_) {
+      setClassroomEvents(events: [], summary: null);
+      setIsLoading(isLoading: false);
+    }
+  }
+  // --- Cascada de asignatura para añadir incidencia ---
+  List<ClassroomSubject> classroomSubjectOptions = [];
+  ClassroomSubject? selectedClassroomSubject;
+  String classroomSubjectMatchType = 'none';
+
+  void setSelectedClassroomSubject(ClassroomSubject? subject) {
+    selectedClassroomSubject = subject;
+    notifyListeners();
+  }
+
+  // Llama a la cascada: obtiene la asignatura sugerida según fecha/hora.
+  Future<void> getSubjectByDatetime({
+    required String studentId,
+    required String classId,
+    required String datetime,
+  }) async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint:
+            "${Api.classroomSubjectByDatetimeEndPoint}?student_id=$studentId&class_id=$classId&datetime=$datetime",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true) {
+        ClassroomSubjectResponse parsed =
+            ClassroomSubjectResponse.fromJson(response);
+        classroomSubjectOptions = parsed.subjects;
+        classroomSubjectMatchType = parsed.matchType;
+        // Preseleccionar la asignatura marcada como 'selected', si la hay
+        selectedClassroomSubject = parsed.subjects.firstWhere(
+          (s) => s.selected,
+          orElse: () => parsed.subjects.isNotEmpty
+              ? parsed.subjects.first
+              : ClassroomSubject(
+                  id: 0, name: '', selected: false, teacherId: 0),
+        );
+        if (selectedClassroomSubject?.id == 0) {
+          selectedClassroomSubject = null;
+        }
+      } else {
+        classroomSubjectOptions = [];
+        classroomSubjectMatchType = 'none';
+        selectedClassroomSubject = null;
+      }
+      notifyListeners();
+    } catch (_) {
+      classroomSubjectOptions = [];
+      classroomSubjectMatchType = 'none';
+      selectedClassroomSubject = null;
+      notifyListeners();
+    }
+  }
+
+// Guarda una incidencia actitudinal para uno o varios alumnos.
+  // studentIds: lista de wp_usr_id (uno o varios).
+  // Devuelve true si se guardó correctamente.
+  Future<bool> saveClassroomEvent({
+    required List<String> studentIds,
+    required String classId,
+    required int subjectId,
+    required int tagId,
+    required String datetime,
+    required String comment,
+  }) async {
+    try {
+      setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: Api.classroomEventsBulkEndPoint,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+        body: {
+          'student_ids': studentIds.join(','),
+          'class_id': classId,
+          'subject_id': subjectId.toString(),
+          'tag_id': tagId.toString(),
+          'datetime': datetime,
+          'comment': comment,
+        },
+      );
+      setIsLoading(isLoading: false);
+      return response['status'] == true;
+    } catch (_) {
+      setIsLoading(isLoading: false);
+      return false;
+    }
+  }
+  // --- Etiquetas para el formulario de añadir incidencia ---
+  List<ClassroomTag> classroomTagsPositive = [];
+  List<ClassroomTag> classroomTagsNegative = [];
+
+  /// Carga las etiquetas activas (positivas y negativas) desde el backend.
+  Future<void> getClassroomTags() async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.classroomTagsEndPoint,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true && response['data'] != null) {
+        final data = response['data'];
+        classroomTagsPositive = data['positive'] != null
+            ? List<ClassroomTag>.from(
+                (data['positive'] as List).map((e) => ClassroomTag.fromJson(e)))
+            : <ClassroomTag>[];
+        classroomTagsNegative = data['negative'] != null
+            ? List<ClassroomTag>.from(
+                (data['negative'] as List).map((e) => ClassroomTag.fromJson(e)))
+            : <ClassroomTag>[];
+      } else {
+        classroomTagsPositive = [];
+        classroomTagsNegative = [];
+      }
+      notifyListeners();
+    } catch (_) {
+      classroomTagsPositive = [];
+      classroomTagsNegative = [];
+      notifyListeners();
+    }
+  }
   //get dashboard data
   void getDashboardData({required bool showLoader}) async {
     try {
@@ -203,6 +419,9 @@ class StudentParentTeacherController extends ChangeNotifier {
 
           setDashboardEvents(
               dashboardActivitiesToShow: dashboardActivitiesToShow);
+
+          // Módulo Actitudinal: cargar estado del switch global en paralelo
+          fetchClassroomEventsEnabled();
         }
         setIsLoading(isLoading: false);
       });
@@ -331,6 +550,125 @@ class StudentParentTeacherController extends ChangeNotifier {
       });
     } catch (exception) {
       setIsLoading(isLoading: false);      
+    }
+  }
+
+  //Modelo chat unificado (conversación = pareja de usuarios / grupo difusor)
+  List<ChatItem> chatList = [];
+  List<ChatItem> tempChatList = [];
+
+  void getChatList({required bool showLoader}) async {
+    try {
+      setIsLoading(isLoading: showLoader);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String uid = currentLoggedInUserRole == RoleType.parent
+          ? userdata?.parentWpUsrId ?? ""
+          : userdata?.wpUsrId ?? "";
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.chatList}?uid=$uid",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
+          }).then((response) {
+        if (response['status'] == true) {
+          ChatListModel chatListModel = ChatListModel.fromJson(response);
+          chatList = chatListModel.data?.chatList ?? [];
+          tempChatList = chatList;
+          notifyListeners();
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  void searchInChatList(String? value) {
+    if (value?.isEmpty ?? true) {
+      tempChatList = chatList;
+      notifyListeners();
+      return;
+    }
+    final String query = value!.toLowerCase();
+    tempChatList = chatList.where((chat) {
+      return (chat.name?.toLowerCase().contains(query) ?? false) ||
+          (chat.lastMsg?.toLowerCase().contains(query) ?? false);
+    }).toList();
+    notifyListeners();
+  }
+
+  //Detalle de un chat unificado
+  ChatDetailData? chatDetailData;
+
+  void setChatDetailData({required ChatDetailData? chatDetailData}) {
+    this.chatDetailData = chatDetailData;
+    notifyListeners();
+  }
+
+  void getChatDetail({
+    required String chatType,
+    required String chatId,
+    bool showLoader = true,
+  }) async {
+    try {
+      setIsLoading(isLoading: showLoader);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String uid = currentLoggedInUserRole == RoleType.parent
+          ? userdata?.parentWpUsrId ?? ""
+          : userdata?.wpUsrId ?? "";
+      String encodedChatId = Uri.encodeComponent(chatId);
+      await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint:
+              "${Api.chatDetail}?uid=$uid&chat_type=$chatType&chat_id=$encodedChatId",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': userdata?.cookies ?? ""
+          }).then((response) {
+        if (response['status'] == true) {
+          ChatDetailModel chatDetailModel =
+              ChatDetailModel.fromJson(response);
+          setChatDetailData(chatDetailData: chatDetailModel.data);
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  //Marca como leídos los mensajes de un chat (Fase 2 - no leídos)
+  void markChatRead({
+    required String chatType,
+    required String chatId,
+  }) async {
+    try {
+      // Los chats de grupo no tienen no leídos que marcar
+      if (chatType == 'group') return;
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String uid = currentLoggedInUserRole == RoleType.parent
+          ? userdata?.parentWpUsrId ?? ""
+          : userdata?.wpUsrId ?? "";
+      await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: Api.markChatRead,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? ""
+        },
+        body: {
+          'uid': uid,
+          'chat_type': chatType,
+          'chat_id': chatId,
+        },
+      );
+    } catch (exception) {
+      // Marcar como leído es una acción secundaria:
+      // si falla, no se interrumpe la experiencia del chat.
     }
   }
 

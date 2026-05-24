@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
-import 'package:colegia_atenea/views/assistant_module/assistant_classes_screen.dart';
+//import 'package:colegia_atenea/views/assistant_module/assistant_classes_screen.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

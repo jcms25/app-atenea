@@ -54,6 +54,19 @@ class Api {
   static const String _listOfAllMessages = "parentSendMessage";
   static String get listOfAllMessages => _listOfAllMessages;
 
+  // Modelo chat unificado (conversación = pareja de usuarios / grupo difusor)
+  static const String _chatList = "chat-list";
+  static String get chatList => _chatList;
+
+  static const String _chatDetail = "chat-detail";
+  static String get chatDetail => _chatDetail;
+
+  static const String _markChatRead = "mark-chat-read";
+  static String get markChatRead => _markChatRead;
+
+  static const String _updateDeviceToken = "update-device-token";
+  static String get updateDeviceToken => _updateDeviceToken;
+
   static const String _eventListEndpoint = "events";
   static String get eventListEndPoint => _eventListEndpoint;
 
@@ -152,6 +165,30 @@ class Api {
 
   static const String _dinningDaysList = "schoolcalendardays";
   static String get dinningDaysList => _dinningDaysList;
+
+  // ============================================================
+  // MÓDULO ACTITUDINAL
+  // ============================================================
+  static const String _classroomEventsEnabledEndPoint = "classroom-events/enabled";
+  static String get classroomEventsEnabledEndPoint => _classroomEventsEnabledEndPoint;
+
+  static const String _classroomTagsEndPoint = "classroom-tags";
+  static String get classroomTagsEndPoint => _classroomTagsEndPoint;
+
+static const String _classroomEventsEndPoint = "classroom-events";
+  static String get classroomEventsEndPoint => _classroomEventsEndPoint;
+
+  static const String _classroomSubjectByDatetimeEndPoint =
+      "classroom-event/subject-by-datetime";
+  static String get classroomSubjectByDatetimeEndPoint =>
+      _classroomSubjectByDatetimeEndPoint;
+
+  static const String _classroomEventSaveEndPoint = "classroom-event";
+  static String get classroomEventSaveEndPoint => _classroomEventSaveEndPoint;
+
+  static const String _classroomEventsBulkEndPoint = "classroom-events-bulk";
+  static String get classroomEventsBulkEndPoint =>
+      _classroomEventsBulkEndPoint;
 
   static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,

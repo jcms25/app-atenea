@@ -159,6 +159,13 @@ class SplashLoginController extends ChangeNotifier {
       required AssistantController? assitantController}) async {
     String? role = AppSharedPreferences.getUserLoggedInRole();
 
+    // Escucha la rotación del token FCM: cuando Firebase emite
+    // un token nuevo, se registra en el servidor sin necesidad
+    // de que el usuario rehaga login.
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+      updateDeviceToken();
+    });
+
     if (role != null) {
       if (role == "student" || role == "parent" || role == "teacher") {
         Userdata? userdata = AppSharedPreferences.getUserData();
@@ -170,6 +177,10 @@ class SplashLoginController extends ChangeNotifier {
                     ? RoleType.parent
                     : RoleType.teacher);
 
+        // Refresca el token FCM por si rotó mientras la app
+        // estuvo cerrada (el login no se repite en este flujo).
+        updateDeviceToken();
+
         Get.offNamedUntil(
             AppRoutes.studentParentTeacherMainScreen, (routes) => false);
       } else {
@@ -180,6 +191,48 @@ class SplashLoginController extends ChangeNotifier {
       }
     } else {
       Get.offNamedUntil(AppRoutes.loginScreen, (route) => false);
+    }
+  }
+
+// Actualiza el token FCM en el servidor sin necesidad de
+  // rehacer login. Se llama al arrancar con sesión activa y
+  // cada vez que Firebase rota el token (onTokenRefresh).
+  Future<void> updateDeviceToken() async {
+    try {
+      String? role = AppSharedPreferences.getUserLoggedInRole();
+      // Solo aplica a los roles con token FCM por usuario
+      if (role != "student" && role != "parent" && role != "teacher") {
+        return;
+      }
+      Userdata? userdata = AppSharedPreferences.getUserData();
+      String uid = role == "parent"
+          ? userdata?.parentWpUsrId ?? ""
+          : userdata?.wpUsrId ?? "";
+      if (uid.isEmpty) return;
+
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null || fcmToken.isEmpty) return;
+
+      // El endpoint update-device-token usa permission_callback
+      // '__return_true' y recibe el uid por el body. NO se envía
+      // cabecera Authorization: hacerlo dispara una autenticación
+      // en WordPress que devuelve 401.
+      await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: Api.updateDeviceToken,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: {
+          'uid': uid,
+          'device_uuid': fcmToken,
+          'device_type': io.Platform.isAndroid ? "Android" : "Ios",
+        },
+      );
+    } catch (exception) {
+      // Actualizar el token es una acción de fondo:
+      // si falla, se reintentará en el próximo arranque
+      // o en el próximo onTokenRefresh.
     }
   }
 

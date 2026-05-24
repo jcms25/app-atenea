@@ -16,6 +16,8 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/transportation_s
 import 'package:colegia_atenea/views/screens/child_communication_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
+import 'package:provider/provider.dart';
 
 class ClassMenuScreen extends StatelessWidget {
   final Userdata? userdata;
@@ -25,6 +27,10 @@ class ClassMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Estado del switch global del módulo Actitudinal
+    final bool classroomEventsEnabled =
+        Provider.of<StudentParentTeacherController>(context, listen: false)
+            .isClassroomEventsEnabled;
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBarWidget(
@@ -167,6 +173,20 @@ class ClassMenuScreen extends StatelessWidget {
                                         ? studentData?.wpUsrId ?? ""
                                         : userdata?.wpUsrId ?? ""));
                               }),
+                          if (classroomEventsEnabled)
+                            ClassMenuWidget(
+                                menuName: "subMenuDrawer25".tr,
+                                leadingIcon: Icons.emoji_people,
+                                onPressed: () {
+                                  Get.to(() => ClassroomEventsScreen(
+                                        studentId: studentData != null
+                                            ? studentData?.wpUsrId ?? ""
+                                            : userdata?.wpUsrId ?? "",
+                                        studentName: studentData != null
+                                            ? studentData?.sFname ?? ""
+                                            : userdata?.sFname ?? "",
+                                      ));
+                                }),
                           ClassMenuWidget(
                               menuName: "evaluation".tr,
                               leadingIcon: Icons.edit_calendar,

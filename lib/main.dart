@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'controllers/store_controller.dart';
+import 'dart:convert';
 
 FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -28,6 +29,9 @@ FlutterLocalNotificationsPlugin notificationsPlugin =
 final RxString pendingDeepLink = ''.obs;
 final RxString pendingEid = ''.obs;
 final RxString pendingClassId = ''.obs;
+final RxString pendingStudentId = ''.obs;
+final RxString pendingStudentName = ''.obs;
+final RxString pendingClassName = ''.obs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +58,10 @@ void main() async {
           requestSoundPermission: true);
   InitializationSettings initializationSettings = InitializationSettings(
       android: androidInitializationSettings, iOS: iosSettings);
-  await notificationsPlugin.initialize(initializationSettings);
+  await notificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: _onLocalNotificationTap,
+  );
 
   // ─── App en foreground: mostrar notificación local ───────────────────────
   FirebaseMessaging.onMessage.listen((event) {
@@ -125,10 +132,38 @@ void _navigateFromMessage(RemoteMessage message) {
   // Leer eid y classId del payload si existen
   final String eid = message.data["eid"] ?? "";
   final String classId = message.data["classId"] ?? "";
+  final String studentId = message.data["student_id"] ?? "";
+  final String studentName = message.data["student_name"] ?? "";
+  final String className = message.data["class_name"] ?? "";
   pendingEid.value = eid;
   pendingClassId.value = classId;
+  pendingStudentId.value = studentId;
+  pendingStudentName.value = studentName;
+  pendingClassName.value = className;
   // Actualizar la variable reactiva — MainScreen la detectará automáticamente
   pendingDeepLink.value = destination;
+}
+
+// Se ejecuta al tocar una notificación local (las que se muestran
+// con la app en primer plano). Reconstruye los datos del payload
+// y reutiliza la misma lógica de navegación que el resto de casos.
+void _onLocalNotificationTap(NotificationResponse response) {
+  final String? payload = response.payload;
+  if (payload == null || payload.isEmpty) return;
+  try {
+    final Map<String, dynamic> data =
+        Map<String, dynamic>.from(jsonDecode(payload) as Map);
+    final String destination = NotificationService.resolveRouteFromData(data);
+    if (destination == "dashboard") return;
+    pendingEid.value = data["eid"]?.toString() ?? "";
+    pendingClassId.value = data["classId"]?.toString() ?? "";
+    pendingStudentId.value = data["student_id"]?.toString() ?? "";
+    pendingStudentName.value = data["student_name"]?.toString() ?? "";
+    pendingClassName.value = data["class_name"]?.toString() ?? "";
+    pendingDeepLink.value = destination;
+  } catch (e) {
+    // payload mal formado: no se navega.
+  }
 }
 
 void setLoginFalse() async {

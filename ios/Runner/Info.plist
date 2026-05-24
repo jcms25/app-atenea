@@ -74,5 +74,7 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Esta app no utiliza tu ubicación.</string>
 </dict>
 </plist>

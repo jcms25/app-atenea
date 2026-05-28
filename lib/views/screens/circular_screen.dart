@@ -114,15 +114,14 @@ class _Circular extends State<CircularScreen> {
                                 mainAxisSpacing: 10.0,
                                 crossAxisSpacing: 10.0,
                                 crossAxisCount: 2,
-                                childAspectRatio: 0.85),
+                                childAspectRatio: 0.75),
                             itemBuilder: (context, index) {
                               Datum data = tempList[index];
                               return GestureDetector(
                                 onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context)=> CircularDetail(data.id)));
                                 },
-                                child: Container(
-                                  height: 200,
+                                child: Container(                                  
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       // color: AppColors.primary

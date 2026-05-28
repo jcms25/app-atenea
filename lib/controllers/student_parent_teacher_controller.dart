@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:colegia_atenea/models/beca_libros_alumno_model.dart';
+import 'package:colegia_atenea/models/beca_libros_curso_model.dart';
+import 'package:colegia_atenea/models/beca_resolucion_model.dart';
 import 'package:colegia_atenea/models/dashboard_model.dart';
 import 'package:colegia_atenea/models/dinning_student_list_response.dart';
 import 'package:colegia_atenea/models/dinning_menu_response.dart';
@@ -215,6 +218,236 @@ class StudentParentTeacherController extends ChangeNotifier {
       // Si falla, dejamos el flag en false (módulo oculto por seguridad)
     }
   }
+
+  // ============================================================
+  // MÓDULO BECAS — Visibilidad de la sección
+  // ============================================================
+  // Nivel 1: switch global controlado por el admin desde la web.
+  bool isBecasEnabled = false;
+  // Nivel 2: si el padre logueado tiene al menos un hijo con resolución de beca.
+  bool parentHasBeca = false;
+
+  void setBecasVisibility({required bool enabled, required bool hasBeca}) {
+    isBecasEnabled = enabled;
+    parentHasBeca = hasBeca;
+    notifyListeners();
+  }
+
+// La sección Becas se muestra en el menú solo si se cumplen AMBOS niveles.
+  bool get showBecasSection => isBecasEnabled && parentHasBeca;
+
+  // True si al menos un hijo tiene beca CONCEDIDA. Las secciones de libros
+  // (becados / concedidos) solo se muestran en este caso.
+  bool parentHasBecaConcedida = false;
+
+  void setParentHasBecaConcedida({required bool value}) {
+    parentHasBecaConcedida = value;
+    notifyListeners();
+  }
+
+  // Carga al arrancar: consulta el switch global y, si está activo, comprueba
+  // si este padre tiene hijos becarios.
+  Future<void> fetchBecasVisibility() async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      Map<String, String> header = {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': "Basic $token",
+        'Cookie': userdata?.cookies ?? "",
+      };
+
+      // Nivel 1 — switch global
+      final visibleResponse = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.becasVisibleEndPoint,
+        header: header,
+      );
+      bool enabled = visibleResponse['status'] == true &&
+          (visibleResponse['visible'] ?? 0) == 1;
+
+      // Si el switch global está apagado, no hace falta consultar el Nivel 2.
+      if (!enabled) {
+        setBecasVisibility(enabled: false, hasBeca: false);
+        return;
+      }
+
+      // Nivel 2 — ¿este padre tiene hijos becarios?
+      bool hasBeca = false;
+      String parentId = userdata?.parentWpUsrId ?? "";
+      if (parentId.isNotEmpty) {
+        final resolucionResponse = await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.becaResolucionEndPoint}/$parentId",
+          header: header,
+        );
+        hasBeca = resolucionResponse['status'] == true &&
+            resolucionResponse['tiene_beca'] == true;
+
+        // Calcular si hay algún hijo con beca concedida (para las
+        // secciones de libros), aprovechando esta misma respuesta.
+        if (resolucionResponse['status'] == true) {
+          final resolucion =
+              BecaResolucionResponse.fromJson(resolucionResponse);
+          parentHasBecaConcedida =
+              resolucion.data.any((b) => b.concedida);
+        } else {
+          parentHasBecaConcedida = false;
+        }
+      }
+
+      setBecasVisibility(enabled: enabled, hasBeca: hasBeca);
+    } catch (_) {
+      // Si algo falla, sección oculta por seguridad.
+      setBecasVisibility(enabled: false, hasBeca: false);
+    }
+  }
+
+  // --- Resolución de beca: lista de hijos con su resolución ---
+  BecaResolucionResponse? becaResolucion;
+  bool isBecaResolucionLoading = false;
+
+  void setBecaResolucionLoading({required bool loading}) {
+    isBecaResolucionLoading = loading;
+    notifyListeners();
+  }
+
+  // Carga la resolución de beca de los hijos del padre logueado.
+  // La pantalla Resolución llama a este método en su initState para
+  // obtener siempre datos frescos (no cacheados).
+  Future<void> fetchBecaResolucion() async {
+    try {
+      setBecaResolucionLoading(loading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String parentId = userdata?.parentWpUsrId ?? "";
+
+      if (parentId.isEmpty) {
+        becaResolucion = null;
+        setBecaResolucionLoading(loading: false);
+        return;
+      }
+
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.becaResolucionEndPoint}/$parentId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+
+      if (response['status'] == true) {
+        becaResolucion = BecaResolucionResponse.fromJson(response);
+        // ¿Hay al menos un hijo con beca concedida?
+        parentHasBecaConcedida =
+            becaResolucion!.data.any((b) => b.concedida);
+      } else {
+        becaResolucion = null;
+        parentHasBecaConcedida = false;
+      }
+    } catch (_) {
+      becaResolucion = null;
+    } finally {
+      setBecaResolucionLoading(loading: false);
+    }
+  }
+
+  // --- Libros concedidos al alumno ---
+  // Mapa: clave = student_id, valor = libros concedidos a ese alumno.
+  Map<int, List<BecaLibro>> becaLibrosPorAlumno = {};
+  bool isBecaLibrosLoading = false;
+
+  void setBecaLibrosLoading({required bool loading}) {
+    isBecaLibrosLoading = loading;
+    notifyListeners();
+  }
+
+  // Carga los libros concedidos de una lista de alumnos (los hijos con
+  // beca concedida). La pantalla llama a este método en su initState.
+  Future<void> fetchBecaLibrosAlumnos({required List<int> studentIds}) async {
+    try {
+      setBecaLibrosLoading(loading: true);
+      becaLibrosPorAlumno = {};
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      Map<String, String> header = {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': "Basic $token",
+        'Cookie': userdata?.cookies ?? "",
+      };
+
+      // Lanzamos todas las peticiones EN PARALELO. La carga total tarda
+      // lo que el alumno más lento, no la suma de todos.
+      final List<Future<MapEntry<int, List<BecaLibro>>>> futures =
+          studentIds.map((studentId) async {
+        final response = await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.becaLibrosAlumnoEndPoint}/$studentId",
+          header: header,
+        );
+        final List<BecaLibro> libros = (response['status'] == true)
+            ? BecaLibrosAlumnoResponse.fromJson(response).data
+            : <BecaLibro>[];
+        return MapEntry(studentId, libros);
+      }).toList();
+
+  final List<MapEntry<int, List<BecaLibro>>> results =
+          await Future.wait(futures);
+      becaLibrosPorAlumno = Map<int, List<BecaLibro>>.fromEntries(results);
+    } catch (_) {
+      becaLibrosPorAlumno = {};
+    } finally {
+      setBecaLibrosLoading(loading: false);
+    }
+  }
+
+  // --- Libros becados del curso del alumno ---
+  // Mapa: clave = student_id, valor = respuesta del endpoint
+  // (incluye curso + libros becados de ese curso).
+  Map<int, BecaLibrosCursoResponse> becaLibrosCursoPorAlumno = {};
+  bool isBecaLibrosCursoLoading = false;
+
+  void setBecaLibrosCursoLoading({required bool loading}) {
+    isBecaLibrosCursoLoading = loading;
+    notifyListeners();
+  }
+
+  // Carga los libros becados del curso de una lista de alumnos
+  // (los hijos con beca concedida). La pantalla llama a este método
+  // en su initState. Lanza las peticiones en paralelo.
+  Future<void> fetchBecaLibrosCurso({required List<int> studentIds}) async {
+    try {
+      setBecaLibrosCursoLoading(loading: true);
+      becaLibrosCursoPorAlumno = {};
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      Map<String, String> header = {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': "Basic $token",
+        'Cookie': userdata?.cookies ?? "",
+      };
+
+      final List<Future<MapEntry<int, BecaLibrosCursoResponse>>> futures =
+          studentIds.map((studentId) async {
+        final response = await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "${Api.becaLibrosCursoEndPoint}/$studentId",
+          header: header,
+        );
+        final BecaLibrosCursoResponse parsed = (response['status'] == true)
+            ? BecaLibrosCursoResponse.fromJson(response)
+            : BecaLibrosCursoResponse(status: false, curso: '', data: []);
+        return MapEntry(studentId, parsed);
+      }).toList();
+
+      final List<MapEntry<int, BecaLibrosCursoResponse>> results =
+          await Future.wait(futures);
+      becaLibrosCursoPorAlumno =
+          Map<int, BecaLibrosCursoResponse>.fromEntries(results);
+    } catch (_) {
+      becaLibrosCursoPorAlumno = {};
+    } finally {
+      setBecaLibrosCursoLoading(loading: false);
+    }
+  }
   // --- Histórico de incidencias actitudinales de un alumno ---
   List<ClassroomEvent> listOfClassroomEvents = [];
   ClassroomEventsSummary? classroomEventsSummary;
@@ -422,6 +655,9 @@ class StudentParentTeacherController extends ChangeNotifier {
 
           // Módulo Actitudinal: cargar estado del switch global en paralelo
           fetchClassroomEventsEnabled();
+
+          // Módulo Becas: cargar visibilidad (Nivel 1) y si el padre tiene beca (Nivel 2)
+          fetchBecasVisibility();
         }
         setIsLoading(isLoading: false);
       });

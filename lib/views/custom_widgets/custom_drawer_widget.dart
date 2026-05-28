@@ -7,6 +7,9 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_message_list_screen.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
+import 'package:colegia_atenea/views/screens/beca_libros_concedidos_screen.dart';
+import 'package:colegia_atenea/views/screens/beca_libros_curso_screen.dart';
+import 'package:colegia_atenea/views/screens/beca_resolucion_screen.dart';
 import 'package:colegia_atenea/views/screens/child_communication_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/evaluation_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
@@ -361,6 +364,28 @@ class CustomDrawerWidget extends StatelessWidget {
             }
             drawerMenuOption.subMenu = tempSubMenu;
           }
+        }
+        // Submenú de Becas: se construye desde subMenuListBecas
+        if (drawerMenuOption.name == 'drawerOption12'.tr) {
+          if (drawerMenuOption.subMenu == null) {
+            List<DrawerMenuOption> tempSubMenuBecas = [];
+            for (var e in AppConstants.subMenuListBecas) {
+              // "Libros concedidos al alumno" y "Libros becados del curso"
+              // solo si hay algún hijo con beca concedida.
+              if ((e['name'] == 'subMenuDrawer28'.tr ||
+                      e['name'] == 'subMenuDrawer29'.tr) &&
+                  !(appController?.parentHasBecaConcedida ?? false)) {
+                continue;
+              }
+              tempSubMenuBecas.add(DrawerMenuOption.fromJson(e));
+            }
+            drawerMenuOption.subMenu = tempSubMenuBecas;
+          }
+        }
+        // La pestaña Becas solo se añade si se cumplen los dos niveles de visibilidad
+        if (drawerMenuOption.name == 'drawerOption12'.tr &&
+            !(appController?.showBecasSection ?? false)) {
+          continue;
         }
         drawerMenuOptionList.add(drawerMenuOption);
       }
@@ -738,7 +763,20 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(() =>
             SendMessageToAssistant(studentId: drawerMenuOption.wpUserId ?? ""));
         break;
-
+      //sub menu de Becas
+      case "Proceso de Solicitud":
+        studentParentTeacherController.openUrl(
+            url: 'https://colegioatenea.es/solicitud-de-becas/');
+        break;
+      case "Resolución":
+        Get.to(() => BecaResolucionScreen());
+        break;
+      case "Libros concedidos al alumno":
+        Get.to(() => LibrosConcedidosScreen());
+        break;
+      case "Libros becados del curso":
+        Get.to(() => LibrosBecadosCursoScreen());
+        break;
       default:
         break;
     }

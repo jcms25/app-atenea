@@ -190,6 +190,25 @@ static const String _classroomEventsEndPoint = "classroom-events";
   static String get classroomEventsBulkEndPoint =>
       _classroomEventsBulkEndPoint;
 
+  // ============================================================
+  // MÓDULO BECAS
+  // ============================================================
+  // Switch global de visibilidad de la sección Becas (Nivel 1)
+  static const String _becasVisibleEndPoint = "becas/visible";
+  static String get becasVisibleEndPoint => _becasVisibleEndPoint;
+
+  // Resolución de beca por hijo. Se le concatena "/{parent_user_id}"
+  static const String _becaResolucionEndPoint = "beca/resolucion";
+  static String get becaResolucionEndPoint => _becaResolucionEndPoint;
+
+  // Libros concedidos a un alumno. Se le concatena "/{student_id}"
+  static const String _becaLibrosAlumnoEndPoint = "beca/libros-alumno";
+  static String get becaLibrosAlumnoEndPoint => _becaLibrosAlumnoEndPoint;
+
+  // Libros becados del curso de un alumno. Se le concatena "/{student_id}"
+  static const String _becaLibrosCursoEndPoint = "beca/libros-curso";
+  static String get becaLibrosCursoEndPoint => _becaLibrosCursoEndPoint;
+
   static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,

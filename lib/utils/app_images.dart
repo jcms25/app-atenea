@@ -68,4 +68,11 @@ class AppImages{
 
 
   static const String ampaIcon = "$rootPath/ampa.png";
+
+//Iconos del módulo Becas
+  static const String becaIcon = "$rootPath/beca.svg";
+  static const String solicitudIcon = "$rootPath/solicitud.svg";
+  static const String resolucionIcon = "$rootPath/resolucion.svg";
+  static const String librosConcedidosIcon = "$rootPath/libros-concedidos.svg";
+  static const String librosBecadosIcon = "$rootPath/libros-becados.svg";
 }

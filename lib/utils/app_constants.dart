@@ -169,6 +169,9 @@ class AppConstants {
     },
     {"name": 'drawerOption11'.tr,
       "icon": AppImages.storeIcon,
+    },
+    {"name": 'drawerOption12'.tr,
+      "icon": AppImages.becaIcon,
     }
   ];
 
@@ -288,11 +291,27 @@ class AppConstants {
     {"name" : "subMenuDrawer17".tr,
       "icon": AppImages.cartIcon,
     },
-    {"name" : "subMenuDrawer18".tr,
+{"name" : "subMenuDrawer18".tr,
       "icon": AppImages.couponIcon,
     },
   ];
 
+//Becas sub menu list : parent
+  static List<Map<String,String>> subMenuListBecas = [
+    {"name" : "subMenuDrawer26".tr,
+      "icon": AppImages.solicitudIcon,
+    },
+    {"name" : "subMenuDrawer27".tr,
+      "icon": AppImages.resolucionIcon,
+    },
+    {"name" : "subMenuDrawer29".tr,
+      "icon": AppImages.librosBecadosIcon,
+    },
+    {"name" : "subMenuDrawer28".tr,
+      "icon": AppImages.librosConcedidosIcon,
+    },
+  ];
+  
   //Products sub menu list ; parent
   static List<Map<String,String>> subMenuListProducts = [
     {"name" : "subMenuDrawer19".tr},

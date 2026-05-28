@@ -205,6 +205,7 @@ class WorldLanguage extends Translations {
           'drawerOption9' : 'Teaching Management',
           'drawerOption10' : 'Dining Room',
           'drawerOption11' : 'Store',
+          'drawerOption12' : 'Scholarships',
 
           //sub menu option
           'subMenuDrawer1' : 'Time Table',
@@ -221,6 +222,12 @@ class WorldLanguage extends Translations {
           'subMenuDrawer11' : 'Manage Service',
           'subMenuDrawer12' : 'My Schedule',
           'subMenuDrawer13' : 'Follow-up',
+
+          //Scholarships sub menu
+          'subMenuDrawer26' : 'Application Process',
+          'subMenuDrawer27' : 'Resolution',
+          'subMenuDrawer28' : 'Books granted to the student',
+          'subMenuDrawer29' : 'Books awarded for the course',
 
           //store submenu option
           'subMenuDrawer14' : 'My Data',
@@ -452,6 +459,7 @@ class WorldLanguage extends Translations {
           'drawerOption9' : 'Gestión docente',
           'drawerOption10' : 'Comedor',
           'drawerOption11' : 'Tienda',
+          'drawerOption12' : 'Becas',
 
           //sub menu option
           'subMenuDrawer1' : 'Horario',
@@ -470,13 +478,18 @@ class WorldLanguage extends Translations {
           'subMenuDrawer13' : 'Seguimiento',
           'subMenuDrawer24' : 'Horarios',
 
-
           //store submenu option
           'subMenuDrawer14' : 'Mis Datos',
           'subMenuDrawer15' : 'Mis Compras Atenea',
           'subMenuDrawer16' : 'Tienda Online',
           'subMenuDrawer17' : 'Carrito',
           'subMenuDrawer18' : 'Cupones',
+
+          //Becas sub menu
+          'subMenuDrawer26' : 'Proceso de Solicitud',
+          'subMenuDrawer27' : 'Resolución',
+          'subMenuDrawer28' : 'Libros concedidos al alumno',
+          'subMenuDrawer29' : 'Libros becados del curso',
 
           //Tienda Online sub menu
           'subMenuDrawer19' : 'Libros',

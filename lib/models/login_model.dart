@@ -98,6 +98,7 @@ class Userdata {
   String? teacherEmail;
   String? tiendaToken;
   List<String>? userRoles;
+  String? nif;
 
   Userdata(
       {this.sid,
@@ -161,7 +162,8 @@ class Userdata {
         this.teacherImage,
         this.teacherEmail,
         this.tiendaToken,
-        this.userRoles
+        this.userRoles,
+        this.nif,
       });
 
   Userdata.fromJson(Map<String, dynamic> json) {
@@ -244,6 +246,7 @@ class Userdata {
     teacherImage = json['teacher_image'];
     teacherEmail = json['teacher_email'];
     tiendaToken = json['tiendaToken'];
+    nif = json['nif'];
   }
 
   Map<String, dynamic> toJson() {
@@ -315,6 +318,7 @@ class Userdata {
     data['teacher_image'] = teacherImage;
     data['teacher_email'] = teacherEmail;
     data['tiendaToken'] = tiendaToken;
+    data['nif'] = nif;
     data['user_roles'] = userRoles;
     return data;
   }

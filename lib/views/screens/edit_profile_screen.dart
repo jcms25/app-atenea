@@ -136,10 +136,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               },
                             ),
                           ),
-                         Consumer<StudentParentTeacherController>(
+                          Consumer<StudentParentTeacherController>(
                            builder: (context,studentParentTeacherController,child){
-                             return Visibility(
-                                 visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher,
+                                return Visibility(
+                                  visible: studentParentTeacherController.currentLoggedInUserRole == RoleType.teacher ||
+                                     studentParentTeacherController.currentLoggedInUserRole == RoleType.parent ||
+                                     AppSharedPreferences.getUserLoggedInRole() == "assistant",
                                  child: Column(
                                crossAxisAlignment: CrossAxisAlignment.start,
                                children: [
@@ -172,25 +174,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             inputFormatter: [
                               FilteringTextInputFormatter.digitsOnly
                             ],
-                            label: 'Número de teléfono',
+                            label: 'Teléfono',
                             textInputType: TextInputType.number,
                             validateFunction: (value){},
                           ),
                           const SizedBox(
                             height: 20,
-                          ),
-                          Text(
-                            'Dirección',
-                            style: AppTextStyle.getOutfit500(
-                                textSize: 20, textColor: AppColors.secondary),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          ),                          
                           CustomTextField(
                             controller: actualAddressController,
                             validateFunction: AppValidations.valueEmptyOrNot,
-                            label: "Dirección actual",
+                            label: "Dirección",
                           ),
                           const SizedBox(
                             height: 20,
@@ -202,7 +196,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 controller: cityController,
                                 validateFunction:
                                     AppValidations.valueEmptyOrNot,
-                                label: "Ciudad",
+                                label: "Localidad",
                               )),
                               const SizedBox(
                                 width: 20,
@@ -232,7 +226,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   buttonTitle: 'Actualizar',
                                   onPressed:  userRole == "assistant" ? () async{
                                     if(editProfileFormKey.currentState?.validate() ?? false){
-                                      await assistantController.updateAssistantEditProfile(email: emailController?.text ?? "", phone: mobileController?.text ?? "", address: actualAddressController?.text ?? "", postCode: postalCodeController?.text ?? "", city: cityController?.text ?? "", userId: assistantController.assistant?.id ?? "");
+                                     await assistantController.updateAssistantEditProfile(email: emailController?.text ?? "", phone: mobileController?.text ?? "", address: actualAddressController?.text ?? "", postCode: postalCodeController?.text ?? "", city: cityController?.text ?? "", userId: assistantController.assistant?.id ?? "");
+                                      Get.back();
                                     }
                                   }   :    () async {
                                     if (editProfileFormKey.currentState
@@ -268,13 +263,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                         .pickImageFromFile
                                                         ?.path ??
                                                     "",
-                                            nif: studentParentTeacherController
-                                                        .currentLoggedInUserRole ==
-                                                    RoleType.teacher
-                                                ? nifController?.text ?? ""
-                                                : null,
+                                            nif: nifController?.text ?? "",
                                             studentParentTeacherController:
                                                 studentParentTeacherController);
+                                      Get.back();          
                                       } else {
                                         String wpUserId = studentParentTeacherController
                                                         .currentLoggedInUserRole ==
@@ -306,12 +298,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 mobileController?.text,
                                             postalCode:
                                                 postalCodeController?.text,
-                                            nif: studentParentTeacherController
-                                                        .currentLoggedInUserRole ==
-                                                    RoleType.teacher
-                                                ? nifController?.text ?? ""
-                                                : null);
-                                      }
+                                            nif: nifController?.text ?? "");
+                                      Get.back();
+                                      }                                      
                                     }
                                   });
                             },
@@ -421,12 +410,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void initializeEditProfileScreen() {
-    if(widget.roleType == RoleType.assistant){
+  if(widget.roleType == RoleType.assistant){
       emailController = TextEditingController(text: widget.assistantData?.userEmail ?? "");
       mobileController = TextEditingController(text: widget.assistantData?.userPhone ?? "");
       actualAddressController = TextEditingController(text: widget.assistantData?.userAddress ?? "");
       cityController = TextEditingController(text: widget.assistantData?.city ?? "");
-      postalCodeController = TextEditingController(text: widget.assistantData?.postCode ?? "");
+      postalCodeController = TextEditingController(text: widget.assistantData?.postCode ?? "");      
+      nifController = TextEditingController(text: widget.assistantData?.nif ?? "");
     } else{
       emailController = TextEditingController(
           text: widget.roleType == RoleType.teacher
@@ -461,6 +451,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       nifController = TextEditingController(
           text: widget.roleType == RoleType.teacher
               ? widget.userdata?.empCode ?? ""
+              : widget.roleType == RoleType.parent
+              ? widget.userdata?.nif ?? ""
               : "");
     }
 

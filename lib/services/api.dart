@@ -67,6 +67,9 @@ class Api {
   static const String _updateDeviceToken = "update-device-token";
   static String get updateDeviceToken => _updateDeviceToken;
 
+  static const String _getUserRoles = "get-user-roles";
+  static String get getUserRoles => _getUserRoles;
+
   static const String _eventListEndpoint = "events";
   static String get eventListEndPoint => _eventListEndpoint;
 
@@ -175,7 +178,7 @@ class Api {
   static const String _classroomTagsEndPoint = "classroom-tags";
   static String get classroomTagsEndPoint => _classroomTagsEndPoint;
 
-static const String _classroomEventsEndPoint = "classroom-events";
+  static const String _classroomEventsEndPoint = "classroom-events";
   static String get classroomEventsEndPoint => _classroomEventsEndPoint;
 
   static const String _classroomSubjectByDatetimeEndPoint =

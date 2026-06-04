@@ -152,6 +152,7 @@ class AssistantData {
   String? userAddress;
   String? city;
   String? postCode;
+  String? nif;
 
   AssistantData({
     required this.id,
@@ -172,7 +173,8 @@ class AssistantData {
     required this.userPhone,
     required this.userAddress,
     required this.city,
-    required this.postCode
+    required this.postCode,
+    required this.nif,
   });
 
   factory AssistantData.fromJson(Map<String, dynamic> json) => AssistantData(
@@ -194,7 +196,8 @@ class AssistantData {
     userPhone: json["phone"],
     userAddress : json["address"],
     city : json["city"],
-    postCode : json["postcode"]
+    postCode : json["postcode"],
+    nif: json["nif"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -216,7 +219,7 @@ class AssistantData {
     "phone" : userPhone,
     "address" : userAddress,
     "city" : city,
-    "postcode" : userPhone
-
+    "postcode" : postCode,
+    "nif" : nif,
   };
 }

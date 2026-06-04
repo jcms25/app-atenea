@@ -144,26 +144,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "hello".tr,
-                                            style: AppTextStyle.getOutfit300(
-                                                textSize: 16,
-                                                textColor: AppColors.white),
-                                          ),
-                                          Text(
-                                            fName,
-                                            style: AppTextStyle.getOutfit600(
-                                                textSize: 20,
-                                                textColor: AppColors.white),
-                                          )
-                                        ],
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "hello".tr,
+                                              style: AppTextStyle.getOutfit300(
+                                                  textSize: 16,
+                                                  textColor: AppColors.white),
+                                            ),
+                                            Text(
+                                              fName,
+                                              style: AppTextStyle.getOutfit600(
+                                                  textSize: 20,
+                                                  textColor: AppColors.white),
+                                            )
+                                          ],
+                                        ),
                                       ),
+                                      Builder(builder: (context) {
+                                        List<String> availableRoles = AppSharedPreferences.getAvailableRoles();
+                                        if (availableRoles.length <= 1) return const SizedBox.shrink();
+                                        String currentRole = userRole ?? '';
+                                        String label = currentRole == 'teacher'
+                                            ? 'Profesor'
+                                            : currentRole == 'parent'
+                                                ? 'Padre/Madre'
+                                                : currentRole == 'student'
+                                                    ? 'Alumno'
+                                                    : 'Asistencia';
+                                        IconData icon = currentRole == 'teacher'
+                                            ? Icons.school
+                                            : currentRole == 'parent'
+                                                ? Icons.family_restroom
+                                                : currentRole == 'student'
+                                                    ? Icons.person
+                                                    : Icons.assignment_ind;
+                                        return Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(icon, color: AppColors.white.withValues(alpha: 0.8), size: 18),
+                                            Text(label,
+                                                style: AppTextStyle.getOutfit300(
+                                                    textSize: 11,
+                                                    textColor: AppColors.white.withValues(alpha: 0.8))),
+                                          ],
+                                        );
+                                      }),
                                     ],
                                   )),
                             );

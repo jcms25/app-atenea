@@ -36,6 +36,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'package:colegia_atenea/controllers/assistant_controller.dart';
+import 'package:colegia_atenea/controllers/splash_login_controller.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
+
 import '../../utils/app_images.dart';
 import '../screens/class_menu_screens/grade_screen.dart';
 import '../screens/class_menu_screens/timetable_screen.dart';
@@ -189,6 +193,67 @@ class CustomDrawerWidget extends StatelessWidget {
                       ),
                     ),
                   ));
+                },
+              ),
+              Consumer<StudentParentTeacherController>(
+                builder: (context, studentParentTeacherController, child) {
+                  List<String> availableRoles = AppSharedPreferences.getAvailableRoles();
+                  if (availableRoles.length <= 1) return const SizedBox.shrink();
+                  String currentRole = AppSharedPreferences.getUserLoggedInRole() ?? '';
+                  List<String> otherRoles = availableRoles.where((r) => r != currentRole).toList();
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Cambiar perfil',
+                            style: AppTextStyle.getOutfit600(
+                                textSize: 13, textColor: AppColors.primary)),
+                        const SizedBox(height: 4),
+                        ...otherRoles.map((role) {
+                          String label = role == 'teacher'
+                              ? 'Profesor'
+                              : role == 'parent'
+                                  ? 'Padre/Madre'
+                                  : role == 'student'
+                                      ? 'Alumno'
+                                      : 'Asistencia';
+                          IconData icon = role == 'teacher'
+                              ? Icons.school
+                              : role == 'parent'
+                                  ? Icons.family_restroom
+                                  : role == 'student'
+                                      ? Icons.person
+                                      : Icons.assignment_ind;
+                          return GestureDetector(
+                            onTap: () async {
+                              Navigator.pop(context);
+                              final assistantController = Provider.of<AssistantController>(context, listen: false);
+                              final splashController = Provider.of<SplashLoginController>(context, listen: false);
+                              await splashController.switchProfile(
+                                newRole: role,
+                                studentParentTeacherController: studentParentTeacherController,
+                                assistantController: assistantController,
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  Icon(icon, color: AppColors.primary, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(label,
+                                      style: AppTextStyle.getOutfit400(
+                                          textSize: 16, textColor: AppColors.black)),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                        const Divider(),
+                      ],
+                    ),
+                  );
                 },
               ),
               CustomButtonWidget(

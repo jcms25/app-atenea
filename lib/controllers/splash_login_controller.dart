@@ -46,6 +46,72 @@ class SplashLoginController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Consulta los roles del usuario y decide si hacer login directo
+  // o navegar a la pantalla de selección de perfil.
+  Future<void> loginOrSelectRole({
+    required String userName,
+    required String userPassword,
+    required bool isRememberMe,
+    required StudentParentTeacherController studentParentTeacherController,
+    required AssistantController assistantController,
+  }) async {
+    setIsLoading(isLoading: true);
+    try {
+      dynamic response = await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: Api.getUserRoles,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: {
+          'username': userName.trim(),
+        },
+      );
+
+      List<String> roles = [];
+      if (response['status'] == true) {
+        roles = List<String>.from(response['roles']);
+      }
+
+      setIsLoading(isLoading: false);
+
+      if (roles.length == 1) {
+        // Un solo perfil: login directo
+        await userLogin(
+          userName: userName,
+          userPassword: userPassword,
+          userRole: roles.first,
+          isRememberMe: isRememberMe,
+          studentParentTeacherController: studentParentTeacherController,
+          assistantController: assistantController,
+        );
+      } else if (roles.length > 1) {
+        // Doble perfil: navegar a pantalla de selección
+        Get.toNamed(AppRoutes.roleSelectionScreen, arguments: {
+          'userName': userName,
+          'userPassword': userPassword,
+          'isRememberMe': isRememberMe,
+          'roles': roles,
+        });
+      } else {
+        // Usuario no encontrado: intentar login para que el servidor
+        // devuelva el mensaje de error apropiado
+        await userLogin(
+          userName: userName,
+          userPassword: userPassword,
+          userRole: 'parent',
+          isRememberMe: isRememberMe,
+          studentParentTeacherController: studentParentTeacherController,
+          assistantController: assistantController,
+        );
+      }
+    } catch (_) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(
+          status: false, message: 'Error de conexión. Inténtalo de nuevo.');
+    }
+  }
+
   //login user
   Future<void> userLogin(
       {required String userName,
@@ -64,6 +130,12 @@ class SplashLoginController extends ChangeNotifier {
           ? "parent"
           : userRole == AppConstants.roleDropDown[3]
           ? "teacher"
+          : userRole == "teacher"
+          ? "teacher"
+          : userRole == "parent"
+          ? "parent"
+          : userRole == "student"
+          ? "student"
           : "assistant";
 
       dynamic response = await Api.httpRequest(
@@ -94,21 +166,13 @@ class SplashLoginController extends ChangeNotifier {
 
         resetLoginScreen();
 
+        await AppSharedPreferences.saveActiveUserCredential(
+            userName: userName, userPassword: userPassword);
+
         if (roleOfUser == "student" ||
             roleOfUser == "parent" ||
             roleOfUser == "teacher") {
           LoginModel loginModel = LoginModel.fromJson(response);
-
-          // if(roleOfUser == "parent"){
-          //  String? key1 = response['static']['sandbox']['key1'];
-          //   if(key1 != null){
-          //     List<int> newKey1 = base64Decode(restoreBase64Padding(key1));
-          //     String decoded = utf8.decode(newKey1);
-          //     print(response);
-          //     print("decrypted data : $decoded");
-          //   }
-          // }
-          // setIsLoading(isLoading: false);
 
           await AppSharedPreferences.saveUserData(
               basicAuthToken: loginModel.basicAuthToken,
@@ -120,22 +184,21 @@ class SplashLoginController extends ChangeNotifier {
                   : roleOfUser == "parent"
                   ? RoleType.parent
                   : RoleType.teacher);
-          if(roleOfUser == "parent"){
+          if (roleOfUser == "parent") {
             await AppSharedPreferences.saveKeyData(keyData: loginModel.keyData);
           }
+          await _fetchAndSaveAvailableRoles(userName: userName, userPassword: userPassword);
           setIsLoading(isLoading: false);
           Get.offNamedUntil(
               AppRoutes.studentParentTeacherMainScreen, (route) => false);
-
-        }
-        else if (roleOfUser == "assistant") {
+        } else if (roleOfUser == "assistant") {
           Assistant assistant = Assistant.fromJson(response);
 
           await AppSharedPreferences.saveAssistantLoggedInData(
               assistant: assistant,
-              basicAuthToken: assistant.basicAuthToken
-          );
+              basicAuthToken: assistant.basicAuthToken);
           assistantController.setAssistant(assistant: assistant.userdata?.data);
+          await _fetchAndSaveAvailableRoles(userName: userName, userPassword: userPassword);
           Get.offNamedUntil(AppRoutes.assistantMainScreen, (route) => false);
           setIsLoading(isLoading: false);
         }
@@ -150,8 +213,6 @@ class SplashLoginController extends ChangeNotifier {
       setIsLoading(isLoading: false);
     }
   }
-
-
 
   //checked if user already logged in or not
   void checkUserAlreadyLoggedIn(
@@ -184,7 +245,6 @@ class SplashLoginController extends ChangeNotifier {
         Get.offNamedUntil(
             AppRoutes.studentParentTeacherMainScreen, (routes) => false);
       } else {
-
         AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
         assitantController?.setAssistant(assistant: assistant);
         Get.offNamedUntil(AppRoutes.assistantMainScreen, (routes) => false);
@@ -194,7 +254,7 @@ class SplashLoginController extends ChangeNotifier {
     }
   }
 
-// Actualiza el token FCM en el servidor sin necesidad de
+  // Actualiza el token FCM en el servidor sin necesidad de
   // rehacer login. Se llama al arrancar con sesión activa y
   // cada vez que Firebase rota el token (onTokenRefresh).
   Future<void> updateDeviceToken() async {
@@ -233,6 +293,111 @@ class SplashLoginController extends ChangeNotifier {
       // Actualizar el token es una acción de fondo:
       // si falla, se reintentará en el próximo arranque
       // o en el próximo onTokenRefresh.
+    }
+  }
+
+  // Obtiene los roles disponibles del usuario y los guarda en SharedPreferences
+  Future<void> _fetchAndSaveAvailableRoles({
+    required String userName,
+    required String userPassword,
+  }) async {
+    try {
+      dynamic response = await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: Api.getUserRoles,
+        header: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: <String, dynamic>{
+          'username': userName,
+        },
+      );
+      if (response['status'] == true) {
+        List<String> roles = List<String>.from(response['roles']);
+        await AppSharedPreferences.saveAvailableRoles(roles: roles);
+      }
+    } catch (_) {
+      // Si falla, no bloqueamos el login
+    }
+  }
+
+  // Cambia de perfil sin cerrar sesión
+  Future<void> switchProfile({
+    required String newRole,
+    required StudentParentTeacherController studentParentTeacherController,
+    required AssistantController assistantController,
+  }) async {
+    try {
+      setIsLoading(isLoading: true);
+
+      Map<String, dynamic>? credentials = AppSharedPreferences.getActiveUserCredential();
+      if (credentials == null) {
+        setIsLoading(isLoading: false);
+        return;
+      }
+
+      String userName = credentials['userName'] ?? '';
+      String userPassword = credentials['userPassword'] ?? '';
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+      dynamic response = await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: Api.loginEndPoint,
+        header: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: <String, dynamic>{
+          'username': userName,
+          'password': userPassword,
+          'reg_select_role': newRole,
+          'device_uuid': fcmToken,
+          'device_type': io.Platform.isAndroid ? "Android" : "Ios",
+        },
+      );
+
+      if (response['status'] == true) {
+        if (newRole == 'teacher' || newRole == 'parent' || newRole == 'student') {
+          LoginModel loginModel = LoginModel.fromJson(response);
+          await AppSharedPreferences.saveUserData(
+            basicAuthToken: loginModel.basicAuthToken,
+            userdata: loginModel.userdata,
+            role: newRole,
+          );
+          studentParentTeacherController.setLoginModel(userdata: loginModel.userdata);
+          studentParentTeacherController.setRole(
+            role: newRole == 'student'
+                ? RoleType.student
+                : newRole == 'parent'
+                    ? RoleType.parent
+                    : RoleType.teacher,
+          );
+          if (newRole == 'parent') {
+            await AppSharedPreferences.saveKeyData(keyData: loginModel.keyData);
+          }
+          setIsLoading(isLoading: false);
+          studentParentTeacherController.setCurrentBottomIndexSelected(index: 0);
+          Get.offNamedUntil(AppRoutes.studentParentTeacherMainScreen, (route) => false);
+          studentParentTeacherController.getDashboardData(showLoader: true);
+        } else if (newRole == 'assistant') {
+          Assistant assistant = Assistant.fromJson(response);
+          await AppSharedPreferences.saveAssistantLoggedInData(
+            assistant: assistant,
+            basicAuthToken: assistant.basicAuthToken,
+          );
+          assistantController.setAssistant(assistant: assistant.userdata?.data);
+          setIsLoading(isLoading: false);
+          Get.offNamedUntil(AppRoutes.assistantMainScreen, (route) => false);
+        }
+      } else {
+        setIsLoading(isLoading: false);
+        AppConstants.showCustomToast(
+          status: false,
+          message: response['message'] ?? 'Error al cambiar de perfil',
+        );
+      }
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(status: false, message: '$exception');
     }
   }
 

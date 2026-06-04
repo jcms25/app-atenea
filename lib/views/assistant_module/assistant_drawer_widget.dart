@@ -10,6 +10,9 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+import 'package:colegia_atenea/controllers/splash_login_controller.dart';
+import 'package:colegia_atenea/services/app_shared_preferences.dart';
+
 import '../../utils/app_colors.dart';
 import '../../utils/app_images.dart';
 import '../custom_widgets/custom_button_widget.dart';
@@ -108,6 +111,67 @@ class AssistantDrawerWidget extends StatelessWidget {
             );
           }),
           const Spacer(),
+          Consumer<AssistantController>(
+            builder: (context, assistantController, child) {
+              List<String> availableRoles = AppSharedPreferences.getAvailableRoles();
+              if (availableRoles.length <= 1) return const SizedBox.shrink();
+              String currentRole = AppSharedPreferences.getUserLoggedInRole() ?? '';
+              List<String> otherRoles = availableRoles.where((r) => r != currentRole).toList();
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Cambiar perfil',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 13, textColor: AppColors.primary)),
+                    const SizedBox(height: 4),
+                    ...otherRoles.map((role) {
+                      String label = role == 'teacher'
+                          ? 'Profesor'
+                          : role == 'parent'
+                              ? 'Padre/Madre'
+                              : role == 'student'
+                                  ? 'Alumno'
+                                  : 'Asistencia';
+                      IconData icon = role == 'teacher'
+                          ? Icons.school
+                          : role == 'parent'
+                              ? Icons.family_restroom
+                              : role == 'student'
+                                  ? Icons.person
+                                  : Icons.assignment_ind;
+                      return GestureDetector(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          final splashController = Provider.of<SplashLoginController>(context, listen: false);
+                          final studentParentTeacherController = Provider.of<StudentParentTeacherController>(context, listen: false);
+                          await splashController.switchProfile(
+                            newRole: role,
+                            studentParentTeacherController: studentParentTeacherController,
+                            assistantController: assistantController,
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              Icon(icon, color: AppColors.primary, size: 20),
+                              const SizedBox(width: 8),
+                              Text(label,
+                                  style: AppTextStyle.getOutfit400(
+                                      textSize: 16, textColor: AppColors.black)),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                    const Divider(),
+                  ],
+                ),
+              );
+            },
+          ),
           CustomButtonWidget(
               buttonTitle: "logout".tr,
               suffixIcon: AppImages.loginArrow,

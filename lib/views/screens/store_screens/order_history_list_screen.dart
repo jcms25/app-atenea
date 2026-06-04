@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
@@ -7,9 +9,11 @@ import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/store_model/order_list_model.dart';
 import '../../../utils/app_colors.dart';
@@ -172,20 +176,41 @@ class OrderHistoryWidget extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Expanded(
-                      child: CustomButtonWidget(
+              Expanded(
+                  child: Consumer<StoreController>(
+                    builder: (context, storeController, child){
+                      return CustomButtonWidget(
                           buttonTitle: 'Albarán', onPressed: () async{
-
                         try{
-                          if(await canLaunchUrl(Uri.parse(orderItem.invoiceLink ?? ""))){
-                                await launchUrl(Uri.parse(orderItem.invoiceLink ?? ""));
-                              }else{
-                                AppConstants.showCustomToast(status: false, message: "Por favor, inténtalo de nuevo");
-                              }
-                            }catch(exception){
-                              AppConstants.showCustomToast(status: false, message: "$exception");
+                          storeController.setIsLoading(isLoading: true);
+                          final orderId = orderItem.orderId?.split("#").last ?? "";
+                          final response = await http.get(Uri.parse(
+                            'https://colegioatenea.es/wp-json/scl-api/v1/tiendapackingslip?order_id=$orderId'
+                          ));
+                          if(response.statusCode == 200){
+                            final data = jsonDecode(response.body);
+                            if(data['status'] == true){
+                              final bytes = base64Decode(data['pdf']);
+                              final dir = await getTemporaryDirectory();
+                              final file = File('${dir.path}/albaran_$orderId.pdf');
+                              await file.writeAsBytes(bytes);
+                              storeController.setIsLoading(isLoading: false);
+                              await OpenFile.open(file.path);
+                            } else {
+                              storeController.setIsLoading(isLoading: false);
+                              AppConstants.showCustomToast(status: false, message: "No se pudo generar el albarán");
                             }
-                      })),
+                          } else {
+                            storeController.setIsLoading(isLoading: false);
+                            AppConstants.showCustomToast(status: false, message: "Error al obtener el albarán");
+                          }
+                        } catch(exception){
+                          storeController.setIsLoading(isLoading: false);
+                          AppConstants.showCustomToast(status: false, message: "$exception");
+                        }
+                      });
+                    }
+                  )),
                   const SizedBox(
                     width: 10,
                   ),

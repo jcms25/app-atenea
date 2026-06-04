@@ -101,6 +101,7 @@ class EditProfileController extends ChangeNotifier {
             var data = jsonDecode(response.body);
             if (data['status']) {
               Userdata userdata = Userdata.fromJson(data['userdata']);
+              userdata.nif ??= nif;  // <-- AÑADIR
               AppSharedPreferences.saveUserData(userdata: userdata);
               studentParentTeacherController.setLoginModel(userdata: userdata);
             }
@@ -134,11 +135,18 @@ class EditProfileController extends ChangeNotifier {
               "qualification": "",
               "email": email ?? "",
               "nif" : nif ?? "",
-            }).then((res) {
+        }).then((res) {
           if (res['status']) {
-            Userdata userdata = Userdata.fromJson(res['userdata']);
-            AppSharedPreferences.saveUserData(userdata: userdata);
-            studentParentTeacherController.setLoginModel(userdata: userdata);
+            Userdata? userdata = AppSharedPreferences.getUserData();
+            if (userdata != null) {
+              userdata.sAddress = actualAddress;
+              userdata.sCity = city;
+              userdata.sZipcode = postalCode;
+              userdata.sPhone = mobileNumber;
+              userdata.stuEmail = email;
+              AppSharedPreferences.saveUserData(userdata: userdata);
+              studentParentTeacherController.setLoginModel(userdata: userdata);
+            }
           }
           AppConstants.showCustomToast(
               status: res['status'],

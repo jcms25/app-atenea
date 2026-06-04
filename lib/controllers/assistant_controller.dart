@@ -11,15 +11,14 @@ import '../models/assistant/assistant_login_model.dart';
 import '../services/api.dart';
 import '../views/assistant_module/assistant_classes_screen.dart';
 
-class AssistantController extends ChangeNotifier{
+class AssistantController extends ChangeNotifier {
 
   //Loader Handler
   bool isLoading = false;
-  void setIsLoading({required bool isLoading}){
+  void setIsLoading({required bool isLoading}) {
     this.isLoading = isLoading;
     notifyListeners();
   }
-
 
   //Assistant Login
   AssistantData? assistant;
@@ -30,106 +29,119 @@ class AssistantController extends ChangeNotifier{
 
   //current bottom index selected
   int currentBottomIndexSelected = 0;
-  void setCurrentBottomIndexSelected({required int currentBottomIndexSelected}){
-    if(currentBottomIndexSelected == 1){
+  void setCurrentBottomIndexSelected({required int currentBottomIndexSelected}) {
+    if (currentBottomIndexSelected == 1) {
       Get.to(() => ChildScreen());
-    }else{
+    } else {
       this.currentBottomIndexSelected = currentBottomIndexSelected;
       notifyListeners();
     }
   }
 
-  
-  
   //get assistant dashboard data
   AssistantDashboardModel? assistantDashboardModel;
-  void setAssistantDashboardModel({required AssistantDashboardModel? assistantDashboardModel}){
+  void setAssistantDashboardModel({required AssistantDashboardModel? assistantDashboardModel}) {
     this.assistantDashboardModel = assistantDashboardModel;
     notifyListeners();
   }
 
-  
   //assistant Dashboard API
-  void getAssistantDashboardData() async{
-    try{
-      if(assistantDashboardModel == null){
+  void getAssistantDashboardData() async {
+    try {
+      if (assistantDashboardModel == null) {
         setIsLoading(isLoading: true);
       }
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
 
-      dynamic response = await Api.httpRequest(requestType: RequestType.get, endPoint: "dashboard?current_role=assistant", header: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': "Basic $token",
-        'Cookie': assistant?.cookie ?? ""
-      });
-      if(response["status"]){
-        AssistantDashboardModel assistantDashboardModel = AssistantDashboardModel.fromJson(response);
-        setAssistantDashboardModel(assistantDashboardModel: assistantDashboardModel);
+      dynamic response = await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "dashboard?current_role=assistant",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': assistant?.cookie ?? ""
+          });
+      if (response["status"]) {
+        AssistantDashboardModel assistantDashboardModel =
+            AssistantDashboardModel.fromJson(response);
+        setAssistantDashboardModel(
+            assistantDashboardModel: assistantDashboardModel);
       }
       setIsLoading(isLoading: false);
-    }catch(e){
+    } catch (e) {
       setIsLoading(isLoading: false);
       AppConstants.showCustomToast(status: false, message: "$e");
     }
-
   }
-
-
 
   //assistant edit profile
   Future<void> updateAssistantEditProfile({
-    required String email,
-    required String phone,
-    required String address,
-    required String postCode,
-    required String city,
-    required String userId
-  }) async{
-    try{
-  setIsLoading(isLoading: true);
-  dynamic response =  await Api.httpRequest(requestType: RequestType.post, endPoint: "assistance_edit_profile/$userId",
-      body: {
-        "ppress_billing_phone":phone,
-        "ppress_billing_address": address,
-        "ppress_billing_city": city,
-        "ppress_billing_postcode":postCode,
-        "user_email":email
-      }
-  );
-
-  if(response['status']){
-    AssistantData? assistantData = AppSharedPreferences.getAssistantLoggedInData();
-
-    assistantData?.userEmail = email;
-    assistantData?.userPhone = phone;
-    assistantData?.userAddress = address;
-    assistantData?.city = city;
-    assistantData?.postCode = postCode;
-
-    await AppSharedPreferences.sharedPreferences?.setString('userdata', jsonEncode(assistantData));
-    setAssistant(assistant: assistantData);
-    AppConstants.showCustomToast(status: true, message: response['Message'] ?? response['message'] ?? "");
-    setIsLoading(isLoading: false);
-  }else{
-    setIsLoading(isLoading: false);
-    AppConstants.showCustomToast(status: false, message: response['message'] ?? response['Message'] ?? "");
-  }
-
-    }catch(e){
-      setIsLoading(isLoading: false);
-      AppConstants.showCustomToast(status: false, message: "$e");
+  required String email,
+  required String phone,
+  required String address,
+  required String postCode,
+  required String city,
+  required String userId,
+}) async {
+  try {
+    // ✅ Guardia: si userId está vacío el servidor devuelve "Only for Assitance"
+    if (userId.isEmpty) {
+      AppConstants.showCustomToast(
+          status: false, message: "Error: usuario no identificado");
+      return;
     }
 
+    setIsLoading(isLoading: true);
 
+    // ✅ SIN Authorization — el endpoint usa __return_true y get_userdata($uid)
+    // Añadir Basic Auth hace que WordPress devuelva 401 antes de llegar al callback
+    dynamic response = await Api.httpRequest(
+        requestType: RequestType.post,
+        endPoint: "assistance_edit_profile/$userId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: {
+          "ppress_billing_phone": phone,
+          "ppress_billing_address": address,
+          "ppress_billing_city": city,
+          "ppress_billing_postcode": postCode,
+          "user_email": email
+        });
+
+    if (response['status']) {
+      AssistantData? assistantData =
+          AppSharedPreferences.getAssistantLoggedInData();
+
+      assistantData?.userEmail = email;
+      assistantData?.userPhone = phone;
+      assistantData?.userAddress = address;
+      assistantData?.city = city;
+      assistantData?.postCode = postCode;
+
+      await AppSharedPreferences.sharedPreferences
+          ?.setString('userdata', jsonEncode(assistantData));
+      setAssistant(assistant: assistantData);
+      AppConstants.showCustomToast(
+          status: true,
+          message: response['Message'] ?? response['message'] ?? "");
+      setIsLoading(isLoading: false);
+    } else {
+      setIsLoading(isLoading: false);
+      AppConstants.showCustomToast(
+          status: false,
+          message: response['message'] ?? response['Message'] ?? "");
+    }
+  } catch (e) {
+    setIsLoading(isLoading: false);
+    AppConstants.showCustomToast(status: false, message: "$e");
   }
-
+}
 
   //Log out data reset
-  void onLogout(){
+  void onLogout() {
     setCurrentBottomIndexSelected(currentBottomIndexSelected: 0);
     setAssistantDashboardModel(assistantDashboardModel: null);
     setAssistant(assistant: null);
   }
-
-
 }

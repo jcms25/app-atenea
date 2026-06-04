@@ -9,7 +9,6 @@ import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:provider/provider.dart';
 
@@ -43,9 +42,6 @@ class _LoginScreenState extends State<LoginScreen> {
           Provider.of<StudentParentTeacherController>(context, listen: false);
       splashLoginController =
           Provider.of<SplashLoginController>(context, listen: false);
-      splashLoginController?.setSelectedRole(
-          selectedRole:
-              loginCredentials?['userRole'] ?? AppConstants.roleDropDown[0]);
     });
   }
 
@@ -54,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BackgroundLayout(
       image: AppImages.logo,
       imageType: 0,
+      scrollPhysics: const NeverScrollableScrollPhysics(),
       circularImage: Align(
         alignment: Alignment.topCenter,
         child: Container(
@@ -69,11 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: const BorderRadius.all(Radius.circular(160)),
             boxShadow: [
               BoxShadow(
-                // color: AppColors.primary.withOpacity(0.5),
                 color: AppColors.primary.withValues(alpha: 0.5),
                 spreadRadius: 0,
                 blurRadius: 25,
-                offset: const Offset(0, 0), // changes position of shadow
+                offset: const Offset(0, 0),
               ),
             ],
           ),
@@ -97,19 +93,15 @@ class _LoginScreenState extends State<LoginScreen> {
           Text(
             "login".tr,
             style: AppTextStyle.getOutfit600(
-                textSize: 32, textColor: AppColors.secondary),
+                textSize: 22, textColor: AppColors.secondary),
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 12),
           Text(
-            "Every".tr,
+            "Sistema de Gestión Docente de la Comunidad Educativa del Colegio Atenea",
             style: AppTextStyle.getOutfit300(
-                textSize: 24, textColor: AppColors.secondary),
+                textSize: 16, textColor: AppColors.secondary),
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           Form(
               key: AppConstants.loginFormKey,
               child: Column(
@@ -129,9 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: "user".tr);
                     },
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Consumer<SplashLoginController>(
                     builder: (context, splashLoginController, child) {
                       return CustomTextField(
@@ -159,12 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     },
-                  )
+                  ),
                 ],
               )),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           Consumer<SplashLoginController>(
             builder: (context, splashLoginController, child) {
               return Row(
@@ -204,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () async {
                         await appController.openUrl(
                             url: "http://colegioatenea.es/solicitud-de-credenciales-de-acceso/");
-                       },
+                      },
                       child: Text(
                         "forgot".tr,
                         style: AppTextStyle.getOutfit400(
@@ -216,50 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             },
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            width: double.infinity,
-            height: 60,
-            padding:
-                const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-            decoration: BoxDecoration(
-              // color: AppColors.secondary.withOpacity(0.06),
-              color: AppColors.secondary.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Consumer<SplashLoginController>(
-                builder: (context, splashLoginController, child) {
-              return DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                icon: SvgPicture.asset(
-                  AppImages.dropdown,
-                  height: 5,
-                  width: 15,
-                  fit: BoxFit.scaleDown,
-                ),
-                value: splashLoginController.currentSelectedRole,
-                items: AppConstants.roleDropDown.map((String value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: AppTextStyle.getOutfit500(
-                          textSize: 18, textColor: AppColors.secondary),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  splashLoginController.setSelectedRole(
-                      selectedRole: newValue ?? AppConstants.roleDropDown[0]);
-                },
-              ));
-            }),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           Consumer3<SplashLoginController, StudentParentTeacherController,
               AssistantController>(
             builder: (context, splashLoginController, appController,
@@ -270,28 +215,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   if (AppConstants.loginFormKey.currentState?.validate() ??
                       false) {
-                    if (splashLoginController.currentSelectedRole !=
-                        AppConstants.roleDropDown[0]) {
-                      await splashLoginController.userLogin(
-                          userName: userNameController?.text.trim() ?? "",
-                          userPassword: passwordController?.text.trim() ?? "",
-                          userRole: splashLoginController.currentSelectedRole,
-                          isRememberMe: splashLoginController.isRememberMe,
-                          studentParentTeacherController: appController,
-                          assistantController: assistantController);
-                    } else {
-                      AppConstants.showCustomToast(
-                          status: false,
-                          message: "Por favor seleccione perfil");
-                    }
+                    await splashLoginController.loginOrSelectRole(
+                      userName: userNameController?.text.trim() ?? "",
+                      userPassword: passwordController?.text.trim() ?? "",
+                      isRememberMe: splashLoginController.isRememberMe,
+                      studentParentTeacherController: appController,
+                      assistantController: assistantController,
+                    );
                   }
                 },
               );
             },
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
         ],
       ),
       childWidgetMarginFromTop: EdgeInsets.only(top: 150),

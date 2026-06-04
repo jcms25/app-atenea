@@ -1,9 +1,10 @@
 import 'package:colegia_atenea/views/assistant_module/assistant_main_screen.dart';
 import 'package:colegia_atenea/views/screens/login_screen.dart';
 import 'package:colegia_atenea/views/screens/main_screen.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
 
 import '../views/screens/splash_screen.dart';
+import '../views/screens/role_selection_screen.dart';
 
 class AppRoutes{
 
@@ -20,10 +21,12 @@ class AppRoutes{
   static const String _studentParentTeacherMainScreen = "/mainScreen";
   static String get studentParentTeacherMainScreen => _studentParentTeacherMainScreen;
 
-
   //assistant
   static const String _assistantMainScreen = "/assistantMainScreen";
   static String get assistantMainScreen => _assistantMainScreen;
+
+  static const String _roleSelectionScreen = "/roleSelectionScreen";
+  static String get roleSelectionScreen => _roleSelectionScreen;
 
   static final List<GetPage> routePages = [
     GetPage(name: _initialRoute, page: () => const SplashScreen()),
@@ -32,6 +35,19 @@ class AppRoutes{
 
     //parent teacher student
     GetPage(name: assistantMainScreen, page: () => const AssistantScreen(currentIndex: 0)),
+
+    GetPage(
+      name: _roleSelectionScreen,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>;
+        return RoleSelectionScreen(
+          userName: args['userName'],
+          userPassword: args['userPassword'],
+          isRememberMe: args['isRememberMe'],
+          roles: List<String>.from(args['roles']),
+        );
+      },
+    ),
 
   ];
 

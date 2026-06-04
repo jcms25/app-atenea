@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
   final Color? filledColor;
   final Icon? prefixIcon;
   final bool? enabled;
+  final VoidCallback? onEditingComplete;
 
   CustomTextField(
       {super.key,
@@ -36,7 +37,8 @@ class CustomTextField extends StatelessWidget {
       this.prefixIcon,
       this.enabled,
       this.inputFormatter,
-      this.label});
+      this.label,
+      this.onEditingComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +87,7 @@ class CustomTextField extends StatelessWidget {
           inputFormatters: inputFormatter,
           autofocus: false,
           textInputAction: textInputAction,
+          onEditingComplete: onEditingComplete,
           validator: (value) => validateFunction!(value),
         )
       ],

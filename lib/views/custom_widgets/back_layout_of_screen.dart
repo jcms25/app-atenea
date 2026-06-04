@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-
 import '../../utils/app_colors.dart';
-
 class BackgroundLayout extends StatelessWidget {
   final String image;
-  final int imageType;//0 asset image,1 network image
+  final int imageType;
   final Widget childWidget;
   final Widget? loadingWidget;
   final Widget? circularImage;
   final EdgeInsets? childWidgetMarginFromTop;
-
+  final ScrollPhysics? scrollPhysics;
   const BackgroundLayout(
       {super.key,
       required this.image,
       required this.imageType,
       required this.childWidget,
-      this.loadingWidget, this.circularImage, this.childWidgetMarginFromTop});
-
+      this.loadingWidget,
+      this.circularImage,
+      this.childWidgetMarginFromTop,
+      this.scrollPhysics});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +40,7 @@ class BackgroundLayout extends StatelessWidget {
             ScrollConfiguration(
                 behavior: const ScrollBehavior().copyWith(overscroll: false),
                 child: SingleChildScrollView(
+                  physics: scrollPhysics,
                   child: Stack(
                     children: [
                       Container(

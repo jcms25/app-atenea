@@ -46,6 +46,9 @@ import '../screens/class_menu_screens/timetable_screen.dart';
 import '../screens/store_screens/coupons_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
 
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_student_search_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_locator_screen.dart';
+
 class CustomDrawerWidget extends StatelessWidget {
   final StudentParentTeacherController studentParentTeacherController;
 
@@ -336,7 +339,8 @@ class CustomDrawerWidget extends StatelessWidget {
         DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
         if (drawerMenuOption.name == 'drawerOption8'.tr ||
             drawerMenuOption.name == 'drawerOption9'.tr ||
-            drawerMenuOption.name == 'drawerOption10'.tr) {
+            drawerMenuOption.name == 'drawerOption10'.tr ||
+            drawerMenuOption.name == 'Utilidades') {
           if (drawerMenuOption.subMenu == null) {
             if (drawerMenuOption.name == 'drawerOption8'.tr) {
               //classes sub menu build
@@ -356,7 +360,7 @@ class CustomDrawerWidget extends StatelessWidget {
                   studentName: "",
                   roleType: RoleType.teacher,
                   teacherDrawerMenuName: 'drawerOption9'.tr);
-            } else {
+            } else if (drawerMenuOption.name == 'drawerOption10'.tr) {
               //dinning sub menu build
               drawerMenuOption.subMenu = buildSubMenu(
                   classId: "",
@@ -365,6 +369,15 @@ class CustomDrawerWidget extends StatelessWidget {
                   studentName: "",
                   roleType: RoleType.teacher,
                   teacherDrawerMenuName: 'drawerOption10'.tr);
+            } else {
+              //utilities sub menu build
+              drawerMenuOption.subMenu = buildSubMenu(
+                  classId: "",
+                  studentId: "",
+                  className: "",
+                  studentName: "",
+                  roleType: RoleType.teacher,
+                  teacherDrawerMenuName: 'Utilidades');
             }
           }
         }
@@ -497,13 +510,18 @@ class CustomDrawerWidget extends StatelessWidget {
           drawerMenuOption.studentName = studentName;
           subMenu.add(drawerMenuOption);
         }
-      } else {
+      } else if (teacherDrawerMenuName == 'drawerOption10'.tr) {
         for (var e in AppConstants.dinningSubMenuListTeacher) {
           DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
           drawerMenuOption.classId = classId;
           drawerMenuOption.wpUserId = studentId;
           drawerMenuOption.className = className;
           drawerMenuOption.studentName = studentName;
+          subMenu.add(drawerMenuOption);
+        }
+      } else if (teacherDrawerMenuName == 'Utilidades') {
+        for (var e in AppConstants.utilitiesSubMenuListTeacher) {
+          DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
           subMenu.add(drawerMenuOption);
         }
       }
@@ -841,6 +859,12 @@ class CustomDrawerWidget extends StatelessWidget {
         break;
       case "Libros becados del curso":
         Get.to(() => LibrosBecadosCursoScreen());
+        break;
+      case "Buscador de alumnos":
+        Get.to(() => const TeacherStudentSearchScreen());
+        break;
+      case "Localizador de profesores":
+        Get.to(() => const TeacherLocatorScreen());
         break;
       default:
         break;

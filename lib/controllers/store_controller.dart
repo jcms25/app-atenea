@@ -658,6 +658,30 @@ class StoreController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Auto-aplica un cupón en silencio, sin mostrar mensajes de error al usuario
+  Future<void> _autoApplyCoupon({
+    required String couponCode,
+    required String tiendaToken,
+  }) async {
+    try {
+      var url = Uri.parse('${StoreApi.localBaseURL}/cart/apply-coupon');
+      var response = Request('POST', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        })
+        ..body = jsonEncode({"code": couponCode});
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic data = jsonDecode(responseData.body);
+        CartResponse updatedCart = CartResponse.fromJson(data);
+        setCartResponse(cartResponse: updatedCart);
+      }
+      // Si falla, no mostramos ningún mensaje — es auto-aplicación silenciosa
+    } catch (_) {}
+  }
+
   //get cart details
   void getCartDetails({required String tiendaToken}) async {
     try {
@@ -687,8 +711,7 @@ class StoreController extends ChangeNotifier {
 
         if (cartItems.isNotEmpty && userRoles.contains('ampa')) {
           if (!appliedCoupons.contains('abono10ampa')) {
-            await applyOrRemoveCoupon(
-              applyOrRemove: 0,
+            await _autoApplyCoupon(
               couponCode: 'abono10ampa',
               tiendaToken: tiendaToken,
             );

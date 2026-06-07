@@ -402,7 +402,6 @@ class PaymentOptionWidget extends StatelessWidget {
           onTap: () {
             storeController.setSelectedPaymentMethod(
                 selectedPaymentMethod: paymentMethodName);
-            print(paymentMethodName);
           },
           child: Row(
             children: [

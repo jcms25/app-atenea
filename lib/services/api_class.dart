@@ -1257,6 +1257,97 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
 
+  /// POST /scl-api/v1/teacher-student-search
+  Future<dynamic> teacherStudentSearch({
+    required String token,
+    required String cookie,
+    String search = '',
+    String classId = '',
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}teacher-student-search'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'search': search,
+          'class_id': classId,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/teacher-locator
+  Future<dynamic> teacherLocator({
+    required String token,
+    required String cookie,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}teacher-locator'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'username': 'app',
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/teacher-schedule/{wp_usr_id}
+  Future<dynamic> teacherScheduleByUser({
+    required String token,
+    required String cookie,
+    required String wpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}teacher-schedule/$wpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
 }
 
 void sessionExpired() async {

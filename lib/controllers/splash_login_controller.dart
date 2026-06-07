@@ -162,7 +162,7 @@ class SplashLoginController extends ChangeNotifier {
 
         AppConstants.showCustomToast(
             status: response['status'],
-            message: "Iniciar sesión correctamente");
+            message: "Inicio de sesión correcto");
 
         resetLoginScreen();
 

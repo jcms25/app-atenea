@@ -200,7 +200,7 @@ class AppConstants {
     {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
   ];
 
-  //teacher
+//teacher
   static final List<Map<String, String>> drawerListTeacher = [
     {
       "name": "drawerOption1".tr,
@@ -219,7 +219,8 @@ class AppConstants {
       "name": 'drawerOption4'.tr,
       "icon": AppImages.event,
     },
-    {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon}
+    {"name": 'drawerOption10'.tr, "icon": AppImages.dinningIcon},
+    {"name": 'Utilidades', "icon": AppImages.dashboard},
   ];
 
 //sub menu list
@@ -261,6 +262,12 @@ class AppConstants {
     {"name": 'subMenuDrawer2'.tr},
     {"name": 'subMenuDrawer4'.tr},
     {"name": 'subMenuDrawer24'.tr}
+  ];
+
+  //teacher sub menu list: Utilidades
+  static List<Map<String, String>> utilitiesSubMenuListTeacher = [
+    {"name": "Buscador de alumnos"},
+    {"name": "Localizador de profesores"},
   ];
 
   //teacher sub menu list 2

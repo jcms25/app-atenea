@@ -196,7 +196,11 @@ class Api {
   // ============================================================
   // MÓDULO BECAS
   // ============================================================
-  // Switch global de visibilidad de la sección Becas (Nivel 1)
+// Switch "Abrir solicitud" — campaña de becas activa
+  static const String _becasCampaignOpenEndPoint = "becas/campaign/open";
+  static String get becasCampaignOpenEndPoint => _becasCampaignOpenEndPoint;
+
+  // Switch "Publicar resolución" — resolución de becas publicada
   static const String _becasVisibleEndPoint = "becas/visible";
   static String get becasVisibleEndPoint => _becasVisibleEndPoint;
 

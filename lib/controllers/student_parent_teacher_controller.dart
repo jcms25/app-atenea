@@ -222,19 +222,40 @@ class StudentParentTeacherController extends ChangeNotifier {
   // ============================================================
   // MÓDULO BECAS — Visibilidad de la sección
   // ============================================================
-  // Nivel 1: switch global controlado por el admin desde la web.
+  // Switch "Abrir solicitud": campaña de becas activa (cualquier padre puede tramitar).
+  bool isBecasCampaignOpen = false;
+  // Switch "Publicar resolución": resolución de becas publicada (solo la ven los becarios).
   bool isBecasEnabled = false;
-  // Nivel 2: si el padre logueado tiene al menos un hijo con resolución de beca.
+  // Si el padre logueado tiene al menos un hijo con resolución de beca.
   bool parentHasBeca = false;
 
-  void setBecasVisibility({required bool enabled, required bool hasBeca}) {
+  void setBecasVisibility({
+    required bool campaignOpen,
+    required bool enabled,
+    required bool hasBeca,
+  }) {
+    isBecasCampaignOpen = campaignOpen;
     isBecasEnabled = enabled;
     parentHasBeca = hasBeca;
     notifyListeners();
   }
 
-// La sección Becas se muestra en el menú solo si se cumplen AMBOS niveles.
-  bool get showBecasSection => isBecasEnabled && parentHasBeca;
+  // La pestaña "Becas" aparece en el menú si CUALQUIERA de estos se cumple:
+  // - La campaña está abierta (Switch A): TODOS los padres deben ver "Proceso de Solicitud".
+  // - La resolución está publicada (Switch B) y este padre tiene hijos becarios:
+  //   verán "Resolución" (y las secciones de libros, si proceden).
+  bool get showBecasSection =>
+      isBecasCampaignOpen || (isBecasEnabled && parentHasBeca);
+
+  // ¿Mostrar la subsección "Proceso de Solicitud"?
+  bool get showSubProcesoSolicitud => isBecasCampaignOpen;
+
+  // ¿Mostrar la subsección "Resolución"?
+  bool get showSubResolucion => isBecasEnabled && parentHasBeca;
+
+  // ¿Mostrar las subsecciones "Libros becados" y "Libros concedidos"?
+  bool get showSubLibros =>
+      isBecasEnabled && parentHasBeca && parentHasBecaConcedida;
 
   // True si al menos un hijo tiene beca CONCEDIDA. Las secciones de libros
   // (becados / concedidos) solo se muestran en este caso.
@@ -256,7 +277,16 @@ class StudentParentTeacherController extends ChangeNotifier {
         'Cookie': userdata?.cookies ?? "",
       };
 
-      // Nivel 1 — switch global
+      // Switch A — Abrir solicitud (campaña activa)
+      final campaignResponse = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.becasCampaignOpenEndPoint,
+        header: header,
+      );
+      bool campaignOpen = campaignResponse['status'] == true &&
+          (campaignResponse['open'] ?? 0) == 1;
+
+      // Switch B — Publicar resolución
       final visibleResponse = await Api.httpRequest(
         requestType: RequestType.get,
         endPoint: Api.becasVisibleEndPoint,
@@ -265,13 +295,15 @@ class StudentParentTeacherController extends ChangeNotifier {
       bool enabled = visibleResponse['status'] == true &&
           (visibleResponse['visible'] ?? 0) == 1;
 
-      // Si el switch global está apagado, no hace falta consultar el Nivel 2.
-      if (!enabled) {
-        setBecasVisibility(enabled: false, hasBeca: false);
+      // Si los DOS switches están apagados, no hace falta consultar nada más.
+      if (!campaignOpen && !enabled) {
+        setBecasVisibility(
+            campaignOpen: false, enabled: false, hasBeca: false);
+        parentHasBecaConcedida = false;
         return;
       }
 
-      // Nivel 2 — ¿este padre tiene hijos becarios?
+      // ¿Este padre tiene hijos becarios? (solo relevante para el switch B)
       bool hasBeca = false;
       String parentId = userdata?.parentWpUsrId ?? "";
       if (parentId.isNotEmpty) {
@@ -295,10 +327,13 @@ class StudentParentTeacherController extends ChangeNotifier {
         }
       }
 
-      setBecasVisibility(enabled: enabled, hasBeca: hasBeca);
+      setBecasVisibility(
+          campaignOpen: campaignOpen, enabled: enabled, hasBeca: hasBeca);
     } catch (_) {
       // Si algo falla, sección oculta por seguridad.
-      setBecasVisibility(enabled: false, hasBeca: false);
+      setBecasVisibility(
+          campaignOpen: false, enabled: false, hasBeca: false);
+      parentHasBecaConcedida = false;
     }
   }
 

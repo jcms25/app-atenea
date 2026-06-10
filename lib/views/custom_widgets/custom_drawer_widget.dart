@@ -448,11 +448,23 @@ class CustomDrawerWidget extends StatelessWidget {
           if (drawerMenuOption.subMenu == null) {
             List<DrawerMenuOption> tempSubMenuBecas = [];
             for (var e in AppConstants.subMenuListBecas) {
-              // "Libros concedidos al alumno" y "Libros becados del curso"
-              // solo si hay algún hijo con beca concedida.
+              // "Proceso de Solicitud" (subMenuDrawer26): solo si la campaña está abierta.
+              if (e['name'] == 'subMenuDrawer26'.tr &&
+                  !(appController?.showSubProcesoSolicitud ?? false)) {
+                continue;
+              }
+              // "Resolución" (subMenuDrawer27): solo si la resolución está publicada
+              // y este padre tiene resolución.
+              if (e['name'] == 'subMenuDrawer27'.tr &&
+                  !(appController?.showSubResolucion ?? false)) {
+                continue;
+              }
+              // "Libros becados del curso" (subMenuDrawer29) y
+              // "Libros concedidos al alumno" (subMenuDrawer28): solo si la resolución
+              // está publicada y este padre tiene al menos un hijo CONCEDIDO.
               if ((e['name'] == 'subMenuDrawer28'.tr ||
                       e['name'] == 'subMenuDrawer29'.tr) &&
-                  !(appController?.parentHasBecaConcedida ?? false)) {
+                  !(appController?.showSubLibros ?? false)) {
                 continue;
               }
               tempSubMenuBecas.add(DrawerMenuOption.fromJson(e));

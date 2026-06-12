@@ -206,6 +206,7 @@ class WorldLanguage extends Translations {
           'drawerOption10' : 'Dining Room',
           'drawerOption11' : 'Store',
           'drawerOption12' : 'Scholarships',
+          'drawerOption13' : 'Authorizations',
 
           //sub menu option
           'subMenuDrawer1' : 'Time Table',
@@ -460,6 +461,7 @@ class WorldLanguage extends Translations {
           'drawerOption10' : 'Comedor',
           'drawerOption11' : 'Tienda',
           'drawerOption12' : 'Becas',
+          'drawerOption13' : 'Autorizaciones',
 
           //sub menu option
           'subMenuDrawer1' : 'Horario',

@@ -220,6 +220,46 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   // ============================================================
+  // MÓDULO COMUNICACIONES — Contador de no leídos
+  // ============================================================
+  int get comunicacionesNoLeidasCount =>
+      chatList.fold(0, (sum, chat) => sum + chat.unread);
+
+  // ============================================================
+  // MÓDULO AUTORIZACIONES — Contador de pendientes
+  // ============================================================
+  int autorizacionesPendientesCount = 0;
+
+  void setAutorizacionesPendientesCount(int count) {
+    autorizacionesPendientesCount = count;
+    notifyListeners();
+  }
+
+  Future<void> fetchAutorizacionesPendientesCount() async {
+    try {
+      if (currentLoggedInUserRole != RoleType.parent) return;
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String parentId = userdata?.parentWpUsrId ?? "";
+      if (parentId.isEmpty) return;
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.autorizacionesPendientesEndPoint}?parent_wp_usr_id=$parentId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true) {
+        final List data = response['data'] ?? [];
+        setAutorizacionesPendientesCount(data.length);
+      }
+    } catch (_) {
+      // Si falla, dejamos el contador en 0
+    }
+  }
+
+  // ============================================================
   // MÓDULO BECAS — Visibilidad de la sección
   // ============================================================
   // Switch "Abrir solicitud": campaña de becas activa (cualquier padre puede tramitar).
@@ -693,6 +733,15 @@ class StudentParentTeacherController extends ChangeNotifier {
 
           // Módulo Becas: cargar visibilidad (Nivel 1) y si el padre tiene beca (Nivel 2)
           fetchBecasVisibility();
+
+          // Módulo Autorizaciones: cargar contador de pendientes
+          fetchAutorizacionesPendientesCount();
+
+          // Módulo Comunicaciones: cargar lista de chats para contador de no leídos
+          if (currentLoggedInUserRole == RoleType.parent ||
+              currentLoggedInUserRole == RoleType.teacher) {
+            getChatList(showLoader: false);
+          }
         }
         setIsLoading(isLoading: false);
       });

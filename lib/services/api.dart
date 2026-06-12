@@ -196,27 +196,42 @@ class Api {
   // ============================================================
   // MÓDULO BECAS
   // ============================================================
-// Switch "Abrir solicitud" — campaña de becas activa
-  static const String _becasCampaignOpenEndPoint = "becas/campaign/open";
-  static String get becasCampaignOpenEndPoint => _becasCampaignOpenEndPoint;
+  // Switch "Abrir solicitud" — campaña de becas activa
+    static const String _becasCampaignOpenEndPoint = "becas/campaign/open";
+    static String get becasCampaignOpenEndPoint => _becasCampaignOpenEndPoint;
 
-  // Switch "Publicar resolución" — resolución de becas publicada
-  static const String _becasVisibleEndPoint = "becas/visible";
-  static String get becasVisibleEndPoint => _becasVisibleEndPoint;
+    // Switch "Publicar resolución" — resolución de becas publicada
+    static const String _becasVisibleEndPoint = "becas/visible";
+    static String get becasVisibleEndPoint => _becasVisibleEndPoint;
 
-  // Resolución de beca por hijo. Se le concatena "/{parent_user_id}"
-  static const String _becaResolucionEndPoint = "beca/resolucion";
-  static String get becaResolucionEndPoint => _becaResolucionEndPoint;
+    // Resolución de beca por hijo. Se le concatena "/{parent_user_id}"
+    static const String _becaResolucionEndPoint = "beca/resolucion";
+    static String get becaResolucionEndPoint => _becaResolucionEndPoint;
 
-  // Libros concedidos a un alumno. Se le concatena "/{student_id}"
-  static const String _becaLibrosAlumnoEndPoint = "beca/libros-alumno";
-  static String get becaLibrosAlumnoEndPoint => _becaLibrosAlumnoEndPoint;
+    // Libros concedidos a un alumno. Se le concatena "/{student_id}"
+    static const String _becaLibrosAlumnoEndPoint = "beca/libros-alumno";
+    static String get becaLibrosAlumnoEndPoint => _becaLibrosAlumnoEndPoint;
 
-  // Libros becados del curso de un alumno. Se le concatena "/{student_id}"
-  static const String _becaLibrosCursoEndPoint = "beca/libros-curso";
-  static String get becaLibrosCursoEndPoint => _becaLibrosCursoEndPoint;
+    // Libros becados del curso de un alumno. Se le concatena "/{student_id}"
+    static const String _becaLibrosCursoEndPoint = "beca/libros-curso";
+    static String get becaLibrosCursoEndPoint => _becaLibrosCursoEndPoint;
 
-  static Future<Map<String, dynamic>> httpRequest(
+    // ============================================================
+    // MÓDULO AUTORIZACIONES
+    // ============================================================
+    static const String _autorizacionesPendientesEndPoint = "autorizaciones/pendientes";
+    static String get autorizacionesPendientesEndPoint => _autorizacionesPendientesEndPoint;
+
+    static const String _autorizacionesFirmarEndPoint = "autorizaciones/firmar";
+    static String get autorizacionesFirmarEndPoint => _autorizacionesFirmarEndPoint;
+
+    static const String _autorizacionesSegundaFirmaEndPoint = "autorizaciones/segunda-firma";
+    static String get autorizacionesSegundaFirmaEndPoint => _autorizacionesSegundaFirmaEndPoint;
+
+    static const String _autorizacionesHistorialEndPoint = "autorizaciones/historial";
+    static String get autorizacionesHistorialEndPoint => _autorizacionesHistorialEndPoint;
+
+    static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,
       Map<String, String>? header,

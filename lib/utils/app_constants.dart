@@ -157,6 +157,10 @@ class AppConstants {
       "icon": AppImages.message,
     },
     {
+      "name": "drawerOption13".tr,
+      "icon": AppImages.autorizacionIcon,
+    },
+    {
       "name": "drawerOption7".tr,
       "icon": AppImages.people,
     },

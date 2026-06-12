@@ -87,6 +87,8 @@ class NotificationService {
         return "evaluations";
       case "Classroom Event":
         return "classroom";
+      case "Autorizacion":
+        return "autorizaciones";
       default:
         return "dashboard";
     }
@@ -116,6 +118,8 @@ class NotificationService {
         return "evaluations";
       case "Classroom Event":
         return "classroom";
+      case "Autorizacion":
+        return "autorizaciones";
       default:
         return "dashboard";
     }

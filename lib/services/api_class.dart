@@ -1348,6 +1348,138 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
 
+  // ============================================================
+  // MÓDULO AUTORIZACIONES
+  // ============================================================
+
+  /// GET /scl-api/v1/autorizaciones/pendientes
+  Future<dynamic> getAutorizacionesPendientes({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}autorizaciones/pendientes?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/autorizaciones/firmar
+  Future<dynamic> firmarAutorizacion({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+    required String respId,
+    required String respuesta,
+    required String firmaNombre,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}autorizaciones/firmar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'parent_wp_usr_id': parentWpUsrId,
+          'resp_id': respId,
+          'respuesta': respuesta,
+          'firma_nombre': firmaNombre,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/autorizaciones/segunda-firma
+  Future<dynamic> segundaFirmaAutorizacion({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+    required String respId,
+    required String firmaNombre,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}autorizaciones/segunda-firma'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'parent_wp_usr_id': parentWpUsrId,
+          'resp_id': respId,
+          'firma_nombre': firmaNombre,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/autorizaciones/historial
+  Future<dynamic> getAutorizacionesHistorial({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}autorizaciones/historial?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
 }
 
 void sessionExpired() async {

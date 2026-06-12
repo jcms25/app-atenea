@@ -25,6 +25,7 @@ import 'class_menu_screens/class_menu_details_screen/exam_details_screen.dart';
 import 'class_menu_screens/grade_screen.dart';
 import 'parent_student_info_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
+import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -117,13 +118,19 @@ class _MainScreenState extends State<MainScreen> {
       }
     }
 
-// Si hay studentId, navegar directamente a la pantalla de actitud del alumno.
+    // Si hay studentId, navegar directamente a la pantalla de actitud del alumno.
     // La notificación de incidencia solo la recibe el padre → pantalla de solo lectura.
     if (destination == "classroom" && studentId != null && studentId.isNotEmpty) {
       Get.to(() => ClassroomEventsScreen(
         studentId: studentId,
         studentName: studentName ?? "",
       ));
+      return;
+    }
+
+    // Autorizaciones: abrir directamente la sección
+    if (destination == "autorizaciones") {
+      Get.to(() => const AutorizacionesScreen());
       return;
     }
 

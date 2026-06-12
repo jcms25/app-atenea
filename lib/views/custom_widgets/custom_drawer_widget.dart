@@ -48,6 +48,7 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events
 
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_student_search_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_locator_screen.dart';
+import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   final StudentParentTeacherController studentParentTeacherController;
@@ -477,6 +478,7 @@ class CustomDrawerWidget extends StatelessWidget {
             !(appController?.showBecasSection ?? false)) {
           continue;
         }
+        // La pestaña Autorizaciones no tiene switch global: siempre visible para padres
         drawerMenuOptionList.add(drawerMenuOption);
       }
     }
@@ -610,10 +612,53 @@ class CustomDrawerWidget extends StatelessWidget {
                 roleType:
                     studentParentTeacherController.currentLoggedInUserRole);
           },
-          title: Text(
-            drawerMenuOption.name ?? "-",
-            style: AppTextStyle.getOutfit500(
-                textSize: 18, textColor: AppColors.secondary),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  drawerMenuOption.name ?? "-",
+                  style: AppTextStyle.getOutfit500(
+                      textSize: 18, textColor: AppColors.secondary),
+                ),
+              ),
+              if (drawerMenuOption.name == 'Autorizaciones' &&
+                  studentParentTeacherController.currentLoggedInUserRole == RoleType.parent &&
+                  studentParentTeacherController.autorizacionesPendientesCount > 0)
+                Container(
+                  constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${studentParentTeacherController.autorizacionesPendientesCount}',
+                      style: AppTextStyle.getOutfit700(
+                          textSize: 11, textColor: AppColors.white),
+                    ),
+                  ),
+                ),
+              if (drawerMenuOption.name == 'Comunicaciones' &&
+                  studentParentTeacherController.comunicacionesNoLeidasCount > 0)
+                Container(
+                  constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Center(
+                    child: Text(
+                      studentParentTeacherController.comunicacionesNoLeidasCount > 99
+                          ? '99+'
+                          : '${studentParentTeacherController.comunicacionesNoLeidasCount}',
+                      style: AppTextStyle.getOutfit700(
+                          textSize: 11, textColor: AppColors.white),
+                    ),
+                  ),
+                ),
+            ],
           ),
         );
       });
@@ -877,6 +922,9 @@ class CustomDrawerWidget extends StatelessWidget {
         break;
       case "Localizador de profesores":
         Get.to(() => const TeacherLocatorScreen());
+        break;
+      case "Autorizaciones":
+        Get.to(() => const AutorizacionesScreen());
         break;
       default:
         break;

@@ -75,4 +75,7 @@ class AppImages{
   static const String resolucionIcon = "$rootPath/resolucion.svg";
   static const String librosConcedidosIcon = "$rootPath/libros-concedidos.svg";
   static const String librosBecadosIcon = "$rootPath/libros-becados.svg";
+
+  //Icono del módulo Autorizaciones
+  static const String autorizacionIcon = "$rootPath/autorizacion.svg";
 }

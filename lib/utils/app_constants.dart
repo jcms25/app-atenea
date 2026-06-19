@@ -161,6 +161,10 @@ class AppConstants {
       "icon": AppImages.autorizacionIcon,
     },
     {
+      "name": "drawerOption14".tr,
+      "icon": AppImages.serviciosContratadosIcon,
+    },
+    {
       "name": "drawerOption7".tr,
       "icon": AppImages.people,
     },
@@ -214,6 +218,7 @@ class AppConstants {
       "name": "drawerOption6".tr,
       "icon": AppImages.message,
     },
+    {"name": 'drawerOption13'.tr, "icon": AppImages.autorizacionIcon},
     {"name": 'drawerOption8'.tr, "icon": AppImages.calender},
     {
       "name": 'drawerOption9'.tr,

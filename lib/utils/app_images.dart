@@ -78,4 +78,5 @@ class AppImages{
 
   //Icono del módulo Autorizaciones
   static const String autorizacionIcon = "$rootPath/autorizacion.svg";
+  static const String serviciosContratadosIcon = "$rootPath/servicios.svg";
 }

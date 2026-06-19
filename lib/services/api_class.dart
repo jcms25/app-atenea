@@ -1480,9 +1480,200 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
 
-}
+  // ============================================================
+  // MÓDULO AUTORIZACIONES — TUTOR
+  // ============================================================
 
-void sessionExpired() async {
+  /// GET /scl-api/v1/autorizaciones/tutor/clase
+  Future<dynamic> getAutorizacionesTutorClase({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}autorizaciones/tutor/clase?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/autorizaciones/tutor/plantillas
+  Future<dynamic> getAutorizacionesTutorPlantillas({
+    required String token,
+    required String cookie,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}autorizaciones/tutor/plantillas'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/autorizaciones/tutor/enviar
+  Future<dynamic> enviarAutorizacionTutor({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+    required String modo,
+    String? plantillaId,
+    String? titulo,
+    String? contenido,
+    bool guardarComoPlantilla = false,
+    String? plantillaNombre,
+    required String alumnosJson,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'teacher_wp_usr_id': teacherWpUsrId,
+        'modo': modo,
+        'guardar_como_plantilla': guardarComoPlantilla ? '1' : '0',
+        'alumnos': alumnosJson,
+      };
+      if (plantillaId != null) body['plantilla_id'] = plantillaId;
+      if (titulo != null) body['titulo'] = titulo;
+      if (contenido != null) body['contenido'] = contenido;
+      if (plantillaNombre != null) body['plantilla_nombre'] = plantillaNombre;
+
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}autorizaciones/tutor/enviar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/autorizaciones/tutor/registro
+  Future<dynamic> getAutorizacionesTutorRegistro({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}autorizaciones/tutor/registro?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  // ============================================================
+  // MÓDULO SERVICIOS CONTRATADOS
+  // ============================================================
+  /// GET /scl-api/v1/servicios-contratados/mis-servicios
+  Future<dynamic> getServiciosContratadosMisServicios({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}servicios-contratados/mis-servicios?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/servicios-contratados/mis-recibos
+  Future<dynamic> getServiciosContratadosMisRecibos({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}servicios-contratados/mis-recibos?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+}
+  void sessionExpired() async {
   // await SharedPref.initialization();
   // await SharedPref.pref.setBool(SharedPref.isLogin, false);
   Fluttertoast.showToast(msg: 'sessionExpired'.tr);

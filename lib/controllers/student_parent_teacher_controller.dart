@@ -44,6 +44,8 @@ import '../models/classroom_subject_model.dart';
 import '../models/classroom_tag_model.dart';
 import '../models/chat_list_model.dart';
 import '../models/chat_detail_model.dart';
+import '../models/autorizacion_model.dart';
+import '../models/students_with_parents_model.dart';
 
 enum RoleType { student, parent, teacher, assistant }
 
@@ -216,6 +218,44 @@ class StudentParentTeacherController extends ChangeNotifier {
       }
     } catch (_) {
       // Si falla, dejamos el flag en false (módulo oculto por seguridad)
+    }
+  }
+
+  // ============================================================
+  // MÓDULO AUTORIZACIONES — Tutor
+  // ============================================================
+  bool esTutor = false;
+  List<AutorizacionTutorClaseModel> clasesTutoria = [];
+
+  Future<void> fetchAutorizacionesTutorClase() async {
+    try {
+      if (currentLoggedInUserRole != RoleType.teacher) return;
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String teacherId = userdata?.wpUsrId ?? "";
+      if (teacherId.isEmpty) return;
+
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.autorizacionesTutorClaseEndPoint}?teacher_wp_usr_id=$teacherId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+
+      if (response['status'] == true) {
+        final List dataList = response['data'] ?? [];
+        clasesTutoria = AutorizacionTutorClaseModel.listFromJson(dataList);
+        esTutor = clasesTutoria.isNotEmpty;
+      } else {
+        esTutor = false;
+        clasesTutoria = [];
+      }
+      notifyListeners();
+    } catch (_) {
+      esTutor = false;
+      clasesTutoria = [];
     }
   }
 
@@ -742,6 +782,11 @@ class StudentParentTeacherController extends ChangeNotifier {
               currentLoggedInUserRole == RoleType.teacher) {
             getChatList(showLoader: false);
           }
+
+          // Módulo Autorizaciones: si es profesor, verificar si es tutor
+          if (currentLoggedInUserRole == RoleType.teacher) {
+            fetchAutorizacionesTutorClase();
+          }
         }
         setIsLoading(isLoading: false);
       });
@@ -1159,6 +1204,70 @@ class StudentParentTeacherController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Multiselección de alumnos para enviar mensaje (perfil profesor).
+  // Convive con currentSelectedStudentForSendMessage (selección única)
+  // durante la transición; el campo viejo se evaluará para eliminación
+  // en la limpieza posterior, una vez se confirme que no se usa en
+  // otros sitios.
+  List<StudentItem> selectedStudentsForSendMessage = [];
+
+  // Marca o desmarca un alumno en la lista de seleccionados.
+  void toggleSelectedStudent({required StudentItem student}) {
+    final int index = selectedStudentsForSendMessage
+        .indexWhere((s) => s.wpUsrId == student.wpUsrId);
+    if (index >= 0) {
+      selectedStudentsForSendMessage.removeAt(index);
+    } else {
+      selectedStudentsForSendMessage.add(student);
+    }
+    notifyListeners();
+  }
+
+  // Devuelve true si el alumno está actualmente seleccionado.
+  bool isStudentSelected(StudentItem student) {
+    return selectedStudentsForSendMessage
+        .any((s) => s.wpUsrId == student.wpUsrId);
+  }
+
+// Vacía la lista de seleccionados (botón "Limpiar").
+  void clearSelectedStudents() {
+    selectedStudentsForSendMessage = [];
+    notifyListeners();
+  }
+
+  // Multiselección de padres para enviar mensaje (perfil profesor).
+  // Convive con currentSelectedParentForSendMessage (selección única)
+  // durante la transición; el campo viejo se evaluará para eliminación
+  // en la limpieza posterior, una vez se confirme que no se usa en
+  // otros sitios.
+  //
+  // Guarda los IDs de los padres seleccionados (parentWpUsrId).
+  // Identidad por ID: si un padre lo es de dos hermanos y aparece
+  // en dos filas, marcar una marca la otra automáticamente
+  // (comportamiento espejo). El envío se hace una sola vez por ID.
+  List<String> selectedParentIdsForSendMessage = [];
+
+  // Marca o desmarca un padre (por ID) en la lista de seleccionados.
+  void toggleSelectedParent({required String parentId}) {
+    if (selectedParentIdsForSendMessage.contains(parentId)) {
+      selectedParentIdsForSendMessage.remove(parentId);
+    } else {
+      selectedParentIdsForSendMessage.add(parentId);
+    }
+    notifyListeners();
+  }
+
+  // Devuelve true si el padre está actualmente seleccionado.
+  bool isParentSelected(String parentId) {
+    return selectedParentIdsForSendMessage.contains(parentId);
+  }
+
+  // Vacía la lista de seleccionados (botón "Limpiar").
+  void clearSelectedParents() {
+    selectedParentIdsForSendMessage = [];
+    notifyListeners();
+  }
+
   //selected parent for sending message
   ParentItem? currentSelectedParentForSendMessage;
 
@@ -1169,6 +1278,9 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //send message to teacher
+  // Parámetro silent: cuando se invoca desde un envío múltiple
+  // (multiselección), se suprimen los toasts intermedios para
+  // mostrar un único resumen al final.
   Future<Map<String, dynamic>>  sendMessage(
       {required String messageSubject,
       required String description,
@@ -1177,7 +1289,8 @@ class StudentParentTeacherController extends ChangeNotifier {
       String? toAllParent,
       String? toAllStudent,
       String? replyId,
-      String? groupName}) async {
+      String? groupName,
+      bool silent = false}) async {
 
     try {
       setIsLoading(isLoading: true);
@@ -1224,9 +1337,11 @@ class StudentParentTeacherController extends ChangeNotifier {
       var response = await Response.fromStream(streamResponse);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        AppConstants.showCustomToast(
-            status: data['status'],
-            message: data['Message'] ?? data['message'] ?? "");
+        if (!silent) {
+          AppConstants.showCustomToast(
+              status: data['status'],
+              message: data['Message'] ?? data['message'] ?? "");
+        }
         setIsLoading(isLoading: false);
         return {
           "status": data['status'],
@@ -1235,8 +1350,10 @@ class StudentParentTeacherController extends ChangeNotifier {
       }
       else {
         setIsLoading(isLoading: false);
-        AppConstants.showCustomToast(
-            status: false, message: "${response.statusCode}");
+        if (!silent) {
+          AppConstants.showCustomToast(
+              status: false, message: "${response.statusCode}");
+        }
         return {"status": false, "message": "Please try again."};
       }
     } catch (exception) {
@@ -1923,6 +2040,11 @@ class StudentParentTeacherController extends ChangeNotifier {
   List<ParentItem> listOfParents = [];
   List<ParentItem> tempListOfParents = [];
 
+  // Lista jerárquica de alumnos con sus padres, para la
+  // pantalla nueva de envío de mensajes a padres (perfil
+  // profesor). Endpoint: teacher/students-with-parents.
+  List<StudentWithParents> studentsWithParents = [];
+
   void setListOfParents({required List<ParentItem> listOfParents}) {
     this.listOfParents = listOfParents;
     tempListOfParents = listOfParents;
@@ -1966,6 +2088,36 @@ class StudentParentTeacherController extends ChangeNotifier {
       });
 
       setIsLoading(isLoading: false);
+    } catch (exception) {
+      setIsLoading(isLoading: false);
+    }
+  }
+
+  // Pide la lista jerárquica de alumnos con sus padres para
+  // una clase. Endpoint: GET teacher/students-with-parents.
+  void getStudentsWithParents({required String classId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String uid = userdata?.wpUsrId ?? "";
+      await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.studentsWithParents}?class_id=$classId&cuserId=$uid",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      ).then((res) {
+        if (res['status']) {
+          StudentsWithParentsModel model =
+              StudentsWithParentsModel.fromJson(res);
+          studentsWithParents = model.data ?? [];
+        } else {
+          studentsWithParents = [];
+        }
+        setIsLoading(isLoading: false);
+      });
     } catch (exception) {
       setIsLoading(isLoading: false);
     }

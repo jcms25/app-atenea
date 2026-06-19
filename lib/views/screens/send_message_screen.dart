@@ -14,8 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/teacher/parent_list_model.dart';
-
 class MessageSendScreen extends StatefulWidget {
   final RoleType roleType;
   final String? teacherId;
@@ -63,6 +61,14 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                         "",
                     roleType: RoleType.teacher);
                 studentParentTeacherController?.getListOfParents(
+                    classId: studentParentTeacherController
+                            ?.listOfClassAssignToTeacher[0].cid ??
+                        "");
+                // Carga la lista jerárquica (alumno → padres) para
+                // la vista nueva de envío a padres. Convive con
+                // getListOfParents porque la lista plana la sigue
+                // usando teacher_parent_list_screen.
+                studentParentTeacherController?.getStudentsWithParents(
                     classId: studentParentTeacherController
                             ?.listOfClassAssignToTeacher[0].cid ??
                         "");
@@ -364,7 +370,6 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
-                                                  height: 60,
                                                   padding:
                                                       const EdgeInsets.all(20),
                                                   decoration: BoxDecoration(
@@ -384,111 +389,209 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                                                   .currentSendingMessageCategory ==
                                                               MessageSendCategoryForTeacher
                                                                   .student
-                                                          ? DropdownButton<
-                                                              StudentItem>(
-                                                              isExpanded: true,
-                                                              value: studentParentTeacherController
-                                                                  .currentSelectedStudentForSendMessage,
-                                                              underline:
-                                                                  const SizedBox(),
-                                                              hint: Text(
-                                                                "Seleccionar Alumno",
-                                                                style: AppTextStyle.getOutfit500(
-                                                                    textSize:
-                                                                        16,
-                                                                    // textColor: AppColors
-                                                                    //     .secondary
-                                                                    //     .withOpacity(
-                                                                    //         0.5)
-                                                                    textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                            ? Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment.stretch,
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [                                                                
+                                                                // Cabecera: título + botón Limpiar
+                                                                // (siempre presente, con visibilidad alternada
+                                                                // para que no haya saltos verticales)
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                  children: [
+                                                                    Row(
+                                                                      children: [
+                                                                        Expanded(
+                                                                          child: Text(
+                                                                            studentParentTeacherController.selectedStudentsForSendMessage.isEmpty
+                                                                                ? "Seleccionar Alumnos"
+                                                                                : "Seleccionados: ${studentParentTeacherController.selectedStudentsForSendMessage.length}",
+                                                                            style: AppTextStyle.getOutfit500(
+                                                                              textSize: 16,
+                                                                              textColor: AppColors.secondary.withValues(alpha: 0.7),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Visibility(
+                                                                          visible: studentParentTeacherController
+                                                                              .selectedStudentsForSendMessage.isNotEmpty,
+                                                                          maintainSize: true,
+                                                                          maintainAnimation: true,
+                                                                          maintainState: true,
+                                                                          child: TextButton(
+                                                                            style: TextButton.styleFrom(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                                              minimumSize: Size.zero,
+                                                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                            ),
+                                                                            onPressed: () {
+                                                                              studentParentTeacherController.clearSelectedStudents();
+                                                                            },
+                                                                            child: Text(
+                                                                              "Limpiar",
+                                                                              style: AppTextStyle.getOutfit500(
+                                                                                textSize: 14,
+                                                                                textColor: AppColors.primary,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Divider(
+                                                                      height: 1,
+                                                                      thickness: 1,
+                                                                      color: AppColors.secondary.withValues(alpha: 0.2),
+                                                                    ),
+                                                                    ],
+                                                                   ),
+                                                                   Divider(
+                                                                     height: 1,
+                                                                     thickness: 1,
+                                                                     color: AppColors.secondary.withValues(alpha: 0.2),
+                                                                   ),
+                                                                   ConstrainedBox(
+                                                                  constraints: const BoxConstraints(maxHeight: 220),
+                                                                  child: ListView.builder(
+                                                                    shrinkWrap: true,
+                                                                    itemCount: studentParentTeacherController.tempListOfStudents.length,
+                                                                    itemBuilder: (context, index) {
+                                                                      final StudentItem e =
+                                                                          studentParentTeacherController.tempListOfStudents[index];
+                                                                      final bool checked =
+                                                                          studentParentTeacherController.isStudentSelected(e);
+                                                                      return CheckboxListTile(
+                                                                        dense: true,
+                                                                        contentPadding: EdgeInsets.zero,
+                                                                        visualDensity: const VisualDensity(
+                                                                            horizontal: -4, vertical: -4),
+                                                                        controlAffinity: ListTileControlAffinity.leading,
+                                                                        activeColor: AppColors.primary,
+                                                                        value: checked,
+                                                                        onChanged: (_) {
+                                                                          studentParentTeacherController
+                                                                              .toggleSelectedStudent(student: e);
+                                                                        },
+                                                                        title: Text(
+                                                                          "${e.sLname}, ${e.sFname}",
+                                                                          style: AppTextStyle.getOutfit400(
+                                                                            textSize: 16,
+                                                                            textColor: AppColors.secondary,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              icon: const Icon(Icons
-                                                                  .arrow_drop_down_sharp),
-                                                              items: studentParentTeacherController
-                                                                  .tempListOfStudents
-                                                                  .map(
-                                                                      (StudentItem
-                                                                          e) {
-                                                                return DropdownMenuItem<
-                                                                    StudentItem>(
-                                                                  value: e,
-                                                                  child: Text(
-                                                                      "${e.sFname}\t${e.sLname}",
-                                                                      style: AppTextStyle.getOutfit400(
-                                                                          textSize:
-                                                                              18,
-                                                                          // textColor: AppColors
-                                                                          //     .secondary
-                                                                          //     .withOpacity(0.5)
-                                                                        textColor: AppColors.secondary.withValues(alpha: 0.5)
-                                                                      )),
-                                                                );
-                                                              }).toList(),
-                                                              onChanged:
-                                                                  (StudentItem?
-                                                                      value) {
-                                                                studentParentTeacherController
-                                                                    .setCurrentSelectedStudentForSendMessage(
-                                                                        studentItem:
-                                                                            value);
-                                                              },
+                                                              ],
                                                             )
-                                                          : DropdownButton<
-                                                              ParentItem>(
-                                                              isExpanded: true,
-                                                              value: studentParentTeacherController
-                                                                  .currentSelectedParentForSendMessage,
-                                                              underline:
-                                                                  const SizedBox(),
-                                                              hint: Text(
-                                                                "Seleccionar Padre",
-                                                                style: AppTextStyle.getOutfit500(
-                                                                    textSize:
-                                                                        16,
-                                                                    // textColor: AppColors
-                                                                    //     .secondary
-                                                                    //     .withOpacity(
-                                                                    //         0.5)
-                                                                  textColor: AppColors.secondary.withValues(alpha: 0.5)
+                                                          : Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment.stretch,
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        studentParentTeacherController.selectedParentIdsForSendMessage.isEmpty
+                                                                            ? "Seleccionar Padres"
+                                                                            : "Seleccionados: ${studentParentTeacherController.selectedParentIdsForSendMessage.length}",
+                                                                        style: AppTextStyle.getOutfit500(
+                                                                          textSize: 16,
+                                                                          textColor: AppColors.secondary.withValues(alpha: 0.7),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Visibility(
+                                                                      visible: studentParentTeacherController
+                                                                          .selectedParentIdsForSendMessage.isNotEmpty,
+                                                                      maintainSize: true,
+                                                                      maintainAnimation: true,
+                                                                      maintainState: true,
+                                                                      child: TextButton(
+                                                                        style: TextButton.styleFrom(
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                                          minimumSize: Size.zero,
+                                                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                        ),
+                                                                        onPressed: () {
+                                                                          studentParentTeacherController.clearSelectedParents();
+                                                                        },
+                                                                        child: Text(
+                                                                          "Limpiar",
+                                                                          style: AppTextStyle.getOutfit500(
+                                                                            textSize: 14,
+                                                                            textColor: AppColors.primary,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ),
-                                                              icon: const Icon(Icons
-                                                                  .arrow_drop_down_sharp),
-                                                              items: studentParentTeacherController
-                                                                  .tempListOfParents
-                                                                  .map(
-                                                                      (ParentItem
-                                                                          e) {
-                                                                return DropdownMenuItem<
-                                                                    ParentItem>(
-                                                                  value: e,
-                                                                  child: Text(
-                                                                      "${e.pFname} ${e.pLname}",
-                                                                      style: AppTextStyle.getOutfit400(
-                                                                          textSize:
-                                                                              18,
-                                                                          // textColor: AppColors
-                                                                          //     .secondary
-                                                                          //     .withOpacity(0.5)
-                                                                          textColor: AppColors.secondary.withValues(alpha: 0.5)
-                                                                      )),
-                                                                );
-                                                              }).toList(),
-                                                              onChanged:
-                                                                  (ParentItem?
-                                                                      value) {
-                                                                studentParentTeacherController
-                                                                    .setCurrentSelectedParentForSendMessage(
-                                                                        parentItem:
-                                                                            value);
-                                                              },
+                                                                Divider(
+                                                                  height: 1,
+                                                                  thickness: 1,
+                                                                  color: AppColors.secondary.withValues(alpha: 0.2),
+                                                                ),
+                                                                ConstrainedBox(
+                                                                  constraints: const BoxConstraints(maxHeight: 220),
+                                                                  child: ListView.builder(
+                                                                    shrinkWrap: true,
+                                                                    itemCount: studentParentTeacherController.studentsWithParents.length,
+                                                                    itemBuilder: (context, index) {
+                                                                      final s = studentParentTeacherController.studentsWithParents[index];
+                                                                      return Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(top: 6, bottom: 2),
+                                                                            child: Text(
+                                                                              "${s.sLname ?? ''}, ${s.sFname ?? ''}",
+                                                                              style: AppTextStyle.getOutfit400(
+                                                                                textSize: 15,
+                                                                                textColor: AppColors.secondary.withValues(alpha: 0.7),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          ...?s.parents?.map((p) {
+                                                                            final id = p.parentWpUsrId ?? "";
+                                                                            final bool checked = studentParentTeacherController.isParentSelected(id);
+                                                                            return Padding(
+                                                                              padding: const EdgeInsets.only(left: 24),
+                                                                              child: CheckboxListTile(
+                                                                                dense: true,
+                                                                                contentPadding: EdgeInsets.zero,
+                                                                                visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                                                                                controlAffinity: ListTileControlAffinity.leading,
+                                                                                activeColor: AppColors.primary,
+                                                                                value: checked,
+                                                                                onChanged: (_) {
+                                                                                  studentParentTeacherController.toggleSelectedParent(parentId: id);
+                                                                                },
+                                                                                title: Text(
+                                                                                  "${p.pLname ?? ''}, ${p.pFname ?? ''}",
+                                                                                  style: AppTextStyle.getOutfit400(
+                                                                                    textSize: 16,
+                                                                                    textColor: AppColors.secondary,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          }),
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             );
                                                     },
                                                   ),
                                                 )
-                                              ],
-                                            ));
+                                              ]),
+                                        );
                                       },
                                     ),
                                   ],
@@ -592,43 +695,109 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                     return CustomButtonWidget(
                                         buttonTitle: "sendTitle".tr,
                                         onPressed: () async {
-                                          // await studentParentTeacherController
-                                          //     .sendMessage(
-                                          //         messageSubject:
-                                          //             _subjectController.text,
-                                          //         description:
-                                          //             _messageController.text,
-                                          //         whomToSend: studentParentTeacherController
-                                          //                     .currentLoggedInUserRole ==
-                                          //                 RoleType.teacher
-                                          //             ? 0
-                                          //             : studentParentTeacherController.currentLoggedInUserRole ==
-                                          //                     RoleType.student
-                                          //                 ? 2
-                                          //                 : 1,
-                                          //         classId: studentParentTeacherController.currentSendingMessageCategory ==
-                                          //                     MessageSendCategoryForTeacher
-                                          //                         .toAllStudent ||
-                                          //                 studentParentTeacherController.currentSendingMessageCategory ==
-                                          //                     MessageSendCategoryForTeacher
-                                          //                         .toAllParent
-                                          //             ? studentParentTeacherController
-                                          //                     .currentSelectedClass
-                                          //                     ?.cid ??
-                                          //                 ""
-                                          //             : null,
-                                          //         toAllParent:
-                                          //             studentParentTeacherController
-                                          //                         .currentSendingMessageCategory ==
-                                          //                     MessageSendCategoryForTeacher.toAllParent
-                                          //                 ? "1"
-                                          //                 : null,
-                                          //         toAllStudent: studentParentTeacherController.currentSendingMessageCategory == MessageSendCategoryForTeacher.toAllStudent ? "1" : null)
-                                          //     .then((res) {
-                                          //   // if (res['status']) {
-                                          //   //   Get.back();
-                                          //   // }
-                                          // });
+                                          // ── Caso multiselección de alumnos ──────────────────────
+                                          // Si la categoría es "student" y hay alumnos marcados
+                                          // en la lista de seleccionados, se envía un mensaje
+                                          // 1-a-1 a cada uno (sin group_name) y se muestra un
+                                          // único toast de resumen al final.
+                                          if (studentParentTeacherController.currentSendingMessageCategory ==
+                                                  MessageSendCategoryForTeacher.student &&
+                                              studentParentTeacherController
+                                                  .selectedStudentsForSendMessage.isNotEmpty) {
+                                            final selected = List<StudentItem>.from(
+                                                studentParentTeacherController
+                                                    .selectedStudentsForSendMessage);
+                                            int ok = 0;
+                                            int fail = 0;
+                                            for (final s in selected) {
+                                              final res = await studentParentTeacherController.sendMessage(
+                                                messageSubject: _subjectController.text,
+                                                description: _messageController.text,
+                                                receiverId: s.wpUsrId,
+                                                replyId: widget.replyId,
+                                                silent: true,
+                                              );
+                                              if (res['status'] == true) {
+                                                ok++;
+                                              } else {
+                                                fail++;
+                                              }
+                                            }
+                                            // Resumen final
+                                            if (fail == 0) {
+                                              AppConstants.showCustomToast(
+                                                  status: true,
+                                                  message: "Enviado a $ok alumnos");
+                                            } else {
+                                              AppConstants.showCustomToast(
+                                                  status: false,
+                                                  message:
+                                                      "Enviado a $ok, fallaron $fail");
+                                            }
+                                            // Limpia selección y vuelve atrás como en el flujo normal
+                                            studentParentTeacherController.clearSelectedStudents();
+                                            if (ok > 0) {
+                                              studentParentTeacherController.setCurrentSelectedMessageType(
+                                                  currentSelectedMessageListType: AppConstants.messageType2);
+                                              studentParentTeacherController.getMessageList(showLoader: true);
+                                              Get.back();
+                                              Get.back();
+                                            }
+                                            return;
+                                          }
+
+                                          // ── Caso multiselección de padres ──────────────────────
+                                          // Si la categoría es "parent" y hay padres marcados
+                                          // en la lista de seleccionados, se envía un mensaje
+                                          // 1-a-1 a cada uno (sin group_name) y se muestra un
+                                          // único toast de resumen al final.
+                                          if (studentParentTeacherController.currentSendingMessageCategory ==
+                                                  MessageSendCategoryForTeacher.parent &&
+                                              studentParentTeacherController
+                                                  .selectedParentIdsForSendMessage.isNotEmpty) {
+                                            final selectedIds = List<String>.from(
+                                                studentParentTeacherController
+                                                    .selectedParentIdsForSendMessage);
+                                            int ok = 0;
+                                            int fail = 0;
+                                            for (final id in selectedIds) {
+                                              final res = await studentParentTeacherController.sendMessage(
+                                                messageSubject: _subjectController.text,
+                                                description: _messageController.text,
+                                                receiverId: id,
+                                                replyId: widget.replyId,
+                                                silent: true,
+                                              );
+                                              if (res['status'] == true) {
+                                                ok++;
+                                              } else {
+                                                fail++;
+                                              }
+                                            }
+                                            // Resumen final
+                                            if (fail == 0) {
+                                              AppConstants.showCustomToast(
+                                                  status: true,
+                                                  message: "Enviado a $ok padres");
+                                            } else {
+                                              AppConstants.showCustomToast(
+                                                  status: false,
+                                                  message:
+                                                      "Enviado a $ok, fallaron $fail");
+                                            }
+                                            // Limpia selección y vuelve atrás como en el flujo normal
+                                            studentParentTeacherController.clearSelectedParents();
+                                            if (ok > 0) {
+                                              studentParentTeacherController.setCurrentSelectedMessageType(
+                                                  currentSelectedMessageListType: AppConstants.messageType2);
+                                              studentParentTeacherController.getMessageList(showLoader: true);
+                                              Get.back();
+                                              Get.back();
+                                            }
+                                            return;
+                                          }
+
+                                          // ── Resto de casos: comportamiento original ─────────────
                                           await studentParentTeacherController.sendMessage(
                                               messageSubject: _subjectController.text,
                                               description: _messageController.text,
@@ -653,29 +822,7 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                                               Get.back();
                                             }
                                           });
-
-                                          // await studentParentTeacherController
-                                          //      .sendMessage(
-                                          //          messageSubject:
-                                          //              _subjectController.text,
-                                          //          description:
-                                          //              _messageController.text,
-                                          //          whomToSend: studentParentTeacherController
-                                          //                      .currentLoggedInUserRole !=
-                                          //                  RoleType.teacher
-                                          //              ? 0
-                                          //              : studentParentTeacherController
-                                          //                          .currentSendingMessageCategory ==
-                                          //                      RoleType.student
-                                          //                  ? 2
-                                          //                  : 1).then((response){
-                                          //    if(response['status']){
-                                          //      Get.back();
-                                          //    }
-                                          // });
-
                                           }
-
                                         );
                                   },
                                 ),

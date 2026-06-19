@@ -49,6 +49,8 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_student_search_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_locator_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
+import 'package:colegia_atenea/views/screens/autorizaciones_tutor_screen.dart';
+import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   final StudentParentTeacherController studentParentTeacherController;
@@ -381,6 +383,11 @@ class CustomDrawerWidget extends StatelessWidget {
                   teacherDrawerMenuName: 'Utilidades');
             }
           }
+        }
+        // La pestaña Autorizaciones solo se muestra si el profesor es tutor de un grupo
+        if (drawerMenuOption.name == 'drawerOption13'.tr &&
+            !(appController?.esTutor ?? false)) {
+          continue;
         }
         drawerMenuOptionList.add(drawerMenuOption);
       }
@@ -924,7 +931,14 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(() => const TeacherLocatorScreen());
         break;
       case "Autorizaciones":
-        Get.to(() => const AutorizacionesScreen());
+        if (roleType == RoleType.teacher) {
+          Get.to(() => const AutorizacionesTutorScreen());
+        } else {
+          Get.to(() => const AutorizacionesScreen());
+        }
+        break;
+      case "Servicios Contratados":
+        Get.to(() => const ServiciosContratadosScreen());
         break;
       default:
         break;

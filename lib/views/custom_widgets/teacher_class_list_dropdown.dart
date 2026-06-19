@@ -132,10 +132,18 @@ class TeacherClassListDropdown extends StatelessWidget {
                     studentParentTeacherController.setCurrentSelectedStudentForSendMessage(studentItem: null);
                     studentParentTeacherController.setCurrentSelectedParentForSendMessage(parentItem: null);
                     studentParentTeacherController.setCurrentSendingMessageCategory(messageSendingCategoryForTeacher: null);
+                    // Limpia selecciones multiselect al cambiar de clase
+                    // (si no, quedan IDs "fantasma" de la clase anterior).
+                    studentParentTeacherController.clearSelectedStudents();
+                    studentParentTeacherController.clearSelectedParents();
                     studentParentTeacherController.getListOfStudents(
                         classId: teacherClassItem?.cid ?? "",
                         roleType: RoleType.teacher);
                     studentParentTeacherController.getListOfParents(
+                        classId: teacherClassItem?.cid ?? "");
+                    // Carga la lista jerárquica para la vista nueva
+                    // de envío a padres.
+                    studentParentTeacherController.getStudentsWithParents(
                         classId: teacherClassItem?.cid ?? "");
                   }else{
 

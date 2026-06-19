@@ -207,6 +207,7 @@ class WorldLanguage extends Translations {
           'drawerOption11' : 'Store',
           'drawerOption12' : 'Scholarships',
           'drawerOption13' : 'Authorizations',
+          'drawerOption14' : 'Contracted Services',
 
           //sub menu option
           'subMenuDrawer1' : 'Time Table',
@@ -462,6 +463,7 @@ class WorldLanguage extends Translations {
           'drawerOption11' : 'Tienda',
           'drawerOption12' : 'Becas',
           'drawerOption13' : 'Autorizaciones',
+          'drawerOption14' : 'Servicios Contratados',
 
           //sub menu option
           'subMenuDrawer1' : 'Horario',

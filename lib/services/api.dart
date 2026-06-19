@@ -67,6 +67,9 @@ class Api {
   static const String _updateDeviceToken = "update-device-token";
   static String get updateDeviceToken => _updateDeviceToken;
 
+  static const String _studentsWithParents = "teacher/students-with-parents";
+  static String get studentsWithParents => _studentsWithParents;
+
   static const String _getUserRoles = "get-user-roles";
   static String get getUserRoles => _getUserRoles;
 
@@ -231,6 +234,26 @@ class Api {
     static const String _autorizacionesHistorialEndPoint = "autorizaciones/historial";
     static String get autorizacionesHistorialEndPoint => _autorizacionesHistorialEndPoint;
 
+    static const String _autorizacionesTutorClaseEndPoint = "autorizaciones/tutor/clase";
+    static String get autorizacionesTutorClaseEndPoint => _autorizacionesTutorClaseEndPoint;
+
+    static const String _autorizacionesTutorPlantillasEndPoint = "autorizaciones/tutor/plantillas";
+    static String get autorizacionesTutorPlantillasEndPoint => _autorizacionesTutorPlantillasEndPoint;
+
+    static const String _autorizacionesTutorEnviarEndPoint = "autorizaciones/tutor/enviar";
+    static String get autorizacionesTutorEnviarEndPoint => _autorizacionesTutorEnviarEndPoint;
+
+    static const String _autorizacionesTutorRegistroEndPoint = "autorizaciones/tutor/registro";
+    static String get autorizacionesTutorRegistroEndPoint => _autorizacionesTutorRegistroEndPoint;
+
+    // ============================================================
+    // MÓDULO SERVICIOS CONTRATADOS
+    // ============================================================
+    static const String _serviciosContratadosMisServiciosEndPoint = "servicios-contratados/mis-servicios";
+    static String get serviciosContratadosMisServiciosEndPoint => _serviciosContratadosMisServiciosEndPoint;
+    static const String _serviciosContratadosMisRecibosEndPoint = "servicios-contratados/mis-recibos";
+    static String get serviciosContratadosMisRecibosEndPoint => _serviciosContratadosMisRecibosEndPoint;
+
     static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,
@@ -255,15 +278,13 @@ class Api {
       else if (response.statusCode == 401) {
         return {"status": false, "message": "No autorizado"};
       }
-      else {
+        else {        
         return {"status": false, "message": "Por favor, inténtalo de nuevo"};
       }
 
     } catch (exception) {
       return {"status": false, "message": '$exception'};
     }
-
-
 
   }
 }

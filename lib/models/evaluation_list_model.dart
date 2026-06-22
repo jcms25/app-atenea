@@ -13,22 +13,26 @@ class Evaluation {
     required this.status,
     required this.message,
     required this.data,
+    required this.promotion,
   });
 
   bool status;
   String message;
   List<EvaluationItem> data;
+  String promotion;
 
   factory Evaluation.fromJson(Map<String, dynamic> json) => Evaluation(
     status: json["status"],
     message: json["Message"],
     data: List<EvaluationItem>.from(json["Data"].map((x) => EvaluationItem.fromJson(x))),
+    promotion: json["promotion"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
     "status": status,
     "Message": message,
     "Data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "promotion": promotion,
   };
 }
 

@@ -134,156 +134,155 @@ class TableExample extends State<EvaluationScreen> {
                                       textColor: AppColors.secondary),
                                 ),
                               )
-                            : SingleChildScrollView(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Table(
-                                    border: TableBorder(
-                                        verticalInside: BorderSide(
-                                            width: 1,
-                                            color: AppColors.secondary),
-                                        horizontalInside: BorderSide(
-                                            width: 1,
-                                            color: AppColors.secondary),
-                                        top: BorderSide(
-                                            width: 1,
-                                            color: AppColors.secondary),
-                                        bottom: BorderSide(
-                                            width: 1,
-                                            color: AppColors.secondary),
-                                        left: BorderSide(
-                                            width: 1,
-                                            color: AppColors.secondary),
-                                        right: BorderSide(
-                                            width: 1,
-                                            color: AppColors.secondary)),
-                                    columnWidths: {
-                                      // 0: FlexColumnWidth(3),
-                                      0: FlexColumnWidth(4),
-                                      1: FlexColumnWidth(1.5),
-                                      2: FlexColumnWidth(1.5),
-                                      3: FlexColumnWidth(1.5),
-                                      4: FlexColumnWidth(1.5),
-                                    },
-                                    children: [
-                                      TableRow(children: [
-                                        LabelTableCell(label: 'subjects'.tr),
-                                        LabelTableCell(label: '1st'.tr),
-                                        LabelTableCell(label: '2nd'.tr),
-                                        LabelTableCell(label: '3rd'.tr),
-                                        LabelTableCell(label: 'final'.tr),
-                                      ]),
-                                      ...studentParentController.evaluationItem
-                                          .map((e) {
-                                        return TableRow(children: [
-                                          TableCell(
-                                              verticalAlignment:
-                                                  TableCellVerticalAlignment
-                                                      .middle,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(5.0),
-                                                child: Text(
-                                                  e.subject,
-                                                  style:
-                                                      AppTextStyle.getOutfit400(
-                                                          textSize: 16,
-                                                          textColor: AppColors
-                                                              .secondary),
-                                                ),
-                                              )),
-                                          // TableCell(
-                                          //     verticalAlignment:
-                                          //         TableCellVerticalAlignment
-                                          //             .middle,
-                                          //     child: Expanded(child: Text(
-                                          //       e.marks.evaluation1,
-                                          //       style:
-                                          //       AppTextStyle.getOutfit400(
-                                          //           textSize: 16,
-                                          //           textColor: AppColors
-                                          //               .secondary),
-                                          //     ))),
-                                          DataCellWidget(
-                                              data: e.marks.evaluation1),
-                                          DataCellWidget(data: e.marks.evaluation2),
-                                          DataCellWidget(data: e.marks.evaluation3),
-                                          DataCellWidget(data: e.marks.evaluation4)
-                                          // TableCell(
-                                          //     verticalAlignment:
-                                          //         TableCellVerticalAlignment
-                                          //             .middle,
-                                          //     child: Text(
-                                          //       e.marks.evaluation2,
-                                          //       style:
-                                          //           AppTextStyle.getOutfit400(
-                                          //               textSize: 16,
-                                          //               textColor: AppColors
-                                          //                   .secondary),
-                                          //     )),
-                                          // TableCell(
-                                          //     verticalAlignment:
-                                          //         TableCellVerticalAlignment
-                                          //             .middle,
-                                          //     child: Text(
-                                          //       e.marks.evaluation3,
-                                          //       style:
-                                          //           AppTextStyle.getOutfit400(
-                                          //               textSize: 16,
-                                          //               textColor: AppColors
-                                          //                   .secondary),
-                                          //     )),
-                                          // TableCell(
-                                          //     verticalAlignment:
-                                          //         TableCellVerticalAlignment
-                                          //             .middle,
-                                          //     child: Text(
-                                          //       e.marks.evaluation4,
-                                          //       style:
-                                          //           AppTextStyle.getOutfit400(
-                                          //               textSize: 16,
-                                          //               textColor: AppColors
-                                          //                   .secondary),
-                                          //     )),
-                                        ]);
-                                      }),
-                                      TableRow(children: [
-                                        LabelTableCell(label: "obser".tr),
-                                        IconTableCell(onIconClick: () {
-                                          onObservationView(
-                                              evaluation: 1,
-                                              evaluationName: '1st'.tr,
-                                              evaluationItems:
-                                                  studentParentController
-                                                      .evaluationItem);
-                                        }),
-                                        IconTableCell(onIconClick: () {
-                                          onObservationView(
-                                              evaluation: 2,
-                                              evaluationName: '2nd'.tr,
-                                              evaluationItems:
-                                                  studentParentController
-                                                      .evaluationItem);
-                                        }),
-                                        IconTableCell(onIconClick: () {
-                                          onObservationView(
-                                              evaluation: 3,
-                                              evaluationName: '3rd'.tr,
-                                              evaluationItems:
-                                                  studentParentController
-                                                      .evaluationItem);
-                                        }),
-                                        IconTableCell(onIconClick: () {
-                                          onObservationView(
-                                              evaluation: 4,
-                                              evaluationName: 'final'.tr,
-                                              evaluationItems:
-                                                  studentParentController
-                                                      .evaluationItem);
-                                        }),
-                                      ]),
-                                    ],
+                            : Column(
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Table(
+                                          border: TableBorder(
+                                              verticalInside: BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.secondary),
+                                              horizontalInside: BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.secondary),
+                                              top: BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.secondary),
+                                              bottom: BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.secondary),
+                                              left: BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.secondary),
+                                              right: BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.secondary)),
+                                          columnWidths: {
+                                            0: FlexColumnWidth(4),
+                                            1: FlexColumnWidth(1.5),
+                                            2: FlexColumnWidth(1.5),
+                                            3: FlexColumnWidth(1.5),
+                                            4: FlexColumnWidth(1.5),
+                                          },
+                                          children: [
+                                            TableRow(children: [
+                                              LabelTableCell(label: 'subjects'.tr),
+                                              LabelTableCell(label: '1st'.tr),
+                                              LabelTableCell(label: '2nd'.tr),
+                                              LabelTableCell(label: '3rd'.tr),
+                                              LabelTableCell(label: 'final'.tr),
+                                            ]),
+                                            ...studentParentController.evaluationItem
+                                                .map((e) {
+                                              return TableRow(children: [
+                                                TableCell(
+                                                    verticalAlignment:
+                                                        TableCellVerticalAlignment
+                                                            .middle,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(5.0),
+                                                      child: Text(
+                                                        e.subject,
+                                                        style:
+                                                            AppTextStyle.getOutfit400(
+                                                                textSize: 16,
+                                                                textColor: AppColors
+                                                                    .secondary),
+                                                      ),
+                                                    )),
+                                                DataCellWidget(
+                                                    data: e.marks.evaluation1),
+                                                DataCellWidget(data: e.marks.evaluation2),
+                                                DataCellWidget(data: e.marks.evaluation3),
+                                                DataCellWidget(data: e.marks.evaluation4)
+                                              ]);
+                                            }),
+                                            TableRow(children: [
+                                              LabelTableCell(label: "obser".tr),
+                                              IconTableCell(onIconClick: () {
+                                                onObservationView(
+                                                    evaluation: 1,
+                                                    evaluationName: '1st'.tr,
+                                                    evaluationItems:
+                                                        studentParentController
+                                                            .evaluationItem);
+                                              }),
+                                              IconTableCell(onIconClick: () {
+                                                onObservationView(
+                                                    evaluation: 2,
+                                                    evaluationName: '2nd'.tr,
+                                                    evaluationItems:
+                                                        studentParentController
+                                                            .evaluationItem);
+                                              }),
+                                              IconTableCell(onIconClick: () {
+                                                onObservationView(
+                                                    evaluation: 3,
+                                                    evaluationName: '3rd'.tr,
+                                                    evaluationItems:
+                                                        studentParentController
+                                                            .evaluationItem);
+                                              }),
+                                              IconTableCell(onIconClick: () {
+                                                onObservationView(
+                                                    evaluation: 4,
+                                                    evaluationName: 'final'.tr,
+                                                    evaluationItems:
+                                                        studentParentController
+                                                            .evaluationItem);
+                                              }),
+                                            ]),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  if (studentParentController.evaluationPromotion.isNotEmpty)
+                                    Container(
+                                      width: double.infinity,
+                                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                      decoration: BoxDecoration(
+                                        color: studentParentController.evaluationPromotion == 'PRO'
+                                            ? Colors.green.shade50
+                                            : Colors.red.shade50,
+                                        border: Border.all(
+                                          color: studentParentController.evaluationPromotion == 'PRO'
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            studentParentController.evaluationPromotion == 'PRO'
+                                                ? Icons.check_circle
+                                                : Icons.cancel,
+                                            color: studentParentController.evaluationPromotion == 'PRO'
+                                                ? Colors.green
+                                                : Colors.red,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            studentParentController.evaluationPromotion == 'PRO'
+                                                ? 'Promociona al curso siguiente'
+                                                : 'No promociona al curso siguiente',
+                                            style: AppTextStyle.getOutfit500(
+                                              textSize: 16,
+                                              textColor: studentParentController.evaluationPromotion == 'PRO'
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
                               );
                       },
                     ))
@@ -379,8 +378,6 @@ showAlertDialog(BuildContext context) {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(30),
     ),
-
-    //title:
     content: const Text("NO HAY OBSERVACIONES PARA ESTA EVALUACIÓN"),
     actions: [
       okButton,
@@ -451,17 +448,19 @@ class DataCellWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isFail = data.startsWith('In');
     return TableCell(
         verticalAlignment: TableCellVerticalAlignment.middle,
         child: Padding(
-          padding: const EdgeInsets.only(left: 3,right: 2),
+          padding: const EdgeInsets.only(left: 3, right: 2),
           child: AutoSizeText(
             data,
             maxLines: 2,
             minFontSize: 16,
             maxFontSize: 16,
             style: AppTextStyle.getOutfit400(
-                textSize: 16, textColor: AppColors.secondary),
+                textSize: 16,
+                textColor: isFail ? Colors.red : AppColors.secondary),
           ),
         ));
   }

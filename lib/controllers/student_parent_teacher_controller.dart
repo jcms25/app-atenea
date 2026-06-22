@@ -1640,11 +1640,17 @@ class StudentParentTeacherController extends ChangeNotifier {
         : "";
   }
 
-  //Evaluation parent and student side;
+//Evaluation parent and student side;
   List<EvaluationItem> evaluationItem = [];
+  String evaluationPromotion = '';
 
   void setEvaluationItem({required List<EvaluationItem> evaluationItem}) {
     this.evaluationItem = evaluationItem;
+    notifyListeners();
+  }
+
+  void setEvaluationPromotion({required String promotion}) {
+    evaluationPromotion = promotion;
     notifyListeners();
   }
 
@@ -1671,6 +1677,7 @@ class StudentParentTeacherController extends ChangeNotifier {
         if (res['status']) {
           Evaluation evaluation = Evaluation.fromJson(res);
           setEvaluationItem(evaluationItem: evaluation.data);
+          setEvaluationPromotion(promotion: evaluation.promotion);
         }
         setIsLoading(isLoading: false);
       });

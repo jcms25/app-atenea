@@ -1609,11 +1609,833 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
       } else {
         return {'status': false, 'Message': 'Something went wrong'};
       }
+  } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  // ============================================================
+  // MÓDULO TUTORÍAS
+  // ============================================================
+  /// GET /scl-api/v1/tutorias/historial
+  Future<dynamic> getTutoriasHistorial({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/historial?tutoria_id=$tutoriaId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
     } catch (exception) {
       return {'status': false, 'Message': 'Exception: $exception'};
     }
   }
-
+  /// POST /scl-api/v1/tutorias/aceptar
+  Future<dynamic> aceptarTutoria({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String actorWpUsrId,
+    required String actorRol,
+    String? mensaje,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'actor_wp_usr_id': actorWpUsrId,
+        'actor_rol': actorRol,
+      };
+      if (mensaje != null && mensaje.isNotEmpty) body['mensaje'] = mensaje;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/aceptar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/cancelar
+  Future<dynamic> cancelarTutoria({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String actorWpUsrId,
+    required String actorRol,
+    String? motivo,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'actor_wp_usr_id': actorWpUsrId,
+        'actor_rol': actorRol,
+      };
+      if (motivo != null) body['motivo'] = motivo;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/cancelar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/padre/profesores
+  Future<dynamic> getTutoriasPadreProfesores({
+    required String token,
+    required String cookie,
+    required String studentId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/padre/profesores?student_id=$studentId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/padre/activas
+  Future<dynamic> getTutoriasPadreActivas({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/padre/activas?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/padre/historico
+  Future<dynamic> getTutoriasPadreHistorico({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/padre/historico?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/padre/solicitar
+  Future<dynamic> solicitarTutoriaPadre({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+    required String studentId,
+    required String teacherWpUsrId,
+    required String fechaPropuesta,
+    required String motivoSolicitud,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/padre/solicitar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'parent_wp_usr_id': parentWpUsrId,
+          'student_id': studentId,
+          'teacher_wp_usr_id': teacherWpUsrId,
+          'fecha_propuesta': fechaPropuesta,
+          'motivo_solicitud': motivoSolicitud,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/padre/proponer
+  Future<dynamic> proponerFechaTutoriaPadre({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String parentWpUsrId,
+    required String mensaje,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'parent_wp_usr_id': parentWpUsrId,
+        'mensaje': mensaje,
+      };
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/padre/proponer'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/profesor/alumnos
+  Future<dynamic> getTutoriasProfesorAlumnos({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/alumnos?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/profesor/solicitar
+  Future<dynamic> solicitarTutoriaProfesor({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+    required String studentId,
+    required String fechaPropuesta,
+    required String motivoSolicitud,
+    required String padresIdsJson,
+    String? mensajeFechaHora,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'teacher_wp_usr_id': teacherWpUsrId,
+        'student_id': studentId,
+        'fecha_propuesta': fechaPropuesta,
+        'motivo_solicitud': motivoSolicitud,
+        'padres_ids': padresIdsJson,
+      };
+      if (mensajeFechaHora != null) body['mensaje'] = mensajeFechaHora;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/solicitar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/profesor/pendientes
+  Future<dynamic> getTutoriasProfesorPendientes({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/pendientes?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/profesor/agenda
+  Future<dynamic> getTutoriasProfesorAgenda({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/agenda?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+  if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/profesor/acta-pendientes
+  Future<dynamic> getTutoriasProfesorActaPendientes({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/acta-pendientes?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/profesor/aplazar
+  Future<dynamic> aplazarTutoriaProfesor({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String teacherWpUsrId,
+    required String fechaPropuesta,
+    String? motivo,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'teacher_wp_usr_id': teacherWpUsrId,
+        'fecha_propuesta': fechaPropuesta,
+      };
+      if (motivo != null) body['motivo'] = motivo;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/aplazar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/profesor/nueva-propuesta
+  Future<dynamic> nuevaPropuestaTutoriaProfesor({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String teacherWpUsrId,
+    required String fechaPropuesta,
+    String? mensaje,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'teacher_wp_usr_id': teacherWpUsrId,
+        'fecha_propuesta': fechaPropuesta,
+      };
+      if (mensaje != null) body['mensaje'] = mensaje;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/nueva-propuesta'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/profesor/acta
+  Future<dynamic> registrarActaTutoria({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String teacherWpUsrId,
+    String? asuntosTratados,
+    String? asistentes,
+    String? observaciones,
+    String? anotacionesProfesor,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'teacher_wp_usr_id': teacherWpUsrId,
+      };
+      if (asuntosTratados != null) body['asuntos_tratados'] = asuntosTratados;
+      if (asistentes != null) body['asistentes'] = asistentes;
+      if (observaciones != null) body['observaciones'] = observaciones;
+      if (anotacionesProfesor != null) body['anotaciones_profesor'] = anotacionesProfesor;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/acta'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/profesor/historico
+  Future<dynamic> getTutoriasProfesorHistorico({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/historico?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+  if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/profesor/eliminar
+  Future<dynamic> eliminarTutoria({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/eliminar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'tutoria_id': tutoriaId,
+          'teacher_wp_usr_id': teacherWpUsrId,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/asistentes-selector
+  Future<dynamic> getTutoriasAsistentesSelector({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/asistentes-selector?tutoria_id=$tutoriaId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/enviar-a-firmar
+  Future<dynamic> enviarActaAFirmar({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String teacherWpUsrId,
+    required String asistentesJson,
+    required String asuntosTratados,
+    String? observaciones,
+    String? anotacionesProfesor,
+  }) async {
+    try {
+      final Map<String, String> body = {
+        'tutoria_id': tutoriaId,
+        'teacher_wp_usr_id': teacherWpUsrId,
+        'asistentes': asistentesJson,
+        'asuntos_tratados': asuntosTratados,
+      };
+      if (observaciones != null) body['observaciones'] = observaciones;
+      if (anotacionesProfesor != null) body['anotaciones_profesor'] = anotacionesProfesor;
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/enviar-a-firmar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/firma-pendientes
+  Future<dynamic> getTutoriasFirmaPendientes({
+    required String token,
+    required String cookie,
+    required String wpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/firma-pendientes?wp_usr_id=$wpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/firmar
+  Future<dynamic> firmarTutoriaActa({
+    required String token,
+    required String cookie,
+    required String firmaId,
+    required String wpUsrId,
+    required String firmaNombre,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/firmar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'firma_id': firmaId,
+          'wp_usr_id': wpUsrId,
+          'firma_nombre': firmaNombre,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/estado-firmas
+  Future<dynamic> getTutoriasEstadoFirmas({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/estado-firmas?tutoria_id=$tutoriaId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// POST /scl-api/v1/tutorias/finalizar-acta
+  Future<dynamic> finalizarActaTutoria({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}tutorias/finalizar-acta'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'tutoria_id': tutoriaId,
+          'teacher_wp_usr_id': teacherWpUsrId,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/profesor/en-proceso-firma
+  Future<dynamic> getTutoriasProfesorEnProcesoFirma({
+    required String token,
+    required String cookie,
+    required String teacherWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/profesor/en-proceso-firma?teacher_wp_usr_id=$teacherWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+  /// GET /scl-api/v1/tutorias/acta-pdf
+  Future<dynamic> getTutoriaActaPdf({
+    required String token,
+    required String cookie,
+    required String tutoriaId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}tutorias/acta-pdf?tutoria_id=$tutoriaId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
   // ============================================================
   // MÓDULO SERVICIOS CONTRATADOS
   // ============================================================

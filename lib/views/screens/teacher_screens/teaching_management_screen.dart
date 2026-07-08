@@ -4,6 +4,7 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_evaluation_selector_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,6 +68,9 @@ class _TeachingManagementScreenState extends State<TeachingManagementScreen> {
         break;
       case 3:
         Get.to(() => TeacherFollowedUpScreen());
+        break;
+      case 4:
+        Get.to(() => TeacherEvaluationSelectorScreen());
         break;
       default:
         break;

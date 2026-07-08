@@ -208,7 +208,8 @@ class WorldLanguage extends Translations {
           'drawerOption12' : 'Scholarships',
           'drawerOption13' : 'Authorizations',
           'drawerOption14' : 'Contracted Services',
-
+          'drawerOption15' : 'Tutoring Sessions',
+          
           //sub menu option
           'subMenuDrawer1' : 'Time Table',
           'subMenuDrawer2' : 'Teachers',
@@ -224,6 +225,7 @@ class WorldLanguage extends Translations {
           'subMenuDrawer11' : 'Manage Service',
           'subMenuDrawer12' : 'My Schedule',
           'subMenuDrawer13' : 'Follow-up',
+          'subMenuDrawer30' : 'Evaluation Reports',
 
           //Scholarships sub menu
           'subMenuDrawer26' : 'Application Process',
@@ -464,6 +466,7 @@ class WorldLanguage extends Translations {
           'drawerOption12' : 'Becas',
           'drawerOption13' : 'Autorizaciones',
           'drawerOption14' : 'Servicios Contratados',
+          'drawerOption15' : 'Tutorías',
 
           //sub menu option
           'subMenuDrawer1' : 'Horario',
@@ -480,6 +483,7 @@ class WorldLanguage extends Translations {
           'subMenuDrawer11' : 'Gestionar Servicio',
           'subMenuDrawer12' : 'Mi Horario',
           'subMenuDrawer13' : 'Seguimiento',
+          'subMenuDrawer30' : 'Boletines Evaluación',
           'subMenuDrawer24' : 'Horarios',
 
           //store submenu option

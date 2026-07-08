@@ -21,12 +21,15 @@ import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'controllers/store_controller.dart';
 import 'dart:convert';
+import 'package:intl/date_symbol_data_local.dart';
 
 FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 // Variable reactiva para deep linking — MainScreen la escucha en tiempo real
 final RxString pendingDeepLink = ''.obs;
+final RxString pendingTutoriaId = ''.obs;
+final RxString pendingTutoriaAccion = ''.obs;
 final RxString pendingEid = ''.obs;
 final RxString pendingClassId = ''.obs;
 final RxString pendingStudentId = ''.obs;
@@ -35,6 +38,7 @@ final RxString pendingClassName = ''.obs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES', null);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -135,11 +139,15 @@ void _navigateFromMessage(RemoteMessage message) {
   final String studentId = message.data["student_id"] ?? "";
   final String studentName = message.data["student_name"] ?? "";
   final String className = message.data["class_name"] ?? "";
+  final String tutoriaId = message.data["tutoria_id"] ?? "";
+  final String tutoriaAccion = message.data["accion"] ?? "";
   pendingEid.value = eid;
   pendingClassId.value = classId;
   pendingStudentId.value = studentId;
   pendingStudentName.value = studentName;
   pendingClassName.value = className;
+  pendingTutoriaId.value = tutoriaId;
+  pendingTutoriaAccion.value = tutoriaAccion;
   // Actualizar la variable reactiva — MainScreen la detectará automáticamente
   pendingDeepLink.value = destination;
 }
@@ -160,6 +168,8 @@ void _onLocalNotificationTap(NotificationResponse response) {
     pendingStudentId.value = data["student_id"]?.toString() ?? "";
     pendingStudentName.value = data["student_name"]?.toString() ?? "";
     pendingClassName.value = data["class_name"]?.toString() ?? "";
+    pendingTutoriaId.value = data["tutoria_id"]?.toString() ?? "";
+    pendingTutoriaAccion.value = data["accion"]?.toString() ?? "";
     pendingDeepLink.value = destination;
   } catch (e) {
     // payload mal formado: no se navega.

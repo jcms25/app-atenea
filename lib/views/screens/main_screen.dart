@@ -26,6 +26,8 @@ import 'class_menu_screens/grade_screen.dart';
 import 'parent_student_info_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
+import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
+import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -49,21 +51,23 @@ class _MainScreenState extends State<MainScreen> {
         studentParentTeacherController?.getListOfClassesAssignToTeacher(
             showLoader: false);
       }
+
+      // Caso de app arrancada desde una notificación (estaba cerrada):
+      // getInitialMessage() pudo poner pendingDeepLink ANTES de que
+      // MainScreen existiera, por lo que el 'ever' de abajo no llega
+      // a captarlo. Se comprueba aquí, DENTRO de este mismo callback,
+      // para garantizar que studentParentTeacherController ya está
+      // asignado antes de procesar el deep link (evita el fallo
+      // silencioso de _handleDeepLink cuando el controlador aún es null).
+      if (pendingDeepLink.value.isNotEmpty) {
+        _processPendingDeepLink(pendingDeepLink.value);
+      }
     });
 
     // Escuchar cambios en pendingDeepLink en tiempo real
     ever(pendingDeepLink, (String destination) {
       _processPendingDeepLink(destination);
     });
-
-    // Caso de app arrancada desde una notificación (estaba cerrada):
-    // getInitialMessage() pudo poner pendingDeepLink ANTES de que
-    // MainScreen existiera, por lo que el 'ever' de arriba no llega
-    // a captarlo. Aquí, al montarse MainScreen, se comprueba si ya
-    // hay un deep link pendiente y se procesa.
-    if (pendingDeepLink.value.isNotEmpty) {
-      _processPendingDeepLink(pendingDeepLink.value);
-    }
   }
 
   // Procesa un deep link pendiente: lee los datos asociados,
@@ -75,23 +79,26 @@ class _MainScreenState extends State<MainScreen> {
     final String studentId = pendingStudentId.value;
     final String studentName = pendingStudentName.value;
     final String className = pendingClassName.value;
+    final String tutoriaId = pendingTutoriaId.value;
     pendingDeepLink.value = '';
     pendingEid.value = '';
     pendingClassId.value = '';
     pendingStudentId.value = '';
     pendingStudentName.value = '';
     pendingClassName.value = '';
+    pendingTutoriaId.value = '';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleDeepLink(destination,
           eid: eid,
           classId: classId,
           studentId: studentId,
           studentName: studentName,
-          className: className);
+          className: className,
+          tutoriaId: tutoriaId);
     });
   }
 
-  void _handleDeepLink(String destination, {String? eid, String? classId, String? studentId, String? studentName, String? className}) {
+  void _handleDeepLink(String destination, {String? eid, String? classId, String? studentId, String? studentName, String? className, String? tutoriaId}) {
     if (studentParentTeacherController == null) return;
 
     final RoleType role =
@@ -131,6 +138,53 @@ class _MainScreenState extends State<MainScreen> {
     // Autorizaciones: abrir directamente la sección
     if (destination == "autorizaciones") {
       Get.to(() => const AutorizacionesScreen());
+      return;
+    }
+    // Tutorías: abrir la pantalla correspondiente según el rol, saltando
+    // directamente a la pestaña relacionada con la acción que generó
+    // la notificación.
+    if (destination == "tutoria") {
+      final String accion = pendingTutoriaAccion.value;
+      pendingTutoriaAccion.value = '';
+
+      if (role == RoleType.teacher) {
+        int tabIndex = 0; // Solicitar (por defecto)
+        int actaSubTabIndex = 0;
+        switch (accion) {
+          case 'solicitud':
+          case 'aplazamiento':
+          case 'nueva_propuesta':
+          case 'cancelacion':
+            tabIndex = 1; // Pendientes
+            break;
+          case 'aceptacion':
+            tabIndex = 2; // Agenda
+            break;
+          case 'firma_pendiente':
+            tabIndex = 3; // Registrar Actas
+            actaSubTabIndex = 1; // Sub-pestaña Firmar
+            break;
+        }
+        Get.to(() => TutoriasProfesorScreen(
+              initialTabIndex: tabIndex,
+              initialActaSubTabIndex: actaSubTabIndex,
+            ));
+      } else {
+        int tabIndex = 0; // Solicitar (por defecto)
+        switch (accion) {
+          case 'solicitud':
+          case 'aceptacion':
+          case 'aplazamiento':
+          case 'nueva_propuesta':
+          case 'cancelacion':
+            tabIndex = 1; // Mis Tutorías
+            break;
+          case 'firma_pendiente':
+            tabIndex = 2; // Pendientes de Firma
+            break;
+        }
+        Get.to(() => TutoriasPadreScreen(initialTabIndex: tabIndex));
+      }
       return;
     }
 

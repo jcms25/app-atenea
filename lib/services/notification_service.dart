@@ -89,11 +89,12 @@ class NotificationService {
         return "classroom";
       case "Autorizacion":
         return "autorizaciones";
+      case "Tutoria":
+        return "tutoria";
       default:
         return "dashboard";
     }
   }
-
   // Igual que resolveRoute, pero a partir del Map de datos
   // (usado al tocar una notificación local, cuyo payload es
   // un Map deserializado y no un RemoteMessage).
@@ -120,6 +121,8 @@ class NotificationService {
         return "classroom";
       case "Autorizacion":
         return "autorizaciones";
+      case "Tutoria":
+        return "tutoria";
       default:
         return "dashboard";
     }

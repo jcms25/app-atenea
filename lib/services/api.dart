@@ -246,6 +246,85 @@ class Api {
     static const String _autorizacionesTutorRegistroEndPoint = "autorizaciones/tutor/registro";
     static String get autorizacionesTutorRegistroEndPoint => _autorizacionesTutorRegistroEndPoint;
 
+    // MÓDULO TUTORÍAS
+    static const String _tutoriasHistorialEndPoint = "tutorias/historial";
+    static String get tutoriasHistorialEndPoint => _tutoriasHistorialEndPoint;
+
+    static const String _tutoriasAceptarEndPoint = "tutorias/aceptar";
+    static String get tutoriasAceptarEndPoint => _tutoriasAceptarEndPoint;
+
+    static const String _tutoriasCancelarEndPoint = "tutorias/cancelar";
+    static String get tutoriasCancelarEndPoint => _tutoriasCancelarEndPoint;
+
+    static const String _tutoriasPadreProfesoresEndPoint = "tutorias/padre/profesores";
+    static String get tutoriasPadreProfesoresEndPoint => _tutoriasPadreProfesoresEndPoint;
+
+    static const String _tutoriasPadreActivasEndPoint = "tutorias/padre/activas";
+    static String get tutoriasPadreActivasEndPoint => _tutoriasPadreActivasEndPoint;
+
+    static const String _tutoriasPadreHistoricoEndPoint = "tutorias/padre/historico";
+    static String get tutoriasPadreHistoricoEndPoint => _tutoriasPadreHistoricoEndPoint;
+
+    static const String _tutoriasPadreSolicitarEndPoint = "tutorias/padre/solicitar";
+    static String get tutoriasPadreSolicitarEndPoint => _tutoriasPadreSolicitarEndPoint;
+
+    static const String _tutoriasPadreProponerEndPoint = "tutorias/padre/proponer";
+    static String get tutoriasPadreProponerEndPoint => _tutoriasPadreProponerEndPoint;
+
+    static const String _tutoriasProfesorAlumnosEndPoint = "tutorias/profesor/alumnos";
+    static String get tutoriasProfesorAlumnosEndPoint => _tutoriasProfesorAlumnosEndPoint;
+
+    static const String _tutoriasProfesorSolicitarEndPoint = "tutorias/profesor/solicitar";
+    static String get tutoriasProfesorSolicitarEndPoint => _tutoriasProfesorSolicitarEndPoint;
+
+    static const String _tutoriasProfesorPendientesEndPoint = "tutorias/profesor/pendientes";
+    static String get tutoriasProfesorPendientesEndPoint => _tutoriasProfesorPendientesEndPoint;
+
+    static const String _tutoriasProfesorAgendaEndPoint = "tutorias/profesor/agenda";
+    static String get tutoriasProfesorAgendaEndPoint => _tutoriasProfesorAgendaEndPoint;
+
+    static const String _tutoriasProfesorActaPendientesEndPoint = "tutorias/profesor/acta-pendientes";
+    static String get tutoriasProfesorActaPendientesEndPoint => _tutoriasProfesorActaPendientesEndPoint;
+
+    static const String _tutoriasProfesorAplazarEndPoint = "tutorias/profesor/aplazar";
+    static String get tutoriasProfesorAplazarEndPoint => _tutoriasProfesorAplazarEndPoint;
+
+    static const String _tutoriasProfesorNuevaPropuestaEndPoint = "tutorias/profesor/nueva-propuesta";
+    static String get tutoriasProfesorNuevaPropuestaEndPoint => _tutoriasProfesorNuevaPropuestaEndPoint;
+
+    static const String _tutoriasProfesorActaEndPoint = "tutorias/profesor/acta";
+    static String get tutoriasProfesorActaEndPoint => _tutoriasProfesorActaEndPoint;
+
+    static const String _tutoriasProfesorHistoricoEndPoint = "tutorias/profesor/historico";
+    static String get tutoriasProfesorHistoricoEndPoint => _tutoriasProfesorHistoricoEndPoint;
+
+    static const String _tutoriasProfesorEliminarEndPoint = "tutorias/profesor/eliminar";
+    static String get tutoriasProfesorEliminarEndPoint => _tutoriasProfesorEliminarEndPoint;
+
+    static const String _tutoriasAsistentesSelectorEndPoint = "tutorias/asistentes-selector";
+    static String get tutoriasAsistentesSelectorEndPoint => _tutoriasAsistentesSelectorEndPoint;
+
+    static const String _tutoriasEnviarAFirmarEndPoint = "tutorias/enviar-a-firmar";
+    static String get tutoriasEnviarAFirmarEndPoint => _tutoriasEnviarAFirmarEndPoint;
+
+    static const String _tutoriasFirmaPendientesEndPoint = "tutorias/firma-pendientes";
+    static String get tutoriasFirmaPendientesEndPoint => _tutoriasFirmaPendientesEndPoint;
+
+    static const String _tutoriasFirmarEndPoint = "tutorias/firmar";
+    static String get tutoriasFirmarEndPoint => _tutoriasFirmarEndPoint;
+
+    static const String _tutoriasEstadoFirmasEndPoint = "tutorias/estado-firmas";
+    static String get tutoriasEstadoFirmasEndPoint => _tutoriasEstadoFirmasEndPoint;
+
+    static const String _tutoriasFinalizarActaEndPoint = "tutorias/finalizar-acta";
+    static String get tutoriasFinalizarActaEndPoint => _tutoriasFinalizarActaEndPoint;
+
+    static const String _tutoriasProfesorEnProcesoFirmaEndPoint = "tutorias/profesor/en-proceso-firma";
+    static String get tutoriasProfesorEnProcesoFirmaEndPoint => _tutoriasProfesorEnProcesoFirmaEndPoint;
+
+    static const String _tutoriasActaPdfEndPoint = "tutorias/acta-pdf";
+    static String get tutoriasActaPdfEndPoint => _tutoriasActaPdfEndPoint;
+
     // ============================================================
     // MÓDULO SERVICIOS CONTRATADOS
     // ============================================================

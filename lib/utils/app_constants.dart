@@ -164,6 +164,10 @@ class AppConstants {
       "name": "drawerOption14".tr,
       "icon": AppImages.serviciosContratadosIcon,
     },
+   {
+      "name": "drawerOption15".tr,
+"icon": AppImages.tutoriaIcon,
+    },
     {
       "name": "drawerOption7".tr,
       "icon": AppImages.people,
@@ -219,6 +223,7 @@ class AppConstants {
       "icon": AppImages.message,
     },
     {"name": 'drawerOption13'.tr, "icon": AppImages.autorizacionIcon},
+    {"name": 'drawerOption15'.tr, "icon": AppImages.tutoriaIcon},
     {"name": 'drawerOption8'.tr, "icon": AppImages.calender},
     {
       "name": 'drawerOption9'.tr,
@@ -284,7 +289,8 @@ class AppConstants {
     {"name": 'subMenuDrawer12'.tr},
     {"name": 'subMenuDrawer5'.tr},
     {"name": 'subMenuDrawer6'.tr},
-    {"name": 'subMenuDrawer13'.tr}
+    {"name": 'subMenuDrawer13'.tr},
+    {"name": 'subMenuDrawer30'.tr},
   ];
 
   //teacher sub menu list 3
@@ -312,7 +318,7 @@ class AppConstants {
     },
   ];
 
-//Becas sub menu list : parent
+  //Becas sub menu list : parent
   static List<Map<String,String>> subMenuListBecas = [
     {"name" : "subMenuDrawer26".tr,
       "icon": AppImages.solicitudIcon,
@@ -327,7 +333,8 @@ class AppConstants {
       "icon": AppImages.librosConcedidosIcon,
     },
   ];
-  
+
+ 
   //Products sub menu list ; parent
   static List<Map<String,String>> subMenuListProducts = [
     {"name" : "subMenuDrawer19".tr},

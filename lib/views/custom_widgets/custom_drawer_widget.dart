@@ -28,6 +28,7 @@ import 'package:colegia_atenea/views/screens/store_screens/products/product_list
 import 'package:colegia_atenea/views/screens/store_screens/products/sub_category_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_add_edit_marks_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_followed_up_screen.dart';
+import 'package:colegia_atenea/views/screens/teacher_screens/teacher_evaluation_selector_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_parent_list_screen.dart';
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_schedule_screen.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,8 @@ import 'package:colegia_atenea/views/screens/teacher_screens/teacher_student_sea
 import 'package:colegia_atenea/views/screens/teacher_screens/teacher_locator_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_tutor_screen.dart';
+import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
+import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
@@ -857,6 +860,10 @@ class CustomDrawerWidget extends StatelessWidget {
         AppConstants.mainScreenKey.currentState?.closeDrawer();
         Get.to(() => TeacherFollowedUpScreen());
         break;
+      case "Boletines Evaluación":
+        AppConstants.mainScreenKey.currentState?.closeDrawer();
+        Get.to(() => TeacherEvaluationSelectorScreen());
+        break;
       case "Mis Datos":
         Get.to(() => MyDataScreen());
         break;
@@ -939,6 +946,13 @@ class CustomDrawerWidget extends StatelessWidget {
         break;
       case "Servicios Contratados":
         Get.to(() => const ServiciosContratadosScreen());
+        break;
+      case "Tutorías":
+        if (roleType == RoleType.teacher) {
+          Get.to(() => const TutoriasProfesorScreen());
+        } else {
+          Get.to(() => const TutoriasPadreScreen());
+        }
         break;
       default:
         break;

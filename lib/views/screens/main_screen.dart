@@ -28,6 +28,8 @@ import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events
 import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
+//chequea la versión para actualización obligatoria
+import 'package:colegia_atenea/services/version_check_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -45,6 +47,9 @@ class _MainScreenState extends State<MainScreen> {
     WidgetsBinding.instance.addPostFrameCallback((response) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
+
+      // Comprobar versión de la app al arrancar
+      VersionCheckService.check(context);
 
       if (studentParentTeacherController?.currentLoggedInUserRole ==
           RoleType.teacher) {

@@ -388,12 +388,16 @@ class AddToCart {
 
 class Extensions {
   CustomProductData? customProductData;
+  WpspBundle? wpspBundle;
 
-  Extensions({this.customProductData});
+  Extensions({this.customProductData, this.wpspBundle});
 
   Extensions.fromJson(Map<String, dynamic> json) {
     customProductData = json['custom_product_data'] != null
         ? CustomProductData.fromJson(json['custom_product_data'])
+        : null;
+    wpspBundle = json['wpsp_bundle'] != null
+        ? WpspBundle.fromJson(json['wpsp_bundle'])
         : null;
   }
 
@@ -401,6 +405,35 @@ class Extensions {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (customProductData != null) {
       data['custom_product_data'] = customProductData!.toJson();
+    }
+    if (wpspBundle != null) {
+      data['wpsp_bundle'] = wpspBundle!.toJson();
+    }
+    return data;
+  }
+}
+
+class WpspBundle {
+  bool? isWpspBundle;
+  List<BundleData>? bundleData;
+
+  WpspBundle({this.isWpspBundle, this.bundleData});
+
+  WpspBundle.fromJson(Map<String, dynamic> json) {
+    isWpspBundle = json['is_wpsp_bundle'];
+    if (json['bundle_data'] != null) {
+      bundleData = <BundleData>[];
+      json['bundle_data'].forEach((v) {
+        bundleData!.add(BundleData.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['is_wpsp_bundle'] = isWpspBundle;
+    if (bundleData != null) {
+      data['bundle_data'] = bundleData!.map((v) => v.toJson()).toList();
     }
     return data;
   }

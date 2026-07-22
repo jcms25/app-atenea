@@ -160,15 +160,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         const SizedBox(
                                           height: 20,
                                         ),
-                                        storeController.productItem?.type ==
-                                                "yith_bundle"
+                                       (storeController.productItem?.type == "yith_bundle" || storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true)
                                             ? GestureDetector(
-                                                onTap: () {
+                                                onTap: () async {
+                                                  List<dynamic> bundleItems = [];
+                                                  if (storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true) {
+                                                    bundleItems = storeController.productItem?.extensions?.wpspBundle?.bundleData ?? [];
+                                                  } else {
+                                                    bundleItems = storeController.productItem?.extensions?.customProductData?.bundleData ?? [];
+                                                  }
                                                   Get.bottomSheet(
-                                                      BundlesProductListBottomSheet(listOfBundleProducts: storeController.productItem?.extensions?.customProductData?.bundleData ?? [],),
-                                                      backgroundColor: AppColors
-                                                          .transparent,
-
+                                                     BundlesProductListBottomSheet(listOfBundleProducts: bundleItems.cast<BundleData>()),
+                                                      backgroundColor: AppColors.transparent,
                                                   );
                                                 },
                                                 child: Text(
@@ -389,7 +392,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   /// Quantity Selector
                   Visibility(
                       visible:
-                          storeController.productItem?.type != "yith_bundle",
+                          storeController.productItem?.type != "yith_bundle" && storeController.productItem?.extensions?.wpspBundle?.isWpspBundle != true,
                       child: Row(
                         children: [
                           IconButton(
@@ -424,14 +427,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         ),
                         onPressed: storeController.isLoading
-                            ? null
-                            : () async {
-                                await storeController.addToCart(
-                                    noOfItems:
-                                        storeController.productItem?.type ==
-                                                "yith_bundle"
-                                            ? 1
-                                            : storeController.quantity,
+                          ? null
+                          : () async {
+                            await storeController.addToCart(
+                              noOfItems:
+                                (storeController.productItem?.type == "yith_bundle" || storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true)
+                                  ? 1
+                                  : storeController.quantity,
                                     tiendaToken: studentParentTeacherController
                                             ?.userdata?.tiendaToken ??
                                         "",

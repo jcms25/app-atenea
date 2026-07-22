@@ -513,8 +513,9 @@ class Totals {
 class Extensions {
   YithWoocommerceProductBundles? yithWoocommerceProductBundles;
   bool? isClosed;
+  WpspCartBundle? wpspBundle;
 
-  Extensions({this.yithWoocommerceProductBundles, this.isClosed});
+  Extensions({this.yithWoocommerceProductBundles, this.isClosed, this.wpspBundle});
 
   Extensions.fromJson(Map<String, dynamic> json) {
     yithWoocommerceProductBundles =
@@ -523,6 +524,9 @@ class Extensions {
         json['yith-woocommerce-product-bundles'])
         : null;
     isClosed = json['wpsp_closed']?['is_closed'] ?? false;
+    wpspBundle = json['wpsp_bundle'] != null
+        ? WpspCartBundle.fromJson(json['wpsp_bundle'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -532,6 +536,31 @@ class Extensions {
           yithWoocommerceProductBundles!.toJson();
     }
     data['wpsp_closed'] = {'is_closed': isClosed};
+    if (wpspBundle != null) {
+      data['wpsp_bundle'] = wpspBundle!.toJson();
+    }
+    return data;
+  }
+}
+
+class WpspBundleExtension {
+  bool? isWpspBundle;
+  bool? wpspBundledItem;
+  int? wpspParentProductId;
+
+  WpspBundleExtension({this.isWpspBundle, this.wpspBundledItem, this.wpspParentProductId});
+
+  WpspBundleExtension.fromJson(Map<String, dynamic> json) {
+    isWpspBundle = json['is_wpsp_bundle'];
+    wpspBundledItem = json['wpsp_bundled_item'];
+    wpspParentProductId = json['wpsp_parent_product_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['is_wpsp_bundle'] = isWpspBundle;
+    data['wpsp_bundled_item'] = wpspBundledItem;
+    data['wpsp_parent_product_id'] = wpspParentProductId;
     return data;
   }
 }
@@ -964,6 +993,40 @@ class CouponTotals {
     data['currency_thousand_separator'] = currencyThousandSeparator;
     data['currency_prefix'] = currencyPrefix;
     data['currency_suffix'] = currencySuffix;
+    return data;
+  }
+}
+
+class WpspCartBundle {
+  bool? isWpspBundle;
+  List<dynamic>? bundleData;
+  bool? wpspBundledItem;
+  int? wpspParentProductId;
+  String? wpspChildPrice;
+
+  WpspCartBundle({
+    this.isWpspBundle,
+    this.bundleData,
+    this.wpspBundledItem,
+    this.wpspParentProductId,
+    this.wpspChildPrice,
+  });
+
+  WpspCartBundle.fromJson(Map<String, dynamic> json) {
+    isWpspBundle = json['is_wpsp_bundle'];
+    bundleData = json['bundle_data'];
+    wpspBundledItem = json['wpsp_bundled_item'] ?? false;
+    wpspParentProductId = json['wpsp_parent_product_id'];
+    wpspChildPrice = json['wpsp_child_price']?.toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['is_wpsp_bundle'] = isWpspBundle;
+    data['bundle_data'] = bundleData;
+    data['wpsp_bundled_item'] = wpspBundledItem;
+    data['wpsp_parent_product_id'] = wpspParentProductId;
+    data['wpsp_child_price'] = wpspChildPrice;
     return data;
   }
 }

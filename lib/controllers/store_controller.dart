@@ -5,9 +5,8 @@ import 'dart:math';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
-import 'package:colegia_atenea/models/store_model/cart_response_model.dart';
-import 'package:colegia_atenea/models/store_model/checkout_model.dart'
-    hide BillingAddress, ShippingAddress;
+import 'package:colegia_atenea/models/store_model/cart_response_model.dart' hide BundleData;
+import 'package:colegia_atenea/models/store_model/checkout_model.dart' hide BillingAddress, ShippingAddress;
 import 'package:colegia_atenea/models/store_model/coupon_response.dart';
 import 'package:colegia_atenea/models/store_model/order_details_model.dart';
 import 'package:colegia_atenea/models/store_model/product_item_model.dart';
@@ -541,7 +540,7 @@ class StoreController extends ChangeNotifier {
 
       if (responseData.statusCode == 200) {
         dynamic data = jsonDecode(responseData.body);
-        ProductItem productItem = ProductItem.fromJson(data);
+        ProductItem productItem = ProductItem.fromJson(data);        
         if (variationProductDetail != null) {
           setSelectedVariationDetail(productItem: productItem);
         } else {
@@ -559,6 +558,34 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
+  }
+
+  // Obtener items de un lote wpsp
+  Future<List<BundleData>> getBundleItems({
+    required String productId,
+    required String tiendaToken,
+  }) async {
+    try {
+      var url = Uri.parse('${Api.localBaseURL}/bundle-items/$productId');
+      var response = Request('GET', url)
+        ..headers.addAll({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $tiendaToken'
+        });
+      var streamedResponse = await response.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200) {
+        dynamic data = jsonDecode(responseData.body);
+        if (data['status'] == true && data['bundle_data'] != null) {
+          return (data['bundle_data'] as List)
+              .map((v) => BundleData.fromJson(v))
+              .toList();
+        }
+      }
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+    return [];
   }
 
   int quantity = 1; // Default quantity

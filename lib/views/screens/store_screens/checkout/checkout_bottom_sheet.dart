@@ -339,6 +339,28 @@ class _CheckOutBottomSheetState extends State<CheckOutBottomSheet> {
                                               wpUserId:
                                                   studentParentTeacherController
                                                       .userdata?.parentWpUsrId);
+                                        } else if (storeController
+                                                .selectedPaymentMethod ==
+                                            "bacs") {
+                                          // Transferencia bancaria: sin pago online.
+                                          // El pedido queda en 'on-hold'. Avisamos al padre.
+                                          Get.back(); // cierra el bottom sheet
+                                          await Get.dialog(
+                                            AlertDialog(
+                                              title: const Text('Reserva registrada'),
+                                              content: const Text(
+                                                  'Su reserva se ha registrado correctamente.\n\n'
+                                                  'Recibirá por correo electrónico los datos bancarios para realizar la transferencia.\n\n'
+                                                  'Una vez hecha, podrá subir el justificante desde "Mis Compras Atenea".'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Get.back(),
+                                                  child: const Text('Entendido'),
+                                                ),
+                                              ],
+                                            ),
+                                            barrierDismissible: false,
+                                          );
                                         } else {
                                           AppConstants.showCustomToast(
                                               status: false,
@@ -415,11 +437,13 @@ class PaymentOptionWidget extends StatelessWidget {
                   }),
               Expanded(
                   child: Text(
-                paymentMethodName == "redsys"
+                  paymentMethodName == "redsys"
                     ? "Servired/RedSys"
                     : paymentMethodName == "bizumredsys"
                         ? "Bizum"
-                        : paymentMethodName,
+                        : paymentMethodName == "bacs"
+                            ? "Transferencia bancaria"
+                            : paymentMethodName,
                 style: AppTextStyle.getOutfit500(
                     textSize: 18, textColor: AppColors.secondary),
               ))

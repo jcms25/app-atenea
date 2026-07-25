@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
@@ -17,7 +18,7 @@ import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart' hide Response, MultipartFile;
 import 'package:http/http.dart';
 
 import '../models/store_model/order_list_model.dart';
@@ -664,8 +665,27 @@ class StoreController extends ChangeNotifier {
         notifyListeners(); // Notify UI that loading has finished
       } else {
         dynamic data = jsonDecode(responseData.body);
-        AppConstants.showCustomToast(
-            status: false, message: AppConstants.unescape.convert('${data['message'] ?? ""}'));
+        String errorMessage =
+            AppConstants.unescape.convert('${data['message'] ?? ""}');
+        // El bloqueo de mezcla de reservas trae un código propio: lo mostramos
+        // en un diálogo legible (el toast se desvanece antes de poder leerlo).
+        if (data['code'] == 'wpsp_reserva_exclusiva') {
+          Get.dialog(
+            AlertDialog(
+              title: const Text('Reservas'),
+              content: Text(errorMessage),
+              actions: [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: const Text('Entendido'),
+                ),
+              ],
+            ),
+            barrierDismissible: true,
+          );
+        } else {
+          AppConstants.showCustomToast(status: false, message: errorMessage);
+        }
         _loadingProducts.remove(productId);
         notifyListeners(); // Notify UI that loading has finished
       }
@@ -951,9 +971,17 @@ class StoreController extends ChangeNotifier {
                 orderId: orderId, comment: additionalOrderComment ?? "");
           }
 
+          // Transferencia (bacs): el pedido debe quedar en 'on-hold' tal como
+          // lo crea la Store API. No forzamos 'pending' (eso rompería el correo
+          // de transferencia y la pestaña Reservas de la web).
+          if (selectedPaymentMethod == "bacs") {
+            setIsBottomSheetLoader(isBottomSheetLoader: false);
+            return {
+              "status" : true,
+              "orderId" : orderId
+            };
+          }
           bool responseStatus = await updateOrderStatusFromProcessingToPending(orderId: orderId);
-
-
           setIsBottomSheetLoader(isBottomSheetLoader: false);
           if(responseStatus){
             return {
@@ -965,8 +993,6 @@ class StoreController extends ChangeNotifier {
               "status" : false,
             };
           }
-
-
           // return  responseStatus;
         }
         return {
@@ -1265,6 +1291,50 @@ class StoreController extends ChangeNotifier {
       setIsLoading(isLoading: false);
     }
 
+  }
+
+  //Subir justificante de transferencia (reservas) desde la app
+  bool isUploadingJustificante = false;
+
+  void setIsUploadingJustificante({required bool value}) {
+    isUploadingJustificante = value;
+    notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> subirJustificante({
+    required String orderId,
+    required String wpUserId,
+    required File archivo,
+  }) async {
+    try {
+      setIsUploadingJustificante(value: true);
+
+      var url = Uri.parse('${Api.localBaseURL}/subir-justificante');
+      var request = MultipartRequest('POST', url);
+      request.fields['order_id'] = orderId;
+      request.fields['wp_user_id'] = wpUserId;
+      request.files.add(
+        await MultipartFile.fromPath('justificante', archivo.path),
+      );
+
+      var streamedResponse = await request.send();
+      var responseData = await Response.fromStream(streamedResponse);
+
+      dynamic data = jsonDecode(responseData.body);
+      bool ok = data['status'] == true;
+
+      AppConstants.showCustomToast(
+        status: ok,
+        message: data['message'] ?? (ok ? 'Justificante enviado.' : 'Error al subir el justificante.'),
+      );
+
+      setIsUploadingJustificante(value: false);
+      return {"status": ok, "message": data['message'] ?? ""};
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsUploadingJustificante(value: false);
+      return {"status": false, "message": "$exception"};
+    }
   }
 
 

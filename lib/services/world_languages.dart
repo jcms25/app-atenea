@@ -246,6 +246,7 @@ class WorldLanguage extends Translations {
           'subMenuDrawer21' : 'Material',
           'subMenuDrawer22' : 'Notebooks',
           'subMenuDrawer23' : 'Diary',
+          'subMenuDrawer31' : 'Reservations',
 
 
           //Assistant Module Strings
@@ -504,7 +505,8 @@ class WorldLanguage extends Translations {
           'subMenuDrawer20' : 'Uniformes',
           'subMenuDrawer21' : 'Material',
           'subMenuDrawer22' : 'Cuadernos',
-          'subMenuDrawer23' : 'Agenda',
+          'subMenuDrawer23' : 'Agenda',        
+          'subMenuDrawer31' : 'Reservas',  
 
           // //drawer option
           // 'drawerOption1' : 'Desk',

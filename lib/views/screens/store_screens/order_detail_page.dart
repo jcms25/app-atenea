@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:colegia_atenea/controllers/store_controller.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
@@ -77,7 +79,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                           bottomLeft: Radius.circular(10),
                                           bottomRight: Radius.circular(10))),
                                   child: Text(
-                                    "El pedido #${widget.orderNumber} se realizó el ${DateFormat("dd-MM-yyyy").format(DateTime.parse(storeController.orderDetailModel?.others?[0].date ?? ""))} y está actualmente ${storeController.orderDetailModel?.others?[0].status}",
+                                    "El pedido #${widget.orderNumber} se realizó el ${DateFormat("dd-MM-yyyy").format(DateTime.parse(storeController.orderDetailModel?.others?[0].date ?? ""))} y su estado actual es ${AppConstants.traducirEstadoPedido(storeController.orderDetailModel?.others?[0].status)}",
                                     style: AppTextStyle.getOutfit400(
                                         textSize: 18,
                                         textColor: AppColors.secondary),
@@ -299,6 +301,55 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                            }),)
                         ],
                       ),)),
+                );
+              }),
+              Consumer2<StoreController,StudentParentTeacherController>(builder: (context,storeController,studentParentTeacherController,child){
+                final others = storeController.orderDetailModel?.others?[0];
+                final esReservaPendiente =
+                    others?.status == "on-hold" &&
+                    others?.paymentMethod == "Transferencia bancaria directa";
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Visibility(
+                    visible: esReservaPendiente,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: storeController.isUploadingJustificante
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : CustomButtonWidget(
+                              buttonTitle: 'Subir justificante de transferencia',
+                              onPressed: () async {
+                                FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles(
+                                  type: FileType.custom,
+                                  allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+                                );
+                                if (result == null ||
+                                    result.files.single.path == null) {
+                                  return;
+                                }
+                                File archivo =
+                                    File(result.files.single.path!);
+                                final res =
+                                    await storeController.subirJustificante(
+                                  orderId: widget.orderNumber,
+                                  wpUserId: studentParentTeacherController
+                                          .userdata?.parentWpUsrId ??
+                                      "",
+                                  archivo: archivo,
+                                );
+                                if (res['status'] == true) {
+                                  await storeController.getOrderDetails(
+                                      orderId: widget.orderNumber);
+                                }
+                              },
+                            ),
+                    ),
+                  ),
                 );
               }),
               Consumer<StoreController>(

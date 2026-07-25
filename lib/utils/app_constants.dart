@@ -24,6 +24,30 @@ class AppConstants {
     return formatter.format(priceFormat); // Example: 2514 -> "25,14 €"
   }
 
+// Traduce el estado interno de un pedido a una etiqueta legible en español
+  static String traducirEstadoPedido(String? status) {
+    switch (status) {
+      case 'completed':
+        return 'Completado';
+      case 'processing':
+        return 'En preparación';
+      case 'pending':
+        return 'Pendiente de pago';
+      case 'cancelled':
+        return 'Cancelado';
+      case 'on-hold':
+        return 'Pendiente Transferencia';
+      case 'justificante':
+        return 'Justificante Recibido';
+      case 'refunded':
+        return 'Reembolsado';
+      case 'entregado-incomp':
+        return 'Incompleto';
+      default:
+        return status ?? '';
+    }
+  }
+  
   static String convertToPaypalAmount(String totalPriceInCents) {
     double cents = double.parse(totalPriceInCents);
     return (cents / 100).toStringAsFixed(2); // e.g., "870" → "8.70"
@@ -342,6 +366,7 @@ class AppConstants {
     {"name" : "subMenuDrawer21".tr},
     {"name" : "subMenuDrawer22".tr},
     {"name" : "subMenuDrawer23".tr},
+    {"name" : "subMenuDrawer31".tr},
   ];
 
 

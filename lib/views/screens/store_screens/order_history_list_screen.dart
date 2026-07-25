@@ -166,7 +166,7 @@ class OrderHistoryWidget extends StatelessWidget {
           child: Column(
             children: [
               OrderRowWidget(
-                  label: 'Estado', value: orderItem.status ?? ""),
+                  label: 'Estado', value: AppConstants.traducirEstadoPedido(orderItem.status)),
               SizedBox(
                 height: 10,
               ),

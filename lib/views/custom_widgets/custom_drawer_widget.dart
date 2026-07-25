@@ -874,6 +874,7 @@ class CustomDrawerWidget extends StatelessWidget {
         // String url = 'https://colegioatenea.es/tienda-de-libros-app/';
         // Get.to(() => WebViewScreen(loadURL: url, label: 'Libros',));
         Get.to(() => SubCategoryListScreen(categoryName: 'Libros'));
+        break;
       case "Uniformes":
         Get.to(() => SubCategoryListScreen(categoryName: 'Uniformes'));
         break;
@@ -894,6 +895,10 @@ class CustomDrawerWidget extends StatelessWidget {
         Get.to(
             () => ProductListScreen(categoryId: '723', categoryName: 'Agenda'));
         break;
+      case "Reservas":
+        Get.to(() =>
+            ProductListScreen(categoryId: '1308', categoryName: 'Reservas'));
+        break; 
       case "Carrito":
         // String url = 'https://colegioatenea.es/carrito2/';
         // Get.to(() => WebViewScreen(loadURL: url, label: 'Carrito',));

@@ -63,7 +63,7 @@ void main() async {
   InitializationSettings initializationSettings = InitializationSettings(
       android: androidInitializationSettings, iOS: iosSettings);
   await notificationsPlugin.initialize(
-    initializationSettings,
+    settings: initializationSettings,
     onDidReceiveNotificationResponse: _onLocalNotificationTap,
   );
 

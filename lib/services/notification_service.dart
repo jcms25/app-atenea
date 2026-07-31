@@ -48,10 +48,10 @@ class NotificationService {
     );
 
     notificationsPlugin.show(
-      0,
-      event.notification!.title!,
-      event.notification!.body!.split("|").last,
-      notificationDetails,
+      id: 0,
+      title: event.notification!.title!,
+      body: event.notification!.body!.split("|").last,
+      notificationDetails: notificationDetails,
       // payload: los datos del push serializados, para poder
       // navegar cuando el usuario toca la notificación estando
       // la app en primer plano.

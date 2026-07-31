@@ -1,10 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
+//import 'package:auto_size_text/auto_size_text.dart';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/assistant_module/assistant_communication_report_message_list_screen.dart';
+import 'package:colegia_atenea/views/custom_widgets/ampa_badge_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/log_out_dialogue.dart';
 import 'package:colegia_atenea/views/screens/beca_libros_concedidos_screen.dart';
@@ -133,8 +134,7 @@ class CustomDrawerWidget extends StatelessWidget {
                             style: AppTextStyle.getOutfit300(
                                 textSize: 16, textColor: AppColors.white),
                           ),
-                          AutoSizeText(
-                              maxLines: 1,
+                            Text(
                               currentUserRole == RoleType.student
                                   ? studentParentTeacherController
                                           .userdata?.sFname ??
@@ -146,14 +146,20 @@ class CustomDrawerWidget extends StatelessWidget {
                                       : studentParentTeacherController
                                               .userdata?.firstName ??
                                           "",
+                              maxLines: 2,
                               style: AppTextStyle.getOutfit600(
-                                  textSize: 20, textColor: AppColors.white))
+                                  textSize: 12, textColor: AppColors.white)),
+                              if (AmpaBadgeWidget.isAmpaParent)
+                              const Padding(
+                              padding: EdgeInsets.only(top: 4),
+                              child: AmpaBadgeWidget(),
+                            ),
                         ],
                       )),
                       // const Spacer(),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      //const SizedBox(
+                      //  width: 10,
+                      //),
                       Image.asset(AppImages.whiteAppLogo, width: 50, height: 50)
                     ],
                   ),

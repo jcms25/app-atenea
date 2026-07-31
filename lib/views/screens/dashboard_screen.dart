@@ -7,6 +7,7 @@ import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/show_events_bottom_sheets.dart';
+import 'package:colegia_atenea/views/custom_widgets/ampa_badge_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/edit_profile_screen.dart';
@@ -157,11 +158,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                   textSize: 16,
                                                   textColor: AppColors.white),
                                             ),
-                                            Text(
-                                              fName,
-                                              style: AppTextStyle.getOutfit600(
-                                                  textSize: 20,
-                                                  textColor: AppColors.white),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    fName,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: AppTextStyle
+                                                        .getOutfit600(
+                                                            textSize: 20,
+                                                            textColor: AppColors
+                                                                .white),
+                                                  ),
+                                                ),
+                                                if (AmpaBadgeWidget
+                                                    .isAmpaParent) ...[
+                                                  const SizedBox(width: 8),
+                                                  const AmpaBadgeWidget(),
+                                                ],
+                                              ],
                                             )
                                           ],
                                         ),

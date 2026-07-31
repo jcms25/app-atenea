@@ -90,7 +90,34 @@ class BundlesProductListBottomSheet extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(bundleData.bpProductName ?? "-",style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.secondary),),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    bundleData.bpProductName ?? "-",
+                                    style: AppTextStyle.getOutfit400(
+                                        textSize: 14,
+                                        textColor: AppColors.secondary),
+                                  ),
+                                ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 6),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      'x${bundleData.bpMinQty}',
+                                      style: AppTextStyle.getOutfit700(
+                                          textSize: 12,
+                                          textColor: AppColors.white),
+                                    ),
+                                  ),
+                              ],
+                            ),
                             SizedBox(height: 5,),
                             Text("${bundleData.bpProductPrice?.replaceAll(".", ",") ?? "-"}\t€",style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.primary),)
                           ],

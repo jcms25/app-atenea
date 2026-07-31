@@ -174,6 +174,8 @@ class CartListWidget extends StatelessWidget {
   }
 
   Widget _buildCartItem(Items item) {
+    final bool isQuantityEditable =
+        item.quantityLimits?.editable ?? true;
     final bool isBundledItem =
         (item.extensions?.yithWoocommerceProductBundles?.isBundledItem ?? false) ||
             (item.extensions?.wpspBundle?.wpspBundledItem ?? false);
@@ -247,6 +249,18 @@ class CartListWidget extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        if (_variationLabel(item).isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text(
+                              _variationLabel(item),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,6 +385,18 @@ class CartListWidget extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        if (_variationLabel(item).isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text(
+                              _variationLabel(item),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -417,20 +443,103 @@ class CartListWidget extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              child: Row(
+                        isQuantityEditable
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Consumer2<StoreController,
+                                            StudentParentTeacherController>(
+                                          builder: (
+                                            context,
+                                            storeController,
+                                            studentParentTeacherController,
+                                            child,
+                                          ) {
+                                            return IconButton(
+                                              icon: const Icon(
+                                                Icons.remove_circle_outline,
+                                                color: Colors.red,
+                                                size: 20,
+                                              ),
+                                              onPressed: () async {
+                                                if (item.quantity == 1) {
+                                                  await storeController
+                                                      .removeCartItem(
+                                                    itemKey: item.key ?? '',
+                                                    tiendaToken:
+                                                        '${studentParentTeacherController.userdata?.tiendaToken}',
+                                                  );
+                                                } else {
+                                                  await storeController
+                                                      .updateCartItem(
+                                                    tiendaToken:
+                                                        studentParentTeacherController
+                                                                .userdata
+                                                                ?.tiendaToken ??
+                                                            '',
+                                                    itemKey: item.key ?? '',
+                                                    noOfItem:
+                                                        item.quantity ?? 0,
+                                                    increaseOrDecrease: 1,
+                                                  );
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ),
+                                        Text(
+                                          '${item.quantity}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Consumer2<StoreController,
+                                            StudentParentTeacherController>(
+                                          builder: (
+                                            context,
+                                            storeController,
+                                            studentParenTeacherController,
+                                            child,
+                                          ) {
+                                            return IconButton(
+                                              icon: const Icon(
+                                                Icons.add_circle_outline,
+                                                color: Colors.green,
+                                                size: 20,
+                                              ),
+                                              onPressed: () async {
+                                                await storeController
+                                                    .updateCartItem(
+                                                  tiendaToken:
+                                                      studentParenTeacherController
+                                                              .userdata
+                                                              ?.tiendaToken ??
+                                                          '',
+                                                  itemKey: item.key ?? '',
+                                                  noOfItem: item.quantity ?? 0,
+                                                  increaseOrDecrease: 0,
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   Consumer2<StoreController,
                                       StudentParentTeacherController>(
                                     builder: (
@@ -439,101 +548,59 @@ class CartListWidget extends StatelessWidget {
                                       studentParentTeacherController,
                                       child,
                                     ) {
-                                      return IconButton(
-                                        icon: const Icon(
-                                          Icons.remove_circle_outline,
-                                          color: Colors.red,
-                                          size: 20,
-                                        ),
+                                      return TextButton(
                                         onPressed: () async {
-                                          if (item.quantity == 1) {
-                                            await storeController.removeCartItem(
-                                              itemKey: item.key ?? '',
-                                              tiendaToken:
-                                                  '${studentParentTeacherController.userdata?.tiendaToken}',
-                                            );
-                                          } else {
-                                            await storeController.updateCartItem(
-                                              tiendaToken:
-                                                  studentParentTeacherController
-                                                          .userdata?.tiendaToken ??
-                                                      '',
-                                              itemKey: item.key ?? '',
-                                              noOfItem: item.quantity ?? 0,
-                                              increaseOrDecrease: 1,
-                                            );
-                                          }
+                                          await storeController.removeCartItem(
+                                            itemKey: item.key ?? '',
+                                            tiendaToken:
+                                                studentParentTeacherController
+                                                        .userdata?.tiendaToken ??
+                                                    '',
+                                          );
                                         },
+                                        child: const Text(
+                                          'Remove',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       );
                                     },
                                   ),
+                                ],
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
                                   Text(
-                                    '${item.quantity}',
+                                    'Cantidad: ${item.quantity}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Consumer2<StoreController,
-                                      StudentParentTeacherController>(
-                                    builder: (
-                                      context,
-                                      storeController,
-                                      studentParenTeacherController,
-                                      child,
-                                    ) {
-                                      return IconButton(
-                                        icon: const Icon(
-                                          Icons.add_circle_outline,
-                                          color: Colors.green,
-                                          size: 20,
-                                        ),
-                                        onPressed: () async {
-                                          await storeController.updateCartItem(
-                                            tiendaToken:
-                                                studentParenTeacherController
-                                                        .userdata?.tiendaToken ??
-                                                    '',
-                                            itemKey: item.key ?? '',
-                                            noOfItem: item.quantity ?? 0,
-                                            increaseOrDecrease: 0,
-                                          );
-                                        },
-                                      );
-                                    },
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Text(
+                                      'Regalo',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Consumer2<StoreController,
-                                StudentParentTeacherController>(
-                              builder: (
-                                context,
-                                storeController,
-                                studentParentTeacherController,
-                                child,
-                              ) {
-                                return TextButton(
-                                  onPressed: () async {
-                                    await storeController.removeCartItem(
-                                      itemKey: item.key ?? '',
-                                      tiendaToken: studentParentTeacherController
-                                              .userdata?.tiendaToken ??
-                                          '',
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Remove',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -541,6 +608,15 @@ class CartListWidget extends StatelessWidget {
               ),
             ),
           );
+  }
+
+  String _variationLabel(Items item) {
+    final List<Variation> variations = item.variation ?? [];
+    if (variations.isEmpty) return '';
+    return variations
+        .map((v) => '${v.attribute ?? ''}: ${v.value ?? ''}')
+        .where((s) => s.trim().isNotEmpty && s.trim() != ':')
+        .join('  ·  ');
   }
 
   double _parseWooPriceToMajor(String? value) {

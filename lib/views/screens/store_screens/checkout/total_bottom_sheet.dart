@@ -336,14 +336,19 @@ class _TotalBottomSheetState extends State<TotalBottomSheet> {
 
   Widget _buildTotalRow(String label, String value) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
             style: AppTextStyle.getOutfit500(
                 textSize: 18, textColor: AppColors.secondary)),
-        Text(value,
-            style: AppTextStyle.getOutfit500(
-                textSize: 18, textColor: AppColors.secondary)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(value,
+              textAlign: TextAlign.right,
+              style: AppTextStyle.getOutfit500(
+                  textSize: 18, textColor: AppColors.secondary)),
+        ),
       ],
     );
   }

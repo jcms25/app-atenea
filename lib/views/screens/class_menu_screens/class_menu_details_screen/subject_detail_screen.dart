@@ -157,7 +157,7 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
                                         ?.replaceAll(";", "\n") ??
                                     "-",
                                 style: AppTextStyle.getOutfit600(
-                                    textSize: 18,
+                                    textSize: 16,
                                     textColor: AppColors.secondary),
                               );
                             },
@@ -204,7 +204,10 @@ class SubjectsDetail extends State<SubjectDetailScreen> {
                           ),
                         );
                       },
-                    ))
+                    )),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
             circularImage: Align(

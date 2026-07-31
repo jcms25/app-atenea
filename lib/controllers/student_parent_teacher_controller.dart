@@ -1644,6 +1644,31 @@ class StudentParentTeacherController extends ChangeNotifier {
   List<EvaluationItem> evaluationItem = [];
   String evaluationPromotion = '';
 
+  //Años académicos disponibles para el boletín
+  List<String> evaluationYears = [];
+  String selectedEvaluationYear = '';
+  String evaluationClassName = '';
+
+  void setEvaluationClassName({required String className}) {
+    evaluationClassName = className;
+    notifyListeners();
+  }
+
+  void setEvaluationYears(
+      {required List<String> years, required String current}) {
+    evaluationYears = years;
+    if (selectedEvaluationYear.isEmpty ||
+        !years.contains(selectedEvaluationYear)) {
+      selectedEvaluationYear = current;
+    }
+    notifyListeners();
+  }
+
+  void setSelectedEvaluationYear({required String year}) {
+    selectedEvaluationYear = year;
+    notifyListeners();
+  }
+
   void setEvaluationItem({required List<EvaluationItem> evaluationItem}) {
     this.evaluationItem = evaluationItem;
     notifyListeners();
@@ -1656,7 +1681,9 @@ class StudentParentTeacherController extends ChangeNotifier {
 
   //get evaluation
   void getEvaluation(
-      {required String classId, required String studentWpUserId}) async {
+      {required String classId,
+      required String studentWpUserId,
+      String academicYear = ''}) async {
     try {
       setIsLoading(isLoading: true);
       String token = AppSharedPreferences.getBasicAthToken() ?? "";
@@ -1668,12 +1695,30 @@ class StudentParentTeacherController extends ChangeNotifier {
                 'Authorization': "Basic $token",
                 'Cookie': "${userdata?.cookies}"
               },
-              endPoint:
-                  "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId")
+              endPoint: academicYear.isEmpty
+                  ? "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId"
+                  : "${Api.evaluationEndPoint}?student_id=$studentWpUserId&class_id=$classId&academic_year=$academicYear")
           .then((res) {
-        AppConstants.showCustomToast(
-            status: res['status'],
-            message: res['Message'] ?? res['message'] ?? "");
+        if (res['status'] == true &&
+            (res['Data'] as List?)?.isEmpty != false) {
+          AppConstants.showCustomToast(
+              status: false,
+              message: 'No hay boletín publicado para este curso.');
+        } else if (res['status'] != true) {
+          AppConstants.showCustomToast(
+              status: false,
+              message: res['Message'] ?? res['message'] ?? "");
+        }
+        if (res['status'] == true) {
+          List<String> years =
+              (res['Years'] as List?)?.map((e) => e.toString()).toList() ?? [];
+          if (years.isNotEmpty) {
+            setEvaluationYears(
+                years: years, current: res['current']?.toString() ?? "");
+          }
+          setEvaluationClassName(
+              className: res['class_name']?.toString() ?? "");
+        }
         if (res['status']) {
           Evaluation evaluation = Evaluation.fromJson(res);
           setEvaluationItem(evaluationItem: evaluation.data);

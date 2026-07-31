@@ -80,42 +80,42 @@ class Api {
   static String get studentParentExamListPoint => _studentParentExamListPoint;
 
   static const String _examDetailEndPoint = "exam";
-   static String get examDetailEndPoint => _examDetailEndPoint;
+  static String get examDetailEndPoint => _examDetailEndPoint;
 
-   static const String _evaluationEndPoint = "evaluation";
-   static String get evaluationEndPoint => _evaluationEndPoint;
+  static const String _evaluationEndPoint = "evaluation";
+  static String get evaluationEndPoint => _evaluationEndPoint;
 
-   static const String _evaluationPDFDownloadEndpoint = "evaluationpdf";
-   static String get evaluationPDFDownloadEndpoint => _evaluationPDFDownloadEndpoint;
+  static const String _evaluationPDFDownloadEndpoint = "evaluationpdf";
+  static String get evaluationPDFDownloadEndpoint => _evaluationPDFDownloadEndpoint;
 
 
-   static const String _updateStudentProfile = "update_student_profile";
-   static String get updateStudentProfile => _updateStudentProfile;
+  static const String _updateStudentProfile = "update_student_profile";
+  static String get updateStudentProfile => _updateStudentProfile;
 
-   static const String _updateParentProfile = "update_parent_profile";
-   static String get updateParentProfile => _updateParentProfile;
+  static const String _updateParentProfile = "update_parent_profile";
+  static String get updateParentProfile => _updateParentProfile;
 
-   static const String _updateTeacherProfile = "update_teacher_profile";
-   static String get updateTeacherProfile => _updateTeacherProfile;
+  static const String _updateTeacherProfile = "update_teacher_profile";
+  static String get updateTeacherProfile => _updateTeacherProfile;
 
   //Teacher side end points
   // static const String _teacherEventsList = "teacher/events";
   // static String get teacherEventsList => _teacherEndpoint;
 
-  static const String _teacherClassList = "teacher/classlist";
-  static String get teacherClassList => _teacherClassList;
+ static const String _teacherClassList = "teacher/classlist";
+ static String get teacherClassList => _teacherClassList;
 
-  static const String _teacherSubjectList = "teacher/subjectlist";
-  static String get teacherSubjectList => _teacherSubjectList;
+ static const String _teacherSubjectList = "teacher/subjectlist";
+ static String get teacherSubjectList => _teacherSubjectList;
 
-  static const String _teacherStudentList = "teacher/studentlist";
-  static String get teacherStudentList => _teacherStudentList;
+ static const String _teacherStudentList = "teacher/studentlist";
+ static String get teacherStudentList => _teacherStudentList;
 
-  static const String _teacherEventList = "teacher/events";
-  static String get teacherEventList => _teacherEventList;
+ static const String _teacherEventList = "teacher/events";
+ static String get teacherEventList => _teacherEventList;
 
-  static const String _teacherSideListOfProfessor = "teacher/teacherlist";
-  static String get teacherSideListOfProfessor => _teacherSideListOfProfessor;
+ static const String _teacherSideListOfProfessor = "teacher/teacherlist";
+ static String get teacherSideListOfProfessor => _teacherSideListOfProfessor;
 
   static const String _teacherSideListOfParents = "teacher/parentist";
   static String get teacherSideListOfParents => _teacherSideListOfParents;

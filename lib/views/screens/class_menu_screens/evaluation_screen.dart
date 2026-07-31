@@ -42,6 +42,8 @@ class TableExample extends State<EvaluationScreen> {
     WidgetsBinding.instance.addPostFrameCallback((res) {
       studentParentTeacherController =
           Provider.of<StudentParentTeacherController>(context, listen: false);
+      studentParentTeacherController?.setSelectedEvaluationYear(year: '');
+      studentParentTeacherController?.setEvaluationClassName(className: '');
       studentParentTeacherController?.getEvaluation(
           classId: widget.cid, studentWpUserId: widget.wpId);
     });
@@ -64,11 +66,30 @@ class TableExample extends State<EvaluationScreen> {
                 studentParentTeacherController?.setIsLoading(isLoading: false);
                 Get.back();
               },
-              title: AutoSizeText(
-                "Informe de Evaluación de ${widget.studentName}",
-                maxLines: 1,
-                style: AppTextStyle.getOutfit500(
-                    textSize: 20, textColor: AppColors.white),
+              title: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AutoSizeText(
+                    "Informe de Evaluación de ${widget.studentName}",
+                    maxLines: 1,
+                    style: AppTextStyle.getOutfit500(
+                        textSize: 20, textColor: AppColors.white),
+                  ),
+                  Consumer<StudentParentTeacherController>(
+                    builder: (context, ctrl, child) {
+                      if (ctrl.evaluationClassName.isEmpty) {
+                        return const SizedBox.shrink();
+                      }
+                      return AutoSizeText(
+                        '(${ctrl.evaluationClassName} ${ctrl.selectedEvaluationYear})',
+                        maxLines: 1,
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 12, textColor: AppColors.white),
+                      );
+                    },
+                  ),
+                ],
               ),
               actionIcons: [
                 Consumer<StudentParentTeacherController>(
@@ -84,7 +105,7 @@ class TableExample extends State<EvaluationScreen> {
                                 await Api.httpRequest(
                                         requestType: RequestType.get,
                                         endPoint:
-                                            "${Api.evaluationPDFDownloadEndpoint}?student_id=${widget.wpId}&class_id=${widget.cid}")
+                                            "${Api.evaluationPDFDownloadEndpoint}?student_id=${widget.wpId}&class_id=${widget.cid}&academic_year=${studentParentTeacherController.selectedEvaluationYear}")
                                     .then((res) async {
                                   studentParentTeacherController.setIsLoading(
                                       isLoading: false);
@@ -123,6 +144,72 @@ class TableExample extends State<EvaluationScreen> {
               children: [
                 Column(
                   children: [
+                    Consumer<StudentParentTeacherController>(
+                      builder: (context, controller, child) {
+                        if (controller.evaluationYears.length < 2) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Año Académico:',
+                                style: AppTextStyle.getOutfit500(
+                                    textSize: 14,
+                                    textColor: AppColors.secondary),
+                              ),
+                              const SizedBox(width: 10),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: AppColors.secondary, width: 1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: DropdownButton<String>(
+                                  value:
+                                      controller.selectedEvaluationYear.isEmpty
+                                          ? null
+                                          : controller.selectedEvaluationYear,
+                                  isDense: true,
+                                  iconSize: 20,
+                                  underline: const SizedBox.shrink(),
+                                  items: controller.evaluationYears
+                                      .map((year) => DropdownMenuItem<String>(
+                                            value: year,
+                                            child: Text(
+                                              year,
+                                              style: AppTextStyle.getOutfit400(
+                                                  textSize: 14,
+                                                  textColor:
+                                                      AppColors.secondary),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    if (value == null ||
+                                        value ==
+                                            controller.selectedEvaluationYear) {
+                                      return;
+                                    }
+                                    controller.setSelectedEvaluationYear(
+                                        year: value);
+                                    controller.setEvaluationItem(
+                                        evaluationItem: []);
+                                    controller.getEvaluation(
+                                        classId: widget.cid,
+                                        studentWpUserId: widget.wpId,
+                                        academicYear: value);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                     Expanded(child: Consumer<StudentParentTeacherController>(
                       builder: (context, studentParentController, child) {
                         return studentParentController.evaluationItem.isEmpty

@@ -76,5 +76,7 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Esta app no utiliza tu ubicación.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Esta app no utiliza tu ubicación.</string>
 </dict>
 </plist>

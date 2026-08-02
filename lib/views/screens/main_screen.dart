@@ -38,7 +38,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   StudentParentTeacherController? studentParentTeacherController;
 
   @override
@@ -50,6 +50,7 @@ class _MainScreenState extends State<MainScreen> {
 
       // Comprobar versión de la app al arrancar
       VersionCheckService.check(context);
+      VersionCheckService.checkAviso(context);
 
       if (studentParentTeacherController?.currentLoggedInUserRole ==
           RoleType.teacher) {
@@ -69,10 +70,28 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    // Escuchar cambios en pendingDeepLink en tiempo real
+  // Escuchar cambios en pendingDeepLink en tiempo real
     ever(pendingDeepLink, (String destination) {
       _processPendingDeepLink(destination);
     });
+
+    // Registrar observer para detectar vuelta a primer plano
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // La app vuelve a primer plano — comprobar versión
+      VersionCheckService.check(context);
+      VersionCheckService.checkAviso(context);
+    }
   }
 
   // Procesa un deep link pendiente: lee los datos asociados,

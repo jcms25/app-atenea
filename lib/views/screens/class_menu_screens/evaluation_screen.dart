@@ -5,7 +5,6 @@ import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
-import 'package:colegia_atenea/utils/text_style.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/dialog_boxes_widgets/no_observation_dialog_evaluation.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/class_menu_details_screen/evaluation_report_screen.dart';
@@ -16,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/evaluation_report_world.dart';
 import '../../../services/api.dart';
+import '../../../services/app_shared_preferences.dart';
 
 class EvaluationScreen extends StatefulWidget {
   final String cid;
@@ -102,8 +102,16 @@ class TableExample extends State<EvaluationScreen> {
                               try {
                                 studentParentTeacherController.setIsLoading(
                                     isLoading: true);
-                                await Api.httpRequest(
+                                  await Api.httpRequest(
                                         requestType: RequestType.get,
+                                        header: {
+                                          'Content-Type':
+                                              'application/x-www-form-urlencoded; charset=UTF-8',
+                                          'Authorization':
+                                              "Basic ${AppSharedPreferences.getBasicAthToken() ?? ''}",
+                                          'Cookie':
+                                              "${studentParentTeacherController.userdata?.cookies}"
+                                        },
                                         endPoint:
                                             "${Api.evaluationPDFDownloadEndpoint}?student_id=${widget.wpId}&class_id=${widget.cid}&academic_year=${studentParentTeacherController.selectedEvaluationYear}")
                                     .then((res) async {
@@ -111,10 +119,9 @@ class TableExample extends State<EvaluationScreen> {
                                       isLoading: false);
                                   if (res['status']) {
                                     String? pdfURL = res['PDFLink'];
-                                    if (pdfURL != null || pdfURL != "") {
+                                    if (pdfURL != null && pdfURL.isNotEmpty) {
                                       if (mounted) {
-                                        await launchUrl(
-                                            Uri.parse(pdfURL ?? ""));
+                                        await launchUrl(Uri.parse(pdfURL));
                                       } else {
                                         AppConstants.showCustomToast(
                                             status: false,
@@ -418,66 +425,6 @@ class TableExample extends State<EvaluationScreen> {
       Get.to(EvaluationReportScreen(evaluationReport, evaluationName));
     }
   }
-}
-
-// void onclick(int evaluation, String evaluationName) {
-//   List<EvaluationReport> evolutionReport = [];
-//   for (int i = 0; i < evaluationList.length; i++) {
-//     String evaluationRemark = evaluation == 1
-//         ? evaluationList[i].observation.observation1
-//         : evaluation == 2
-//             ? evaluationList[i].observation.observation2
-//             : evaluation == 3
-//                 ? evaluationList[i].observation.observation3
-//                 : evaluationList[i].observation.observation4;
-//     if (evaluationRemark.isEmpty) {
-//       continue;
-//     } else {
-//       evolutionReport
-//           .add(EvaluationReport(evaluationList[i].subject, evaluationRemark));
-//     }
-//   }
-//   Navigator.push(
-//       context,
-//       MaterialPageRoute(
-//           builder: (context) =>
-//               EvaluationReportScreen(evolutionReport, evaluationName)));
-// }
-
-showAlertDialog(BuildContext context) {
-  // Create button
-  Widget okButton = ElevatedButton(
-    style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)))),
-    child: Text(
-      "OK",
-      style: CustomStyle.txtvalue2,
-    ),
-    onPressed: () {
-      Navigator.of(context, rootNavigator: true).pop();
-    },
-  );
-
-  // Create AlertDialog
-  AlertDialog alert = AlertDialog(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30),
-    ),
-    content: const Text("NO HAY OBSERVACIONES PARA ESTA EVALUACIÓN"),
-    actions: [
-      okButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }
 
 class LabelTableCell extends StatelessWidget {

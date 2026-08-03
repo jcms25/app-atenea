@@ -203,12 +203,16 @@ class ClassMenuScreen extends StatelessWidget {
                                           : userdata?.sFname ?? "",
                                     ));
                               }),
+                          if (Provider.of<StudentParentTeacherController>(
+                                  context,
+                                  listen: false)
+                              .hasTransport)
                           ClassMenuWidget(
                               menuName: "trans".tr,
                               leadingIcon: Icons.train,
                               onPressed: () {
-                                Get.to(() => const TransportationScreen());
-                              }),
+                                 Get.to(() => const TransportationScreen());
+                            }),
                         ],
                       ))
                   : Column(

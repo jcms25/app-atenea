@@ -593,6 +593,10 @@ class CustomDrawerWidget extends StatelessWidget {
               !classroomEventsEnabled) {
             // "Actitud" oculto si el switch global está desactivado
             continue;
+          } else if (e['name'] == "subMenuDrawer9".tr &&
+              !studentParentTeacherController.hasTransport) {
+            // "Transporte" oculto si el alumno no tiene el servicio
+            continue;
           } else {
             DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
             drawerMenuOption.classId = classId;

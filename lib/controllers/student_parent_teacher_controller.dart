@@ -770,6 +770,11 @@ class StudentParentTeacherController extends ChangeNotifier {
 
           // Módulo Actitudinal: cargar estado del switch global en paralelo
           fetchClassroomEventsEnabled();
+          // Módulo Transporte: cargar si el alumno tiene servicio
+          if (currentLoggedInUserRole == RoleType.parent ||
+              currentLoggedInUserRole == RoleType.student) {
+            getTransportData();
+          }
 
           // Módulo Becas: cargar visibilidad (Nivel 1) y si el padre tiene beca (Nivel 2)
           fetchBecasVisibility();
@@ -1977,11 +1982,18 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   //Transport section :
+  bool hasTransport = false;
+
+  void setHasTransport({required bool value}) {
+    hasTransport = value;
+    notifyListeners();
+  }
   List<TransportItem> tempTransportList = [];
   List<TransportItem> transportList = [];
 
   void setTransportItem({required List<TransportItem> transportList}) {
     this.transportList = transportList;
+    hasTransport = transportList.isNotEmpty;
     notifyListeners();
   }
 

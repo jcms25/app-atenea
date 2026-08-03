@@ -13,8 +13,9 @@ class VersionCheckService {
   static const String _endpointAviso =
       'https://colegioatenea.es/wp-json/scl-api/v1/aviso-activo';
 
-  /// Compara dos versiones semánticas (ej. "1.9.2" vs "1.10.0").
-  /// Devuelve -1, 0 o 1 (menor, igual, mayor).
+  static const String _endpointDescartar =
+      'https://colegioatenea.es/wp-json/scl-api/v1/aviso-descartar';
+
   static int _compareVersions(String v1, String v2) {
     final a = v1.split('.').map(int.parse).toList();
     final b = v2.split('.').map(int.parse).toList();
@@ -27,7 +28,6 @@ class VersionCheckService {
     return 0;
   }
 
-  /// Abre la tienda correspondiente (Android o iOS).
   static Future<void> _openStore(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -36,7 +36,6 @@ class VersionCheckService {
   }
 
   /// Comprueba la versión y muestra el diálogo si procede.
-  /// Llamar desde initState de MainScreen.
   static Future<void> check(BuildContext context) async {
     try {
       final response = await http
@@ -48,7 +47,6 @@ class VersionCheckService {
       final data = json.decode(response.body);
       if (data['status'] != true) return;
 
-      // Seleccionar bloque según plataforma
       final Map<String, dynamic> plataforma =
           Platform.isAndroid ? data['android'] : data['ios'];
 
@@ -61,32 +59,25 @@ class VersionCheckService {
       if (!context.mounted) return;
 
       if (_compareVersions(instalada, minima) < 0) {
-        // Actualización OBLIGATORIA — diálogo no descartable
         final versionObligatoria = plataforma['version_actual'] ?? minima;
         _showDialog(
           context: context,
           titulo: 'Actualización obligatoria',
-          mensaje:
-              'Tienes la versión $instalada y es necesario actualizar a la versión $versionObligatoria para continuar.',
+          mensaje: 'Tienes la versión $instalada y es necesario actualizar a la versión $versionObligatoria para continuar.',
           obligatorio: true,
           url: url,
         );
       } else if (_compareVersions(instalada, recomendada) < 0) {
-        // Actualización RECOMENDADA — diálogo descartable
         final versionNueva = plataforma['version_actual'] ?? recomendada;
         _showDialog(
           context: context,
           titulo: 'Nueva versión disponible',
-          mensaje:
-              'Tienes la versión $instalada y hay una nueva versión $versionNueva disponible con mejoras y correcciones.',
+          mensaje: 'Tienes la versión $instalada y hay una nueva versión $versionNueva disponible con mejoras y correcciones.',
           obligatorio: false,
           url: url,
         );
       }
-    } catch (_) {
-      // Si falla la llamada (sin red, timeout…) se ignora silenciosamente
-      // para no bloquear el acceso a la app.
-    }
+    } catch (_) {}
   }
 
   static void _showDialog({
@@ -121,13 +112,16 @@ class VersionCheckService {
   }
 
   /// Comprueba si hay avisos emergentes activos y los muestra en cadena.
-  /// Llamar desde initState de MainScreen, después de check().
   static Future<void> checkAviso(BuildContext context) async {
     try {
-      final role = AppSharedPreferences.getUserLoggedInRole() ?? '';
-
+      final role   = AppSharedPreferences.getUserLoggedInRole() ?? '';
+      final userData = AppSharedPreferences.getUserData();
+      final userId = userData?.wpUsrId?.isNotEmpty == true
+          ? userData!.wpUsrId!
+          : userData?.parentWpUsrId ?? '';      
       final uri = Uri.parse(_endpointAviso).replace(queryParameters: {
-        'role': role,
+        'role':    role,
+        'user_id': userId,
       });
 
       final response = await http
@@ -142,30 +136,18 @@ class VersionCheckService {
       final avisos = data['avisos'] as List<dynamic>? ?? [];
       if (avisos.isEmpty) return;
 
-      final descartados = AppSharedPreferences.sharedPreferences
-              ?.getStringList('avisos_descartados') ??
-          [];
-
-      final pendientes = avisos.where((a) {
-        final id = (a['aviso_id'] as String? ?? '');
-        return id.isNotEmpty && !descartados.contains(id);
-      }).toList();
-
-      if (pendientes.isEmpty) return;
       if (!context.mounted) return;
 
-      _mostrarAvisosEnCadena(context, pendientes, descartados, 0);
-    } catch (_) {
-      // Si falla la llamada se ignora silenciosamente.
-    }
+      _mostrarAvisosEnCadena(context, avisos, 0, userId: userId);
+    } catch (_) {}
   }
 
   static void _mostrarAvisosEnCadena(
     BuildContext context,
     List<dynamic> avisos,
-    List<String> descartados,
-    int indice,
-  ) {
+    int indice, {
+    String userId = '',
+  }) {
     if (indice >= avisos.length) return;
     if (!context.mounted) return;
 
@@ -182,7 +164,7 @@ class VersionCheckService {
     final fechaFin        = aviso['fecha_fin']        as String? ?? '';
 
     if (mensaje.isEmpty) {
-      _mostrarAvisosEnCadena(context, avisos, descartados, indice + 1);
+      _mostrarAvisosEnCadena(context, avisos, indice + 1, userId: userId);
       return;
     }
 
@@ -273,13 +255,13 @@ class VersionCheckService {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    if (noVolverMostrar && avisoId.isNotEmpty) {
-                      final lista = AppSharedPreferences.sharedPreferences
-                              ?.getStringList('avisos_descartados') ??
-                          [];
-                      lista.add(avisoId);
-                      await AppSharedPreferences.sharedPreferences
-                          ?.setStringList('avisos_descartados', lista);
+                    if (noVolverMostrar && avisoId.isNotEmpty && userId.isNotEmpty) {
+                      try {
+                        await http.post(
+                          Uri.parse(_endpointDescartar),
+                          body: {'user_id': userId, 'aviso_id': avisoId},
+                        ).timeout(const Duration(seconds: 5));
+                      } catch (_) {}
                     }
                     if (ctx.mounted) Navigator.of(ctx).pop();
                   },
@@ -292,7 +274,7 @@ class VersionCheckService {
       ),
     ).then((_) {
       if (context.mounted) {
-        _mostrarAvisosEnCadena(context, avisos, descartados, indice + 1);
+        _mostrarAvisosEnCadena(context, avisos, indice + 1, userId: userId);
       }
     });
   }

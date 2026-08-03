@@ -28,12 +28,14 @@ class BecaLibroCurso {
   final String titulo;
   final String editorial;
   final String isbn;
+  final String becado; // 'yes' | 'conditional'
 
   BecaLibroCurso({
     required this.asignatura,
     required this.titulo,
     required this.editorial,
     required this.isbn,
+    required this.becado,
   });
 
   factory BecaLibroCurso.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,13 @@ class BecaLibroCurso {
       titulo: json['titulo'] ?? '',
       editorial: json['editorial'] ?? '',
       isbn: json['isbn'] ?? '',
+      becado: json['becado'] ?? 'yes',
     );
   }
+
+  /// true si es becado confirmado
+  bool get isConfirmado => becado == 'yes';
+
+  /// true si está pendiente de resolución de la Administración
+  bool get isPendiente => becado == 'conditional';
 }

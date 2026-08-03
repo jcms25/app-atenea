@@ -167,6 +167,10 @@ class _LibrosBecadosCursoScreenState extends State<LibrosBecadosCursoScreen> {
 
   // Tarjeta de un libro becado del curso.
   Widget _buildLibroCard(BecaLibroCurso libro) {
+    final Color colorBorde = libro.isPendiente
+        ? const Color(0xFFEA8600)
+        : const Color(0xFF34A853);
+
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 10),
@@ -176,46 +180,68 @@ class _LibrosBecadosCursoScreenState extends State<LibrosBecadosCursoScreen> {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: const Color(0xFFE0E0E0)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            libro.asignatura,
-            style: AppTextStyle.getOutfit600(
-                textSize: 13, textColor: const Color(0xFF1A73E8)),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            libro.titulo,
-            style: AppTextStyle.getOutfit500(
-                textSize: 14, textColor: AppColors.secondary),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              Text(
-                'ISBN: ${libro.isbn}',
-                style: AppTextStyle.getOutfit400(
-                    textSize: 12, textColor: AppColors.secondary),
-              ),
-              const Spacer(),
-              if (libro.editorial.isNotEmpty)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6C757D),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    libro.editorial,
-                    style: AppTextStyle.getOutfit500(
-                        textSize: 11, textColor: AppColors.white),
-                  ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: colorBorde,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
                 ),
-            ],
-          ),
-        ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    libro.asignatura,
+                    style: AppTextStyle.getOutfit600(
+                        textSize: 13, textColor: const Color(0xFF1A73E8)),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    libro.editorial.isNotEmpty
+                        ? '${libro.titulo} (${libro.editorial})'
+                        : libro.titulo,
+                    style: AppTextStyle.getOutfit500(
+                        textSize: 14, textColor: AppColors.secondary),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text(
+                        'ISBN: ${libro.isbn}',
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 12, textColor: AppColors.secondary),
+                      ),
+                      const Spacer(),
+                      if (libro.isPendiente)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEA8600),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Pendiente',
+                            style: AppTextStyle.getOutfit500(
+                                textSize: 11, textColor: AppColors.white),
+                          ),
+                        )                      
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

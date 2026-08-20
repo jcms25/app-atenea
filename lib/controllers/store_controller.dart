@@ -20,6 +20,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart' hide Response, MultipartFile;
 import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 import '../models/store_model/order_list_model.dart';
 import '../services/api.dart';
@@ -1101,11 +1103,40 @@ class StoreController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsBottomSheetLoader(isBottomSheetLoader: false);
     }
-
-
-
   }
 
+  //descargar informe PDF de uso de cupones AMPA (mismo motor mPDF que la web)
+  Future<void> descargarInformeAmpaPdf({required String userId, required String couponCode}) async {
+    try {
+      setIsBottomSheetLoader(isBottomSheetLoader: true);
+      var url = Uri.parse("${Api.localBaseURL}/coupon-ampa-pdf?user_id=$userId&coupon_code=$couponCode");
+      var request = Request('GET', url)
+        ..headers.addAll({'Content-Type': 'application/json'});
+      var streamedResponse = await request.send();
+      var responseData = await Response.fromStream(streamedResponse);
+      if (responseData.statusCode == 200 || responseData.statusCode == 201) {
+        dynamic body = jsonDecode(responseData.body);
+        if (body['status'] == true && body['pdf'] != null) {
+          final bytes = base64Decode(body['pdf']);
+          final dir = await getTemporaryDirectory();
+          final safeCode = (body['cupon_code'] ?? couponCode).toString().replaceAll(RegExp(r'[^A-Za-z0-9]'), '_');
+          final file = File('${dir.path}/cupon-ampa-$safeCode.pdf');
+          await file.writeAsBytes(bytes);
+          setIsBottomSheetLoader(isBottomSheetLoader: false);
+          await OpenFile.open(file.path);
+        } else {
+          setIsBottomSheetLoader(isBottomSheetLoader: false);
+          AppConstants.showCustomToast(status: false, message: body['message'] ?? "No se pudo generar el informe");
+        }
+      } else {
+        setIsBottomSheetLoader(isBottomSheetLoader: false);
+        AppConstants.showCustomToast(status: false, message: "Error al obtener el informe");
+      }
+    } catch (exception) {
+      setIsBottomSheetLoader(isBottomSheetLoader: false);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+    }
+  }
   //add additional comment to order
   Future<void> addOrderComment(
       {required String orderId, required String comment}) async {

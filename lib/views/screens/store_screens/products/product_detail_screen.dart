@@ -14,6 +14,7 @@ import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 
 import '../../../../models/store_model/product_item_model.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final String productId;
@@ -351,7 +352,43 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                           style: AppTextStyle.getOutfit400(
                                               textSize: 18,
                                               textColor: AppColors.secondary),
-                                        )
+                                        ),
+                                        Builder(builder: (context) {
+                                          final shortDesc = storeController.productItem?.shortDescription ?? "";
+                                          if (shortDesc.isEmpty) return const SizedBox.shrink();
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 12),
+                                              Container(
+                                                width: double.infinity,
+                                                padding: const EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary.withValues(alpha: 0.08),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: AppColors.primary.withValues(alpha: 0.3),
+                                                  ),
+                                                ),
+                                                child: Html(
+                                                  data: shortDesc,
+                                                  style: {
+                                                    "body": Style(
+                                                      fontSize: FontSize(15),
+                                                      color: AppColors.secondary,
+                                                      margin: Margins.zero,
+                                                      padding: HtmlPaddings.zero,
+                                                    ),
+                                                    "p": Style(
+                                                      margin: Margins.zero,
+                                                      padding: HtmlPaddings.zero,
+                                                    ),
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }),
                                       ],
                                     ))
                               ]));

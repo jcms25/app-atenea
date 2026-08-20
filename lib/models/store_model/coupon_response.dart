@@ -9,7 +9,7 @@ class CouponListResponse {
   String? dateModifiedGmt;
   String? discountType;
   String? description;
-  dynamic dateExpires;
+  String? dateExpires;
   // Null? dateExpiresGmt;
   int? usageCount;
   dynamic individualUse;
@@ -24,6 +24,13 @@ class CouponListResponse {
   dynamic excludeSaleItems;
   String? minimumAmount;
   String? maximumAmount;
+  String? giftProductName;
+  String? giftProductPrice;
+  bool? isAmpaFamiliar;
+  double? ampaLimit;
+  double? ampaUsed;
+  double? ampaAvailable;  
+  String? ampaDesde;
   List<String>? emailRestrictions;
   List<String>? usedBy;
   List<MetaData>? metaData;
@@ -51,6 +58,11 @@ class CouponListResponse {
         // this.limitUsageToXItems,
         this.freeShipping,
         this.productCategories,
+        this.isAmpaFamiliar,
+        this.ampaLimit,
+        this.ampaUsed,
+        this.ampaAvailable,        
+        this.ampaDesde,
         // this.excludedProductCategories,
         this.excludeSaleItems,
         this.minimumAmount,
@@ -72,7 +84,7 @@ class CouponListResponse {
     dateModifiedGmt = json['date_modified_gmt'];
     discountType = json['discount_type'];
     description = json['description'];
-    // dateExpires = json['date_expires'];
+    dateExpires = json['date_expires'];
     // dateExpiresGmt = json['date_expires_gmt'];
     usageCount = json['usage_count'];
     individualUse = json['individual_use'];
@@ -102,6 +114,13 @@ class CouponListResponse {
     excludeSaleItems = json['exclude_sale_items'];
     minimumAmount = json['minimum_amount'];
     maximumAmount = json['maximum_amount'];
+    giftProductName = json['gift_product_name'];
+    giftProductPrice = json['gift_product_price'];
+    isAmpaFamiliar = json['is_ampa_familiar'] ?? false;
+    ampaLimit = json['ampa_limit'] != null ? double.tryParse(json['ampa_limit'].toString()) : null;
+    ampaUsed = json['ampa_used'] != null ? double.tryParse(json['ampa_used'].toString()) : null;
+    ampaAvailable = json['ampa_available'] != null ? double.tryParse(json['ampa_available'].toString()) : null;    
+    ampaDesde = json['ampa_desde'];
     // if (json['email_restrictions'] != null) {
     //   emailRestrictions = <Null>[];
     //   json['email_restrictions'].forEach((v) {
@@ -130,7 +149,7 @@ class CouponListResponse {
     data['date_modified_gmt'] = dateModifiedGmt;
     data['discount_type'] = discountType;
     data['description'] = description;
-    // data['date_expires'] = dateExpires;
+    data['date_expires'] = dateExpires;
     // data['date_expires_gmt'] = dateExpiresGmt;
     data['usage_count'] = usageCount;
     data['individual_use'] = individualUse;
@@ -153,6 +172,13 @@ class CouponListResponse {
     data['exclude_sale_items'] = excludeSaleItems;
     data['minimum_amount'] = minimumAmount;
     data['maximum_amount'] = maximumAmount;
+    data['gift_product_name'] = giftProductName;
+    data['gift_product_price'] = giftProductPrice;
+    data['is_ampa_familiar'] = isAmpaFamiliar;
+    data['ampa_limit'] = ampaLimit;
+    data['ampa_used'] = ampaUsed;
+    data['ampa_available'] = ampaAvailable;    
+    data['ampa_desde'] = ampaDesde;
     // if (this.emailRestrictions != null) {
     //   data['email_restrictions'] =
     //       this.emailRestrictions!.map((v) => v.toJson()).toList();

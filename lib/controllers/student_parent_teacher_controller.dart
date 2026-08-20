@@ -300,6 +300,40 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   // ============================================================
+  // MÓDULO TUTORÍAS — Contador de activas
+  // ============================================================
+  int tutoriasActivasCount = 0;
+
+  void setTutoriasActivasCount(int count) {
+    tutoriasActivasCount = count;
+    notifyListeners();
+  }
+
+  Future<void> fetchTutoriasActivasCount() async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String role = currentLoggedInUserRole == RoleType.parent ? 'padre' : 'profesor';
+      String userId = currentLoggedInUserRole == RoleType.parent
+          ? userdata?.parentWpUsrId ?? ""
+          : userdata?.wpUsrId ?? "";
+      if (userId.isEmpty) return;
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.tutoriasCountActivasEndPoint}?role=$role&user_id=$userId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true) {
+        setTutoriasActivasCount((response['count'] as num?)?.toInt() ?? 0);
+      }
+    } catch (_) {
+      // Si falla, dejamos el contador en 0
+    }
+  }
+  // ============================================================
   // MÓDULO BECAS — Visibilidad de la sección
   // ============================================================
   // Switch "Abrir solicitud": campaña de becas activa (cualquier padre puede tramitar).
@@ -791,6 +825,12 @@ class StudentParentTeacherController extends ChangeNotifier {
           // Módulo Autorizaciones: si es profesor, verificar si es tutor
           if (currentLoggedInUserRole == RoleType.teacher) {
             fetchAutorizacionesTutorClase();
+          }
+
+          // Módulo Tutorías: cargar contador de activas (padre y profesor)
+          if (currentLoggedInUserRole == RoleType.parent ||
+              currentLoggedInUserRole == RoleType.teacher) {
+            fetchTutoriasActivasCount();
           }
         }
         setIsLoading(isLoading: false);

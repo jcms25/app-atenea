@@ -210,7 +210,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      OrderDetailRow(
+                                                                            OrderDetailRow(
                                           label: "Total",
                                           value:
                                               "${storeController.orderDetailModel?.others?[0].total}€"),
@@ -220,6 +220,45 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
+                                if (storeController.orderDetailModel?.others?[0].datosBancarios != null)
+                                  Container(
+                                    width: MediaQuery.sizeOf(context).width,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    padding: const EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFF8E5),
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          color: const Color(0xFFFFB900), width: 1),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Datos para la transferencia",
+                                          style: AppTextStyle.getOutfit600(
+                                              textSize: 20,
+                                              textColor: AppColors.secondary),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        _datoBancario('Banco', storeController.orderDetailModel?.others?[0].datosBancarios?.bankName),
+                                        _datoBancario('IBAN', storeController.orderDetailModel?.others?[0].datosBancarios?.iban),
+                                        _datoBancario('BIC', storeController.orderDetailModel?.others?[0].datosBancarios?.bic),
+                                        _datoBancario('Concepto', storeController.orderDetailModel?.others?[0].datosBancarios?.concepto),
+                                        _datoBancario('Importe', storeController.orderDetailModel?.others?[0].datosBancarios?.importe != null ? '${storeController.orderDetailModel?.others?[0].datosBancarios?.importe}€' : null),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          "Una vez hecha la transferencia, sube el justificante con el botón de abajo.",
+                                          style: AppTextStyle.getOutfit400(
+                                              textSize: 13,
+                                              textColor: AppColors.secondary),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (storeController.orderDetailModel?.others?[0].datosBancarios != null)
+                                  const SizedBox(height: 10),
                                 Container(
                                   width: MediaQuery.sizeOf(context).width,
                                   decoration: BoxDecoration(
@@ -257,7 +296,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: storeController.orderDetailModel?.others?[0].status == "pending" ? 80 : 0 ,
+                                  height: (storeController.orderDetailModel?.others?[0].status == "pending" || storeController.orderDetailModel?.others?[0].status == "on-hold") ? 80 : 0 ,
                                 )
                               ],
                             ),
@@ -363,8 +402,33 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           ),
         ));
   }
-}
 
+  Widget _datoBancario(String label, String? value) {
+    if (value == null || value.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label: ',
+            style: AppTextStyle.getOutfit400(
+                textSize: 13, textColor: AppColors.secondary),
+          ),
+          Expanded(
+            child: SelectableText(
+              value,
+              style: AppTextStyle.getOutfit400(
+                  textSize: 13, textColor: AppColors.secondary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 class OrderDetailRow extends StatelessWidget {
   final String label;
   final String value;

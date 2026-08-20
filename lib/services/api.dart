@@ -158,7 +158,7 @@ class Api {
   static const String _orderDetailEndPoint = "tiendaUserorderdetails?order_id";
   static String get orderDetailEndPoint => _orderDetailEndPoint;
 
-
+  
   //Dinning Section
   static const String _dinningSectionEndPoint = "diningmenu";
   static String get dinningSectionEndPoint => _dinningSectionEndPoint;
@@ -324,6 +324,9 @@ class Api {
 
     static const String _tutoriasActaPdfEndPoint = "tutorias/acta-pdf";
     static String get tutoriasActaPdfEndPoint => _tutoriasActaPdfEndPoint;
+
+    static const String _tutoriasCountActivasEndPoint = "tutorias/count-activas";
+    static String get tutoriasCountActivasEndPoint => _tutoriasCountActivasEndPoint;
 
     // ============================================================
     // MÓDULO SERVICIOS CONTRATADOS

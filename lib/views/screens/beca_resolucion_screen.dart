@@ -111,12 +111,18 @@ class _BecaResolucionScreenState extends State<BecaResolucionScreen> {
     );
   }
 
-  // Tarjeta de resolución de un hijo. Verde si concedida, roja si denegada.
+  // Tarjeta de resolución de un hijo. Verde si concedida, ámbar si pendiente, roja si denegada.
   Widget _buildBecaCard(BecaResolucion beca) {
-    final Color fondo =
-        beca.concedida ? const Color(0xFFE6F4EA) : const Color(0xFFFCE8E6);
-    final Color borde =
-        beca.concedida ? const Color(0xFF34A853) : const Color(0xFFEA4335);
+    final Color fondo = beca.concedida
+        ? const Color(0xFFE6F4EA)
+        : beca.pendiente
+            ? const Color(0xFFFEF9C3)
+            : const Color(0xFFFCE8E6);
+    final Color borde = beca.concedida
+        ? const Color(0xFF34A853)
+        : beca.pendiente
+            ? const Color(0xFFCA8A04)
+            : const Color(0xFFEA4335);
     final Color colorMotivo = borde;
 
     return Container(

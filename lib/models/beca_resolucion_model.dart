@@ -34,8 +34,9 @@ class BecaResolucion {
   final String classGrade; // p. ej. "P6" — para ordenar
   final String classGradeName; // p. ej. "6º Ed. Primaria" (curso, no clase)
   final String classCode; // p. ej. "P6B"
-  final String codigo; // 'sbc1' | 'sbc2' | 'nbc3' | 'nbc4' | 'nbc5'
+  final String codigo; // 'sbc1' | 'sbc2' | 'nbc3' | 'nbc4' | 'nbc5' | 'pbc6'
   final bool concedida;
+  final bool pendiente;
   final String titulo;
   final String texto;
 
@@ -49,6 +50,7 @@ class BecaResolucion {
     required this.classCode,
     required this.codigo,
     required this.concedida,
+    required this.pendiente,
     required this.titulo,
     required this.texto,
   });
@@ -64,6 +66,7 @@ class BecaResolucion {
       classCode: json['class_code'] ?? '',
       codigo: json['codigo'] ?? '',
       concedida: json['concedida'] ?? false,
+      pendiente: json['pendiente'] ?? false,
       titulo: json['titulo'] ?? '',
       texto: json['texto'] ?? '',
     );

@@ -83,7 +83,7 @@ class Others {
   dynamic nIF;
   dynamic student;
   dynamic courso;
-
+  DatosBancarios? datosBancarios;
   Others(
       {this.orderId,
         this.date,
@@ -92,7 +92,8 @@ class Others {
         this.status,
         this.nIF,
         this.student,
-        this.courso});
+        this.courso,
+        this.datosBancarios});
 
   Others.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
@@ -103,6 +104,9 @@ class Others {
     nIF = json['NIF'];
     student = json['Student'];
     courso = json['Courso'].runtimeType == List ? json['Courso'].cast<String>() : json['Courso'];
+    datosBancarios = json['datos_bancarios'] != null
+        ? DatosBancarios.fromJson(json['datos_bancarios'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -115,6 +119,54 @@ class Others {
     data['NIF'] = nIF;
     data['Student'] = student;
     data['Courso'] = courso;
+    if (datosBancarios != null) {
+      data['datos_bancarios'] = datosBancarios!.toJson();
+    }
+    return data;
+  }
+}
+
+class DatosBancarios {
+  String? accountName;
+  String? bankName;
+  String? accountNumber;
+  String? sortCode;
+  String? iban;
+  String? bic;
+  String? concepto;
+  String? importe;
+
+  DatosBancarios(
+      {this.accountName,
+      this.bankName,
+      this.accountNumber,
+      this.sortCode,
+      this.iban,
+      this.bic,
+      this.concepto,
+      this.importe});
+
+  DatosBancarios.fromJson(Map<String, dynamic> json) {
+    accountName = json['account_name'];
+    bankName = json['bank_name'];
+    accountNumber = json['account_number'];
+    sortCode = json['sort_code'];
+    iban = json['iban'];
+    bic = json['bic'];
+    concepto = json['concepto'];
+    importe = json['importe']?.toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['account_name'] = accountName;
+    data['bank_name'] = bankName;
+    data['account_number'] = accountNumber;
+    data['sort_code'] = sortCode;
+    data['iban'] = iban;
+    data['bic'] = bic;
+    data['concepto'] = concepto;
+    data['importe'] = importe;
     return data;
   }
 }

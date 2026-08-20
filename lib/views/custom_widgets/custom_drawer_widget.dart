@@ -66,6 +66,10 @@ class CustomDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     RoleType? currentUserRole =
         studentParentTeacherController.currentLoggedInUserRole;
+    if (currentUserRole == RoleType.parent ||
+        currentUserRole == RoleType.teacher) {
+      studentParentTeacherController.fetchTutoriasActivasCount();
+    }
     String? profileImage = currentUserRole == RoleType.student
         ? studentParentTeacherController.userdata?.stuImage ?? ""
         : currentUserRole == RoleType.parent
@@ -678,6 +682,23 @@ class CustomDrawerWidget extends StatelessWidget {
                     ),
                   ),
                 ),
+              if (drawerMenuOption.name == 'Tutorías' &&
+                  studentParentTeacherController.tutoriasActivasCount > 0)
+                Container(
+                  constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${studentParentTeacherController.tutoriasActivasCount}',
+                      style: AppTextStyle.getOutfit700(
+                          textSize: 11, textColor: AppColors.white),
+                    ),
+                  ),
+                ),
             ],
           ),
         );
@@ -964,9 +985,11 @@ class CustomDrawerWidget extends StatelessWidget {
         break;
       case "Tutorías":
         if (roleType == RoleType.teacher) {
-          Get.to(() => const TutoriasProfesorScreen());
+          Get.to(() => const TutoriasProfesorScreen())
+              ?.then((_) => studentParentTeacherController.fetchTutoriasActivasCount());
         } else {
-          Get.to(() => const TutoriasPadreScreen());
+          Get.to(() => const TutoriasPadreScreen())
+              ?.then((_) => studentParentTeacherController.fetchTutoriasActivasCount());
         }
         break;
       default:

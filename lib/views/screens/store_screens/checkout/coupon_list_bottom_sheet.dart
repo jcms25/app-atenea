@@ -138,9 +138,11 @@ class CustomCouponWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      couponListResponse?.discountType == "percent"
-                          ? "${double.parse(couponListResponse?.amount ?? "0.0").toInt()}\t%"
-                          : "${couponListResponse?.amount ?? ""}\t€",
+                      couponListResponse?.discountType == "gift_product"
+                          ? "${couponListResponse?.giftProductPrice ?? "0"} €"
+                          : couponListResponse?.discountType == "percent"
+                              ? "${double.parse(couponListResponse?.amount ?? "0.0").toInt()} %"
+                              : "${couponListResponse?.amount ?? ""} €",
                       style: AppTextStyle.getOutfit600(
                           textSize: 30, textColor: AppColors.orange),
                     ),
@@ -148,7 +150,9 @@ class CustomCouponWidget extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      'DESCUENTO',
+                      couponListResponse?.discountType == "gift_product"
+                          ? 'REGALO'
+                          : 'DESCUENTO',
                       style: AppTextStyle.getOutfit400(
                           textSize: 16, textColor: AppColors.white),
                     )
@@ -159,8 +163,11 @@ class CustomCouponWidget extends StatelessWidget {
                 ),
                 Expanded(
                     child: Text(
-                      // "Descuento del 10% en Uniformes y Ropa deportiva por pertenecer a la AMPA",
-                      couponListResponse?.description ?? "",
+                      couponListResponse?.discountType == "gift_product"
+                          ? couponListResponse?.giftProductName ?? couponListResponse?.description ?? ""
+                          : (couponListResponse?.productCategories?.isNotEmpty == true
+                              ? couponListResponse!.productCategories!.join(', ')
+                              : couponListResponse?.description ?? ""),
                       textAlign: TextAlign.start,
                       style: AppTextStyle.getOutfit400(
                           textSize: 18, textColor: AppColors.orange),
@@ -202,10 +209,14 @@ class CustomCouponWidget extends StatelessWidget {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          "Nunca caduca",
-                          style: AppTextStyle.getOutfit400(
-                              textSize: 16, textColor: AppColors.orange),
+                        Flexible(
+                          child: Text(
+                            couponListResponse?.dateExpires != null
+                                ? "Caduca:\n${couponListResponse!.dateExpires!.split('-').reversed.join('/')}"
+                                : "Nunca caduca",
+                            style: AppTextStyle.getOutfit400(
+                                textSize: 14, textColor: AppColors.orange),
+                          ),
                         )
                       ],
                     ))

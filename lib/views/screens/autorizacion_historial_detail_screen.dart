@@ -4,6 +4,7 @@ import 'package:colegia_atenea/utils/app_images.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AutorizacionHistorialDetailScreen extends StatefulWidget {
   final AutorizacionHistorialModel autorizacion;
@@ -202,6 +203,19 @@ class _AutorizacionHistorialDetailScreenState
                                     margin: Margins.zero,
                                     padding: HtmlPaddings.zero,
                                   ),
+                                  'a': Style(
+                                    color: AppColors.primary,
+                                    textDecoration: TextDecoration.underline,
+                                  ),
+                                },
+                                onLinkTap: (url, _, __) async {
+                                  if (url != null) {
+                                    final uri = Uri.parse(url);
+                                    if (await canLaunchUrl(uri)) {
+                                      await launchUrl(uri,
+                                          mode: LaunchMode.externalApplication);
+                                    }
+                                  }
                                 },
                               )
                             : Padding(

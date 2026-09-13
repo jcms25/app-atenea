@@ -1388,8 +1388,48 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     required String respId,
     required String respuesta,
     required String firmaNombre,
+    String? camposPadre,
+    String? adjuntoPath,
   }) async {
     try {
+      // Si hay adjunto, usar multipart/form-data
+      if (adjuntoPath != null && adjuntoPath.isNotEmpty) {
+        final request = MultipartRequest(
+          'POST',
+          Uri.parse('${liveBaseUrl}autorizaciones/firmar'),
+        );
+        request.headers['Authorization'] = 'Basic $token';
+        request.headers['Cookie'] = cookie;
+        request.fields['parent_wp_usr_id'] = parentWpUsrId;
+        request.fields['resp_id'] = respId;
+        request.fields['respuesta'] = respuesta;
+        request.fields['firma_nombre'] = firmaNombre;
+        if (camposPadre != null && camposPadre.isNotEmpty) {
+          request.fields['campos_padre'] = camposPadre;
+        }
+        request.files.add(await MultipartFile.fromPath('adjunto_1', adjuntoPath));
+        final streamed = await request.send();
+        final response = await Response.fromStream(streamed);
+        if (response.statusCode == 200) {
+          return json.decode(response.body);
+        } else if (response.statusCode == 401) {
+          sessionExpired();
+          return {'status': false, 'Message': 'Session Expired.'};
+        } else {
+          return {'status': false, 'Message': 'Something went wrong'};
+        }
+      }
+
+      // Sin adjunto: usar application/x-www-form-urlencoded
+      final Map<String, String> body = {
+        'parent_wp_usr_id': parentWpUsrId,
+        'resp_id': respId,
+        'respuesta': respuesta,
+        'firma_nombre': firmaNombre,
+      };
+      if (camposPadre != null && camposPadre.isNotEmpty) {
+        body['campos_padre'] = camposPadre;
+      }
       final Response response = await post(
         Uri.parse('${liveBaseUrl}autorizaciones/firmar'),
         headers: <String, String>{
@@ -1397,12 +1437,7 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
           'Authorization': 'Basic $token',
           'Cookie': cookie,
         },
-        body: <String, String>{
-          'parent_wp_usr_id': parentWpUsrId,
-          'resp_id': respId,
-          'respuesta': respuesta,
-          'firma_nombre': firmaNombre,
-        },
+        body: body,
       );
       if (response.statusCode == 200) {
         return json.decode(response.body);

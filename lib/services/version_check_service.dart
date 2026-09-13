@@ -30,9 +30,9 @@ class VersionCheckService {
 
   static Future<void> _openStore(String url) async {
     final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    } catch (_) {}
   }
 
   /// Comprueba la versión y muestra el diálogo si procede.

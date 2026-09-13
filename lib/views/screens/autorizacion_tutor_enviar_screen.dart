@@ -30,6 +30,10 @@ class _AutorizacionTutorEnviarScreenState
   AutorizacionPlantillaModel? plantillaSeleccionada;
   bool previewExpandido = false;
 
+  // Ámbitos
+  List<String> ambitos = [];
+  String ambitoSeleccionado = 'general';
+
   // Modo libre
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _contenidoController = TextEditingController();
@@ -44,10 +48,38 @@ class _AutorizacionTutorEnviarScreenState
   @override
   void initState() {
     super.initState();
-    // Por defecto, todos los alumnos de la clase seleccionados
     alumnosSeleccionados =
         widget.claseTutoria.alumnos.map((a) => a.wpUsrId).toSet();
     _loadPlantillas();
+    _loadAmbitos();
+  }
+
+  Future<void> _loadAmbitos() async {
+    try {
+      final token = AppSharedPreferences.getBasicAthToken() ?? '';
+      final userdata = AppSharedPreferences.getUserData();
+      final cookie = userdata?.cookies ?? '';
+
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.autorizacionesAmbitosEndPoint,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+
+      if (response['status'] == true) {
+        final List data = response['data'] ?? [];
+        setState(() {
+          ambitos = data.map((e) => e.toString()).toList();
+          if (!ambitos.contains(ambitoSeleccionado) && ambitos.isNotEmpty) {
+            ambitoSeleccionado = ambitos.first;
+          }
+        });
+      }
+    } catch (_) {}
   }
 
   @override
@@ -269,6 +301,28 @@ class _AutorizacionTutorEnviarScreenState
         ),
         if (plantillaSeleccionada != null) ...[
           const SizedBox(height: 10),
+          // Ámbito informativo (no editable)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.label_outline, color: AppColors.primary, size: 16),
+                const SizedBox(width: 8),
+                Text(
+                  'Ámbito: ${_formatAmbito(plantillaSeleccionada!.ambito)}',
+                  style: AppTextStyle.getOutfit400(
+                      textSize: 13,
+                      textColor: AppColors.secondary.withValues(alpha: 0.7)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
           GestureDetector(
             onTap: () => setState(() => previewExpandido = !previewExpandido),
             child: Container(
@@ -331,6 +385,55 @@ class _AutorizacionTutorEnviarScreenState
         ],
       ],
     );
+  }
+
+  Widget _buildAmbitoSelector() {
+    if (ambitos.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Ámbito',
+          style: AppTextStyle.getOutfit600(
+              textSize: 14, textColor: AppColors.secondary),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: ambitoSeleccionado,
+              items: ambitos.map((a) => DropdownMenuItem(
+                value: a,
+                child: Text(
+                  _formatAmbito(a),
+                  style: AppTextStyle.getOutfit400(
+                      textSize: 14, textColor: AppColors.secondary),
+                ),
+              )).toList(),
+              onChanged: (value) {
+                if (value != null) setState(() => ambitoSeleccionado = value);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatAmbito(String ambito) {
+    switch (ambito) {
+      case 'general': return 'General';
+      case 'salidas': return 'Salidas';
+      case 'proteccion_datos': return 'Protección de datos';
+      case 'becas': return 'Becas';
+      default: return ambito[0].toUpperCase() + ambito.substring(1);
+    }
   }
 
   Widget _buildLibreSection() {
@@ -422,6 +525,9 @@ class _AutorizacionTutorEnviarScreenState
             ),
           ],
         ),
+        const SizedBox(height: 16),
+        _buildAmbitoSelector(),
+        const SizedBox(height: 8),
         if (guardarComoPlantilla) ...[
           const SizedBox(height: 8),
           TextField(
@@ -669,6 +775,7 @@ class _AutorizacionTutorEnviarScreenState
         'modo': modo == ModoEnvio.plantilla ? 'plantilla' : 'libre',
         'guardar_como_plantilla': guardarComoPlantilla ? '1' : '0',
         'alumnos': alumnosJson,
+        'ambito': ambitoSeleccionado,
       };
       if (modo == ModoEnvio.plantilla && plantillaSeleccionada != null) {
         body['plantilla_id'] = '${plantillaSeleccionada!.id}';

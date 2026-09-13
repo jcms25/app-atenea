@@ -80,7 +80,9 @@ class MessageListScreen extends State<MessageScreen>
   // hoy -> hora; este año -> dd/MM; otro año -> dd/MM/yy
   String _formatChatDate(String? rawDate) {
     if (rawDate == null || rawDate.isEmpty) return "";
-    final DateTime? date = DateTime.tryParse(rawDate);
+    // El servidor envía m_date sin indicador de zona; se trata como
+    // UTC añadiendo "Z" para que toLocal() convierta a hora Madrid.
+    final DateTime? date = DateTime.tryParse("$rawDate Z")?.toLocal();
     if (date == null) return "";
     final DateTime now = DateTime.now();
     if (date.year == now.year &&

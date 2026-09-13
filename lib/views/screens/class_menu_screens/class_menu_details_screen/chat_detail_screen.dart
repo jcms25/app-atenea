@@ -12,6 +12,7 @@ import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String chatType; // '1to1' | 'group'
@@ -230,7 +231,7 @@ class _ChatBubble extends StatelessWidget {
     if (message.mDate != null && message.mDate!.isNotEmpty) {
       try {
         timeStr = DateFormat("dd/MM/yyyy HH:mm")
-            .format(DateTime.parse(message.mDate!));
+            .format(DateTime.parse("${message.mDate!} Z").toLocal());
       } catch (_) {}
     }
 
@@ -317,10 +318,21 @@ class _ChatBubble extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    message.msg ?? "",
+                  Linkify(
+                    text: message.msg ?? "",
                     style: const TextStyle(
                         fontSize: 14, color: Color(0xFF333333)),
+                    linkStyle: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF1565C0),
+                      decoration: TextDecoration.underline,
+                    ),
+                    options: const LinkifyOptions(humanize: false),
+                    onOpen: (link) {
+                      Provider.of<StudentParentTeacherController>(context,
+                              listen: false)
+                          .openUrl(url: link.url);
+                    },
                   ),
                   const SizedBox(height: 4),
                   if (hasAttachment)

@@ -132,6 +132,7 @@ class AutorizacionPlantillaModel {
   final String contenido;
   final String contenidoPreview;
   final String plantillaNombre;
+  final String ambito;
 
   AutorizacionPlantillaModel({
     required this.id,
@@ -139,6 +140,7 @@ class AutorizacionPlantillaModel {
     required this.contenido,
     required this.contenidoPreview,
     required this.plantillaNombre,
+    required this.ambito,
   });
 
   factory AutorizacionPlantillaModel.fromJson(Map<String, dynamic> json) {
@@ -148,6 +150,7 @@ class AutorizacionPlantillaModel {
       contenido:        json['contenido'] ?? '',
       contenidoPreview: json['contenido_preview'] ?? json['contenido'] ?? '',
       plantillaNombre:  json['plantilla_nombre'] ?? '',
+      ambito:           json['ambito'] ?? 'general',
     );
   }
 }

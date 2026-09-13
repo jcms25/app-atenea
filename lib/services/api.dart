@@ -246,6 +246,9 @@ class Api {
     static const String _autorizacionesTutorRegistroEndPoint = "autorizaciones/tutor/registro";
     static String get autorizacionesTutorRegistroEndPoint => _autorizacionesTutorRegistroEndPoint;
 
+    static const String _autorizacionesAmbitosEndPoint = "autorizaciones/ambitos";
+    static String get autorizacionesAmbitosEndPoint => _autorizacionesAmbitosEndPoint;
+
     // MÓDULO TUTORÍAS
     static const String _tutoriasHistorialEndPoint = "tutorias/historial";
     static String get tutoriasHistorialEndPoint => _tutoriasHistorialEndPoint;

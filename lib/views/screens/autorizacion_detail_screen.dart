@@ -1,11 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:colegia_atenea/models/autorizacion_model.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
+import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class AutorizacionDetailScreen extends StatefulWidget {
@@ -18,6 +21,13 @@ class AutorizacionDetailScreen extends StatefulWidget {
       _AutorizacionDetailScreenState();
 }
 
+// Representa un segmento del contenido: texto HTML o campo rellenable
+class _Segmento {
+  final bool esCampo;
+  final String valor; // texto HTML o nombre de variable (ej. 'campo_fecha_1')
+  _Segmento({required this.esCampo, required this.valor});
+}
+
 class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
   final TextEditingController _firmaController = TextEditingController();
   bool _isSigning = false;
@@ -25,6 +35,16 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
   String? _hashVerificacion;
   String? _fechaRespuesta;
   String? _respuestaFirmada;
+
+  // Segmentos del contenido parseado
+  List<_Segmento> _segmentos = [];
+
+  // Controladores de campos rellenables: clave = nombre variable, valor = controller
+  final Map<String, TextEditingController> _camposControllers = {};
+
+  // Adjunto seleccionado
+  File? _adjuntoFile;
+  String? _adjuntoNombre;
 
   @override
   void initState() {
@@ -34,12 +54,68 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
     if (nombre.isNotEmpty) {
       _firmaController.text = nombre;
     }
+    _parsearContenido();
   }
 
   @override
   void dispose() {
     _firmaController.dispose();
+    for (final c in _camposControllers.values) {
+      c.dispose();
+    }
     super.dispose();
+  }
+
+  // Parsea el contenido y extrae segmentos de texto y campos rellenables
+  void _parsearContenido() {
+    final contenido = widget.autorizacion.contenido.replaceAll('\r\n', '<br>');
+    final regex = RegExp(r'\{\{(campo_texto_[123]|campo_fecha_[12]|campo_hora_[12]|adjunto_1)\}\}');
+    final segmentos = <_Segmento>[];
+    int ultimo = 0;
+
+    for (final match in regex.allMatches(contenido)) {
+      if (match.start > ultimo) {
+        segmentos.add(_Segmento(esCampo: false, valor: contenido.substring(ultimo, match.start)));
+      }
+      final nombreCampo = match.group(1)!;
+      segmentos.add(_Segmento(esCampo: true, valor: nombreCampo));
+      if (!_camposControllers.containsKey(nombreCampo)) {
+        _camposControllers[nombreCampo] = TextEditingController();
+      }
+      ultimo = match.end;
+    }
+
+    if (ultimo < contenido.length) {
+      segmentos.add(_Segmento(esCampo: false, valor: contenido.substring(ultimo)));
+    }
+
+    setState(() => _segmentos = segmentos);
+  }
+
+  bool get _tieneCampos => _camposControllers.isNotEmpty;
+
+  // Valida que todos los campos obligatorios estén rellenos
+  bool _validarCampos() {
+    for (final entry in _camposControllers.entries) {
+      if (!entry.key.startsWith('adjunto_') && entry.value.text.trim().isEmpty) {
+        return false;
+      }
+    }
+    // Si hay campo adjunto_1 en el contenido, verificar que se seleccionó archivo
+    if (_segmentos.any((s) => s.esCampo && s.valor == 'adjunto_1') &&
+        _adjuntoFile == null) {
+      return false;
+    }
+    return true;
+  }
+
+  // Genera el JSON de campos_padre
+  String _generarCamposPadreJson() {
+    final Map<String, String> campos = {};
+    for (final entry in _camposControllers.entries) {
+      campos[entry.key] = entry.value.text.trim();
+    }
+    return jsonEncode(campos);
   }
 
   Future<void> _firmar(String respuesta) async {
@@ -47,6 +123,12 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
     if (firmaNombre.isEmpty) {
       AppConstants.showCustomToast(
           status: false, message: 'Escribe tu nombre completo para firmar');
+      return;
+    }
+
+    if (_tieneCampos && !_validarCampos()) {
+      AppConstants.showCustomToast(
+          status: false, message: 'Rellena todos los campos antes de firmar');
       return;
     }
 
@@ -65,6 +147,8 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
         respId: widget.autorizacion.respId.toString(),
         respuesta: respuesta,
         firmaNombre: firmaNombre,
+        camposPadre: _tieneCampos ? _generarCamposPadreJson() : null,
+        adjuntoPath: _adjuntoFile?.path,
       );
 
       if (response['status'] == true) {
@@ -152,7 +236,7 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Contenido HTML
+                  // Contenido con campos rellenables intercalados
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
@@ -162,18 +246,26 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
                       border: Border.all(
                           color: AppColors.primary.withValues(alpha: 0.15)),
                     ),
-                    child: Html(
-                      data: widget.autorizacion.contenido
-                          .replaceAll('\r\n', '<br>'),
-                      style: {
-                        'body': Style(
-                          fontSize: FontSize(14),
-                          fontFamily: 'Outfit',
-                          color: AppColors.secondary,
-                          margin: Margins.zero,
-                          padding: HtmlPaddings.zero,
-                        ),
-                      },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _segmentos.map((seg) {
+                        if (!seg.esCampo) {
+                          return Html(
+                            data: seg.valor,
+                            style: {
+                              'body': Style(
+                                fontSize: FontSize(14),
+                                fontFamily: 'Outfit',
+                                color: AppColors.secondary,
+                                margin: Margins.zero,
+                                padding: HtmlPaddings.zero,
+                              ),
+                            },
+                          );
+                        } else {
+                          return _buildCampoEditable(seg.valor);
+                        }
+                      }).toList(),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -188,6 +280,226 @@ class _AutorizacionDetailScreenState extends State<AutorizacionDetailScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+    Widget _buildCampoEditable(String nombreCampo) {
+    if (nombreCampo == 'adjunto_1') {
+      return _buildCampoAdjunto();
+    }
+    final controller = _camposControllers[nombreCampo]!;
+    if (nombreCampo.startsWith('campo_fecha_')) {
+      return _buildCampoFecha(nombreCampo, controller);
+    } else if (nombreCampo.startsWith('campo_hora_')) {
+      return _buildCampoHora(nombreCampo, controller);
+    } else {
+      return _buildCampoTexto(nombreCampo, controller);
+    }
+  }
+
+  Widget _buildCampoAdjunto() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: GestureDetector(
+        onTap: () async {
+          final result = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+          );
+          if (result != null && result.files.single.path != null) {
+            setState(() {
+              _adjuntoFile = File(result.files.single.path!);
+              _adjuntoNombre = result.files.single.name;
+            });
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.04),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+                color: _adjuntoFile != null
+                    ? AppColors.primary
+                    : AppColors.primary.withValues(alpha: 0.4)),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                _adjuntoFile != null
+                    ? Icons.attach_file
+                    : Icons.upload_file_outlined,
+                color: AppColors.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _adjuntoFile != null
+                      ? _adjuntoNombre ?? 'Archivo seleccionado'
+                      : 'Adjuntar archivo (PDF, JPG, PNG)',
+                  style: AppTextStyle.getOutfit400(
+                      textSize: 13,
+                      textColor: _adjuntoFile != null
+                          ? AppColors.secondary
+                          : AppColors.secondary.withValues(alpha: 0.5)),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (_adjuntoFile != null)
+                GestureDetector(
+                  onTap: () => setState(() {
+                    _adjuntoFile = null;
+                    _adjuntoNombre = null;
+                  }),
+                  child: Icon(Icons.close,
+                      color: AppColors.secondary.withValues(alpha: 0.5),
+                      size: 18),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCampoTexto(String nombre, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: 'Escribe aquí...',
+          hintStyle: AppTextStyle.getOutfit400(
+              textSize: 13,
+              textColor: AppColors.secondary.withValues(alpha: 0.4)),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide:
+                BorderSide(color: AppColors.primary.withValues(alpha: 0.4)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: AppColors.primary),
+          ),
+          filled: true,
+          fillColor: AppColors.primary.withValues(alpha: 0.04),
+        ),
+        style: AppTextStyle.getOutfit400(
+            textSize: 14, textColor: AppColors.secondary),
+        onChanged: (_) => setState(() {}),
+      ),
+    );
+  }
+
+  Widget _buildCampoFecha(String nombre, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: GestureDetector(
+        onTap: () async {
+          final fecha = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2020),
+            lastDate: DateTime(2030),
+            locale: const Locale('es', 'ES'),
+            builder: (context, child) => Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(primary: AppColors.primary),
+              ),
+              child: child!,
+            ),
+          );
+          if (fecha != null) {
+            final formatted =
+                '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
+            setState(() => controller.text = formatted);
+          }
+        },
+        child: AbsorbPointer(
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'dd/mm/aaaa',
+              hintStyle: AppTextStyle.getOutfit400(
+                  textSize: 13,
+                  textColor: AppColors.secondary.withValues(alpha: 0.4)),
+              suffixIcon: const Icon(Icons.calendar_today,
+                  color: AppColors.primary, size: 18),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide:
+                    BorderSide(color: AppColors.primary.withValues(alpha: 0.4)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: AppColors.primary),
+              ),
+              filled: true,
+              fillColor: AppColors.primary.withValues(alpha: 0.04),
+            ),
+            style: AppTextStyle.getOutfit400(
+                textSize: 14, textColor: AppColors.secondary),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCampoHora(String nombre, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: GestureDetector(
+        onTap: () async {
+          final hora = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+            builder: (context, child) => Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(primary: AppColors.primary),
+              ),
+              child: child!,
+            ),
+          );
+          if (hora != null) {
+            final formatted =
+                '${hora.hour.toString().padLeft(2, '0')}:${hora.minute.toString().padLeft(2, '0')}';
+            setState(() => controller.text = formatted);
+          }
+        },
+        child: AbsorbPointer(
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'hh:mm',
+              hintStyle: AppTextStyle.getOutfit400(
+                  textSize: 13,
+                  textColor: AppColors.secondary.withValues(alpha: 0.4)),
+              suffixIcon: const Icon(Icons.access_time,
+                  color: AppColors.primary, size: 18),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide:
+                    BorderSide(color: AppColors.primary.withValues(alpha: 0.4)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: AppColors.primary),
+              ),
+              filled: true,
+              fillColor: AppColors.primary.withValues(alpha: 0.04),
+            ),
+            style: AppTextStyle.getOutfit400(
+                textSize: 14, textColor: AppColors.secondary),
+          ),
+        ),
       ),
     );
   }

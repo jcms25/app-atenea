@@ -158,20 +158,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                               textSize: 20,
                                               textColor: AppColors.secondary),
                                         ),
+                                        if (storeController.productItem?.extensions?.wpspBundle?.isWpspBundle != true &&
+                                            (storeController.selectedVariations != null
+                                                    ? storeController.variationProduct?.isOnBackorder
+                                                    : storeController.productItem?.isOnBackorder) ==
+                                                true)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 6),
+                                            child: Text(
+                                              '⚠ Se puede reservar',
+                                              style: AppTextStyle.getOutfit500(
+                                                  textSize: 15,
+                                                  textColor: Colors.orange.shade800),
+                                            ),
+                                          ),
                                         const SizedBox(
                                           height: 20,
                                         ),
-                                       (storeController.productItem?.type == "yith_bundle" || storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true)
+                                       (storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true)
                                             ? GestureDetector(
                                                 onTap: () async {
-                                                  List<dynamic> bundleItems = [];
-                                                  if (storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true) {
-                                                    bundleItems = storeController.productItem?.extensions?.wpspBundle?.bundleData ?? [];
-                                                  } else {
-                                                    bundleItems = storeController.productItem?.extensions?.customProductData?.bundleData ?? [];
-                                                  }
+                                                  final List<BundleData> bundleItems = storeController.productItem?.extensions?.wpspBundle?.bundleData ?? [];
                                                   Get.bottomSheet(
-                                                     BundlesProductListBottomSheet(listOfBundleProducts: bundleItems.cast<BundleData>()),
+                                                     BundlesProductListBottomSheet(listOfBundleProducts: bundleItems),
                                                       backgroundColor: AppColors.transparent,
                                                   );
                                                 },
@@ -429,7 +438,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   /// Quantity Selector
                   Visibility(
                       visible:
-                          storeController.productItem?.type != "yith_bundle" && storeController.productItem?.extensions?.wpspBundle?.isWpspBundle != true,
+                          storeController.productItem?.extensions?.wpspBundle?.isWpspBundle != true,
                       child: Row(
                         children: [
                           IconButton(
@@ -468,7 +477,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           : () async {
                             await storeController.addToCart(
                               noOfItems:
-                                (storeController.productItem?.type == "yith_bundle" || storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true)
+                                (storeController.productItem?.extensions?.wpspBundle?.isWpspBundle == true)
                                   ? 1
                                   : storeController.quantity,
                                     tiendaToken: studentParentTeacherController

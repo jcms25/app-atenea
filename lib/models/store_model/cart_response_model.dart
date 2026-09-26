@@ -17,7 +17,6 @@ class CartResponse {
   // List<Null>? crossSells;
   // List<Null>? errors;
   List<String>? paymentMethods;
-  CartExtension? extensions;
 
   CartResponse(
       {this.items,
@@ -35,8 +34,7 @@ class CartResponse {
         this.itemsWeight,
         // this.crossSells,
         // this.errors,
-        this.paymentMethods,
-        this.extensions});
+        this.paymentMethods});
 
   CartResponse.fromJson(Map<String, dynamic> json) {
     if (json['items'] != null) {
@@ -94,9 +92,6 @@ class CartResponse {
             .cast<String>()
             .where((method) => method != 'ppcp-gateway')
             .toList();
-    extensions = json['extensions'] != null
-        ? CartExtension.fromJson(json['extensions'])
-        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -136,9 +131,6 @@ class CartResponse {
     //   data['errors'] = errors!.map((v) => v.toJson()).toList();
     // }
     data['payment_methods'] = paymentMethods;
-    if (extensions != null) {
-      data['extensions'] = extensions!.toJson();
-    }
     return data;
   }
 }
@@ -453,76 +445,13 @@ class RawPrices {
   }
 }
 
-class Totals {
-  String? lineSubtotal;
-  String? lineSubtotalTax;
-  String? lineTotal;
-  String? lineTotalTax;
-  String? currencyCode;
-  String? currencySymbol;
-  int? currencyMinorUnit;
-  String? currencyDecimalSeparator;
-  String? currencyThousandSeparator;
-  String? currencyPrefix;
-  String? currencySuffix;
-
-  Totals(
-      {this.lineSubtotal,
-        this.lineSubtotalTax,
-        this.lineTotal,
-        this.lineTotalTax,
-        this.currencyCode,
-        this.currencySymbol,
-        this.currencyMinorUnit,
-        this.currencyDecimalSeparator,
-        this.currencyThousandSeparator,
-        this.currencyPrefix,
-        this.currencySuffix});
-
-  Totals.fromJson(Map<String, dynamic> json) {
-    lineSubtotal = json['line_subtotal'];
-    lineSubtotalTax = json['line_subtotal_tax'];
-    lineTotal = json['line_total'];
-    lineTotalTax = json['line_total_tax'];
-    currencyCode = json['currency_code'];
-    currencySymbol = json['currency_symbol'];
-    currencyMinorUnit = json['currency_minor_unit'];
-    currencyDecimalSeparator = json['currency_decimal_separator'];
-    currencyThousandSeparator = json['currency_thousand_separator'];
-    currencyPrefix = json['currency_prefix'];
-    currencySuffix = json['currency_suffix'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['line_subtotal'] = lineSubtotal;
-    data['line_subtotal_tax'] = lineSubtotalTax;
-    data['line_total'] = lineTotal;
-    data['line_total_tax'] = lineTotalTax;
-    data['currency_code'] = currencyCode;
-    data['currency_symbol'] = currencySymbol;
-    data['currency_minor_unit'] = currencyMinorUnit;
-    data['currency_decimal_separator'] = currencyDecimalSeparator;
-    data['currency_thousand_separator'] = currencyThousandSeparator;
-    data['currency_prefix'] = currencyPrefix;
-    data['currency_suffix'] = currencySuffix;
-    return data;
-  }
-}
-
 class Extensions {
-  YithWoocommerceProductBundles? yithWoocommerceProductBundles;
   bool? isClosed;
   WpspCartBundle? wpspBundle;
 
-  Extensions({this.yithWoocommerceProductBundles, this.isClosed, this.wpspBundle});
+  Extensions({this.isClosed, this.wpspBundle});
 
   Extensions.fromJson(Map<String, dynamic> json) {
-    yithWoocommerceProductBundles =
-    json['yith-woocommerce-product-bundles'] != null
-        ? YithWoocommerceProductBundles.fromJson(
-        json['yith-woocommerce-product-bundles'])
-        : null;
     isClosed = json['wpsp_closed']?['is_closed'] ?? false;
     wpspBundle = json['wpsp_bundle'] != null
         ? WpspCartBundle.fromJson(json['wpsp_bundle'])
@@ -531,10 +460,6 @@ class Extensions {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (yithWoocommerceProductBundles != null) {
-      data['yith-woocommerce-product-bundles'] =
-          yithWoocommerceProductBundles!.toJson();
-    }
     data['wpsp_closed'] = {'is_closed': isClosed};
     if (wpspBundle != null) {
       data['wpsp_bundle'] = wpspBundle!.toJson();
@@ -542,105 +467,6 @@ class Extensions {
     return data;
   }
 }
-
-class WpspBundleExtension {
-  bool? isWpspBundle;
-  bool? wpspBundledItem;
-  int? wpspParentProductId;
-
-  WpspBundleExtension({this.isWpspBundle, this.wpspBundledItem, this.wpspParentProductId});
-
-  WpspBundleExtension.fromJson(Map<String, dynamic> json) {
-    isWpspBundle = json['is_wpsp_bundle'];
-    wpspBundledItem = json['wpsp_bundled_item'];
-    wpspParentProductId = json['wpsp_parent_product_id'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['is_wpsp_bundle'] = isWpspBundle;
-    data['wpsp_bundled_item'] = wpspBundledItem;
-    data['wpsp_parent_product_id'] = wpspParentProductId;
-    return data;
-  }
-}
-
-class YithWoocommerceProductBundles {
-  bool? isBundle;
-  bool? isBundledItem;
-  BundleData? bundleData;
-  ExtensionItemData? itemData;
-
-  YithWoocommerceProductBundles({this.isBundle, this.isBundledItem,this.bundleData});
-
-  YithWoocommerceProductBundles.fromJson(Map<String, dynamic> json) {
-    isBundle = json['isBundle'];
-    isBundledItem = json['isBundledItem'];
-    bundleData = json['bundleData'] != null
-        ? BundleData.fromJson(json['bundleData'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['isBundle'] = isBundle;
-    data['isBundledItem'] = isBundledItem;
-    if (bundleData != null) {
-      data['bundleData'] = bundleData!.toJson();
-    }
-    if (itemData != null) {
-      data['itemData'] = itemData!.toJson();
-    }
-    return data;
-  }
-}
-
-class ExtensionItemData {
-  bool? hasCustomName;
-  String? name;
-  bool? isHidden;
-  bool? isThumbnailHidden;
-
-  ExtensionItemData(
-      {this.hasCustomName, this.name, this.isHidden, this.isThumbnailHidden});
-
-  ExtensionItemData.fromJson(Map<String, dynamic> json) {
-    hasCustomName = json['hasCustomName'];
-    name = json['name'];
-    isHidden = json['isHidden'];
-    isThumbnailHidden = json['isThumbnailHidden'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['hasCustomName'] = hasCustomName;
-    data['name'] = name;
-    data['isHidden'] = isHidden;
-    data['isThumbnailHidden'] = isThumbnailHidden;
-    return data;
-  }
-}
-
-
-class BundleData {
-  bool? hasFixedPrice;
-  List<String>? bundledItemKeys;
-
-  BundleData({this.hasFixedPrice, this.bundledItemKeys});
-
-  BundleData.fromJson(Map<String, dynamic> json) {
-    hasFixedPrice = json['hasFixedPrice'];
-    bundledItemKeys = json['bundledItemKeys'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['hasFixedPrice'] = hasFixedPrice;
-    data['bundledItemKeys'] = bundledItemKeys;
-    return data;
-  }
-}
-
 
 class CartTotal {
   String? totalItems;
@@ -866,62 +692,6 @@ class BillingAddress {
   }
 }
 
-class CartExtension {
-  YithDynamicWcBlockManager? yithDynamicWcBlockManager;
-
-  CartExtension({this.yithDynamicWcBlockManager});
-
-  CartExtension.fromJson(Map<String, dynamic> json) {
-    yithDynamicWcBlockManager = json['yith_dynamic_wc_block_manager'] != null
-        ? YithDynamicWcBlockManager.fromJson(
-        json['yith_dynamic_wc_block_manager'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (yithDynamicWcBlockManager != null) {
-      data['yith_dynamic_wc_block_manager'] =
-          yithDynamicWcBlockManager!.toJson();
-    }
-    return data;
-  }
-}
-
-class YithDynamicWcBlockManager {
-  String? ywdpdCouponLabel;
-  String? ywdpdCouponCode;
-  String? ywdpdCanAddCoupon;
-  String? ywdpdFreeShippingNotices;
-  String? ywdpdTotalDiscountMessage;
-
-  YithDynamicWcBlockManager(
-      {this.ywdpdCouponLabel,
-        this.ywdpdCouponCode,
-        this.ywdpdCanAddCoupon,
-        this.ywdpdFreeShippingNotices,
-        this.ywdpdTotalDiscountMessage});
-
-  YithDynamicWcBlockManager.fromJson(Map<String, dynamic> json) {
-    ywdpdCouponLabel = json['ywdpd_coupon_label'];
-    ywdpdCouponCode = json['ywdpd_coupon_code'];
-    ywdpdCanAddCoupon = json['ywdpd_can_add_coupon'];
-    ywdpdFreeShippingNotices = json['ywdpd_free_shipping_notices'];
-    ywdpdTotalDiscountMessage = json['ywdpd_total_discount_message'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['ywdpd_coupon_label'] = ywdpdCouponLabel;
-    data['ywdpd_coupon_code'] = ywdpdCouponCode;
-    data['ywdpd_can_add_coupon'] = ywdpdCanAddCoupon;
-    data['ywdpd_free_shipping_notices'] = ywdpdFreeShippingNotices;
-    data['ywdpd_total_discount_message'] = ywdpdTotalDiscountMessage;
-    return data;
-  }
-}
-
-
 class CouponItem {
   String? code;
   String? discountType;
@@ -1003,6 +773,7 @@ class WpspCartBundle {
   bool? wpspBundledItem;
   int? wpspParentProductId;
   String? wpspChildPrice;
+  bool bpPending;
 
   WpspCartBundle({
     this.isWpspBundle,
@@ -1010,14 +781,20 @@ class WpspCartBundle {
     this.wpspBundledItem,
     this.wpspParentProductId,
     this.wpspChildPrice,
+    this.bpPending = false,
   });
 
-  WpspCartBundle.fromJson(Map<String, dynamic> json) {
+  WpspCartBundle.fromJson(Map<String, dynamic> json)
+      : bpPending = _parseBool(json['bp_pending']) {
     isWpspBundle = json['is_wpsp_bundle'];
     bundleData = json['bundle_data'];
     wpspBundledItem = json['wpsp_bundled_item'] ?? false;
     wpspParentProductId = json['wpsp_parent_product_id'];
     wpspChildPrice = json['wpsp_child_price']?.toString();
+  }
+
+  static bool _parseBool(dynamic value) {
+    return value == true || value == 1 || value == '1' || value == 'true';
   }
 
   Map<String, dynamic> toJson() {
@@ -1027,6 +804,7 @@ class WpspCartBundle {
     data['wpsp_bundled_item'] = wpspBundledItem;
     data['wpsp_parent_product_id'] = wpspParentProductId;
     data['wpsp_child_price'] = wpspChildPrice;
+    data['bp_pending'] = bpPending;
     return data;
   }
 }

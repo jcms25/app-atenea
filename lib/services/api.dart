@@ -339,6 +339,18 @@ class Api {
     static const String _serviciosContratadosMisRecibosEndPoint = "servicios-contratados/mis-recibos";
     static String get serviciosContratadosMisRecibosEndPoint => _serviciosContratadosMisRecibosEndPoint;
 
+    // ============================================================
+    // MÓDULO SOLICITUDES
+    // ============================================================
+    static const String _solicitudesFormulariosEndPoint = "solicitudes/formularios";
+    static String get solicitudesFormulariosEndPoint => _solicitudesFormulariosEndPoint;
+    static const String _solicitudesMisHijosEndPoint = "solicitudes/mis-hijos";
+    static String get solicitudesMisHijosEndPoint => _solicitudesMisHijosEndPoint;
+    static const String _solicitudesEnviarEndPoint = "solicitudes/enviar";
+    static String get solicitudesEnviarEndPoint => _solicitudesEnviarEndPoint;
+    static const String _solicitudesMisSolicitudesEndPoint = "solicitudes/mis-solicitudes";
+    static String get solicitudesMisSolicitudesEndPoint => _solicitudesMisSolicitudesEndPoint;
+
     static Future<Map<String, dynamic>> httpRequest(
       {required RequestType requestType,
       required String endPoint,

@@ -55,6 +55,8 @@ import 'package:colegia_atenea/views/screens/autorizaciones_tutor_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
+import 'package:colegia_atenea/views/screens/recibos_screen.dart';
+import 'package:colegia_atenea/views/screens/solicitudes_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   final StudentParentTeacherController studentParentTeacherController;
@@ -497,6 +499,20 @@ class CustomDrawerWidget extends StatelessWidget {
         if (drawerMenuOption.name == 'drawerOption12'.tr &&
             !(appController?.showBecasSection ?? false)) {
           continue;
+        }
+        // Servicios del Centro: submenú con Solicitudes, Servicios contratados y Recibos
+        if (drawerMenuOption.name == 'drawerOption14'.tr) {
+          drawerMenuOption.subMenu ??= [
+            DrawerMenuOption(
+              name: 'subMenuDrawer32'.tr,
+            ),
+            DrawerMenuOption(
+              name: 'subMenuDrawer33'.tr,
+            ),
+            DrawerMenuOption(
+              name: 'subMenuDrawer34'.tr,
+            ),
+          ];
         }
         // La pestaña Autorizaciones no tiene switch global: siempre visible para padres
         drawerMenuOptionList.add(drawerMenuOption);
@@ -981,7 +997,15 @@ class CustomDrawerWidget extends StatelessWidget {
         }
         break;
       case "Servicios Contratados":
+        break;
+      case "Solicitudes":
+        Get.to(() => const SolicitudesScreen());
+        break;
+      case "Servicios contratados":
         Get.to(() => const ServiciosContratadosScreen());
+        break;
+      case "Recibos":
+        Get.to(() => const RecibosScreen());
         break;
       case "Tutorías":
         if (roleType == RoleType.teacher) {

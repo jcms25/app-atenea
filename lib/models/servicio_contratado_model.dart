@@ -5,12 +5,14 @@ class AlumnoServicioModel {
   final String alumnoNombre;
   final String claseNombre;
   final List<String> detalle;
+  final String? origen; // 'app' | 'secretaria' — solo en servicios con formulario (com, mat, gab)
 
   AlumnoServicioModel({
     required this.wpUsrId,
     required this.alumnoNombre,
     required this.claseNombre,
     required this.detalle,
+    this.origen,
   });
 
   factory AlumnoServicioModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,7 @@ class AlumnoServicioModel {
       detalle:      json['detalle'] is List
           ? List<String>.from(json['detalle'].map((e) => e.toString()))
           : <String>[],
+      origen:       json['origen']?.toString(),
     );
   }
 }
@@ -182,6 +185,173 @@ class RecibosResponseModel {
           ? List<CursoRecibosModel>.from(
               json['cursos'].map((e) => CursoRecibosModel.fromJson(e)))
           : <CursoRecibosModel>[],
+    );
+  }
+}
+
+// ============================================================
+// MÓDULO SOLICITUDES
+// ============================================================
+
+class FormularioSolicitudModel {
+  final int id;
+  final String nombre;
+  final String slug;
+  final String descripcion;
+  final String condiciones;
+  final bool requiereTipo;
+  final bool requiereIban;
+
+  FormularioSolicitudModel({
+    required this.id,
+    required this.nombre,
+    required this.slug,
+    required this.descripcion,
+    required this.condiciones,
+    required this.requiereTipo,
+    required this.requiereIban,
+  });
+
+  factory FormularioSolicitudModel.fromJson(Map<String, dynamic> json) {
+    return FormularioSolicitudModel(
+      id:           json['id'] ?? 0,
+      nombre:       json['nombre'] ?? '',
+      slug:         json['slug'] ?? '',
+      descripcion:  json['descripcion'] ?? '',
+      condiciones:  json['condiciones'] ?? '',
+      requiereTipo: json['requiere_tipo'] ?? true,
+      requiereIban: json['requiere_iban'] ?? true,
+    );
+  }
+}
+
+class HijoSolicitudModel {
+  final int wpUsrId;
+  final String nombre;
+  final String claseNombre;
+  final Map<String, bool> yaContratado;
+
+  HijoSolicitudModel({
+    required this.wpUsrId,
+    required this.nombre,
+    required this.claseNombre,
+    required this.yaContratado,
+  });
+
+  factory HijoSolicitudModel.fromJson(Map<String, dynamic> json) {
+    return HijoSolicitudModel(
+      wpUsrId:     json['wp_usr_id'] ?? 0,
+      nombre:      json['nombre'] ?? '',
+      claseNombre: json['clase_nombre'] ?? '',
+      yaContratado: json['ya_contratado'] is Map
+          ? (json['ya_contratado'] as Map)
+              .map((k, v) => MapEntry(k.toString(), v == true))
+          : <String, bool>{},
+    );
+  }
+}
+
+class PadreSolicitudModel {
+  final String nombreCompleto;
+  final String nif;
+  final String email;
+  final String telefono;
+  final String iban;
+  final String titularCuenta;
+  final String nifTitular;
+
+  PadreSolicitudModel({
+    required this.nombreCompleto,
+    required this.nif,
+    required this.email,
+    required this.telefono,
+    required this.iban,
+    required this.titularCuenta,
+    required this.nifTitular,
+  });
+
+  factory PadreSolicitudModel.fromJson(Map<String, dynamic> json) {
+    return PadreSolicitudModel(
+      nombreCompleto: json['nombre_completo'] ?? '',
+      nif:            json['nif'] ?? '',
+      email:          json['email'] ?? '',
+      telefono:       json['telefono'] ?? '',
+      iban:           json['iban'] ?? '',
+      titularCuenta:  json['titular_cuenta'] ?? '',
+      nifTitular:     json['nif_titular'] ?? '',
+    );
+  }
+}
+
+class MisHijosSolicitudResponseModel {
+  final PadreSolicitudModel padre;
+  final List<HijoSolicitudModel> hijos;
+
+  MisHijosSolicitudResponseModel({
+    required this.padre,
+    required this.hijos,
+  });
+
+  factory MisHijosSolicitudResponseModel.fromJson(Map<String, dynamic> json) {
+    return MisHijosSolicitudResponseModel(
+      padre: PadreSolicitudModel.fromJson(json['padre'] ?? {}),
+      hijos: json['hijos'] is List
+          ? List<HijoSolicitudModel>.from(
+              json['hijos'].map((e) => HijoSolicitudModel.fromJson(e)))
+          : <HijoSolicitudModel>[],
+    );
+  }
+}
+
+class SolicitudHistorialModel {
+  final int id;
+  final int formularioId;
+  final String formularioNombre;
+  final String formularioSlug;
+  final String academicYear;
+  final int studentId;
+  final String alumnoNombre;
+  final String claseNombre;
+  final String tipoServicio;
+  final String fechaSolicitud;
+  final String estado;
+  final String firmaNombre;
+  final String hashVerificacion;
+  final String condicionesTexto;
+
+  SolicitudHistorialModel({
+    required this.id,
+    required this.formularioId,
+    required this.formularioNombre,
+    required this.formularioSlug,
+    required this.academicYear,
+    required this.studentId,
+    required this.alumnoNombre,
+    required this.claseNombre,
+    required this.tipoServicio,
+    required this.fechaSolicitud,
+    required this.estado,
+    required this.firmaNombre,
+    required this.hashVerificacion,
+    required this.condicionesTexto,
+  });
+
+  factory SolicitudHistorialModel.fromJson(Map<String, dynamic> json) {
+    return SolicitudHistorialModel(
+      id:                 json['id'] ?? 0,
+      formularioId:       json['formulario_id'] ?? 0,
+      formularioNombre:   json['formulario_nombre'] ?? '',
+      formularioSlug:     json['formulario_slug'] ?? '',
+      academicYear:       json['academic_year'] ?? '',
+      studentId:          json['student_id'] ?? 0,
+      alumnoNombre:       json['alumno_nombre'] ?? '',
+      claseNombre:        json['clase_nombre'] ?? '',
+      tipoServicio:       json['tipo_servicio'] ?? '',
+      fechaSolicitud:     json['fecha_solicitud'] ?? '',
+      estado:             json['estado'] ?? '',
+      firmaNombre:        json['firma_nombre'] ?? '',
+      hashVerificacion:   json['hash_verificacion'] ?? '',
+      condicionesTexto:   json['condiciones_texto'] ?? '',
     );
   }
 }

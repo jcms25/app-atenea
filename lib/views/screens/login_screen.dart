@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BackgroundLayout(
       image: AppImages.logo,
       imageType: 0,
-      scrollPhysics: const NeverScrollableScrollPhysics(),
+      scrollPhysics: const ClampingScrollPhysics(),
       circularImage: Align(
         alignment: Alignment.topCenter,
         child: Container(

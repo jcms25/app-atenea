@@ -2529,6 +2529,121 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
       return {'status': false, 'Message': 'Exception: $exception'};
     }
   }
+
+  // ============================================================
+  // MÓDULO SOLICITUDES
+  // ============================================================
+  /// GET /scl-api/v1/solicitudes/formularios
+  Future<dynamic> getSolicitudesFormularios({
+    required String token,
+    required String cookie,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}solicitudes/formularios'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/solicitudes/mis-hijos
+  Future<dynamic> getSolicitudesMisHijos({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}solicitudes/mis-hijos?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/solicitudes/enviar
+  Future<dynamic> postSolicitudEnviar({
+    required String token,
+    required String cookie,
+    required Map<String, String> body,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}solicitudes/enviar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// GET /scl-api/v1/solicitudes/mis-solicitudes
+  Future<dynamic> getSolicitudesMisSolicitudes({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}solicitudes/mis-solicitudes?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
 }
   void sessionExpired() async {
   // await SharedPref.initialization();

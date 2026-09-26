@@ -26,6 +26,7 @@ import 'class_menu_screens/grade_screen.dart';
 import 'parent_student_info_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
+import 'package:colegia_atenea/views/screens/solicitudes_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 //chequea la versión para actualización obligatoria
@@ -162,6 +163,13 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     // Autorizaciones: abrir directamente la sección
     if (destination == "autorizaciones") {
       Get.to(() => const AutorizacionesScreen());
+      return;
+    }
+
+    // Solicitudes de servicios: abrir la pantalla de Solicitudes
+    // (formularios + historial, donde el padre ve el nuevo estado)
+    if (destination == "solicitudes") {
+      Get.to(() => const SolicitudesScreen());
       return;
     }
     // Tutorías: abrir la pantalla correspondiente según el rol, saltando

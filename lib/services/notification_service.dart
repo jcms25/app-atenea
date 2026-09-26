@@ -91,6 +91,8 @@ class NotificationService {
         return "autorizaciones";
       case "Tutoria":
         return "tutoria";
+      case "Solicitud":
+        return "solicitudes";
       default:
         return "dashboard";
     }
@@ -123,6 +125,8 @@ class NotificationService {
         return "autorizaciones";
       case "Tutoria":
         return "tutoria";
+      case "Solicitud":
+        return "solicitudes";
       default:
         return "dashboard";
     }

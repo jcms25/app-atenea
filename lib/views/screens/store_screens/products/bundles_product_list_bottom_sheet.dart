@@ -118,6 +118,16 @@ class BundlesProductListBottomSheet extends StatelessWidget {
                                   ),
                               ],
                             ),
+                            if (bundleData.bpPending)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  '⚠ Pendiente de entrega',
+                                  style: AppTextStyle.getOutfit500(
+                                      textSize: 13,
+                                      textColor: Colors.orange.shade800),
+                                ),
+                              ),
                             SizedBox(height: 5,),
                             Text("${bundleData.bpProductPrice?.replaceAll(".", ",") ?? "-"}\t€",style: AppTextStyle.getOutfit400(textSize: 14, textColor: AppColors.primary),)
                           ],

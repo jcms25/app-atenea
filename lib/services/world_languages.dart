@@ -207,7 +207,7 @@ class WorldLanguage extends Translations {
           'drawerOption11' : 'Store',
           'drawerOption12' : 'Scholarships',
           'drawerOption13' : 'Authorizations',
-          'drawerOption14' : 'Contracted Services',
+          'drawerOption14' : 'Centre Services',
           'drawerOption15' : 'Tutoring Sessions',
           
           //sub menu option
@@ -247,6 +247,9 @@ class WorldLanguage extends Translations {
           'subMenuDrawer22' : 'Notebooks',
           'subMenuDrawer23' : 'Diary',
           'subMenuDrawer31' : 'Reservations',
+          'subMenuDrawer32' : 'Requests',
+          'subMenuDrawer33' : 'Contracted Services',
+          'subMenuDrawer34' : 'Invoices',
 
 
           //Assistant Module Strings
@@ -466,7 +469,7 @@ class WorldLanguage extends Translations {
           'drawerOption11' : 'Tienda',
           'drawerOption12' : 'Becas',
           'drawerOption13' : 'Autorizaciones',
-          'drawerOption14' : 'Servicios Contratados',
+          'drawerOption14' : 'Servicios del Centro',
           'drawerOption15' : 'Tutorías',
 
           //sub menu option
@@ -506,7 +509,10 @@ class WorldLanguage extends Translations {
           'subMenuDrawer21' : 'Material',
           'subMenuDrawer22' : 'Cuadernos',
           'subMenuDrawer23' : 'Agenda',        
-          'subMenuDrawer31' : 'Reservas',  
+          'subMenuDrawer31' : 'Reservas', 
+          'subMenuDrawer32' : 'Solicitudes',
+          'subMenuDrawer33' : 'Servicios contratados',
+          'subMenuDrawer34' : 'Recibos', 
 
           // //drawer option
           // 'drawerOption1' : 'Desk',

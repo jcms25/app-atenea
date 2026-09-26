@@ -387,15 +387,11 @@ class AddToCart {
 
 
 class Extensions {
-  CustomProductData? customProductData;
   WpspBundle? wpspBundle;
 
-  Extensions({this.customProductData, this.wpspBundle});
+  Extensions({this.wpspBundle});
 
   Extensions.fromJson(Map<String, dynamic> json) {
-    customProductData = json['custom_product_data'] != null
-        ? CustomProductData.fromJson(json['custom_product_data'])
-        : null;
     wpspBundle = json['wpsp_bundle'] != null
         ? WpspBundle.fromJson(json['wpsp_bundle'])
         : null;
@@ -403,9 +399,6 @@ class Extensions {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (customProductData != null) {
-      data['custom_product_data'] = customProductData!.toJson();
-    }
     if (wpspBundle != null) {
       data['wpsp_bundle'] = wpspBundle!.toJson();
     }
@@ -439,29 +432,6 @@ class WpspBundle {
   }
 }
 
-class CustomProductData {
-  List<BundleData>? bundleData;
-
-  CustomProductData({this.bundleData});
-
-  CustomProductData.fromJson(Map<String, dynamic> json) {
-    if (json['bundle_data'] != null) {
-      bundleData = <BundleData>[];
-      json['bundle_data'].forEach((v) {
-        bundleData!.add(BundleData.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (bundleData != null) {
-      data['bundle_data'] = bundleData!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
 class BundleData {
   String? bundleOrder;
   String? productId;
@@ -476,6 +446,7 @@ class BundleData {
   String? bpProductPrice;
   String? bpProductImg;
   String? bpProductSku;
+  bool bpPending;
 
   BundleData(
       {this.bundleOrder,
@@ -490,9 +461,11 @@ class BundleData {
         this.bpProductName,
         this.bpProductPrice,
         this.bpProductImg,
-        this.bpProductSku});
+        this.bpProductSku,
+        this.bpPending = false});
 
-  BundleData.fromJson(Map<String, dynamic> json) {
+  BundleData.fromJson(Map<String, dynamic> json)
+      : bpPending = _parseBool(json['bp_pending']) {
     bundleOrder = json['bundle_order'];
     productId = json['product_id'];
     bpShowName = json['bp_show_name'];
@@ -506,6 +479,10 @@ class BundleData {
     bpProductPrice = json['bp_product_price'];
     bpProductImg = json['bp_product_img'];
     bpProductSku = json['bp_product_sku'];
+  }
+
+  static bool _parseBool(dynamic value) {
+    return value == true || value == 1 || value == '1' || value == 'true';
   }
 
   Map<String, dynamic> toJson() {
@@ -523,6 +500,7 @@ class BundleData {
     data['bp_product_price'] = bpProductPrice;
     data['bp_product_img'] = bpProductImg;
     data['bp_product_sku'] = bpProductSku;
+    data['bp_pending'] = bpPending;
     return data;
   }
 }

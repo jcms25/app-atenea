@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:colegia_atenea/controllers/student_parent_teacher_controller.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/models/store_model/billing_detail_model.dart';
-import 'package:colegia_atenea/models/store_model/cart_response_model.dart' hide BundleData;
+import 'package:colegia_atenea/models/store_model/cart_response_model.dart';
 import 'package:colegia_atenea/models/store_model/checkout_model.dart' hide BillingAddress, ShippingAddress;
 import 'package:colegia_atenea/models/store_model/coupon_response.dart';
 import 'package:colegia_atenea/models/store_model/order_details_model.dart';

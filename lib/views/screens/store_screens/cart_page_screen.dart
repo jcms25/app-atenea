@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:colegia_atenea/views/screens/store_screens/checkout/total_bottom_sheet.dart';
 import 'package:colegia_atenea/views/screens/store_screens/checkout/closed_items_warning_sheet.dart';
 import 'package:flutter/material.dart';
@@ -177,20 +179,18 @@ class CartListWidget extends StatelessWidget {
     final bool isQuantityEditable =
         item.quantityLimits?.editable ?? true;
     final bool isBundledItem =
-        (item.extensions?.yithWoocommerceProductBundles?.isBundledItem ?? false) ||
-            (item.extensions?.wpspBundle?.wpspBundledItem ?? false);
+        item.extensions?.wpspBundle?.wpspBundledItem ?? false;
 
     final int qty = (item.quantity ?? 1) <= 0 ? 1 : (item.quantity ?? 1);
 
-    final String effectivePriceRaw =
+    final double effectiveUnitPrice =
         item.extensions?.wpspBundle?.wpspBundledItem == true
-            ? (item.extensions?.wpspBundle?.wpspChildPrice ?? '0')
-            : (item.prices?.price ?? '0');
-
-    final double effectiveUnitPrice = _parseWooPriceToMajor(effectivePriceRaw);
+            ? _parseMajorPrice(item.extensions?.wpspBundle?.wpspChildPrice)
+            : _parseMinorPrice(
+                item.prices?.price,
+                item.prices?.currencyMinorUnit ?? 2,
+              );
     final double effectiveSubtotal = effectiveUnitPrice * qty;
-    final double regularPrice =
-        _parseWooPriceToMajor(item.prices?.regularPrice?.toString());
 
     return isBundledItem
         ? Container(
@@ -261,6 +261,17 @@ class CartListWidget extends StatelessWidget {
                               ),
                             ),
                           ),
+                        if (item.extensions?.wpspBundle?.bpPending == true)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              '⚠ Pendiente de entrega',
+                              style: AppTextStyle.getOutfit500(
+                                textSize: 13,
+                                textColor: Colors.orange.shade800,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -273,9 +284,7 @@ class CartListWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              item.type == 'yith_bundle'
-                                  ? _formatPrice(regularPrice)
-                                  : _formatPrice(effectiveUnitPrice),
+                              _formatPrice(effectiveUnitPrice),
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -295,9 +304,7 @@ class CartListWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              item.type == 'yith_bundle'
-                                  ? _formatPrice(regularPrice)
-                                  : _formatPrice(effectiveSubtotal),
+                              _formatPrice(effectiveSubtotal),
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -397,6 +404,17 @@ class CartListWidget extends StatelessWidget {
                               ),
                             ),
                           ),
+                        if (item.extensions?.wpspBundle?.bpPending == true)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              '⚠ Pendiente de entrega',
+                              style: AppTextStyle.getOutfit500(
+                                textSize: 13,
+                                textColor: Colors.orange.shade800,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -409,9 +427,7 @@ class CartListWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              item.type == 'yith_bundle'
-                                  ? _formatPrice(regularPrice)
-                                  : _formatPrice(effectiveUnitPrice),
+                              _formatPrice(effectiveUnitPrice),
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -431,9 +447,7 @@ class CartListWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              item.type == 'yith_bundle'
-                                  ? _formatPrice(regularPrice)
-                                  : _formatPrice(effectiveSubtotal),
+                              _formatPrice(effectiveSubtotal),
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -619,19 +633,22 @@ class CartListWidget extends StatelessWidget {
         .join('  ·  ');
   }
 
-  double _parseWooPriceToMajor(String? value) {
+  /// Precio en euros (p. ej. "3", "2.85"), como el de get_regular_price().
+  double _parseMajorPrice(String? value) {
+    if (value == null) return 0;
+    final raw = value.trim().replaceAll(',', '.');
+    if (raw.isEmpty) return 0;
+    return double.tryParse(raw) ?? 0;
+  }
+
+  /// Precio en unidades menores (p. ej. "300"), como los de la Store API.
+  double _parseMinorPrice(String? value, int minorUnit) {
     if (value == null) return 0;
     final raw = value.trim();
     if (raw.isEmpty) return 0;
-
-    if (raw.contains('.') || raw.contains(',')) {
-      final normalized = raw.replaceAll(',', '.');
-      return double.tryParse(normalized) ?? 0;
-    }
-
     final intValue = int.tryParse(raw);
     if (intValue == null) return 0;
-    return intValue / 100.0;
+    return intValue / math.pow(10, minorUnit);
   }
 
   String _formatPrice(double amount) {

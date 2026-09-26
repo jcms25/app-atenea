@@ -166,10 +166,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       return;
     }
 
-    // Solicitudes de servicios: abrir la pantalla de Solicitudes
-    // (formularios + historial, donde el padre ve el nuevo estado)
+    // Solicitudes de servicios: abrir la pestaña "Mis solicitudes",
+    // donde el padre ve el nuevo estado (activada / cancelada / rechazada)
     if (destination == "solicitudes") {
-      Get.to(() => const SolicitudesScreen());
+      Get.to(() => const SolicitudesScreen(initialTabIndex: 1));
       return;
     }
     // Tutorías: abrir la pantalla correspondiente según el rol, saltando

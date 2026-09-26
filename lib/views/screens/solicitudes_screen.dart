@@ -10,22 +10,39 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SolicitudesScreen extends StatefulWidget {
-  const SolicitudesScreen({super.key});
+  // 0 = Solicitar, 1 = Mis solicitudes (el deep link de notificaciones abre la 1)
+  final int initialTabIndex;
+
+  const SolicitudesScreen({super.key, this.initialTabIndex = 0});
 
   @override
   State<SolicitudesScreen> createState() => _SolicitudesScreenState();
 }
 
-class _SolicitudesScreenState extends State<SolicitudesScreen> {
+class _SolicitudesScreenState extends State<SolicitudesScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   List<FormularioSolicitudModel> formularios = [];
   List<SolicitudHistorialModel> misSolicitudes = [];
   bool isLoadingFormularios = true;
   bool isLoadingHistorial = true;
 
+  // Orden de pestañas: 0 = Solicitar, 1 = Mis solicitudes
+  static const int _kTabMisSolicitudes = 1;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(
+        length: 2, vsync: this, initialIndex: widget.initialTabIndex);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -43,6 +60,7 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         cookie: cookie,
       );
 
+      if (!mounted) return;
       if (response['status'] == true) {
         final List data = response['data']?['formularios'] ?? [];
         setState(() {
@@ -55,7 +73,7 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         setState(() => isLoadingFormularios = false);
       }
     } catch (e) {
-      setState(() => isLoadingFormularios = false);
+      if (mounted) setState(() => isLoadingFormularios = false);
     }
   }
 
@@ -72,6 +90,7 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         parentWpUsrId: parentId,
       );
 
+      if (!mounted) return;
       if (response['status'] == true) {
         final List data = response['data'] ?? [];
         setState(() {
@@ -84,7 +103,7 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         setState(() => isLoadingHistorial = false);
       }
     } catch (e) {
-      setState(() => isLoadingHistorial = false);
+      if (mounted) setState(() => isLoadingHistorial = false);
     }
   }
 
@@ -107,6 +126,8 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         return Colors.green;
       case 'enviada':
         return Colors.orange;
+      case 'cancelada':
+        return Colors.grey;
       default:
         return AppColors.secondary;
     }
@@ -118,6 +139,8 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         return 'Activa';
       case 'enviada':
         return 'Enviada';
+      case 'cancelada':
+        return 'Cancelada';
       default:
         return estado;
     }
@@ -148,112 +171,136 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _loadData,
-        color: AppColors.primary,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
+      body: Column(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.arrow_back_ios,
+                            color: AppColors.white, size: 22),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Solicitudes',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 22, textColor: AppColors.white),
+                      ),
+                    ],
                   ),
                 ),
-                padding: const EdgeInsets.fromLTRB(15, 50, 15, 18),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.arrow_back_ios,
-                          color: AppColors.white, size: 22),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Mis Solicitudes',
-                      style: AppTextStyle.getOutfit600(
-                          textSize: 22, textColor: AppColors.white),
-                    ),
+                const SizedBox(height: 10),
+                TabBar(
+                  controller: _tabController,
+                  indicatorColor: AppColors.white,
+                  labelColor: AppColors.white,
+                  unselectedLabelColor: AppColors.white.withValues(alpha: 0.6),
+                  labelStyle: AppTextStyle.getOutfit600(
+                      textSize: 14, textColor: AppColors.white),
+                  unselectedLabelStyle: AppTextStyle.getOutfit400(
+                      textSize: 14, textColor: AppColors.white),
+                  tabs: const [
+                    Tab(text: 'Solicitar'),
+                    Tab(text: 'Mis solicitudes'),
                   ],
                 ),
-              ),
+              ],
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 16, 12, 4),
-                child: Text(
-                  'Nueva solicitud',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 14, textColor: AppColors.secondary),
-                ),
-              ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildSolicitarTab(),
+                _buildMisSolicitudesTab(),
+              ],
             ),
-            if (isLoadingFormularios)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Center(child: LoadingLayout()),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) =>
-                        _buildFormularioCard(formularios[index]),
-                    childCount: formularios.length,
-                  ),
-                ),
-              ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 20, 12, 4),
-                child: Text(
-                  'Mis solicitudes',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 14, textColor: AppColors.secondary),
-                ),
-              ),
-            ),
-            if (isLoadingHistorial)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Center(child: LoadingLayout()),
-                ),
-              )
-            else if (misSolicitudes.isEmpty)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Center(
-                    child: Text(
-                      'No has realizado ninguna solicitud',
-                      style: AppTextStyle.getOutfit400(
-                          textSize: 15,
-                          textColor:
-                              AppColors.secondary.withValues(alpha: 0.6)),
-                    ),
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) =>
-                        _buildHistorialCard(misSolicitudes[index]),
-                    childCount: misSolicitudes.length,
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildSolicitarTab() {
+    return RefreshIndicator(
+      onRefresh: _loadFormularios,
+      color: AppColors.primary,
+      child: isLoadingFormularios
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: LoadingLayout()),
+                ),
+              ],
+            )
+          : ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(12, 16, 12, 24),
+              itemCount: formularios.length,
+              itemBuilder: (context, index) =>
+                  _buildFormularioCard(formularios[index]),
+            ),
+    );
+  }
+
+  Widget _buildMisSolicitudesTab() {
+    Widget contenido;
+    if (isLoadingHistorial) {
+      contenido = ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: const [
+          Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(child: LoadingLayout()),
+          ),
+        ],
+      );
+    } else if (misSolicitudes.isEmpty) {
+      contenido = ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+              child: Text(
+                'No has realizado ninguna solicitud',
+                style: AppTextStyle.getOutfit400(
+                    textSize: 15,
+                    textColor: AppColors.secondary.withValues(alpha: 0.6)),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      contenido = ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(12, 16, 12, 24),
+        itemCount: misSolicitudes.length,
+        itemBuilder: (context, index) =>
+            _buildHistorialCard(misSolicitudes[index]),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _loadHistorial,
+      color: AppColors.primary,
+      child: contenido,
     );
   }
 
@@ -268,6 +315,7 @@ class _SolicitudesScreenState extends State<SolicitudesScreen> {
         if (enviado == true) {
           setState(() => isLoadingHistorial = true);
           _loadHistorial();
+          _tabController.animateTo(_kTabMisSolicitudes);
         }
       },
       child: Container(

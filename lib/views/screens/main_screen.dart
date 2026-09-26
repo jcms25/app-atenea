@@ -27,6 +27,7 @@ import 'parent_student_info_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/classroom_events_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
 import 'package:colegia_atenea/views/screens/solicitudes_screen.dart';
+import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 //chequea la versión para actualización obligatoria
@@ -170,6 +171,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     // donde el padre ve el nuevo estado (activada / cancelada / rechazada)
     if (destination == "solicitudes") {
       Get.to(() => const SolicitudesScreen(initialTabIndex: 1));
+      return;
+    }
+
+    // Servicios contratados: alta o baja tramitada por Secretaría sin solicitud de la app
+    if (destination == "servicios_contratados") {
+      Get.to(() => const ServiciosContratadosScreen());
       return;
     }
     // Tutorías: abrir la pantalla correspondiente según el rol, saltando

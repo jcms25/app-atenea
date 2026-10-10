@@ -623,8 +623,9 @@ class _MessageSendScreenChild extends State<MessageSendScreen> {
                             ),
                             CustomTextField(
                                 controller: _messageController,
-                                maxLine: 5,
-                                textInputAction: TextInputAction.done,
+                                maxLine: 10,
+                                textInputType: TextInputType.multiline,
+                                textInputAction: TextInputAction.newline,
                                 validateFunction: (String? value) {}),
                             const SizedBox(
                               height: 20,

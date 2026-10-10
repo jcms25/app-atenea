@@ -250,6 +250,7 @@ class WorldLanguage extends Translations {
           'subMenuDrawer32' : 'Requests',
           'subMenuDrawer33' : 'Contracted Services',
           'subMenuDrawer34' : 'Invoices',
+          'subMenuDrawer35' : 'Initial Assessment',
 
 
           //Assistant Module Strings
@@ -513,6 +514,7 @@ class WorldLanguage extends Translations {
           'subMenuDrawer32' : 'Solicitudes',
           'subMenuDrawer33' : 'Servicios contratados',
           'subMenuDrawer34' : 'Recibos', 
+          'subMenuDrawer35' : 'Evaluación Inicial',
 
           // //drawer option
           // 'drawerOption1' : 'Desk',

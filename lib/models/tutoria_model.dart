@@ -25,6 +25,16 @@ class TutoriaModel {
   final String padreNombre;
   final String padre2Nombre;
 
+  // Solo lo devuelve padre/activas: true si este progenitor ya aceptó en la ronda actual
+  final bool yoAcepte;
+
+  // Solo los devuelve profesor/agenda: aceptación de cada progenitor en la ronda actual
+  final bool aceptoPadre;
+  final bool aceptoPadre2;
+
+  // Solo lo devuelve profesor/agenda: true si el acta ya se envió a firmar
+  final bool tieneFirmas;
+
   TutoriaModel({
     required this.id,
     required this.tipoSolicitud,
@@ -47,6 +57,10 @@ class TutoriaModel {
     required this.alumnoNombre,
     required this.padreNombre,
     required this.padre2Nombre,
+    this.yoAcepte = false,
+    this.aceptoPadre = false,
+    this.aceptoPadre2 = false,
+    this.tieneFirmas = false,
   });
 
   factory TutoriaModel.fromJson(Map<String, dynamic> json) {
@@ -72,6 +86,10 @@ class TutoriaModel {
       alumnoNombre:         json['alumno_nombre'] ?? '',
       padreNombre:          json['padre_nombre'] ?? '',
       padre2Nombre:         json['padre2_nombre'] ?? '',
+      yoAcepte:             json['yo_acepte'].toString() == '1',
+      aceptoPadre:          json['acepto_padre'].toString() == '1',
+      aceptoPadre2:         json['acepto_padre2'].toString() == '1',
+      tieneFirmas:          json['tiene_firmas'].toString() == '1',
     );
   }
 
@@ -257,6 +275,7 @@ class TutoriaAsistentePersonaModel {
 }
 
 class TutoriaAsistentesSelectorModel {
+  final int profesorConvocaId;
   final List<TutoriaAsistentePersonaModel> familia;
   final List<TutoriaAsistentePersonaModel> alumnado;
   final List<TutoriaAsistentePersonaModel> profesorado;
@@ -264,6 +283,7 @@ class TutoriaAsistentesSelectorModel {
   final List<TutoriaAsistentePersonaModel> equipoDirectivo;
 
   TutoriaAsistentesSelectorModel({
+    required this.profesorConvocaId,
     required this.familia,
     required this.alumnado,
     required this.profesorado,
@@ -273,6 +293,7 @@ class TutoriaAsistentesSelectorModel {
 
   factory TutoriaAsistentesSelectorModel.fromJson(Map<String, dynamic> json) {
     return TutoriaAsistentesSelectorModel(
+      profesorConvocaId: int.tryParse(json['profesor_convoca_id'].toString()) ?? 0,
       familia:         TutoriaAsistentePersonaModel.listFromJson(json['familia'] ?? []),
       alumnado:        TutoriaAsistentePersonaModel.listFromJson(json['alumnado'] ?? []),
       profesorado:     TutoriaAsistentePersonaModel.listFromJson(json['profesorado'] ?? []),

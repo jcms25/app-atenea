@@ -42,6 +42,8 @@
 	<!-- CLAVE AÑADIDA PARA LA CÁMARA (necesaria para TestFlight) -->
 	<key>NSCameraUsageDescription</key>
 	<string>La app permite seleccionar fotos de tu galería o tomar fotos para el avatar de perfil</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>La app usa Face ID para proteger el acceso a tu cuenta</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

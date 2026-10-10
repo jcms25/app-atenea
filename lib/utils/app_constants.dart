@@ -286,6 +286,9 @@ class AppConstants {
       "name": "subMenuDrawer25".tr,
     },
     {
+      "name": "subMenuDrawer35".tr,
+    },
+    {
       "name": "subMenuDrawer7".tr,
     },
     {

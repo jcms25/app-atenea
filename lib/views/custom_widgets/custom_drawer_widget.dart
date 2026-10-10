@@ -12,6 +12,7 @@ import 'package:colegia_atenea/views/screens/beca_libros_concedidos_screen.dart'
 import 'package:colegia_atenea/views/screens/beca_libros_curso_screen.dart';
 import 'package:colegia_atenea/views/screens/beca_resolucion_screen.dart';
 import 'package:colegia_atenea/views/screens/child_communication_list_screen.dart';
+import 'package:colegia_atenea/views/screens/class_menu_screens/evaluation_ini_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/evaluation_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/exam_list_screen.dart';
 import 'package:colegia_atenea/views/screens/class_menu_screens/send_message_to_assistant_screen.dart';
@@ -57,6 +58,7 @@ import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
 import 'package:colegia_atenea/views/screens/recibos_screen.dart';
 import 'package:colegia_atenea/views/screens/solicitudes_screen.dart';
+import 'package:colegia_atenea/views/screens/configuracion_screen.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   final StudentParentTeacherController studentParentTeacherController;
@@ -177,8 +179,21 @@ class CustomDrawerWidget extends StatelessWidget {
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: drawerListOption.length,
+              itemCount: drawerListOption.length + 1,
               itemBuilder: (context, index) {
+                if (index == drawerListOption.length) {
+                  return ListTile(
+                    leading: const Icon(Icons.settings_outlined,
+                        color: AppColors.secondary, size: 25),
+                    title: Text('Configuración',
+                        style: AppTextStyle.getOutfit500(
+                            textSize: 18, textColor: AppColors.secondary)),
+                    onTap: () {
+                      AppConstants.mainScreenKey.currentState?.closeDrawer();
+                      Get.to(() => const ConfiguracionScreen());
+                    },
+                  );
+                }
                 return _buildListOfDrawerOption(drawerListOption[index]);
               },
             ),
@@ -617,6 +632,10 @@ class CustomDrawerWidget extends StatelessWidget {
               !studentParentTeacherController.hasTransport) {
             // "Transporte" oculto si el alumno no tiene el servicio
             continue;
+          } else if (e['name'] == "subMenuDrawer35".tr &&
+              !studentParentTeacherController.isEvaluationIniEnabled) {
+            // "Evaluación Inicial" oculta si el switch del panel está desactivado
+            continue;
           } else {
             DrawerMenuOption drawerMenuOption = DrawerMenuOption.fromJson(e);
             drawerMenuOption.classId = classId;
@@ -871,6 +890,11 @@ class CustomDrawerWidget extends StatelessWidget {
               studentId: drawerMenuOption.wpUserId ?? "",
               studentName: drawerMenuOption.studentName ?? "",
             ));
+        break;
+      case "Evaluación Inicial":
+        Get.to(() => EvaluationIniScreen(
+            studentName: drawerMenuOption.studentName ?? "",
+            wpId: drawerMenuOption.wpUserId ?? ""));
         break;
       case "Evaluaciones":
         Get.to(() => EvaluationScreen(

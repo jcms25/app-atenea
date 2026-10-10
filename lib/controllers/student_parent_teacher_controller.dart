@@ -6,6 +6,7 @@ import 'package:colegia_atenea/models/beca_resolucion_model.dart';
 import 'package:colegia_atenea/models/dashboard_model.dart';
 import 'package:colegia_atenea/models/dinning_student_list_response.dart';
 import 'package:colegia_atenea/models/dinning_menu_response.dart';
+import 'package:colegia_atenea/models/evaluation_ini_model.dart';
 import 'package:colegia_atenea/models/evaluation_list_model.dart';
 import 'package:colegia_atenea/models/exam_detail_model.dart';
 import 'package:colegia_atenea/models/exam_list_model.dart';
@@ -189,6 +190,76 @@ class StudentParentTeacherController extends ChangeNotifier {
     return events ?? [];
   }
 
+  // ============================================================
+  // EVALUACION INICIAL - Switch (padres y alumnos)
+  // ============================================================
+  bool isEvaluationIniEnabled = false;
+
+  void setIsEvaluationIniEnabled({required bool enabled}) {
+    isEvaluationIniEnabled = enabled;
+    notifyListeners();
+  }
+
+  // Llama al endpoint /evaluation-ini/enabled y actualiza el flag
+  Future<void> fetchEvaluationIniEnabled() async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: Api.evaluationIniEnabledEndPoint,
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (response['status'] == true) {
+        bool enabled = (response['enabled'] ?? 0) == 1;
+        setIsEvaluationIniEnabled(enabled: enabled);
+      }
+    } catch (_) {
+      // Si falla, el flag queda en false (seccion oculta por seguridad)
+    }
+  }
+
+  // Resultados de la Evaluacion Inicial del alumno seleccionado
+  List<EvaluationIniItem> evaluationIniItems = [];
+
+  void setEvaluationIniItems({required List<EvaluationIniItem> items}) {
+    evaluationIniItems = items;
+    notifyListeners();
+  }
+
+  Future<void> getEvaluationIni({required String studentWpUserId}) async {
+    try {
+      setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final res = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "${Api.evaluationIniEndPoint}?student_id=$studentWpUserId",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      if (res['status'] == true) {
+        List<EvaluationIniItem> items = (res['data'] as List? ?? [])
+            .map((e) => EvaluationIniItem.fromJson(e as Map<String, dynamic>))
+            .toList();
+        setEvaluationIniItems(items: items);
+      } else {
+        setEvaluationIniItems(items: []);
+        AppConstants.showCustomToast(
+            status: false, message: res['Message'] ?? res['message'] ?? "");
+      }
+      setIsLoading(isLoading: false);
+    } catch (exception) {
+      setEvaluationIniItems(items: []);
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
+  }
   // ============================================================
   // MÓDULO ACTITUDINAL — Switch global
   // ============================================================
@@ -804,6 +875,11 @@ class StudentParentTeacherController extends ChangeNotifier {
 
           // Módulo Actitudinal: cargar estado del switch global en paralelo
           fetchClassroomEventsEnabled();
+          // Evaluación Inicial: cargar estado del switch (solo padres y alumnos)
+          if (currentLoggedInUserRole == RoleType.parent ||
+              currentLoggedInUserRole == RoleType.student) {
+            fetchEvaluationIniEnabled();
+          }
           // Módulo Transporte: cargar si el alumno tiene servicio
           if (currentLoggedInUserRole == RoleType.parent ||
               currentLoggedInUserRole == RoleType.student) {

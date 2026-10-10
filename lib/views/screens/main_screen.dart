@@ -203,6 +203,13 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             tabIndex = 3; // Registrar Actas
             actaSubTabIndex = 1; // Sub-pestaña Firmar
             break;
+          case 'firma_recibida':
+            tabIndex = 3; // Registrar Actas
+            actaSubTabIndex = 2; // Sub-pestaña En Proceso de Firma
+            break;
+          case 'acta_finalizada':
+            tabIndex = 4; // Histórico
+            break;
         }
         Get.to(() => TutoriasProfesorScreen(
               initialTabIndex: tabIndex,
@@ -220,6 +227,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             break;
           case 'firma_pendiente':
             tabIndex = 2; // Pendientes de Firma
+            break;
+          case 'acta_finalizada':
+            tabIndex = 3; // Histórico
             break;
         }
         Get.to(() => TutoriasPadreScreen(initialTabIndex: tabIndex));

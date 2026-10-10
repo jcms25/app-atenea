@@ -1,7 +1,9 @@
 import 'package:colegia_atenea/models/tutoria_model.dart';
 import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/tutoria_aceptar_mensaje_sheet.dart';
+import 'package:colegia_atenea/services/tutoria_pdf_service.dart';
 import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/tutoria_proponer_mensaje_sheet.dart';
 import 'package:colegia_atenea/views/custom_widgets/tutoria_historial_widget.dart';
+import 'package:colegia_atenea/views/custom_widgets/tutoria_desplegable_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/tutoria_firmas_pendientes_widget.dart';
 import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
@@ -9,7 +11,6 @@ import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TutoriasPadreScreen extends StatefulWidget {
   final int initialTabIndex;
@@ -39,7 +40,7 @@ class _TutoriasPadreScreenState extends State<TutoriasPadreScreen>
   final TextEditingController _motivoController = TextEditingController();
   bool _isEnviandoSolicitud = false;
 
-  // Orden de pestañas: 0=Mis Tutorías, 1=Solicitar, 2=Pendientes de Firma, 3=Histórico
+    // Orden de pestañas: 0=Solicitar, 1=Mis Tutorías, 2=Pendientes de Firma, 3=Histórico
   static const int _kTabHistorico = 3;
 
   String get _parentWpUsrId => AppSharedPreferences.getUserData()?.parentWpUsrId ?? '';
@@ -57,6 +58,8 @@ class _TutoriasPadreScreenState extends State<TutoriasPadreScreen>
     });
     _loadActivas();
     _cargarFirmasPendientesCount();
+    // Si se abre directamente en el Histórico (deep link), el listener no se dispara
+    if (widget.initialTabIndex == _kTabHistorico) _loadHistorico();
   }
 
   Future<void> _cargarFirmasPendientesCount() async {
@@ -747,37 +750,48 @@ class _TutoriasPadreScreenState extends State<TutoriasPadreScreen>
                 ]),
               ),
             ],
-            if (esHistorico && item.estado == 'celebrada' && item.asistentes.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text('Asistentes:',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-              const SizedBox(height: 2),
-              Text(
-                TutoriaAsistentesSeleccionModel.fromJsonString(item.asistentes).toDisplayText(),
-                style: AppTextStyle.getOutfit400(
-                    textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6)),
+            if (esHistorico &&
+                item.estado == 'celebrada' &&
+                (item.asistentes.isNotEmpty ||
+                    item.asuntosTratados.isNotEmpty ||
+                    item.observaciones.isNotEmpty)) ...[
+              const Divider(height: 20),
+              TutoriaDesplegableWidget(
+                titulo: 'Ver contenido del acta',
+                children: [
+                  if (item.asistentes.isNotEmpty) ...[
+                    Text('Asistentes:',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
+                    const SizedBox(height: 2),
+                    Text(
+                      TutoriaAsistentesSeleccionModel.fromJsonString(item.asistentes).toDisplayText(),
+                      style: AppTextStyle.getOutfit400(
+                          textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6)),
+                    ),
+                    const SizedBox(height: 6),
+                  ],
+                  if (item.asuntosTratados.isNotEmpty) ...[
+                    Text('Asuntos:',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
+                    const SizedBox(height: 2),
+                    Text(item.asuntosTratados,
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
+                    const SizedBox(height: 6),
+                  ],
+                  if (item.observaciones.isNotEmpty) ...[
+                    Text('Observaciones:',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
+                    const SizedBox(height: 2),
+                    Text(item.observaciones,
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
+                  ],
+                ],
               ),
-            ],
-            if (esHistorico && item.estado == 'celebrada' && item.asuntosTratados.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text('Asuntos:',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-              const SizedBox(height: 2),
-              Text(item.asuntosTratados,
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
-            ],
-            if (esHistorico && item.estado == 'celebrada' && item.observaciones.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text('Observaciones:',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-              const SizedBox(height: 2),
-              Text(item.observaciones,
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
             ],
             if (!esHistorico) _buildAcciones(item),
             if (esHistorico && item.estado == 'celebrada') ...[
@@ -809,24 +823,7 @@ class _TutoriasPadreScreenState extends State<TutoriasPadreScreen>
   }
 
   Future<void> _descargarPdf(TutoriaModel item) async {
-    final token = AppSharedPreferences.getBasicAthToken() ?? '';
-    final cookie = AppSharedPreferences.getUserData()?.cookies ?? '';
-
-    final response = await ApiClass().getTutoriaActaPdf(
-      token: token,
-      cookie: cookie,
-      tutoriaId: item.id.toString(),
-    );
-
-    if (!mounted) return;
-
-    if (response['status'] == true && response['PDFLink'] != null) {
-      await launchUrl(Uri.parse(response['PDFLink']));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['Message'] ?? 'No se pudo generar el PDF')),
-      );
-    }
+    await descargarYAbrirActaPdf(context, item.id);
   }
 
   Widget _buildAcciones(TutoriaModel item) {
@@ -842,6 +839,12 @@ class _TutoriasPadreScreenState extends State<TutoriasPadreScreen>
       botones.add(_actionButton('Cancelar', Colors.red, () => _cancelar(item)));
     } else if (item.estado == 'rechazada' && item.tipoSolicitud == 'profesor') {
       botones.add(_actionButton('Cancelar', Colors.red, () => _cancelar(item)));
+    } else if (item.estado == 'aceptada' &&
+        item.tipoSolicitud == 'profesor' &&
+        item.idPadre2 != null &&
+        !item.yoAcepte) {
+      // R7: segundo progenitor que aún no ha confirmado
+      botones.add(_actionButton('Confirmar también', Colors.green, () => _aceptar(item)));
     }
 
     if (botones.isEmpty) return const SizedBox.shrink();

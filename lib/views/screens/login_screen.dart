@@ -227,6 +227,32 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             },
           ),
+          Consumer3<SplashLoginController, StudentParentTeacherController,
+              AssistantController>(
+            builder: (context, splashLoginController, appController,
+                assistantController, child) {
+              if (!AppSharedPreferences.getBiometricEnabled()) {
+                return const SizedBox.shrink();
+              }
+              return Center(
+                child: TextButton.icon(
+                  onPressed: () async {
+                    await splashLoginController.loginWithBiometrics(
+                      studentParentTeacherController: appController,
+                      assistantController: assistantController,
+                    );
+                  },
+                  icon:
+                      const Icon(Icons.fingerprint, color: AppColors.primary),
+                  label: Text(
+                    'Entrar con huella/cara',
+                    style: AppTextStyle.getOutfit500(
+                        textSize: 16, textColor: AppColors.primary),
+                  ),
+                ),
+              );
+            },
+          ),
           const SizedBox(height: 20),
         ],
       ),

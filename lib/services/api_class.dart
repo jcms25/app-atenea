@@ -1746,7 +1746,12 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
         sessionExpired();
         return {'status': false, 'Message': 'Session Expired.'};
       } else {
-        return {'status': false, 'Message': 'Something went wrong'};
+        try {
+          final data = json.decode(response.body);
+          return {'status': false, 'Message': data['Message'] ?? 'Something went wrong'};
+        } catch (_) {
+          return {'status': false, 'Message': 'Something went wrong'};
+        }
       }
     } catch (exception) {
       return {'status': false, 'Message': 'Exception: $exception'};
@@ -2129,47 +2134,7 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
       return {'status': false, 'Message': 'Exception: $exception'};
     }
   }
-  /// POST /scl-api/v1/tutorias/profesor/acta
-  Future<dynamic> registrarActaTutoria({
-    required String token,
-    required String cookie,
-    required String tutoriaId,
-    required String teacherWpUsrId,
-    String? asuntosTratados,
-    String? asistentes,
-    String? observaciones,
-    String? anotacionesProfesor,
-  }) async {
-    try {
-      final Map<String, String> body = {
-        'tutoria_id': tutoriaId,
-        'teacher_wp_usr_id': teacherWpUsrId,
-      };
-      if (asuntosTratados != null) body['asuntos_tratados'] = asuntosTratados;
-      if (asistentes != null) body['asistentes'] = asistentes;
-      if (observaciones != null) body['observaciones'] = observaciones;
-      if (anotacionesProfesor != null) body['anotaciones_profesor'] = anotacionesProfesor;
-      final Response response = await post(
-        Uri.parse('${liveBaseUrl}tutorias/profesor/acta'),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': 'Basic $token',
-          'Cookie': cookie,
-        },
-        body: body,
-      );
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else if (response.statusCode == 401) {
-        sessionExpired();
-        return {'status': false, 'Message': 'Session Expired.'};
-      } else {
-        return {'status': false, 'Message': 'Something went wrong'};
-      }
-    } catch (exception) {
-      return {'status': false, 'Message': 'Exception: $exception'};
-    }
-  }
+ 
   /// GET /scl-api/v1/tutorias/profesor/historico
   Future<dynamic> getTutoriasProfesorHistorico({
     required String token,
@@ -2197,38 +2162,7 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
       return {'status': false, 'Message': 'Exception: $exception'};
     }
   }
-  /// POST /scl-api/v1/tutorias/profesor/eliminar
-  Future<dynamic> eliminarTutoria({
-    required String token,
-    required String cookie,
-    required String tutoriaId,
-    required String teacherWpUsrId,
-  }) async {
-    try {
-      final Response response = await post(
-        Uri.parse('${liveBaseUrl}tutorias/profesor/eliminar'),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization': 'Basic $token',
-          'Cookie': cookie,
-        },
-        body: <String, String>{
-          'tutoria_id': tutoriaId,
-          'teacher_wp_usr_id': teacherWpUsrId,
-        },
-      );
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else if (response.statusCode == 401) {
-        sessionExpired();
-        return {'status': false, 'Message': 'Session Expired.'};
-      } else {
-        return {'status': false, 'Message': 'Something went wrong'};
-      }
-    } catch (exception) {
-      return {'status': false, 'Message': 'Exception: $exception'};
-    }
-  }
+  
   /// GET /scl-api/v1/tutorias/asistentes-selector
   Future<dynamic> getTutoriasAsistentesSelector({
     required String token,
@@ -2445,7 +2379,9 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
   /// GET /scl-api/v1/tutorias/acta-pdf
-  Future<dynamic> getTutoriaActaPdf({
+  /// Devuelve {'status': true, 'bytes': Uint8List} si el servidor entrega el PDF,
+  /// o {'status': false, 'Message': ...} en caso de error.
+  Future<Map<String, dynamic>> getTutoriaActaPdf({
     required String token,
     required String cookie,
     required String tutoriaId,
@@ -2454,18 +2390,25 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
       final Response response = await get(
         Uri.parse('${liveBaseUrl}tutorias/acta-pdf?tutoria_id=$tutoriaId'),
         headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': 'Basic $token',
           'Cookie': cookie,
         },
       );
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
+      if (response.statusCode == 200 &&
+          (response.headers['content-type'] ?? '').contains('application/pdf')) {
+        return {'status': true, 'bytes': response.bodyBytes};
       } else if (response.statusCode == 401) {
         sessionExpired();
         return {'status': false, 'Message': 'Session Expired.'};
+      } else if (response.statusCode == 403) {
+        return {'status': false, 'Message': 'No tienes permiso para descargar esta acta'};
       } else {
-        return {'status': false, 'Message': 'Something went wrong'};
+        try {
+          final data = json.decode(response.body);
+          return {'status': false, 'Message': data['Message'] ?? 'Something went wrong'};
+        } catch (_) {
+          return {'status': false, 'Message': 'Something went wrong'};
+        }
       }
     } catch (exception) {
       return {'status': false, 'Message': 'Exception: $exception'};

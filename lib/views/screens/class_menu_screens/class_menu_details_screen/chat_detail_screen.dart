@@ -478,7 +478,10 @@ class _ReplyBarState extends State<_ReplyBar> {
               Expanded(
                 child: TextField(
                   controller: widget.controller,
-                  maxLines: null,
+                  minLines: 1,
+                  maxLines: 10,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
                     hintText: "Escribe un mensaje...",
                     hintStyle: TextStyle(

@@ -53,7 +53,7 @@ import com.redsys.tpvvinapplibrary.ResultResponse
 import com.redsys.tpvvinapplibrary.TPVV
 import com.redsys.tpvvinapplibrary.TPVVConfiguration
 import com.redsys.tpvvinapplibrary.TPVVConstants
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.text.Collator
@@ -61,7 +61,7 @@ import java.util.HashMap
 import java.util.Locale
 
 
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     private val SORTING_CHANNEL = "native_sorting"
     private val CHANNEL = "com.example.payment"
 
@@ -159,7 +159,7 @@ fun startPayment(
 
 
         TPVV.doWebViewPayment(
-            context,
+            this@MainActivity,
             orderId,
             amount,
             "0",

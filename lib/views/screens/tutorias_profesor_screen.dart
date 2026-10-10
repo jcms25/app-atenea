@@ -5,14 +5,15 @@ import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/tutori
 import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/tutoria_asistentes_sheet.dart';
 import 'package:colegia_atenea/views/custom_widgets/bottom_sheets_widgets/tutoria_proponer_fecha_sheet.dart';
 import 'package:colegia_atenea/services/api_class.dart';
+import 'package:colegia_atenea/services/tutoria_pdf_service.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
 import 'package:colegia_atenea/views/custom_widgets/tutoria_historial_widget.dart';
+import 'package:colegia_atenea/views/custom_widgets/tutoria_desplegable_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/tutoria_firmas_pendientes_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TutoriasProfesorScreen extends StatefulWidget {
   final int initialTabIndex;
@@ -348,6 +349,39 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
     }
   }
 
+    Future<void> _cancelarDeAgenda(TutoriaModel item) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancelar tutoría'),
+        content: const Text('¿Seguro que quieres cancelar esta tutoría ya aceptada? Se avisará a la familia.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('No')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Sí, cancelar')),
+        ],
+      ),
+    );
+    if (confirmar != true) return;
+
+    final token = AppSharedPreferences.getBasicAthToken() ?? '';
+    final cookie = AppSharedPreferences.getUserData()?.cookies ?? '';
+
+    final response = await ApiClass().cancelarTutoria(
+      token: token,
+      cookie: cookie,
+      tutoriaId: item.id.toString(),
+      actorWpUsrId: _teacherId,
+      actorRol: 'profesor',
+    );
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['Message'] ?? 'Operación realizada')),
+      );
+      if (response['status'] == true) await _loadAgenda();
+    }
+  }
+
   Future<void> _aplazarPendiente(TutoriaModel item) async {
     final resultado = await showTutoriaProponerFechaSheet(
       context,
@@ -433,6 +467,18 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
     if (p1.isNotEmpty && p2.isNotEmpty) return '$p1 / $p2';
     if (p1.isNotEmpty) return p1;
     if (p2.isNotEmpty) return p2;
+    return 'Familia';
+  }
+
+  // Solo para la Agenda: añade ✔ junto a cada progenitor que ya aceptó (R7)
+  String _familiaNombreConAceptacion(TutoriaModel item) {
+    final p1 = item.padreNombre;
+    final p2 = item.padre2Nombre;
+    final n1 = p1.isNotEmpty ? (item.aceptoPadre ? '$p1 ✔' : p1) : '';
+    final n2 = p2.isNotEmpty ? (item.aceptoPadre2 ? '$p2 ✔' : p2) : '';
+    if (n1.isNotEmpty && n2.isNotEmpty) return '$n1 / $n2';
+    if (n1.isNotEmpty) return n1;
+    if (n2.isNotEmpty) return n2;
     return 'Familia';
   }
 
@@ -919,7 +965,7 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
             RichText(
               text: TextSpan(children: [
                 TextSpan(text: 'Familia: ', style: AppTextStyle.getOutfit600(textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-                TextSpan(text: _familiaNombre(item), style: AppTextStyle.getOutfit400(textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
+                TextSpan(text: _familiaNombreConAceptacion(item), style: AppTextStyle.getOutfit400(textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
               ]),
             ),
             const SizedBox(height: 4),
@@ -941,6 +987,21 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
                 ]),
               ),
             ],
+            const SizedBox(height: 10),
+          Align(
+              alignment: Alignment.centerRight,
+              child: item.tieneFirmas
+                  ? _actionButton(
+                      'Cancelar',
+                      Colors.grey,
+                      () => ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('El acta ya se ha enviado a firmar y la tutoría no se puede cancelar'),
+                        ),
+                      ),
+                    )
+                  : _actionButton('Cancelar', Colors.red, () => _cancelarDeAgenda(item)),
+            ),
             const Divider(height: 20),
             TutoriaHistorialWidget(tutoriaId: item.id, currentUserRol: 'profesor'),
           ],
@@ -973,60 +1034,7 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
   }
 
   Future<void> _descargarPdf(TutoriaModel item) async {
-    final token = AppSharedPreferences.getBasicAthToken() ?? '';
-    final cookie = AppSharedPreferences.getUserData()?.cookies ?? '';
-
-    final response = await ApiClass().getTutoriaActaPdf(
-      token: token,
-      cookie: cookie,
-      tutoriaId: item.id.toString(),
-    );
-
-    if (!mounted) return;
-
-    if (response['status'] == true && response['PDFLink'] != null) {
-      await launchUrl(Uri.parse(response['PDFLink']));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['Message'] ?? 'No se pudo generar el PDF')),
-      );
-    }
-  }
-
-  Future<void> _eliminarTutoria(TutoriaModel item) async {
-    final confirmar = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Eliminar tutoría'),
-        content: const Text(
-            'Esta acción es irreversible y borrará permanentemente el registro y su historial. ¿Deseas continuar?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-    if (confirmar != true) return;
-
-    final token = AppSharedPreferences.getBasicAthToken() ?? '';
-    final cookie = AppSharedPreferences.getUserData()?.cookies ?? '';
-
-    final response = await ApiClass().eliminarTutoria(
-      token: token,
-      cookie: cookie,
-      tutoriaId: item.id.toString(),
-      teacherWpUsrId: _teacherId,
-    );
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['Message'] ?? 'Operación realizada')),
-      );
-      if (response['status'] == true) _loadHistorico();
-    }
+    await descargarYAbrirActaPdf(context, item.id);
   }
 
   Widget _buildHistoricoCard(TutoriaModel item) {
@@ -1097,37 +1105,47 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
                 ]),
               ),
             ],
-            if (item.estado == 'celebrada' && item.asistentes.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text('Asistentes:',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-              const SizedBox(height: 2),
-              Text(
-                TutoriaAsistentesSeleccionModel.fromJsonString(item.asistentes).toDisplayText(),
-                style: AppTextStyle.getOutfit400(
-                    textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6)),
+            if (item.estado == 'celebrada' &&
+                (item.asistentes.isNotEmpty ||
+                    item.asuntosTratados.isNotEmpty ||
+                    item.observaciones.isNotEmpty)) ...[
+              const Divider(height: 20),
+              TutoriaDesplegableWidget(
+                titulo: 'Ver contenido del acta',
+                children: [
+                  if (item.asistentes.isNotEmpty) ...[
+                    Text('Asistentes:',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
+                    const SizedBox(height: 2),
+                    Text(
+                      TutoriaAsistentesSeleccionModel.fromJsonString(item.asistentes).toDisplayText(),
+                      style: AppTextStyle.getOutfit400(
+                          textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6)),
+                    ),
+                    const SizedBox(height: 6),
+                  ],
+                  if (item.asuntosTratados.isNotEmpty) ...[
+                    Text('Asuntos:',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
+                    const SizedBox(height: 2),
+                    Text(item.asuntosTratados,
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
+                    const SizedBox(height: 6),
+                  ],
+                  if (item.observaciones.isNotEmpty) ...[
+                    Text('Observaciones:',
+                        style: AppTextStyle.getOutfit600(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
+                    const SizedBox(height: 2),
+                    Text(item.observaciones,
+                        style: AppTextStyle.getOutfit400(
+                            textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
+                  ],
+                ],
               ),
-            ],
-            if (item.estado == 'celebrada' && item.asuntosTratados.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text('Asuntos:',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-              const SizedBox(height: 2),
-              Text(item.asuntosTratados,
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
-            ],
-            if (item.estado == 'celebrada' && item.observaciones.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text('Observaciones:',
-                  style: AppTextStyle.getOutfit600(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.8))),
-              const SizedBox(height: 2),
-              Text(item.observaciones,
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 12, textColor: AppColors.secondary.withValues(alpha: 0.6))),
             ],
             if (item.estado == 'celebrada') ...[
               const SizedBox(height: 10),
@@ -1143,21 +1161,6 @@ class _TutoriasProfesorScreenState extends State<TutoriasProfesorScreen>
                     side: const BorderSide(color: AppColors.primary),
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   ),
-                ),
-              ),
-            ] else ...[
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: OutlinedButton(
-                  onPressed: () => _eliminarTutoria(item),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  ),
-                  child: Text('Eliminar',
-                      style: AppTextStyle.getOutfit600(textSize: 12, textColor: Colors.red)),
                 ),
               ),
             ],

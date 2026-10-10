@@ -88,6 +88,13 @@ class Api {
   static const String _evaluationPDFDownloadEndpoint = "evaluationpdf";
   static String get evaluationPDFDownloadEndpoint => _evaluationPDFDownloadEndpoint;
 
+  //evaluación inicial (padres y alumnos)
+  static const String _evaluationIniEnabledEndPoint = "evaluation-ini/enabled";
+  static String get evaluationIniEnabledEndPoint => _evaluationIniEnabledEndPoint;
+
+  static const String _evaluationIniEndPoint = "evaluation-ini";
+  static String get evaluationIniEndPoint => _evaluationIniEndPoint;
+
 
   static const String _updateStudentProfile = "update_student_profile";
   static String get updateStudentProfile => _updateStudentProfile;
@@ -295,14 +302,8 @@ class Api {
     static const String _tutoriasProfesorNuevaPropuestaEndPoint = "tutorias/profesor/nueva-propuesta";
     static String get tutoriasProfesorNuevaPropuestaEndPoint => _tutoriasProfesorNuevaPropuestaEndPoint;
 
-    static const String _tutoriasProfesorActaEndPoint = "tutorias/profesor/acta";
-    static String get tutoriasProfesorActaEndPoint => _tutoriasProfesorActaEndPoint;
-
     static const String _tutoriasProfesorHistoricoEndPoint = "tutorias/profesor/historico";
-    static String get tutoriasProfesorHistoricoEndPoint => _tutoriasProfesorHistoricoEndPoint;
-
-    static const String _tutoriasProfesorEliminarEndPoint = "tutorias/profesor/eliminar";
-    static String get tutoriasProfesorEliminarEndPoint => _tutoriasProfesorEliminarEndPoint;
+    static String get tutoriasProfesorHistoricoEndPoint => _tutoriasProfesorHistoricoEndPoint;    
 
     static const String _tutoriasAsistentesSelectorEndPoint = "tutorias/asistentes-selector";
     static String get tutoriasAsistentesSelectorEndPoint => _tutoriasAsistentesSelectorEndPoint;

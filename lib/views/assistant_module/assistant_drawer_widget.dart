@@ -16,6 +16,7 @@ import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_images.dart';
 import '../custom_widgets/custom_button_widget.dart';
+import '../screens/configuracion_screen.dart';
 import '../screens/edit_profile_screen.dart';
 import 'assistant_classes_screen.dart';
 
@@ -110,6 +111,17 @@ class AssistantDrawerWidget extends StatelessWidget {
               },
             );
           }),
+          ListTile(
+            leading: const Icon(Icons.settings_outlined,
+                color: AppColors.primary, size: 25),
+            title: Text('Configuración',
+                style: AppTextStyle.getOutfit400(
+                    textSize: 18, textColor: AppColors.primary)),
+            onTap: () {
+              Navigator.pop(context);
+              Get.to(() => const ConfiguracionScreen());
+            },
+          ),
           const Spacer(),
           Consumer<AssistantController>(
             builder: (context, assistantController, child) {

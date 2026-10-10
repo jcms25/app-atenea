@@ -12,6 +12,7 @@ class AppSharedPreferences {
   static const String _keyData = "keyData";
   static const String _availableRoles = "availableRoles";
   static const String _activeUserCredential = "activeUserCredential";
+  static const String _biometricEnabled = "biometricEnabled";
 
   static SharedPreferences? sharedPreferences;
 
@@ -116,6 +117,16 @@ class AppSharedPreferences {
   static Map<String, dynamic>? getActiveUserCredential() {
     String? data = sharedPreferences?.getString(_activeUserCredential);
     return data != null ? jsonDecode(data) : null;
+  }
+
+  // save biometric lock preference
+  static Future<void> saveBiometricEnabled({required bool enabled}) async {
+    await sharedPreferences?.setBool(_biometricEnabled, enabled);
+  }
+
+  // get biometric lock preference (false by default)
+  static bool getBiometricEnabled() {
+    return sharedPreferences?.getBool(_biometricEnabled) ?? false;
   }
 
   //logged out user

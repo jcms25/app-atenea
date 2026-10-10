@@ -3,6 +3,8 @@ import 'dart:io' as io;
 import 'package:colegia_atenea/models/assistant/assistant_login_model.dart';
 import 'package:colegia_atenea/models/login_model.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
+import 'package:colegia_atenea/services/biometric_service.dart';
+import 'package:colegia_atenea/services/secure_credentials_service.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -212,6 +214,38 @@ class SplashLoginController extends ChangeNotifier {
       AppConstants.showCustomToast(status: false, message: "$exception");
       setIsLoading(isLoading: false);
     }
+  }
+
+  // Inicia sesión con las credenciales guardadas en el almacén cifrado,
+  // tras autenticar al usuario con huella, cara o PIN del móvil.
+  Future<void> loginWithBiometrics({
+    required StudentParentTeacherController studentParentTeacherController,
+    required AssistantController assistantController,
+  }) async {
+    final Map<String, dynamic>? credentials =
+        await SecureCredentialsService.getCredentials();
+    if (credentials == null) {
+      await AppSharedPreferences.saveBiometricEnabled(enabled: false);
+      notifyListeners();
+      AppConstants.showCustomToast(
+          status: false,
+          message:
+              'No hay credenciales guardadas. Inicia sesión con tu contraseña y vuelve a activar el acceso con huella/cara en Configuración.');
+      return;
+    }
+
+    final bool authenticated = await BiometricService.authenticate(
+        reason: 'Confirma tu identidad para iniciar sesión');
+    if (!authenticated) return;
+
+    await userLogin(
+      userName: credentials['userName'] ?? '',
+      userPassword: credentials['userPassword'] ?? '',
+      userRole: credentials['userRole'] ?? '',
+      isRememberMe: false,
+      studentParentTeacherController: studentParentTeacherController,
+      assistantController: assistantController,
+    );
   }
 
   //checked if user already logged in or not

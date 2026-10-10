@@ -69,11 +69,25 @@ class _TutoriaAsistentesContentState extends State<_TutoriaAsistentesContent> {
         });
         // Pre-marcar selección inicial si venimos de editar
         final inicial = widget.seleccionInicial;
-        if (inicial != null) {
+        if (inicial != null && !inicial.isEmpty) {
           _familiaSeleccionada.addAll(inicial.familia.map((p) => p.wpUsrId));
           _alumnadoSeleccionado.addAll(inicial.alumnado.map((p) => p.wpUsrId));
-          _profesoradoSeleccionado.addAll(inicial.profesorado.map((p) => p.wpUsrId));
+          final idsProfesorado = _selector!.profesorado.map((p) => p.wpUsrId).toSet();
+          for (final p in inicial.profesorado) {
+            if (idsProfesorado.contains(p.wpUsrId)) {
+              _profesoradoSeleccionado.add(p.wpUsrId);
+            } else {
+              _otrosProfesoresSeleccionados.add(p.wpUsrId);
+              _mostrarOtrosProfesores = true;
+            }
+          }
           _equipoDirectivoSeleccionado.addAll(inicial.equipoDirectivo.map((p) => p.wpUsrId));
+        } else {
+          // R2: nada marcado salvo el profesor que convoca (puede desmarcarse)
+          final convocaId = _selector!.profesorConvocaId;
+          if (_selector!.profesorado.any((p) => p.wpUsrId == convocaId)) {
+            _profesoradoSeleccionado.add(convocaId);
+          }
         }
       } else {
         setState(() => _isLoading = false);
@@ -82,6 +96,8 @@ class _TutoriaAsistentesContentState extends State<_TutoriaAsistentesContent> {
       setState(() => _isLoading = false);
     }
   }
+
+  String? _errorAsistentes;
 
   void _confirmar() {
     if (_selector == null) return;
@@ -110,6 +126,12 @@ class _TutoriaAsistentesContentState extends State<_TutoriaAsistentesContent> {
       profesorado: profesoradoFinal,
       equipoDirectivo: _selector!.equipoDirectivo.where((p) => _equipoDirectivoSeleccionado.contains(p.wpUsrId)).toList(),
     );
+
+    // Una tutoría es siempre una reunión con la familia: al menos un familiar
+    if (resultado.familia.isEmpty) {
+      setState(() => _errorAsistentes = 'Una tutoría es una reunión con la familia: marca al menos un familiar entre los asistentes');
+      return;
+    }
 
     Navigator.pop(context, resultado);
   }
@@ -224,6 +246,14 @@ class _TutoriaAsistentesContentState extends State<_TutoriaAsistentesContent> {
                             ],
                           ),
               ),
+              if (_errorAsistentes != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    _errorAsistentes!,
+                    style: AppTextStyle.getOutfit400(textSize: 13, textColor: Colors.red),
+                  ),
+                ),
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,

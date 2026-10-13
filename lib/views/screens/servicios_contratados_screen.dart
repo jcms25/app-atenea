@@ -216,41 +216,36 @@ class _ServiciosContratadosScreenState
                               ),
                               if (alumno.origen != null) ...[
                                 const SizedBox(width: 6),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 1),
-                                  decoration: BoxDecoration(
-                                    color: (alumno.origen == 'app'
-                                            ? AppColors.primary
-                                            : AppColors.secondary)
-                                        .withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    alumno.origen == 'app'
-                                        ? 'Vía app'
-                                        : 'Vía Secretaría',
-                                    style: AppTextStyle.getOutfit500(
-                                        textSize: 10,
-                                        textColor: alumno.origen == 'app'
-                                            ? AppColors.primary
-                                            : AppColors.secondary
-                                                .withValues(alpha: 0.7)),
-                                  ),
-                                ),
+                                _chipOrigen(alumno.origen!),
                               ],
                             ],
                           ),
-                          ...alumno.detalle.map((d) => Padding(
-                                padding: const EdgeInsets.only(top: 2),
-                                child: Text(
-                                  '- $d',
-                                  style: AppTextStyle.getOutfit400(
-                                      textSize: 12,
-                                      textColor: AppColors.secondary
-                                          .withValues(alpha: 0.6)),
-                                ),
-                              )),
+                          ...alumno.detalle.asMap().entries.map((entry) {
+                            final origenLinea =
+                                entry.key < alumno.detalleOrigen.length
+                                    ? alumno.detalleOrigen[entry.key]
+                                    : null;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      '- ${entry.value}',
+                                      style: AppTextStyle.getOutfit400(
+                                          textSize: 12,
+                                          textColor: AppColors.secondary
+                                              .withValues(alpha: 0.6)),
+                                    ),
+                                  ),
+                                  if (origenLinea != null) ...[
+                                    const SizedBox(width: 6),
+                                    _chipOrigen(origenLinea),
+                                  ],
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     )),
@@ -258,6 +253,26 @@ class _ServiciosContratadosScreenState
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _chipOrigen(String origen) {
+    final bool esApp = origen == 'app';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: (esApp ? AppColors.primary : AppColors.secondary)
+            .withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        esApp ? 'Vía app' : 'Vía Secretaría',
+        style: AppTextStyle.getOutfit500(
+            textSize: 10,
+            textColor: esApp
+                ? AppColors.primary
+                : AppColors.secondary.withValues(alpha: 0.7)),
       ),
     );
   }

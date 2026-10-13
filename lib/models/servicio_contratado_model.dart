@@ -6,6 +6,7 @@ class AlumnoServicioModel {
   final String claseNombre;
   final List<String> detalle;
   final String? origen; // 'app' | 'secretaria' — solo en servicios con formulario (com, mat, gab)
+  final List<String> detalleOrigen; // 'app' | 'secretaria' por cada línea de detalle — solo en Extraescolares
 
   AlumnoServicioModel({
     required this.wpUsrId,
@@ -13,6 +14,7 @@ class AlumnoServicioModel {
     required this.claseNombre,
     required this.detalle,
     this.origen,
+    this.detalleOrigen = const [],
   });
 
   factory AlumnoServicioModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,9 @@ class AlumnoServicioModel {
           ? List<String>.from(json['detalle'].map((e) => e.toString()))
           : <String>[],
       origen:       json['origen']?.toString(),
+      detalleOrigen: json['detalle_origen'] is List
+          ? List<String>.from(json['detalle_origen'].map((e) => e.toString()))
+          : <String>[],
     );
   }
 }
@@ -193,6 +198,35 @@ class RecibosResponseModel {
 // MÓDULO SOLICITUDES
 // ============================================================
 
+class ActividadExtraescolarModel {
+  final int id;
+  final String modalidad;
+  final String cursos;
+  final String dias;
+  final double precio;
+  final String pago; // 'mensual' | 'trimestral'
+
+  ActividadExtraescolarModel({
+    required this.id,
+    required this.modalidad,
+    required this.cursos,
+    required this.dias,
+    required this.precio,
+    required this.pago,
+  });
+
+  factory ActividadExtraescolarModel.fromJson(Map<String, dynamic> json) {
+    return ActividadExtraescolarModel(
+      id:        json['id'] ?? 0,
+      modalidad: json['modalidad'] ?? '',
+      cursos:    json['cursos'] ?? '',
+      dias:      json['dias'] ?? '',
+      precio:    (json['precio'] ?? 0).toDouble(),
+      pago:      json['pago'] ?? '',
+    );
+  }
+}
+
 class FormularioSolicitudModel {
   final int id;
   final String nombre;
@@ -201,6 +235,7 @@ class FormularioSolicitudModel {
   final String condiciones;
   final bool requiereTipo;
   final bool requiereIban;
+  final List<ActividadExtraescolarModel> actividades; // solo en el formulario de Extraescolares
 
   FormularioSolicitudModel({
     required this.id,
@@ -210,6 +245,7 @@ class FormularioSolicitudModel {
     required this.condiciones,
     required this.requiereTipo,
     required this.requiereIban,
+    this.actividades = const [],
   });
 
   factory FormularioSolicitudModel.fromJson(Map<String, dynamic> json) {
@@ -221,6 +257,10 @@ class FormularioSolicitudModel {
       condiciones:  json['condiciones'] ?? '',
       requiereTipo: json['requiere_tipo'] ?? true,
       requiereIban: json['requiere_iban'] ?? true,
+      actividades: json['actividades'] is List
+          ? List<ActividadExtraescolarModel>.from(json['actividades']
+              .map((e) => ActividadExtraescolarModel.fromJson(e)))
+          : <ActividadExtraescolarModel>[],
     );
   }
 }
@@ -230,12 +270,14 @@ class HijoSolicitudModel {
   final String nombre;
   final String claseNombre;
   final Map<String, bool> yaContratado;
+  final List<int> actividadesContratadas; // ids de student_opc.ext (Extraescolares)
 
   HijoSolicitudModel({
     required this.wpUsrId,
     required this.nombre,
     required this.claseNombre,
     required this.yaContratado,
+    this.actividadesContratadas = const [],
   });
 
   factory HijoSolicitudModel.fromJson(Map<String, dynamic> json) {
@@ -247,6 +289,10 @@ class HijoSolicitudModel {
           ? (json['ya_contratado'] as Map)
               .map((k, v) => MapEntry(k.toString(), v == true))
           : <String, bool>{},
+      actividadesContratadas: json['actividades_contratadas'] is List
+          ? List<int>.from((json['actividades_contratadas'] as List)
+              .map((e) => int.tryParse(e.toString()) ?? 0))
+          : <int>[],
     );
   }
 }
@@ -310,6 +356,8 @@ class SolicitudHistorialModel {
   final String formularioSlug;
   final String academicYear;
   final int studentId;
+  final int? actividadId; // solo en solicitudes de Extraescolares
+  final String actividadNombre;
   final String alumnoNombre;
   final String claseNombre;
   final String tipoServicio;
@@ -326,6 +374,8 @@ class SolicitudHistorialModel {
     required this.formularioSlug,
     required this.academicYear,
     required this.studentId,
+    this.actividadId,
+    this.actividadNombre = '',
     required this.alumnoNombre,
     required this.claseNombre,
     required this.tipoServicio,
@@ -344,6 +394,10 @@ class SolicitudHistorialModel {
       formularioSlug:     json['formulario_slug'] ?? '',
       academicYear:       json['academic_year'] ?? '',
       studentId:          json['student_id'] ?? 0,
+      actividadId:        json['actividad_id'] == null
+          ? null
+          : int.tryParse(json['actividad_id'].toString()),
+      actividadNombre:    json['actividad_nombre'] ?? '',
       alumnoNombre:       json['alumno_nombre'] ?? '',
       claseNombre:        json['clase_nombre'] ?? '',
       tipoServicio:       json['tipo_servicio'] ?? '',

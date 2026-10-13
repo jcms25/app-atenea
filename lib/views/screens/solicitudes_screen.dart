@@ -115,6 +115,8 @@ class _SolicitudesScreenState extends State<SolicitudesScreen>
         return Icons.wb_sunny_outlined;
       case 'gabinete':
         return Icons.psychology_outlined;
+      case 'extraescolares':
+        return Icons.school_outlined;
       default:
         return Icons.assignment_outlined;
     }
@@ -417,6 +419,14 @@ class _SolicitudesScreenState extends State<SolicitudesScreen>
                     style: AppTextStyle.getOutfit600(
                         textSize: 15, textColor: AppColors.secondary),
                   ),
+                  if (solicitud.actividadNombre.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      solicitud.actividadNombre,
+                      style: AppTextStyle.getOutfit500(
+                          textSize: 13, textColor: AppColors.primary),
+                    ),
+                  ],
                   const SizedBox(height: 2),
                   Text(
                     '${solicitud.alumnoNombre} (${solicitud.claseNombre})',

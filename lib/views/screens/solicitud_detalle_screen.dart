@@ -201,6 +201,9 @@ class _SolicitudDetalleScreenState extends State<SolicitudDetalleScreen> {
                         children: [
                           _infoRow('Servicio',
                               widget.solicitud.formularioNombre),
+                          if (widget.solicitud.actividadNombre.isNotEmpty)
+                            _infoRow(
+                                'Actividad', widget.solicitud.actividadNombre),
                           if (widget.solicitud.tipoServicio.isNotEmpty)
                             _infoRow('Modalidad',
                                 _labelTipo(widget.solicitud.tipoServicio)),

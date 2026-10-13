@@ -28,6 +28,7 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
 
   HijoSolicitudModel? hijoSeleccionado;
   String tipoSeleccionado = 'mensual';
+  final Set<int> actividadesSeleccionadas = {}; // solo en Extraescolares
 
   final TextEditingController _nombrePadreCtrl = TextEditingController();
   final TextEditingController _nifPadreCtrl = TextEditingController();
@@ -116,6 +117,14 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
       return;
     }
 
+    final String listaActividades = _actividadesElegidas()
+        .map((a) => '- ${a.modalidad} (${a.cursos})')
+        .join('\n');
+    final String textoConfirmacion = _esExtraescolares
+        ? 'Vas a solicitar para ${hijoSeleccionado!.nombre}:\n\n$listaActividades\n\n¿Confirmas?'
+        : 'Vas a enviar la solicitud de ${widget.formulario.nombre} para '
+            '${hijoSeleccionado!.nombre}. ¿Confirmas?';
+
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -125,8 +134,7 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
               textSize: 17, textColor: AppColors.secondary),
         ),
         content: Text(
-          'Vas a enviar la solicitud de ${widget.formulario.nombre} para '
-          '${hijoSeleccionado!.nombre}. ¿Confirmas?',
+          textoConfirmacion,
           style: AppTextStyle.getOutfit400(
               textSize: 14, textColor: AppColors.secondary),
         ),
@@ -173,6 +181,9 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
           'titular_cuenta': _titularCtrl.text.trim(),
           'nif_titular': _nifTitularCtrl.text.trim(),
           'firma_nombre': _firmaCtrl.text.trim(),
+          if (_esExtraescolares)
+            'actividad_ids':
+                (actividadesSeleccionadas.toList()..sort()).join(','),
         },
       );
 
@@ -194,24 +205,28 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Tu solicitud de ${widget.formulario.nombre} ha sido enviada correctamente.',
+                  _esExtraescolares && actividadesSeleccionadas.length > 1
+                      ? 'Tus ${actividadesSeleccionadas.length} solicitudes de ${widget.formulario.nombre} han sido enviadas correctamente. Puedes consultarlas en Mis solicitudes.'
+                      : 'Tu solicitud de ${widget.formulario.nombre} ha sido enviada correctamente.',
                   style: AppTextStyle.getOutfit400(
                       textSize: 14, textColor: AppColors.secondary),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  'Hash de verificación:',
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 11,
-                      textColor: AppColors.secondary.withValues(alpha: 0.6)),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  response['data']?['hash_verificacion'] ?? '',
-                  style: AppTextStyle.getOutfit400(
-                      textSize: 10,
-                      textColor: AppColors.secondary.withValues(alpha: 0.5)),
-                ),
+                if (!(_esExtraescolares && actividadesSeleccionadas.length > 1)) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Hash de verificación:',
+                    style: AppTextStyle.getOutfit400(
+                        textSize: 11,
+                        textColor: AppColors.secondary.withValues(alpha: 0.6)),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    response['data']?['hash_verificacion'] ?? '',
+                    style: AppTextStyle.getOutfit400(
+                        textSize: 10,
+                        textColor: AppColors.secondary.withValues(alpha: 0.5)),
+                  ),
+                ],
               ],
             ),
             actions: [
@@ -287,6 +302,11 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
                         _buildSeccion('Alumno'),
                         _buildSelectorHijo(),
                         const SizedBox(height: 16),
+                        if (_esExtraescolares) ...[
+                          _buildSeccion('Actividades'),
+                          _buildSelectorActividades(),
+                          const SizedBox(height: 16),
+                        ],
                         if (widget.formulario.requiereTipo) ...[
                           _buildSeccion('Tipo de servicio'),
                           _buildSelectorTipo(),
@@ -447,7 +467,10 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
                   ))
               .toList(),
           onChanged: (val) {
-            setState(() => hijoSeleccionado = val);
+            setState(() {
+              hijoSeleccionado = val;
+              actividadesSeleccionadas.clear();
+            });
           },
         ),
       ),
@@ -496,8 +519,183 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
     );
   }
 
+  bool get _esExtraescolares => widget.formulario.slug == 'extraescolares';
+
+  List<ActividadExtraescolarModel> _actividadesElegidas() => widget
+      .formulario.actividades
+      .where((a) => actividadesSeleccionadas.contains(a.id))
+      .toList();
+
+  // Actividades que el hijo ya tiene (alta en Secretaría o solicitud activa) o ya ha solicitado
+  Set<int> _idsOcupados() {
+    final ids = <int>{...hijoSeleccionado!.actividadesContratadas};
+    for (final s in widget.solicitudesExistentes) {
+      if (s.formularioId == widget.formulario.id &&
+          s.studentId == hijoSeleccionado!.wpUsrId &&
+          s.actividadId != null &&
+          (s.estado == 'enviada' || s.estado == 'activa')) {
+        ids.add(s.actividadId!);
+      }
+    }
+    return ids;
+  }
+
+  String _sinAcentos(String s) => s
+      .replaceAll('á', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ú', 'u');
+
+  // 'martes y jueves, 16:00-17:00' -> {martes: [960, 1020], jueves: [960, 1020]} (minutos desde las 00:00)
+  Map<String, List<int>> _franjas(String dias) {
+    final texto = _sinAcentos(dias.toLowerCase());
+    final hora =
+        RegExp(r'(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})').firstMatch(texto);
+    if (hora == null) return {};
+    final nombres = RegExp(r'\b(lunes|martes|miercoles|jueves|viernes)\b')
+        .allMatches(texto)
+        .map((m) => m.group(1)!)
+        .toSet();
+    if (nombres.isEmpty) return {};
+    final inicio = int.parse(hora.group(1)!) * 60 + int.parse(hora.group(2)!);
+    final fin = int.parse(hora.group(3)!) * 60 + int.parse(hora.group(4)!);
+    if (fin <= inicio) return {};
+    return {for (final d in nombres) d: [inicio, fin]};
+  }
+
+  // Franjas contiguas (17:00-18:00 y 18:00-19:00) no cuentan como solape
+  bool _horariosSolapan(String a, String b) {
+    final fa = _franjas(a);
+    final fb = _franjas(b);
+    for (final dia in fa.keys) {
+      final x = fa[dia]!;
+      final y = fb[dia];
+      if (y != null && x[0] < y[1] && y[0] < x[1]) return true;
+    }
+    return false;
+  }
+
+  // Primer problema de la selección actual, o null si es válida (mismas reglas que la API)
+  String? _avisoExtraescolares() {
+    if (hijoSeleccionado == null) return null;
+    final elegidas = _actividadesElegidas();
+    final ocupadas = _idsOcupados();
+    final yaTiene = widget.formulario.actividades
+        .where((a) => ocupadas.contains(a.id))
+        .toList();
+    for (final a in elegidas) {
+      for (final b in [...yaTiene, ...elegidas]) {
+        if (a.id == b.id) continue;
+        if (a.modalidad.trim().toLowerCase() ==
+            b.modalidad.trim().toLowerCase()) {
+          return 'No puedes elegir a la vez ${a.modalidad} (${a.cursos}) y ${b.modalidad} (${b.cursos}): son de la misma actividad. Elige un solo nivel.';
+        }
+        if (_horariosSolapan(a.dias, b.dias)) {
+          return '${a.modalidad} (${a.cursos}) coincide en horario con ${b.modalidad} (${b.cursos}).';
+        }
+      }
+    }
+    return null;
+  }
+
+  String _precioTexto(ActividadExtraescolarModel a) {
+    final precio = '${a.precio.toStringAsFixed(2).replaceAll('.', ',')} €';
+    if (a.pago == 'trimestral') return '$precio/trimestre';
+    if (a.pago == 'mensual') return '$precio/mes';
+    return precio;
+  }
+
+  Widget _buildSelectorActividades() {
+    if (hijoSeleccionado == null) return const SizedBox.shrink();
+    final grupos = <String, List<ActividadExtraescolarModel>>{};
+    for (final a in widget.formulario.actividades) {
+      grupos.putIfAbsent(a.modalidad, () => []).add(a);
+    }
+    if (grupos.isEmpty) {
+      return Text(
+        'No hay actividades disponibles en este momento',
+        style: AppTextStyle.getOutfit400(
+            textSize: 14,
+            textColor: AppColors.secondary.withValues(alpha: 0.6)),
+      );
+    }
+    final ocupadas = _idsOcupados();
+    final contratadas = hijoSeleccionado!.actividadesContratadas;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final entry in grupos.entries) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 4),
+            child: Text(
+              entry.key,
+              style: AppTextStyle.getOutfit600(
+                  textSize: 13, textColor: AppColors.primary),
+            ),
+          ),
+          for (final a in entry.value)
+            _buildActividadTile(
+                a, ocupadas.contains(a.id), contratadas.contains(a.id)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildActividadTile(
+      ActividadExtraescolarModel a, bool ocupada, bool contratada) {
+    final bool seleccionada = actividadesSeleccionadas.contains(a.id);
+    final String estadoTxt =
+        contratada ? 'Ya activa' : (ocupada ? 'Ya solicitada' : '');
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      decoration: BoxDecoration(
+        color: seleccionada
+            ? AppColors.primary.withValues(alpha: 0.06)
+            : AppColors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: seleccionada
+              ? AppColors.primary
+              : AppColors.secondary.withValues(alpha: 0.2),
+        ),
+      ),
+      child: CheckboxListTile(
+        value: seleccionada || ocupada,
+        onChanged: ocupada
+            ? null
+            : (bool? val) {
+                setState(() {
+                  if (val == true) {
+                    actividadesSeleccionadas.add(a.id);
+                  } else {
+                    actividadesSeleccionadas.remove(a.id);
+                  }
+                });
+              },
+        controlAffinity: ListTileControlAffinity.leading,
+        dense: true,
+        activeColor: AppColors.primary,
+        title: Text(
+          a.cursos,
+          style: AppTextStyle.getOutfit500(
+              textSize: 14, textColor: AppColors.secondary),
+        ),
+        subtitle: Text(
+          '${a.dias}\n${_precioTexto(a)}${estadoTxt.isEmpty ? '' : ' · $estadoTxt'}',
+          style: AppTextStyle.getOutfit400(
+              textSize: 12,
+              textColor: AppColors.secondary.withValues(alpha: 0.6)),
+        ),
+      ),
+    );
+  }
+
   bool _tieneConflicto() {
     if (hijoSeleccionado == null) return false;
+    if (_esExtraescolares) {
+      return actividadesSeleccionadas.isEmpty || _avisoExtraescolares() != null;
+    }
     return _servicioYaContratado() ||
         widget.solicitudesExistentes.any((s) =>
             s.formularioId == widget.formulario.id &&
@@ -523,16 +721,22 @@ class _SolicitudFormScreenState extends State<SolicitudFormScreen> {
   }
 
   Widget _buildAvisoConflicto() {
-    final conflicto = _solicitudConflicto();
     final String msg;
-    if (conflicto != null) {
-      msg = conflicto.estado == 'activa'
-          ? 'Este servicio ya está activo para ${hijoSeleccionado!.nombre}.'
-          : 'Ya existe una solicitud enviada para ${hijoSeleccionado!.nombre}. Espera a que sea procesada o contacta con el centro.';
-    } else if (_servicioYaContratado()) {
-      msg = 'Servicio activo para ${hijoSeleccionado!.nombre} (alta tramitada en Secretaría).';
+    if (_esExtraescolares) {
+      final aviso = _avisoExtraescolares();
+      if (aviso == null) return const SizedBox.shrink();
+      msg = aviso;
     } else {
-      return const SizedBox.shrink();
+      final conflicto = _solicitudConflicto();
+      if (conflicto != null) {
+        msg = conflicto.estado == 'activa'
+            ? 'Este servicio ya está activo para ${hijoSeleccionado!.nombre}.'
+            : 'Ya existe una solicitud enviada para ${hijoSeleccionado!.nombre}. Espera a que sea procesada o contacta con el centro.';
+      } else if (_servicioYaContratado()) {
+        msg = 'Servicio activo para ${hijoSeleccionado!.nombre} (alta tramitada en Secretaría).';
+      } else {
+        return const SizedBox.shrink();
+      }
     }
     return Container(
       padding: const EdgeInsets.all(12),

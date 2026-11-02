@@ -32,17 +32,21 @@ class AppConstants {
       case 'processing':
         return 'En preparación';
       case 'pending':
-        return 'Pendiente de pago';
+        return 'Pendiente de Pago';
+      case 'pendiente-recoger':
+        return 'Pendiente de recogida';
       case 'cancelled':
         return 'Cancelado';
       case 'on-hold':
-        return 'Pendiente Transferencia';
+        return 'Pendiente transferencia';
       case 'justificante':
-        return 'Justificante Recibido';
+        return 'Justificante recibido';
       case 'refunded':
-        return 'Reembolsado';
+        return 'Devolución';
       case 'entregado-incomp':
         return 'Incompleto';
+      case 'failed':
+        return 'Fallido';
       default:
         return status ?? '';
     }

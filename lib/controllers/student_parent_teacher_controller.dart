@@ -6,6 +6,7 @@ import 'package:colegia_atenea/models/beca_resolucion_model.dart';
 import 'package:colegia_atenea/models/dashboard_model.dart';
 import 'package:colegia_atenea/models/dinning_student_list_response.dart';
 import 'package:colegia_atenea/models/dinning_menu_response.dart';
+import 'package:colegia_atenea/models/dinning_menu_month_response.dart';
 import 'package:colegia_atenea/models/evaluation_ini_model.dart';
 import 'package:colegia_atenea/models/evaluation_list_model.dart';
 import 'package:colegia_atenea/models/exam_detail_model.dart';
@@ -3124,6 +3125,47 @@ void setEventsAccordingDate({required List<EventListItem> eventData}) {
   void setDinningMenuResponse({required DinningMenuData? dinningMenuResponse}) {
     this.dinningMenuResponse = dinningMenuResponse;
     notifyListeners();
+  }
+
+  //Dinning month screen :
+  DinningMenuMonthData? dinningMonthData;
+
+  void setDinningMonthData({required DinningMenuMonthData? dinningMonthData}) {
+    this.dinningMonthData = dinningMonthData;
+    notifyListeners();
+  }
+
+  //get dinning menu of a month
+  void getDinningMenuMonth({required int month, required int year}) async {
+    try {
+      setIsLoading(isLoading: true);
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      await Api.httpRequest(
+              requestType: RequestType.get,
+              header: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
+                'Authorization': "Basic $token",
+                'Cookie': userdata?.cookies ?? ""
+              },
+              endPoint:
+                  "${Api.dinningMonthEndPoint}?month=$month&year=$year")
+          .then((response) {
+        if (response['status']) {
+          DinningMenuMonthResponse monthResponse =
+              DinningMenuMonthResponse.fromJson(response);
+          setDinningMonthData(dinningMonthData: monthResponse.data);
+        } else {
+          AppConstants.showCustomToast(
+              status: false,
+              message: response['message'] ?? response['Message'] ?? "");
+        }
+        setIsLoading(isLoading: false);
+      });
+    } catch (exception) {
+      AppConstants.showCustomToast(status: false, message: "$exception");
+      setIsLoading(isLoading: false);
+    }
   }
 
   //get dinning menu

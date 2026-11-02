@@ -924,7 +924,7 @@ class StoreController extends ChangeNotifier {
 
   //checkout function which will generate OrderId
   Future<Map<String,dynamic>> checkout(
-      {required String tiendaToken, String? additionalOrderComment,required String wpUserId}) async {
+      {required String tiendaToken, String? additionalOrderComment,required String wpUserId, List<int>? alumnosReserva}) async {
     try {
       setIsBottomSheetLoader(isBottomSheetLoader: true);
 
@@ -950,7 +950,11 @@ class StoreController extends ChangeNotifier {
           "postcode": shippingAddress?.postcode ?? "",
           "country": shippingAddress?.country ?? ""
         },
-        "payment_method": selectedPaymentMethod
+        "payment_method": selectedPaymentMethod,
+        if (alumnosReserva != null && alumnosReserva.isNotEmpty)
+          "extensions": {
+            "wpsp-reservas": {"alumnos": alumnosReserva}
+          }
       };
 
       var response = Request('POST', url)

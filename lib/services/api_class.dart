@@ -2503,6 +2503,34 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
 
+  /// GET /scl-api/v1/reservas/mis-hijos
+  Future<dynamic> getReservasMisHijos({
+    required String token,
+    required String cookie,
+    required String parentWpUsrId,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}reservas/mis-hijos?parent_wp_usr_id=$parentWpUsrId'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        sessionExpired();
+        return {'status': false, 'Message': 'Session Expired.'};
+      } else {
+        return {'status': false, 'Message': 'Something went wrong'};
+      }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
   /// GET /scl-api/v1/solicitudes/mis-hijos
   Future<dynamic> getSolicitudesMisHijos({
     required String token,

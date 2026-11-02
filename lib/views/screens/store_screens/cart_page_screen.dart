@@ -181,7 +181,12 @@ class CartListWidget extends StatelessWidget {
     final bool isBundledItem =
         item.extensions?.wpspBundle?.wpspBundledItem ?? false;
 
-    final int qty = (item.quantity ?? 1) <= 0 ? 1 : (item.quantity ?? 1);
+    final int qtyPorLote = (item.quantity ?? 1) <= 0 ? 1 : (item.quantity ?? 1);
+    final int lotes =
+        isBundledItem ? (item.extensions?.wpspBundle?.wpspLotes ?? 1) : 1;
+    final int qty = isBundledItem
+        ? (item.extensions?.wpspBundle?.wpspQtyTotal ?? qtyPorLote)
+        : qtyPorLote;
 
     final double effectiveUnitPrice =
         item.extensions?.wpspBundle?.wpspBundledItem == true
@@ -317,11 +322,15 @@ class CartListWidget extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Cantidad : ${item.quantity}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                lotes > 1
+                                    ? 'Cantidad : $qty ($qtyPorLote por lote × $lotes lotes)'
+                                    : 'Cantidad : $qty',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],

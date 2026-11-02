@@ -41,12 +41,34 @@ class OrderDetailModel {
   }
 }
 
+class ComponenteLote {
+  String nombre;
+  int porLote;
+  int total;
+  bool pendiente;
+  int pendienteQty;
+  String entregado;
+
+  ComponenteLote.fromJson(Map<String, dynamic> json)
+      : nombre = json['nombre']?.toString() ?? '',
+        porLote = (json['por_lote'] as num?)?.toInt() ?? 0,
+        total = (json['total'] as num?)?.toInt() ?? 0,
+        pendiente = json['pendiente'] == true,
+        pendienteQty = (json['pendiente_qty'] as num?)?.toInt() ?? 0,
+        entregado = json['entregado']?.toString() ?? '';
+}
+
 class Products {
   int? productId;
   int? variationId;
   String? productName;
   int? quantity;
   double? total;
+  bool esComponente = false;
+  int reembolsadas = 0;
+  int lotes = 0;
+  int pendienteQty = 0;
+  List<ComponenteLote> componentes = [];
 
   Products(
       {this.productId,
@@ -61,6 +83,14 @@ class Products {
     productName = json['product_name'];
     quantity = json['quantity'];
     total = json['total'].toDouble();
+    esComponente = json['es_componente'] == true;
+    reembolsadas = (json['reembolsadas'] as num?)?.toInt() ?? 0;
+    lotes = (json['lotes'] as num?)?.toInt() ?? 0;
+    pendienteQty = (json['pendiente_qty'] as num?)?.toInt() ?? 0;
+    componentes = (json['componentes'] as List?)
+            ?.map((c) => ComponenteLote.fromJson(c as Map<String, dynamic>))
+            .toList() ??
+        [];
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +104,15 @@ class Products {
   }
 }
 
+class Reembolso {
+  double importe;
+  String motivo;
+
+  Reembolso.fromJson(Map<String, dynamic> json)
+      : importe = (json['importe'] as num?)?.toDouble() ?? 0,
+        motivo = json['motivo']?.toString() ?? '';
+}
+
 class Others {
   String? orderId;
   String? date;
@@ -84,6 +123,9 @@ class Others {
   dynamic student;
   dynamic courso;
   DatosBancarios? datosBancarios;
+  double totalReembolsado = 0;
+  double? totalNeto;
+  List<Reembolso> reembolsos = [];
   Others(
       {this.orderId,
         this.date,
@@ -107,6 +149,12 @@ class Others {
     datosBancarios = json['datos_bancarios'] != null
         ? DatosBancarios.fromJson(json['datos_bancarios'])
         : null;
+    totalReembolsado = (json['total_reembolsado'] as num?)?.toDouble() ?? 0;
+    totalNeto = (json['total_neto'] as num?)?.toDouble();
+    reembolsos = (json['reembolsos'] as List?)
+            ?.map((r) => Reembolso.fromJson(r as Map<String, dynamic>))
+            .toList() ??
+        [];
   }
 
   Map<String, dynamic> toJson() {

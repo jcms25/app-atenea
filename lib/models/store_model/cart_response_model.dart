@@ -447,12 +447,14 @@ class RawPrices {
 
 class Extensions {
   bool? isClosed;
+  bool? esReserva;
   WpspCartBundle? wpspBundle;
 
-  Extensions({this.isClosed, this.wpspBundle});
+  Extensions({this.isClosed, this.esReserva, this.wpspBundle});
 
   Extensions.fromJson(Map<String, dynamic> json) {
     isClosed = json['wpsp_closed']?['is_closed'] ?? false;
+    esReserva = json['wpsp_reserva']?['es_reserva'] ?? false;
     wpspBundle = json['wpsp_bundle'] != null
         ? WpspCartBundle.fromJson(json['wpsp_bundle'])
         : null;
@@ -461,6 +463,7 @@ class Extensions {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['wpsp_closed'] = {'is_closed': isClosed};
+    data['wpsp_reserva'] = {'es_reserva': esReserva};
     if (wpspBundle != null) {
       data['wpsp_bundle'] = wpspBundle!.toJson();
     }
@@ -774,6 +777,8 @@ class WpspCartBundle {
   int? wpspParentProductId;
   String? wpspChildPrice;
   bool bpPending;
+  int wpspLotes;
+  int? wpspQtyTotal;
 
   WpspCartBundle({
     this.isWpspBundle,
@@ -782,10 +787,14 @@ class WpspCartBundle {
     this.wpspParentProductId,
     this.wpspChildPrice,
     this.bpPending = false,
+    this.wpspLotes = 1,
+    this.wpspQtyTotal,
   });
 
   WpspCartBundle.fromJson(Map<String, dynamic> json)
-      : bpPending = _parseBool(json['bp_pending']) {
+      : bpPending = _parseBool(json['bp_pending']),
+        wpspLotes = (json['wpsp_lotes'] as num?)?.toInt() ?? 1,
+        wpspQtyTotal = (json['wpsp_qty_total'] as num?)?.toInt() {
     isWpspBundle = json['is_wpsp_bundle'];
     bundleData = json['bundle_data'];
     wpspBundledItem = json['wpsp_bundled_item'] ?? false;
@@ -805,6 +814,8 @@ class WpspCartBundle {
     data['wpsp_parent_product_id'] = wpspParentProductId;
     data['wpsp_child_price'] = wpspChildPrice;
     data['bp_pending'] = bpPending;
+    data['wpsp_lotes'] = wpspLotes;
+    data['wpsp_qty_total'] = wpspQtyTotal;
     return data;
   }
 }

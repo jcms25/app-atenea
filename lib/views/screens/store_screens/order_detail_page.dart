@@ -91,6 +91,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: Table(
+                                    columnWidths: const {
+                                      0: FlexColumnWidth(3),
+                                      1: FlexColumnWidth(1),
+                                    },
                                     border: TableBorder(
                                       verticalInside: BorderSide(
                                           color: AppColors.secondary, width: 1),
@@ -140,38 +144,173 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       ]),
                                       ...storeController
                                               .orderDetailModel?.products
-                                              ?.map((e) {
+                                              ?.where((e) => !e.esComponente)
+                                              .map((e) {
                                             return TableRow(children: [
                                               TableCell(
-                                                  child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${e.productName ?? ""} * ${e.quantity}",
-                                                    style: AppTextStyle
-                                                        .getOutfit400(
-                                                            textSize: 16,
-                                                            textColor: AppColors
-                                                                .secondary),
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .top,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text.rich(
+                                                        TextSpan(
+                                                          children: [
+                                                            TextSpan(
+                                                                text:
+                                                                    "${e.productName ?? ""} * "),
+                                                            if (e.reembolsadas >
+                                                                0) ...[
+                                                              TextSpan(
+                                                                text:
+                                                                    "${e.quantity}",
+                                                                style: const TextStyle(
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .lineThrough),
+                                                              ),
+                                                              TextSpan(
+                                                                  text:
+                                                                      " ${(e.quantity ?? 0) - e.reembolsadas}"),
+                                                            ] else
+                                                              TextSpan(
+                                                                  text:
+                                                                      "${e.quantity}"),
+                                                          ],
+                                                        ),
+                                                        style: AppTextStyle
+                                                            .getOutfit500(
+                                                                textSize: 15,
+                                                                textColor:
+                                                                    AppColors
+                                                                        .secondary),
+                                                      ),
+                                                      if (e.pendienteQty > 0)
+                                                        Text.rich(
+                                                          TextSpan(
+                                                            children: [
+                                                              const TextSpan(
+                                                                text:
+                                                                    "[PENDIENTE]",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              TextSpan(
+                                                                  text:
+                                                                      " Cantidad pendiente: ${e.pendienteQty}"),
+                                                            ],
+                                                          ),
+                                                          style: AppTextStyle
+                                                              .getOutfit400(
+                                                                  textSize: 13,
+                                                                  textColor:
+                                                                      AppColors
+                                                                          .secondary),
+                                                        ),
+                                                      for (final c
+                                                          in e.componentes)
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(top: 4),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text.rich(
+                                                                TextSpan(
+                                                                  children: [
+                                                                    TextSpan(
+                                                                        text:
+                                                                            "· ${c.total} x ${c.nombre}"),
+                                                                    if (c.pendiente)
+                                                                      TextSpan(
+                                                                        text: c.pendienteQty >
+                                                                                0
+                                                                            ? " [PENDIENTE] (${c.pendienteQty})"
+                                                                            : " [PENDIENTE]",
+                                                                        style: const TextStyle(
+                                                                            color: Colors
+                                                                                .red,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      ),
+                                                                  ],
+                                                                ),
+                                                                style: AppTextStyle
+                                                                    .getOutfit400(
+                                                                        textSize:
+                                                                            13,
+                                                                        textColor:
+                                                                            AppColors.secondary),
+                                                              ),
+                                                              if (c.entregado
+                                                                  .isNotEmpty)
+                                                                Text(
+                                                                  "Entregado el ${c.entregado}",
+                                                                  style: AppTextStyle.getOutfit400(
+                                                                      textSize:
+                                                                          12,
+                                                                      textColor:
+                                                                          AppColors
+                                                                              .secondary),
+                                                                ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      if (e.lotes > 1)
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(top: 6),
+                                                          child: Text(
+                                                            "* Cantidades totales de los ${e.lotes} lotes",
+                                                            style: AppTextStyle
+                                                                .getOutfit400(
+                                                                    textSize:
+                                                                        12,
+                                                                    textColor:
+                                                                        AppColors
+                                                                            .secondary),
+                                                          ),
+                                                        ),
+                                                    ],
                                                   ),
                                                 ),
-                                              )),
+                                              ),
                                               TableCell(
-                                                  child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${e.total ?? ""}€",
-                                                    style: AppTextStyle
-                                                        .getOutfit400(
-                                                            textSize: 16,
-                                                            textColor: AppColors
-                                                                .secondary),
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .top,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: Text(
+                                                      "${e.total ?? ""}€",
+                                                      style: AppTextStyle
+                                                          .getOutfit400(
+                                                              textSize: 15,
+                                                              textColor:
+                                                                  AppColors
+                                                                      .secondary),
+                                                    ),
                                                   ),
                                                 ),
-                                              )),
+                                              ),
                                             ]);
                                           }) ??
                                           []
@@ -210,10 +349,23 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                                                            OrderDetailRow(
+                                      if ((storeController.orderDetailModel?.others?[0].totalReembolsado ?? 0) > 0) ...[
+                                        OrderDetailRow(
+                                            label: "Reembolso",
+                                            value:
+                                                "-${(storeController.orderDetailModel?.others?[0].totalReembolsado ?? 0).toStringAsFixed(2)}€"),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                      OrderDetailRow(
                                           label: "Total",
-                                          value:
-                                              "${storeController.orderDetailModel?.others?[0].total}€"),
+                                          tachado: (storeController.orderDetailModel?.others?[0].totalReembolsado ?? 0) > 0
+                                              ? "${storeController.orderDetailModel?.others?[0].total}€"
+                                              : null,
+                                          value: (storeController.orderDetailModel?.others?[0].totalReembolsado ?? 0) > 0
+                                              ? "${storeController.orderDetailModel?.others?[0].totalNeto?.toStringAsFixed(2) ?? storeController.orderDetailModel?.others?[0].total}€"
+                                              : "${storeController.orderDetailModel?.others?[0].total}€"),
                                     ],
                                   ),
                                 ),
@@ -432,8 +584,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 class OrderDetailRow extends StatelessWidget {
   final String label;
   final String value;
+  final String? tachado;
 
-  const OrderDetailRow({super.key, required this.label, required this.value});
+  const OrderDetailRow(
+      {super.key, required this.label, required this.value, this.tachado});
 
   @override
   Widget build(BuildContext context) {
@@ -451,8 +605,18 @@ class OrderDetailRow extends StatelessWidget {
               textSize: 16, textColor: AppColors.black),
         ),
         Expanded(
-            child: Text(
-          value,
+            child: Text.rich(
+          TextSpan(
+            children: [
+              if (tachado != null)
+                TextSpan(
+                  text: "$tachado ",
+                  style:
+                      const TextStyle(decoration: TextDecoration.lineThrough),
+                ),
+              TextSpan(text: value),
+            ],
+          ),
           style: AppTextStyle.getOutfit400(
               textSize: 14, textColor: AppColors.secondary),
           textAlign: TextAlign.center,

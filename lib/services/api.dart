@@ -169,6 +169,8 @@ class Api {
   //Dinning Section
   static const String _dinningSectionEndPoint = "diningmenu";
   static String get dinningSectionEndPoint => _dinningSectionEndPoint;
+  static const String _dinningMonthEndPoint = "diningmenu/month";
+  static String get dinningMonthEndPoint => _dinningMonthEndPoint;
 
   static const String _dinningStudentListEndPoint = "diningstudents";
   static String get dinningStudentListEndPoint => _dinningStudentListEndPoint;

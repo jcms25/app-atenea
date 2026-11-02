@@ -3,7 +3,7 @@ import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_app_bar_widget.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_loader.dart';
-import 'package:flutter/gestures.dart';
+import 'package:colegia_atenea/views/screens/dinning_section_screen/menu_month_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -171,21 +171,21 @@ class _MenuScreenState extends State<MenuScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Consumer<StudentParentTeacherController>(builder:
-                        (context, studentParentTeacherController, child) {
-                      return RichText(
-                          text: TextSpan(
-                              text: 'Ver menú del mes',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  studentParentTeacherController.openUrl(
-                                      url: "https://colegioatenea.es/comedor/");
-                                },
-                              style: AppTextStyle.getOutfit500(
-                                      textSize: 20, textColor: AppColors.blue)
-                                  .copyWith(
-                                      decoration: TextDecoration.underline)));
-                    }),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () => Get.to(() => const MenuMonthScreen()),
+                      child: Text(
+                        'Ver menú del mes',
+                        style: AppTextStyle.getOutfit500(
+                            textSize: 18, textColor: AppColors.white),
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     )

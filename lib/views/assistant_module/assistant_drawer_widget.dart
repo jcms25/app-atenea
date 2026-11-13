@@ -18,6 +18,7 @@ import '../../utils/app_images.dart';
 import '../custom_widgets/custom_button_widget.dart';
 import '../screens/configuracion_screen.dart';
 import '../screens/edit_profile_screen.dart';
+import '../screens/jornada_screen.dart';
 import 'assistant_classes_screen.dart';
 
 class AssistantDrawerWidget extends StatelessWidget {
@@ -101,6 +102,9 @@ class AssistantDrawerWidget extends StatelessWidget {
           ...AppConstants.assistantDrawerAndBottomList.map((e) {
             return Consumer<AssistantController>(
               builder: (context, assistantController, child) {
+                if (e.optionId == 4 && !assistantController.tieneJornada) {
+                  return const SizedBox.shrink();
+                }
                 return AssistantDrawerItemWidget(
                   optionName: e.optionName,
                   optionId: e.optionId,
@@ -248,7 +252,10 @@ class AssistantDrawerItemWidget extends StatelessWidget {
             BlendMode.srcIn),
       ),
       onTap: () {
-        if (optionId != 1) {
+        if (optionId == 4) {
+          Get.back();
+          Get.to(() => const JornadaScreen());
+        } else if (optionId != 1) {
           Get.back();
           assistantController.setCurrentBottomIndexSelected(
               currentBottomIndexSelected: optionId);

@@ -55,6 +55,7 @@ import 'package:colegia_atenea/views/screens/autorizaciones_screen.dart';
 import 'package:colegia_atenea/views/screens/autorizaciones_tutor_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
+import 'package:colegia_atenea/views/screens/jornada_screen.dart';
 import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
 import 'package:colegia_atenea/views/screens/recibos_screen.dart';
 import 'package:colegia_atenea/views/screens/solicitudes_screen.dart';
@@ -413,6 +414,11 @@ class CustomDrawerWidget extends StatelessWidget {
                   teacherDrawerMenuName: 'Utilidades');
             }
           }
+        }
+        // La pestaña Mi jornada solo se muestra si el profesor tiene asignaciones vigentes
+        if (drawerMenuOption.name == 'Mi jornada' &&
+            !(appController?.tieneJornada ?? false)) {
+          continue;
         }
         // La pestaña Autorizaciones solo se muestra si el profesor es tutor de un grupo
         if (drawerMenuOption.name == 'drawerOption13'.tr &&
@@ -1030,6 +1036,9 @@ class CustomDrawerWidget extends StatelessWidget {
         break;
       case "Recibos":
         Get.to(() => const RecibosScreen());
+        break;
+      case "Mi jornada":
+        Get.to(() => const JornadaScreen());
         break;
       case "Tutorías":
         if (roleType == RoleType.teacher) {

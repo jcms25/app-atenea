@@ -332,6 +332,32 @@ class StudentParentTeacherController extends ChangeNotifier {
   }
 
   // ============================================================
+ // MÓDULO JORNADA — Disponibilidad de "Mi jornada"
+  // ============================================================
+  bool tieneJornada = false;
+
+  Future<void> fetchJornadaDisponible() async {
+    try {
+      if (currentLoggedInUserRole != RoleType.teacher) return;
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+        requestType: RequestType.get,
+        endPoint: "jornada/hoy",
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': "Basic $token",
+          'Cookie': userdata?.cookies ?? "",
+        },
+      );
+      tieneJornada = response['status'] == true &&
+          ((response['asignaciones'] as List?) ?? []).isNotEmpty;
+      notifyListeners();
+    } catch (_) {
+      tieneJornada = false;
+    }
+  }
+
+  // ============================================================
   // MÓDULO COMUNICACIONES — Contador de no leídos
   // ============================================================
   int get comunicacionesNoLeidasCount =>
@@ -732,11 +758,11 @@ class StudentParentTeacherController extends ChangeNotifier {
     required String datetime,
   }) async {
     try {
-      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";      
       final response = await Api.httpRequest(
         requestType: RequestType.get,
         endPoint:
-            "${Api.classroomSubjectByDatetimeEndPoint}?student_id=$studentId&class_id=$classId&datetime=$datetime",
+          "${Api.classroomSubjectByDatetimeEndPoint}?student_id=$studentId&class_id=$classId&datetime=$datetime",
         header: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'Authorization': "Basic $token",
@@ -748,13 +774,13 @@ class StudentParentTeacherController extends ChangeNotifier {
             ClassroomSubjectResponse.fromJson(response);
         classroomSubjectOptions = parsed.subjects;
         classroomSubjectMatchType = parsed.matchType;
-        // Preseleccionar la asignatura marcada como 'selected', si la hay
+        // Preseleccionar la asignatura marcada como 'selected'.
+        // Si ninguna viene marcada, dejar sin selección: el profesor
+        // debe elegir activamente (evita guardados inconscientes).
         selectedClassroomSubject = parsed.subjects.firstWhere(
           (s) => s.selected,
-          orElse: () => parsed.subjects.isNotEmpty
-              ? parsed.subjects.first
-              : ClassroomSubject(
-                  id: 0, name: '', selected: false, teacherId: 0),
+          orElse: () => ClassroomSubject(
+              id: 0, name: '', selected: false, teacherId: 0),
         );
         if (selectedClassroomSubject?.id == 0) {
           selectedClassroomSubject = null;
@@ -902,6 +928,8 @@ class StudentParentTeacherController extends ChangeNotifier {
           // Módulo Autorizaciones: si es profesor, verificar si es tutor
           if (currentLoggedInUserRole == RoleType.teacher) {
             fetchAutorizacionesTutorClase();
+            // Módulo Jornada: comprobar si el profesor tiene asignaciones vigentes
+            fetchJornadaDisponible();
           }
 
           // Módulo Tutorías: cargar contador de activas (padre y profesor)

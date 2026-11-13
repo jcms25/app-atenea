@@ -138,10 +138,33 @@ class AssistantController extends ChangeNotifier {
   }
 }
 
+  //Mi jornada: ¿tiene la asistenta asignaciones vigentes?
+  bool tieneJornada = false;
+
+  Future<void> fetchJornadaDisponible() async {
+    try {
+      String token = AppSharedPreferences.getBasicAthToken() ?? "";
+      final response = await Api.httpRequest(
+          requestType: RequestType.get,
+          endPoint: "jornada/hoy",
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization': "Basic $token",
+            'Cookie': assistant?.cookie ?? ""
+          });
+      tieneJornada = response['status'] == true &&
+          ((response['asignaciones'] as List?) ?? []).isNotEmpty;
+      notifyListeners();
+    } catch (_) {
+      tieneJornada = false;
+    }
+  }
+
   //Log out data reset
   void onLogout() {
     setCurrentBottomIndexSelected(currentBottomIndexSelected: 0);
     setAssistantDashboardModel(assistantDashboardModel: null);
+    tieneJornada = false;
     setAssistant(assistant: null);
   }
 }

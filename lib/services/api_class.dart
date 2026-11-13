@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' show Random;
 
 import 'package:colegia_atenea/models/failed_class_model.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
@@ -2583,6 +2584,107 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
       } else {
         return {'status': false, 'Message': 'Something went wrong'};
       }
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// Jornada: la API devuelve el motivo de los rechazos de negocio con código 409
+  /// (y 503 si el servidor está ocupado), y aquí se leen igual que un 200.
+  dynamic _respuestaJornada(Response response) {
+    if (response.statusCode == 200 ||
+        response.statusCode == 409 ||
+        response.statusCode == 503) {
+      return json.decode(response.body);
+    } else if (response.statusCode == 401) {
+      sessionExpired();
+      return {'status': false, 'Message': 'Session Expired.'};
+    }
+    return {'status': false, 'Message': 'Something went wrong'};
+  }
+
+  /// Jornada: identificador único de un envío (uuid v4). Se genera al pulsar y se
+  /// reutiliza si se reintenta la misma acción, para que el servidor no la duplique.
+  String jornadaNuevoUuid() {
+    final Random r = Random.secure();
+    final List<int> b = List<int>.generate(16, (_) => r.nextInt(256));
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    final String h =
+        b.map((x) => x.toRadixString(16).padLeft(2, '0')).join();
+    return '${h.substring(0, 8)}-${h.substring(8, 12)}-${h.substring(12, 16)}-'
+        '${h.substring(16, 20)}-${h.substring(20)}';
+  }
+
+  /// GET /scl-api/v1/jornada/hoy
+  Future<dynamic> getJornadaHoy({
+    required String token,
+    required String cookie,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}jornada/hoy'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      return _respuestaJornada(response);
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/jornada/fichar
+  Future<dynamic> jornadaFichar({
+    required String token,
+    required String cookie,
+    required String uuidEnvio,
+    required String tipoEsperado,
+    int? empresaId,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}jornada/fichar'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'uuid_envio': uuidEnvio,
+          'tipo_esperado': tipoEsperado,
+          if (empresaId != null) 'empresa_id': empresaId.toString(),
+        },
+      );
+      return _respuestaJornada(response);
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/jornada/declarar-salida
+  Future<dynamic> jornadaDeclararSalida({
+    required String token,
+    required String cookie,
+    required String uuidEnvio,
+    required String hora,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}jornada/declarar-salida'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{
+          'uuid_envio': uuidEnvio,
+          'hora': hora,
+        },
+      );
+      return _respuestaJornada(response);
     } catch (exception) {
       return {'status': false, 'Message': 'Exception: $exception'};
     }

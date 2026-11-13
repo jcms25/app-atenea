@@ -165,7 +165,8 @@ class AppConstants {
         optionIcon:  AppImages.asDashBoardActive),
     OptionModel(optionId: 1, optionName: 'asClassTitle'.tr, optionIcon: AppImages.asClassesActive),
     OptionModel(optionId: 2, optionName: 'option1'.tr,optionIcon: AppImages.asMessageActive),
-    OptionModel(optionId: 3, optionName: 'reportOption'.tr, optionIcon: AppImages.asStickyIcon)
+    OptionModel(optionId: 3, optionName: 'reportOption'.tr, optionIcon: AppImages.asStickyIcon),
+    OptionModel(optionId: 4, optionName: 'Mi jornada', optionIcon: AppImages.jornada)
   ];
   
   //Drawer List
@@ -252,6 +253,7 @@ class AppConstants {
     },
     {"name": 'drawerOption13'.tr, "icon": AppImages.autorizacionIcon},
     {"name": 'drawerOption15'.tr, "icon": AppImages.tutoriaIcon},
+    {"name": 'Mi jornada', "icon": AppImages.jornada},
     {"name": 'drawerOption8'.tr, "icon": AppImages.calender},
     {
       "name": 'drawerOption9'.tr,

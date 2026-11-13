@@ -33,6 +33,7 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
       assistantController =
           Provider.of<AssistantController>(context, listen: false);
       assistantController?.getAssistantDashboardData();
+      assistantController?.fetchJornadaDisponible();
     });
   }
 

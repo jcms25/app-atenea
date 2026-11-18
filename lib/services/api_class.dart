@@ -2636,6 +2636,48 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
 
+  /// GET /scl-api/v1/jornada/avisos
+  Future<dynamic> getJornadaAvisos({
+    required String token,
+    required String cookie,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}jornada/avisos'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      return _respuestaJornada(response);
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
+  /// POST /scl-api/v1/jornada/avisos
+  Future<dynamic> setJornadaAvisos({
+    required String token,
+    required String cookie,
+    required bool activos,
+  }) async {
+    try {
+      final Response response = await post(
+        Uri.parse('${liveBaseUrl}jornada/avisos'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+        body: <String, String>{'activos': activos ? '1' : '0'},
+      );
+      return _respuestaJornada(response);
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
   /// POST /scl-api/v1/jornada/fichar
   Future<dynamic> jornadaFichar({
     required String token,

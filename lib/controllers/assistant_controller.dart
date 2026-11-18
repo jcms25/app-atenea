@@ -4,12 +4,10 @@ import 'dart:convert';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 import '../models/assistant/assistant_dashboard_model.dart';
 import '../models/assistant/assistant_login_model.dart';
 import '../services/api.dart';
-import '../views/assistant_module/assistant_classes_screen.dart';
 
 class AssistantController extends ChangeNotifier {
 
@@ -30,12 +28,8 @@ class AssistantController extends ChangeNotifier {
   //current bottom index selected
   int currentBottomIndexSelected = 0;
   void setCurrentBottomIndexSelected({required int currentBottomIndexSelected}) {
-    if (currentBottomIndexSelected == 1) {
-      Get.to(() => ChildScreen());
-    } else {
-      this.currentBottomIndexSelected = currentBottomIndexSelected;
-      notifyListeners();
-    }
+    this.currentBottomIndexSelected = currentBottomIndexSelected;
+    notifyListeners();
   }
 
   //get assistant dashboard data

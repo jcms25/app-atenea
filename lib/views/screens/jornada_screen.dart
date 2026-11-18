@@ -6,6 +6,7 @@ import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/utils/app_colors.dart';
 import 'package:colegia_atenea/utils/app_constants.dart';
 import 'package:colegia_atenea/utils/app_textstyle.dart';
+import 'package:colegia_atenea/utils/perfil_visual.dart';
 import 'package:flutter/material.dart';
 
 class JornadaScreen extends StatefulWidget {
@@ -278,6 +279,12 @@ class _JornadaScreenState extends State<JornadaScreen>
         final int fin = _min(t[1]);
         if (ahora >= ini && ahora < fin) return fin - ahora;
       }
+      for (final e in a.extra) {
+        if (e.fin == null) continue;
+        final int ini = _min(e.ini);
+        final int fin = _min(e.fin!);
+        if (ahora >= ini && ahora < fin) return fin - ahora;
+      }
     }
     return null;
   }
@@ -327,8 +334,18 @@ class _JornadaScreenState extends State<JornadaScreen>
         return 'En curso hasta ${t[1]}';
       }
     }
+    for (final e in a.extra) {
+      if (ahora >= _min(e.ini) && (e.fin == null || ahora < _min(e.fin!))) {
+        return e.fin == null
+            ? 'En curso: ${e.motivo}'
+            : 'En curso hasta ${e.fin} · ${e.motivo}';
+      }
+    }
     for (final t in a.tramos) {
       if (_min(t[0]) > ahora) return 'Desde ${t[0]}';
+    }
+    for (final e in a.extra) {
+      if (_min(e.ini) > ahora) return 'Desde ${e.ini} · ${e.motivo}';
     }
     return '';
   }
@@ -337,7 +354,7 @@ class _JornadaScreenState extends State<JornadaScreen>
     bool hayTramos = false;
     bool ausenciaTotal = false;
     for (final a in hoy.asignaciones) {
-      if (a.tramos.isNotEmpty) hayTramos = true;
+      if (a.tramos.isNotEmpty || a.extra.isNotEmpty) hayTramos = true;
       if (a.obs.contains('Ausencia: todo el día')) ausenciaTotal = true;
     }
     if (!hayTramos) {
@@ -350,6 +367,10 @@ class _JornadaScreenState extends State<JornadaScreen>
     for (final a in hoy.asignaciones) {
       for (final t in a.tramos) {
         final int ini = _min(t[0]);
+        if (ini > ahora && (proximo == null || ini < proximo)) proximo = ini;
+      }
+      for (final e in a.extra) {
+        final int ini = _min(e.ini);
         if (ini > ahora && (proximo == null || ini < proximo)) proximo = ini;
       }
     }
@@ -401,8 +422,29 @@ class _JornadaScreenState extends State<JornadaScreen>
                 Text(
                   'Mi jornada de hoy',
                   style: AppTextStyle.getOutfit600(
-                      textSize: 22, textColor: AppColors.white),
+                      textSize: 20, textColor: AppColors.white),
                 ),
+                const Spacer(),
+                if (AppSharedPreferences.getAvailableRoles().length > 1)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                          PerfilVisual.icono(
+                              AppSharedPreferences.getUserLoggedInRole() ??
+                                  ''),
+                          color: AppColors.white.withValues(alpha: 0.8),
+                          size: 18),
+                      Text(
+                          PerfilVisual.etiqueta(
+                              AppSharedPreferences.getUserLoggedInRole() ??
+                                  ''),
+                          style: AppTextStyle.getOutfit300(
+                              textSize: 11,
+                              textColor:
+                                  AppColors.white.withValues(alpha: 0.8))),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -476,6 +518,7 @@ class _JornadaScreenState extends State<JornadaScreen>
   List<Widget> _vistaNormal(JornadaHoy hoy) {
     return [
       ...(hoy.dentro ? _bloqueDentro(hoy) : _bloqueFuera(hoy)),
+      ..._bloqueExtras(hoy),
       if (hoy.fichajes.isNotEmpty) ..._bloqueRegistros(hoy),
       if (hoy.calculoOk) ..._bloqueResumen(hoy),
     ];
@@ -535,6 +578,56 @@ class _JornadaScreenState extends State<JornadaScreen>
             'y tu entrada en ${destino.puesto}.'),
       ],
     ];
+  }
+
+  /// Tramos adicionales de hoy (reuniones convocadas, tareas puntuales).
+  List<Widget> _bloqueExtras(JornadaHoy hoy) {
+    final List<Widget> filas = [];
+    for (final a in hoy.asignaciones) {
+      for (final e in a.extra) {
+        filas.add(_filaExtra(a, e));
+      }
+    }
+    if (filas.isEmpty) return [];
+    return [
+      const SizedBox(height: 22),
+      _etiqueta('Tramos adicionales de hoy'),
+      ...filas,
+    ];
+  }
+
+  Widget _filaExtra(JornadaAsignacion a, JornadaExtra e) {
+    final String horario = (e.pendiente || e.fin == null)
+        ? '${e.ini} – Pendiente de cerrar horario'
+        : '${e.ini} – ${e.fin}';
+    final String detalle =
+        a.puesto.isNotEmpty ? '${e.motivo} · ${a.puesto}' : e.motivo;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: AppColors.secondary.withValues(alpha: 0.12)),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            horario,
+            style: AppTextStyle.getOutfit600(
+                textSize: 14, textColor: AppColors.secondary),
+          ),
+          if (detalle.isNotEmpty)
+            Text(
+              detalle,
+              style: AppTextStyle.getOutfit400(
+                  textSize: 12,
+                  textColor: AppColors.secondary.withValues(alpha: 0.7)),
+            ),
+        ],
+      ),
+    );
   }
 
   List<Widget> _bloqueRegistros(JornadaHoy hoy) {
@@ -632,7 +725,17 @@ class _JornadaScreenState extends State<JornadaScreen>
           : AppColors.secondary.withValues(alpha: 0.5),
     );
     const TextStyle roja = TextStyle(color: AppColors.red);
-    final List<InlineSpan> partes = [TextSpan(text: '${t.ini} – ${t.fin}')];
+    final List<InlineSpan> partes = [
+      TextSpan(
+          text: t.pendiente
+              ? '${t.ini} – Pendiente de cerrar horario'
+              : '${t.ini} – ${t.fin}')
+    ];
+    if (t.extra != null) {
+      partes.add(TextSpan(
+          text: ' · ${t.extra}',
+          style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 12)));
+    }
     if (t.iniReal != null) {
       partes.add(TextSpan(
           text: ' (Entrada ${t.iniReal})', style: t.iniRojo ? roja : null));

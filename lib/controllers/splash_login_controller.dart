@@ -114,6 +114,26 @@ class SplashLoginController extends ChangeNotifier {
     }
   }
 
+  // Perfiles de personal del centro: secretaria y personal_no_docente.
+  bool _esRolPersonal(String? role) =>
+      role == "secretaria" || role == "personal_no_docente";
+
+  // El servidor devuelve el identificador como "ID" y la foto como
+  // "user_image"; la app los guarda en wpUsrId y teacherImage, que es lo
+  // que usan el cierre de sesión, la jornada y las pantallas del perfil.
+  Userdata? _datosPersonal(dynamic response, LoginModel loginModel) {
+    final Userdata? datos = loginModel.userdata;
+    final dynamic id = response['userdata']?['ID'];
+    if (datos != null && id != null) {
+      datos.wpUsrId = id.toString();
+    }
+    final dynamic foto = response['userdata']?['user_image'];
+    if (datos != null && foto != null) {
+      datos.teacherImage = foto.toString();
+    }
+    return datos;
+  }
+
   //login user
   Future<void> userLogin(
       {required String userName,
@@ -138,6 +158,10 @@ class SplashLoginController extends ChangeNotifier {
           ? "parent"
           : userRole == "student"
           ? "student"
+          : userRole == "secretaria"
+          ? "secretaria"
+          : userRole == "personal_no_docente"
+          ? "personal_no_docente"
           : "assistant";
 
       dynamic response = await Api.httpRequest(
@@ -193,6 +217,16 @@ class SplashLoginController extends ChangeNotifier {
           setIsLoading(isLoading: false);
           Get.offNamedUntil(
               AppRoutes.studentParentTeacherMainScreen, (route) => false);
+        } else if (_esRolPersonal(roleOfUser)) {
+          LoginModel loginModel = LoginModel.fromJson(response);
+          await AppSharedPreferences.saveUserData(
+              basicAuthToken: loginModel.basicAuthToken,
+              userdata: _datosPersonal(response, loginModel),
+              role: roleOfUser);
+          await _fetchAndSaveAvailableRoles(
+              userName: userName, userPassword: userPassword);
+          setIsLoading(isLoading: false);
+          Get.offNamedUntil(AppRoutes.personalMainScreen, (route) => false);
         } else if (roleOfUser == "assistant") {
           Assistant assistant = Assistant.fromJson(response);
 
@@ -278,9 +312,13 @@ class SplashLoginController extends ChangeNotifier {
 
         Get.offNamedUntil(
             AppRoutes.studentParentTeacherMainScreen, (routes) => false);
+      } else if (_esRolPersonal(role)) {
+        updateDeviceToken();
+        Get.offNamedUntil(AppRoutes.personalMainScreen, (routes) => false);
       } else {
         AssistantData? assistant = AppSharedPreferences.getAssistantLoggedInData();
         assitantController?.setAssistant(assistant: assistant);
+        updateDeviceToken();
         Get.offNamedUntil(AppRoutes.assistantMainScreen, (routes) => false);
       }
     } else {
@@ -294,14 +332,19 @@ class SplashLoginController extends ChangeNotifier {
   Future<void> updateDeviceToken() async {
     try {
       String? role = AppSharedPreferences.getUserLoggedInRole();
-      // Solo aplica a los roles con token FCM por usuario
-      if (role != "student" && role != "parent" && role != "teacher") {
-        return;
+      final bool esAsistente = role != "student" &&
+          role != "parent" &&
+          role != "teacher" &&
+          !_esRolPersonal(role);
+      String uid;
+      if (esAsistente) {
+        uid = AppSharedPreferences.getAssistantLoggedInData()?.id ?? "";
+      } else {
+        Userdata? userdata = AppSharedPreferences.getUserData();
+        uid = role == "parent"
+            ? userdata?.parentWpUsrId ?? ""
+            : userdata?.wpUsrId ?? "";
       }
-      Userdata? userdata = AppSharedPreferences.getUserData();
-      String uid = role == "parent"
-          ? userdata?.parentWpUsrId ?? ""
-          : userdata?.wpUsrId ?? "";
       if (uid.isEmpty) return;
 
       String? fcmToken = await FirebaseMessaging.instance.getToken();
@@ -412,6 +455,15 @@ class SplashLoginController extends ChangeNotifier {
           studentParentTeacherController.setCurrentBottomIndexSelected(index: 0);
           Get.offNamedUntil(AppRoutes.studentParentTeacherMainScreen, (route) => false);
           studentParentTeacherController.getDashboardData(showLoader: true);
+        } else if (_esRolPersonal(newRole)) {
+          LoginModel loginModel = LoginModel.fromJson(response);
+          await AppSharedPreferences.saveUserData(
+            basicAuthToken: loginModel.basicAuthToken,
+            userdata: _datosPersonal(response, loginModel),
+            role: newRole,
+          );
+          setIsLoading(isLoading: false);
+          Get.offNamedUntil(AppRoutes.personalMainScreen, (route) => false);
         } else if (newRole == 'assistant') {
           Assistant assistant = Assistant.fromJson(response);
           await AppSharedPreferences.saveAssistantLoggedInData(

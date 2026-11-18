@@ -153,8 +153,10 @@ class AssistantData {
   String? city;
   String? postCode;
   String? nif;
+  String? firstName;
 
   AssistantData({
+    this.firstName,
     required this.id,
     required this.userLogin,
     required this.userPass,
@@ -198,6 +200,7 @@ class AssistantData {
     city : json["city"],
     postCode : json["postcode"],
     nif: json["nif"],
+    firstName: json["first_name"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -221,5 +224,6 @@ class AssistantData {
     "city" : city,
     "postcode" : postCode,
     "nif" : nif,
+    "first_name" : firstName,
   };
 }

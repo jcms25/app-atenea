@@ -1,6 +1,7 @@
 import 'package:colegia_atenea/views/assistant_module/assistant_main_screen.dart';
 import 'package:colegia_atenea/views/screens/login_screen.dart';
 import 'package:colegia_atenea/views/screens/main_screen.dart';
+import 'package:colegia_atenea/views/screens/personal_main_screen.dart';
 import 'package:get/get.dart';
 
 import '../views/screens/splash_screen.dart';
@@ -25,6 +26,10 @@ class AppRoutes{
   static const String _assistantMainScreen = "/assistantMainScreen";
   static String get assistantMainScreen => _assistantMainScreen;
 
+  //secretaria y personal no docente
+  static const String _personalMainScreen = "/personalMainScreen";
+  static String get personalMainScreen => _personalMainScreen;
+
   static const String _roleSelectionScreen = "/roleSelectionScreen";
   static String get roleSelectionScreen => _roleSelectionScreen;
 
@@ -35,6 +40,9 @@ class AppRoutes{
 
     //parent teacher student
     GetPage(name: assistantMainScreen, page: () => const AssistantScreen(currentIndex: 0)),
+
+    //secretaria y personal no docente
+    GetPage(name: _personalMainScreen, page: () => const PersonalMainScreen()),
 
     GetPage(
       name: _roleSelectionScreen,

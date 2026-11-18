@@ -108,8 +108,10 @@ class AssistantDashboardChild extends State<AssistantDashboard> {
                               ),
                               AutoSizeText(
                                   maxLines: 1,
-                                  assistantController.assistant?.displayName ??
-                                      "",
+                                  (assistantController.assistant?.firstName ?? "").isNotEmpty
+                                      ? assistantController.assistant!.firstName!
+                                      : assistantController.assistant?.displayName ??
+                                          "",
                                   style: AppTextStyle.getOutfit600(
                                       textSize: 20, textColor: AppColors.white))
                             ],

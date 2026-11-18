@@ -1,3 +1,28 @@
+/// Tramo adicional de hoy (reunión convocada, tarea puntual). Sin hora de fin
+/// está pendiente de cerrar horario.
+class JornadaExtra {
+  final String ini;
+  final String? fin;
+  final String motivo;
+  final bool pendiente;
+
+  JornadaExtra({
+    required this.ini,
+    required this.fin,
+    required this.motivo,
+    required this.pendiente,
+  });
+
+  factory JornadaExtra.fromJson(Map<String, dynamic> json) {
+    return JornadaExtra(
+      ini: json['ini']?.toString() ?? '',
+      fin: json['fin']?.toString(),
+      motivo: json['motivo']?.toString() ?? '',
+      pendiente: json['pendiente'] == true,
+    );
+  }
+}
+
 class JornadaAsignacion {
   final int id;
   final int empresaId;
@@ -7,6 +32,7 @@ class JornadaAsignacion {
   final String aviso;
   final bool fichable;
   final bool enCurso;
+  final List<JornadaExtra> extra;
 
   JornadaAsignacion({
     required this.id,
@@ -17,6 +43,7 @@ class JornadaAsignacion {
     required this.aviso,
     required this.fichable,
     required this.enCurso,
+    this.extra = const [],
   });
 
   factory JornadaAsignacion.fromJson(Map<String, dynamic> json) {
@@ -32,6 +59,9 @@ class JornadaAsignacion {
       aviso: json['aviso']?.toString() ?? '',
       fichable: json['fichable'] == true,
       enCurso: json['en_curso'] == true,
+      extra: ((json['extra'] as List?) ?? [])
+          .map((e) => JornadaExtra.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 }
@@ -70,6 +100,8 @@ class JornadaTramoCalculado {
   final bool iniRojo;
   final String? finReal;
   final bool finRojo;
+  final String? extra;
+  final bool pendiente;
 
   JornadaTramoCalculado({
     required this.ini,
@@ -80,6 +112,8 @@ class JornadaTramoCalculado {
     required this.iniRojo,
     required this.finReal,
     required this.finRojo,
+    this.extra,
+    this.pendiente = false,
   });
 
   factory JornadaTramoCalculado.fromJson(Map<String, dynamic> json) {
@@ -92,6 +126,8 @@ class JornadaTramoCalculado {
       iniRojo: json['ini_rojo'] == true,
       finReal: json['fin_real']?.toString(),
       finRojo: json['fin_rojo'] == true,
+      extra: json['extra']?.toString(),
+      pendiente: json['pendiente'] == true,
     );
   }
 }

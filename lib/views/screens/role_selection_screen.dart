@@ -35,6 +35,10 @@ class RoleSelectionScreen extends StatelessWidget {
         return 'Alumno/a';
       case 'assistant':
         return 'Asistencia';
+      case 'secretaria':
+        return 'Secretaría';
+      case 'personal_no_docente':
+        return 'Personal no docente';
       default:
         return role;
     }
@@ -50,6 +54,10 @@ class RoleSelectionScreen extends StatelessWidget {
         return Icons.menu_book;
       case 'assistant':
         return Icons.assignment_ind;
+      case 'secretaria':
+        return Icons.badge;
+      case 'personal_no_docente':
+        return Icons.work;
       default:
         return Icons.person;
     }

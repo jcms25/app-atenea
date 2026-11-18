@@ -1,3 +1,4 @@
+import 'package:colegia_atenea/services/api_class.dart';
 import 'package:colegia_atenea/services/app_shared_preferences.dart';
 import 'package:colegia_atenea/services/biometric_service.dart';
 import 'package:colegia_atenea/services/secure_credentials_service.dart';
@@ -16,7 +17,60 @@ class ConfiguracionScreen extends StatefulWidget {
 }
 
 class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
+  final ApiClass _api = ApiClass();
   bool _biometricEnabled = AppSharedPreferences.getBiometricEnabled();
+  // null = la cuenta no tiene jornada (o no hubo respuesta): el interruptor no se muestra.
+  bool? _avisosJornada;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarAvisosJornada();
+  }
+
+  String _token() => AppSharedPreferences.getBasicAthToken() ?? '';
+  String _cookie() {
+    if (AppSharedPreferences.getUserLoggedInRole() == 'assistant') {
+      return AppSharedPreferences.getAssistantLoggedInData()?.cookie ?? '';
+    }
+    return AppSharedPreferences.getUserData()?.cookies ?? '';
+  }
+
+  Future<void> _cargarAvisosJornada() async {
+    try {
+      final response =
+          await _api.getJornadaAvisos(token: _token(), cookie: _cookie());
+      if (!mounted) return;
+      if (response['status'] == true) {
+        setState(() => _avisosJornada = response['activos'] == true);
+      }
+    } catch (_) {
+      // Sin respuesta: el interruptor simplemente no se muestra.
+    }
+  }
+
+  Future<void> _onAvisosJornadaChanged(bool valor) async {
+    final bool anterior = _avisosJornada ?? true;
+    setState(() => _avisosJornada = valor);
+    try {
+      final response = await _api.setJornadaAvisos(
+          token: _token(), cookie: _cookie(), activos: valor);
+      if (!mounted) return;
+      if (response['status'] != true) {
+        setState(() => _avisosJornada = anterior);
+        AppConstants.showCustomToast(
+            status: false,
+            message: response['Message']?.toString() ??
+                'No se pudo guardar el cambio. Inténtalo de nuevo.');
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _avisosJornada = anterior);
+      AppConstants.showCustomToast(
+          status: false,
+          message: 'No se pudo guardar el cambio. Inténtalo de nuevo.');
+    }
+  }
 
   Future<void> _onBiometricChanged(bool value) async {
     if (!value) {
@@ -99,6 +153,7 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             value: _biometricEnabled,
+            activeThumbColor: AppColors.primary,
             onChanged: _onBiometricChanged,
             title: Text(
               'Acceso con huella/cara',
@@ -111,6 +166,23 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
                   textSize: 14, textColor: AppColors.secondary),
             ),
           ),
+          if (_avisosJornada != null)
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: _avisosJornada!,
+              activeThumbColor: AppColors.primary,
+              onChanged: _onAvisosJornadaChanged,
+              title: Text(
+                'Recordatorios de fichaje',
+                style: AppTextStyle.getOutfit500(
+                    textSize: 18, textColor: AppColors.secondary),
+              ),
+              subtitle: Text(
+                'Recibirás un aviso en el móvil cuando toque fichar la entrada, la salida o cambiar de agrupamiento.',
+                style: AppTextStyle.getOutfit400(
+                    textSize: 14, textColor: AppColors.secondary),
+              ),
+            ),
         ],
       ),
     );

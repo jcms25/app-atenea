@@ -19,7 +19,6 @@ import '../custom_widgets/custom_button_widget.dart';
 import '../screens/configuracion_screen.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/jornada_screen.dart';
-import 'assistant_classes_screen.dart';
 
 class AssistantDrawerWidget extends StatelessWidget {
   const AssistantDrawerWidget({super.key});
@@ -85,9 +84,11 @@ class AssistantDrawerWidget extends StatelessWidget {
                               ),
                               AutoSizeText(
                                   maxLines: 1,
-                                  assistantController.assistant?.displayName ?? "",
+                                  (assistantController.assistant?.firstName ?? "").isNotEmpty
+                                      ? assistantController.assistant!.firstName!
+                                      : assistantController.assistant?.displayName ?? "",
                                   style: AppTextStyle.getOutfit600(
-                                      textSize: 20, textColor: AppColors.white))
+                                      textSize: 14, textColor: AppColors.white))
                             ],
                           )),
                       const SizedBox(width: 10),
@@ -116,11 +117,12 @@ class AssistantDrawerWidget extends StatelessWidget {
             );
           }),
           ListTile(
+            visualDensity: const VisualDensity(vertical: -1),
             leading: const Icon(Icons.settings_outlined,
-                color: AppColors.primary, size: 25),
+                color: AppColors.secondary, size: 25),
             title: Text('Configuración',
-                style: AppTextStyle.getOutfit400(
-                    textSize: 18, textColor: AppColors.primary)),
+                style: AppTextStyle.getOutfit500(
+                    textSize: 18, textColor: AppColors.secondary)),
             onTap: () {
               Navigator.pop(context);
               Get.to(() => const ConfiguracionScreen());
@@ -149,14 +151,22 @@ class AssistantDrawerWidget extends StatelessWidget {
                               ? 'Padre/Madre'
                               : role == 'student'
                                   ? 'Alumno'
-                                  : 'Asistencia';
+                                  : role == 'secretaria'
+                                      ? 'Secretaría'
+                                      : role == 'personal_no_docente'
+                                          ? 'Personal no docente'
+                                          : 'Asistencia';
                       IconData icon = role == 'teacher'
                           ? Icons.school
                           : role == 'parent'
                               ? Icons.family_restroom
                               : role == 'student'
                                   ? Icons.person
-                                  : Icons.assignment_ind;
+                                  : role == 'secretaria'
+                                      ? Icons.badge
+                                      : role == 'personal_no_docente'
+                                          ? Icons.work
+                                          : Icons.assignment_ind;
                       return GestureDetector(
                         onTap: () async {
                           Navigator.pop(context);
@@ -241,34 +251,27 @@ class AssistantDrawerItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      selected: currentSelectedIndex == optionId,
-      selectedTileColor: AppColors.primary,
+      visualDensity: const VisualDensity(vertical: -1),
       leading: SvgPicture.asset(
         svgIconImage ?? "",
         width: 25,
         height: 25,
-        colorFilter: ColorFilter.mode(
-            currentSelectedIndex == optionId ? AppColors.white : AppColors.primary,
-            BlendMode.srcIn),
+        colorFilter:
+            const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),
       ),
       onTap: () {
         if (optionId == 4) {
           Get.back();
           Get.to(() => const JornadaScreen());
-        } else if (optionId != 1) {
+        } else {
           Get.back();
           assistantController.setCurrentBottomIndexSelected(
               currentBottomIndexSelected: optionId);
-        } else {
-          Get.to(() => ChildScreen());
         }
       },
       title: Text(optionName,
-          style: AppTextStyle.getOutfit400(
-              textSize: 18,
-              textColor: currentSelectedIndex == optionId
-                  ? AppColors.white
-                  : AppColors.primary)),
+          style: AppTextStyle.getOutfit500(
+              textSize: 18, textColor: AppColors.secondary)),
     );
   }
 }

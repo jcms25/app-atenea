@@ -95,6 +95,8 @@ class NotificationService {
         return "solicitudes";
       case "Servicio":
         return "servicios_contratados";
+      case "Jornada":
+        return "jornada";
       default:
         return "dashboard";
     }
@@ -131,6 +133,8 @@ class NotificationService {
         return "solicitudes";
       case "Servicio":
         return "servicios_contratados";
+      case "Jornada":
+        return "jornada";
       default:
         return "dashboard";
     }

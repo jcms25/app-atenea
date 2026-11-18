@@ -157,7 +157,7 @@ class CustomDrawerWidget extends StatelessWidget {
                                           "",
                               maxLines: 2,
                               style: AppTextStyle.getOutfit600(
-                                  textSize: 12, textColor: AppColors.white)),
+                                  textSize: 14, textColor: AppColors.white)),
                               if (AmpaBadgeWidget.isAmpaParent)
                               const Padding(
                               padding: EdgeInsets.only(top: 4),
@@ -184,6 +184,7 @@ class CustomDrawerWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 if (index == drawerListOption.length) {
                   return ListTile(
+                    visualDensity: const VisualDensity(vertical: -1),
                     leading: const Icon(Icons.settings_outlined,
                         color: AppColors.secondary, size: 25),
                     title: Text('Configuración',
@@ -248,20 +249,28 @@ class CustomDrawerWidget extends StatelessWidget {
                                 textSize: 13, textColor: AppColors.primary)),
                         const SizedBox(height: 4),
                         ...otherRoles.map((role) {
-                          String label = role == 'teacher'
+                            String label = role == 'teacher'
                               ? 'Profesor'
                               : role == 'parent'
                                   ? 'Padre/Madre'
                                   : role == 'student'
                                       ? 'Alumno'
-                                      : 'Asistencia';
-                          IconData icon = role == 'teacher'
+                                      : role == 'secretaria'
+                                          ? 'Secretaría'
+                                          : role == 'personal_no_docente'
+                                              ? 'Personal no docente'
+                                              : 'Asistencia';
+                            IconData icon = role == 'teacher'
                               ? Icons.school
                               : role == 'parent'
                                   ? Icons.family_restroom
                                   : role == 'student'
                                       ? Icons.person
-                                      : Icons.assignment_ind;
+                                      : role == 'secretaria'
+                                          ? Icons.badge
+                                          : role == 'personal_no_docente'
+                                              ? Icons.work
+                                              : Icons.assignment_ind;
                           return GestureDetector(
                             onTap: () async {
                               Navigator.pop(context);
@@ -660,8 +669,9 @@ class CustomDrawerWidget extends StatelessWidget {
   Widget _buildListOfDrawerOption(DrawerMenuOption drawerMenuOption) {
     if (drawerMenuOption.subMenu == null) {
       return Consumer<StudentParentTeacherController>(builder:
-          (context, studentParentTeacherController,child) {
+                    (context, studentParentTeacherController,child) {
         return ListTile(
+          visualDensity: const VisualDensity(vertical: -1),
           leading: drawerMenuOption.icon == null
               ? const SizedBox.shrink()
               : SvgPicture.asset(
@@ -746,6 +756,7 @@ class CustomDrawerWidget extends StatelessWidget {
       });
     } else {
       return ExpansionTile(
+        visualDensity: const VisualDensity(vertical: -1),
         leading: drawerMenuOption.icon == null
             ? const SizedBox.shrink()
             : SvgPicture.asset(

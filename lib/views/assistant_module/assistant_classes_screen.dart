@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../models/assistant/assistant_login_model.dart';
+
 class ChildScreen extends StatefulWidget {
   const ChildScreen({super.key});
 
@@ -36,23 +37,6 @@ class ChildScreenState extends State<ChildScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back),
-        ),
-        title: Text('asClassTitle'.tr,
-        style: const TextStyle(
-          fontFamily: "Outfit",
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-          color: Colors.white
-        ),),
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-      ),
       body:Stack(
         children: [
           isLoading ? const SizedBox.shrink() : classList.isEmpty ? SizedBox(

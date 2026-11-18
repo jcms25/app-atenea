@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:colegia_atenea/views/screens/jornada_screen.dart';
 
 import '../../utils/app_colors.dart';
 import '../../utils/app_constants.dart';
@@ -32,6 +33,7 @@ import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 //chequea la versión para actualización obligatoria
 import 'package:colegia_atenea/services/version_check_service.dart';
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -129,6 +131,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     final RoleType role =
         studentParentTeacherController!.currentLoggedInUserRole ?? RoleType.student;
+        
+    // Recordatorio de fichaje: abrir "Mi jornada de hoy"
+    if (destination == "jornada") {
+      Get.to(() => const JornadaScreen());
+      return;
+    }
 
     // Si hay eid, navegar directamente al detalle del examen
     if (destination == "exams" && eid != null && eid.isNotEmpty) {

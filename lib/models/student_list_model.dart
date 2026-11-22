@@ -49,6 +49,9 @@ class StudentItem {
   String? className;
   String? stuEmail;
   String? stuImage;
+  // Contadores de incidencias actitudinales del curso académico actual
+  int? classroomEventsPositive;
+  int? classroomEventsNegative;
 
   StudentItem(
       {this.sid,
@@ -71,7 +74,9 @@ class StudentItem {
         this.sCity,
         this.className,
         this.stuEmail,
-        this.stuImage});
+        this.stuImage,
+        this.classroomEventsPositive,
+        this.classroomEventsNegative});
 
   StudentItem.fromJson(Map<String, dynamic> json) {
     sid = json['sid'];
@@ -95,6 +100,12 @@ class StudentItem {
     className = json['class_name'];
     stuEmail = json['stu_email'];
     stuImage = json['stu_image'];
+    classroomEventsPositive = json['classroom_events_positive'] is int
+        ? json['classroom_events_positive']
+        : int.tryParse('${json['classroom_events_positive'] ?? ''}') ?? 0;
+    classroomEventsNegative = json['classroom_events_negative'] is int
+        ? json['classroom_events_negative']
+        : int.tryParse('${json['classroom_events_negative'] ?? ''}') ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -120,6 +131,8 @@ class StudentItem {
     data['class_name'] = className;
     data['stu_email'] = stuEmail;
     data['stu_image'] = stuImage;
+    data['classroom_events_positive'] = classroomEventsPositive;
+    data['classroom_events_negative'] = classroomEventsNegative;
     return data;
   }
 }

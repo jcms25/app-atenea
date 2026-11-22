@@ -2636,6 +2636,27 @@ String getSelectedFieldName(SelectOptionFromCategory1? selectedCategory) {
     }
   }
 
+  /// GET /scl-api/v1/jornada/historial?mes=AAAA-MM
+  Future<dynamic> getJornadaHistorial({
+    required String token,
+    required String cookie,
+    required String mes,
+  }) async {
+    try {
+      final Response response = await get(
+        Uri.parse('${liveBaseUrl}jornada/historial?mes=$mes'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Basic $token',
+          'Cookie': cookie,
+        },
+      );
+      return _respuestaJornada(response);
+    } catch (exception) {
+      return {'status': false, 'Message': 'Exception: $exception'};
+    }
+  }
+
   /// GET /scl-api/v1/jornada/avisos
   Future<dynamic> getJornadaAvisos({
     required String token,

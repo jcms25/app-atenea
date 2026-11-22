@@ -12,6 +12,7 @@ import 'package:colegia_atenea/utils/perfil_visual.dart';
 import 'package:colegia_atenea/views/custom_widgets/custom_button_widget.dart';
 import 'package:colegia_atenea/views/screens/configuracion_screen.dart';
 import 'package:colegia_atenea/views/screens/jornada_screen.dart';
+import 'package:colegia_atenea/views/screens/jornada_historial_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -160,12 +161,12 @@ class _PersonalMainScreenState extends State<PersonalMainScreen> {
   }
 
   Widget _opcion(
-      {required Widget icono,
+      {Widget? icono,
       required String titulo,
       required VoidCallback onTap}) {
     return ListTile(
       visualDensity: const VisualDensity(vertical: -1),
-      leading: icono,
+      leading: icono ?? const SizedBox.shrink(),
       title: Text(titulo,
           style: AppTextStyle.getOutfit500(
               textSize: 18, textColor: AppColors.secondary)),
@@ -223,19 +224,36 @@ class _PersonalMainScreenState extends State<PersonalMainScreen> {
                   titulo: 'Escritorio',
                   onTap: () => Navigator.of(context).pop(),
                 ),
-                _opcion(
-                  icono: SvgPicture.asset(
+                ExpansionTile(
+                  visualDensity: const VisualDensity(vertical: -1),
+                  leading: SvgPicture.asset(
                     AppImages.jornada,
                     colorFilter: const ColorFilter.mode(
                         AppColors.secondary, BlendMode.srcIn),
                     width: 25,
                     height: 25,
                   ),
-                  titulo: 'Mi jornada',
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _abrirJornada();
-                  },
+                  collapsedIconColor: AppColors.secondary,
+                  iconColor: AppColors.secondary,
+                  title: Text('Mi jornada',
+                      style: AppTextStyle.getOutfit500(
+                          textSize: 18, textColor: AppColors.secondary)),
+                  children: [
+                    _opcion(
+                      titulo: 'Mi jornada de hoy',
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        _abrirJornada();
+                      },
+                    ),
+                    _opcion(
+                      titulo: 'Histórico de jornada',
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Get.to(() => const JornadaHistorialScreen());
+                      },
+                    ),
+                  ],
                 ),
                 ListTile(
                   visualDensity: const VisualDensity(vertical: -1),

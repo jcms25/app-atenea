@@ -164,13 +164,39 @@ class _TeacherFollowedUpScreenState extends State<TeacherFollowedUpScreen> {
                                           : (nombre.isEmpty
                                               ? apellidos
                                               : '$apellidos, $nombre');
+                                      final pos = e.classroomEventsPositive ?? 0;
+                                      final neg = e.classroomEventsNegative ?? 0;
                                       return DropdownMenuItem<StudentItem>(
                                         value: e,
-                                        child: Text(
-                                          nombreCompleto,
-                                          style: AppTextStyle.getOutfit400(
-                                              textSize: 16,
-                                              textColor: AppColors.secondary),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                nombreCompleto,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: AppTextStyle.getOutfit400(
+                                                    textSize: 16,
+                                                    textColor:
+                                                        AppColors.secondary),
+                                              ),
+                                            ),
+                                            // Chip positivas (verde)
+                                            if (pos > 0) ...[
+                                              const SizedBox(width: 6),
+                                              _ClassroomEventsCounterChip(
+                                                count: pos,
+                                                color: AppColors.green,
+                                              ),
+                                            ],
+                                            // Chip negativas (rojo)
+                                            if (neg > 0) ...[
+                                              const SizedBox(width: 4),
+                                              _ClassroomEventsCounterChip(
+                                                count: neg,
+                                                color: AppColors.red,
+                                              ),
+                                            ],
+                                          ],
                                         ),
                                       );
                                     }).toList(),
@@ -508,6 +534,36 @@ class CustomFollowedUpRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Chip compacto con un contador de incidencias (verde = positivas, rojo = negativas).
+/// Se usa en el desplegable de alumnos del modo Consultar.
+class _ClassroomEventsCounterChip extends StatelessWidget {
+  final int count;
+  final Color color;
+
+  const _ClassroomEventsCounterChip({
+    required this.count,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        '$count',
+        style: AppTextStyle.getOutfit600(
+          textSize: 12,
+          textColor: AppColors.white,
+        ),
+      ),
     );
   }
 }

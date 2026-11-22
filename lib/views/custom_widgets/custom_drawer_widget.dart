@@ -56,6 +56,7 @@ import 'package:colegia_atenea/views/screens/autorizaciones_tutor_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_padre_screen.dart';
 import 'package:colegia_atenea/views/screens/tutorias_profesor_screen.dart';
 import 'package:colegia_atenea/views/screens/jornada_screen.dart';
+import 'package:colegia_atenea/views/screens/jornada_historial_screen.dart';
 import 'package:colegia_atenea/views/screens/servicios_contratados_screen.dart';
 import 'package:colegia_atenea/views/screens/recibos_screen.dart';
 import 'package:colegia_atenea/views/screens/solicitudes_screen.dart';
@@ -433,6 +434,12 @@ class CustomDrawerWidget extends StatelessWidget {
         if (drawerMenuOption.name == 'drawerOption13'.tr &&
             !(appController?.esTutor ?? false)) {
           continue;
+        }
+        if (drawerMenuOption.name == 'Mi jornada') {
+          drawerMenuOption.subMenu = [
+            DrawerMenuOption(name: 'Mi jornada de hoy'),
+            DrawerMenuOption(name: 'Histórico de jornada'),
+          ];
         }
         drawerMenuOptionList.add(drawerMenuOption);
       }
@@ -1048,8 +1055,11 @@ class CustomDrawerWidget extends StatelessWidget {
       case "Recibos":
         Get.to(() => const RecibosScreen());
         break;
-      case "Mi jornada":
+      case "Mi jornada de hoy":
         Get.to(() => const JornadaScreen());
+        break;
+      case "Histórico de jornada":
+        Get.to(() => const JornadaHistorialScreen());
         break;
       case "Tutorías":
         if (roleType == RoleType.teacher) {

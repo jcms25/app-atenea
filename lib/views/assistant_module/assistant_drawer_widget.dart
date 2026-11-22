@@ -19,6 +19,7 @@ import '../custom_widgets/custom_button_widget.dart';
 import '../screens/configuracion_screen.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/jornada_screen.dart';
+import '../screens/jornada_historial_screen.dart';
 
 class AssistantDrawerWidget extends StatelessWidget {
   const AssistantDrawerWidget({super.key});
@@ -248,8 +249,46 @@ class AssistantDrawerItemWidget extends StatelessWidget {
       this.svgIconImage,
       required this.assistantController});
 
+  Widget _subopcion(String titulo, VoidCallback onTap) {
+    return ListTile(
+      visualDensity: const VisualDensity(vertical: -1),
+      leading: const SizedBox.shrink(),
+      title: Text(titulo,
+          style: AppTextStyle.getOutfit500(
+              textSize: 18, textColor: AppColors.secondary)),
+      onTap: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (optionId == 4) {
+      return ExpansionTile(
+        visualDensity: const VisualDensity(vertical: -1),
+        leading: SvgPicture.asset(
+          svgIconImage ?? "",
+          width: 25,
+          height: 25,
+          colorFilter:
+              const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),
+        ),
+        collapsedIconColor: AppColors.secondary,
+        iconColor: AppColors.secondary,
+        title: Text(optionName,
+            style: AppTextStyle.getOutfit500(
+                textSize: 18, textColor: AppColors.secondary)),
+        children: [
+          _subopcion('Mi jornada de hoy', () {
+            Get.back();
+            Get.to(() => const JornadaScreen());
+          }),
+          _subopcion('Histórico de jornada', () {
+            Get.back();
+            Get.to(() => const JornadaHistorialScreen());
+          }),
+        ],
+      );
+    }
     return ListTile(
       visualDensity: const VisualDensity(vertical: -1),
       leading: SvgPicture.asset(
@@ -260,14 +299,9 @@ class AssistantDrawerItemWidget extends StatelessWidget {
             const ColorFilter.mode(AppColors.secondary, BlendMode.srcIn),
       ),
       onTap: () {
-        if (optionId == 4) {
-          Get.back();
-          Get.to(() => const JornadaScreen());
-        } else {
-          Get.back();
-          assistantController.setCurrentBottomIndexSelected(
-              currentBottomIndexSelected: optionId);
-        }
+        Get.back();
+        assistantController.setCurrentBottomIndexSelected(
+            currentBottomIndexSelected: optionId);
       },
       title: Text(optionName,
           style: AppTextStyle.getOutfit500(
